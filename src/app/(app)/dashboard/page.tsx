@@ -151,8 +151,7 @@ export default function DashboardPage() {
             delta={incomeDelta != null ? `${incomeDelta > 0 ? "+" : ""}${incomeDelta}%` : null}
             deltaDirection={incomeDelta == null ? "flat" : incomeDelta >= 0 ? "up" : "down"}
             icon={TrendingUp}
-            iconColor="#10b981"
-            iconSoft="#ecfdf5"
+            tone="emerald"
           />
           <KpiCard
             label="Monthly Expenses"
@@ -160,8 +159,7 @@ export default function DashboardPage() {
             delta={expenseDelta != null ? `${expenseDelta > 0 ? "+" : ""}${expenseDelta}%` : null}
             deltaDirection={expenseDelta == null ? "flat" : expenseDelta <= 0 ? "up" : "down"}
             icon={TrendingDown}
-            iconColor="#f43f5e"
-            iconSoft="#fff1f2"
+            tone="rose"
           />
           <KpiCard
             label="Net Balance"
@@ -169,15 +167,13 @@ export default function DashboardPage() {
             delta={netDelta != null ? `${netDelta > 0 ? "+" : ""}${netDelta}%` : null}
             deltaDirection={netDelta == null ? "flat" : netDelta >= 0 ? "up" : "down"}
             icon={Wallet}
-            iconColor="#f59e0b"
-            iconSoft="#fffbeb"
+            tone="amber"
           />
           <KpiCard
             label="Savings Rate"
             value={`${rate}%`}
             icon={Target}
-            iconColor="#a855f7"
-            iconSoft="#faf5ff"
+            tone="purple"
           />
         </div>
 
@@ -255,18 +251,6 @@ export default function DashboardPage() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-6">
-            {[
-              { name: "Income", color: CHART_COLORS.income },
-              { name: "Expenses", color: CHART_COLORS.expenses },
-              { name: "Net Savings", color: CHART_COLORS.net },
-            ].map((item) => (
-              <span key={item.name} className="flex items-center gap-1.5 text-xs font-medium text-stone-500 dark:text-stone-500">
-                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                {item.name}
-              </span>
-            ))}
-          </div>
         </section>
 
         {/* Health + breakdown row */}
@@ -277,26 +261,30 @@ export default function DashboardPage() {
               <HealthGauge score={health.total} band={health.band} />
               <div className="w-full flex-1 space-y-4">
                 {health.metrics.map((metric) => (
-                  <div key={metric.key}>
-                    <div className="mb-1 flex items-center justify-between text-sm">
-                      <span className="font-medium text-stone-700 dark:text-stone-300">{metric.label}</span>
-                      <span className="text-stone-500 dark:text-stone-500">
+                  <div key={metric.key} className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-stone-600 dark:text-stone-400">{metric.label}</span>
+                      <span className="font-semibold text-stone-700 dark:text-stone-300">
                         {metric.score}/{metric.max}
                       </span>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
+                    <div className="h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-amber-400 to-emerald-500 transition-all"
-                        style={{ width: `${(metric.score / metric.max) * 100}%` }}
+                        className="h-full rounded-full"
+                        style={{
+                          backgroundColor: healthBandColor(health.band),
+                          width: `${(metric.score / metric.max) * 100}%`,
+                        }}
                       />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="mt-5 flex items-start gap-2.5 rounded-lg bg-amber-50 p-4 dark:bg-amber-500/10">
-              <span aria-hidden="true">💡</span>
-              <p className="text-sm text-amber-800 dark:text-amber-200">{healthAdvice(health)}</p>
+            <div className="mt-4 p-3 rounded-xl bg-amber-50/60 dark:bg-amber-900/10 border border-amber-200/40 dark:border-amber-800/30">
+              <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                💡 {healthAdvice(health)}
+              </p>
             </div>
           </section>
 
@@ -572,18 +560,24 @@ function QuickAction({
 }
 
 /** The semicircle gauge (the reference's genus: gray track, colored
- *  arc by band, big number + band label centered). */
+ *  arc by band, big number + band label centered in the lower half —
+ *  session-208, F-208c: the overlay rides `absolute inset-0 …
+ * justify-end pb-1` with `font-black` weight, matching the reference's
+ * recharts RadialBar construction). */
+function healthBandColor(band: string): string {
+  return band === "Excellent"
+    ? "#10b981"
+    : band === "Good"
+      ? "#14b8a6"
+      : band === "Fair"
+        ? "#f59e0b"
+        : "#f43f5e";
+}
+
 function HealthGauge({ score, band }: { score: number; band: string }) {
   const pct = Math.max(0, Math.min(100, score));
   const angle = (pct / 100) * 180;
-  const color =
-    band === "Excellent"
-      ? "#10b981"
-      : band === "Good"
-        ? "#14b8a6"
-        : band === "Fair"
-          ? "#f59e0b"
-          : "#f43f5e";
+  const color = healthBandColor(band);
   const radius = 70;
   const cx = 80;
   const cy = 80;
@@ -608,8 +602,8 @@ function HealthGauge({ score, band }: { score: number; band: string }) {
           style={{ transition: "stroke-dasharray 0.5s ease" }}
         />
       </svg>
-      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center">
-        <span className="text-3xl font-extrabold" style={{ color }}>
+      <div className="absolute inset-0 flex flex-col items-center justify-end pb-1">
+        <span className="text-3xl font-black" style={{ color }}>
           {score}
         </span>
         <span className="text-xs font-bold" style={{ color }}>

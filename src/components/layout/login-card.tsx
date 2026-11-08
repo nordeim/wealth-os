@@ -619,13 +619,17 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
               </>
             ) : (
               <>
-            {/* Logo — the WealthOS brand badge: the navy circle holding
-                the bar-chart mark (green/amber/blue bars + the gold coin),
-                the reference's own login face. */}
+            {/* Logo — the WealthOS brand mark: the reference's own
+                192×192 image asset (fetched to public/wealthos-logo.png,
+                session-208/F-208e) in its round `sm:`-upsizing wrapper —
+                the retired construction was a CSS bar-chart mark. */}
             <div className={LOGIN_LAYOUT.logoWrap}>
-              <div className={LOGIN_LAYOUT.logoGlow} aria-hidden="true" />
-              <span className={LOGIN_LAYOUT.logo} aria-hidden="true">
-                <WealthOsMark />
+              <span className={LOGIN_LAYOUT.logo}>
+                <img
+                  src="/wealthos-logo.png"
+                  alt="WealthOS logo"
+                  className="aspect-square h-full w-full object-cover"
+                />
               </span>
             </div>
 
@@ -849,20 +853,7 @@ function AppleIcon() {
   );
 }
 
-/** The WealthOS login badge: the navy circle holding the rising bar
- *  chart (green/amber/blue bars + the gold coin) — the reference's own
- *  login-face mark, rebuilt in CSS/SVG with no external asset. */
-function WealthOsMark() {
-  return (
-    <span className="relative flex h-20 w-20 flex-col items-center justify-center gap-1">
-      <svg viewBox="0 0 48 40" className="h-12 w-12" aria-hidden="true">
-        <rect x="2" y="24" width="8" height="14" rx="2" fill="#10b981" />
-        <rect x="14" y="16" width="8" height="22" rx="2" fill="#fbbf24" />
-        <rect x="26" y="8" width="8" height="30" rx="2" fill="#3b82f6" />
-        <circle cx="40" cy="9" r="5" fill="#f5c518" />
-        <path d="M40 6.2a2.8 2.8 0 0 1 2.8 2.8" stroke="#0f1e3d" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-      </svg>
-      <span className="text-[9px] font-bold tracking-widest text-cyan-300">WealthOS</span>
-    </span>
-  );
-}
+/** The WealthOS login logo — session-208 (F-208e): the reference's own
+ *  image asset (public/wealthos-logo.png, fetched from its bundle host),
+ *  rendered by the <img> above. The CSS bar-chart mark this function
+ *  used to draw is retired. */

@@ -7,7 +7,7 @@ import * as React from "react";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
-import { CARD, EMPTY_STATE, PAGE_HEADER } from "@/lib/page-layout";
+import { CARD, EMPTY_STATE, KPI_TONES, PAGE_HEADER } from "@/lib/page-layout";
 import type { LucideIcon } from "lucide-react";
 
 /** Page title row with actions — the reference's page-header anatomy
@@ -38,23 +38,23 @@ export function PageHeader({
 }
 
 /** The dashboard/page KPI card: label, big value, delta line and the
- * colored icon tile (the reference's rounded-xl tile, top-right). */
+ * reference's saturated gradient icon tile (session-208, F-208a):
+ * `w-12 h-12 rounded-xl <KPI_TONES gradient> flex items-center justify-center`
+ * with a `text-white` icon — the top-right tile, fixed size. */
 export function KpiCard({
   label,
   value,
   delta,
   deltaDirection,
   icon: Icon,
-  iconColor,
-  iconSoft,
+  tone,
 }: {
   label: string;
   value: string;
   delta?: string | null;
   deltaDirection?: "up" | "down" | "flat";
   icon: LucideIcon;
-  iconColor: string;
-  iconSoft: string;
+  tone: keyof typeof KPI_TONES;
 }) {
   const deltaTone =
     deltaDirection === "up"
@@ -82,11 +82,41 @@ export function KpiCard({
           ) : null}
         </div>
         <div
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl md:h-14 md:w-14"
-          style={{ backgroundColor: iconSoft }}
+          className={cn("w-12 h-12 rounded-xl flex items-center justify-center", KPI_TONES[tone])}
         >
-          <Icon className="h-6 w-6" style={{ color: iconColor }} />
+          <Icon className="h-6 w-6 text-white" aria-hidden="true" />
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** The Investments KPI card — the reference's FULL-CARD gradient genus
+ * (session-208, F-208a): the whole card is the gradient (`to-br`,
+ * text-white, border-0, shadow-2xl) with the ghost `text-white/30` icon
+ * right and the white/70 label + font-black value + white/60 sub left. */
+export function GradientKpiCard({
+  label,
+  value,
+  sub,
+  icon: Icon,
+  gradient,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  icon: LucideIcon;
+  gradient: string;
+}) {
+  return (
+    <div className={cn("rounded-xl text-card-foreground border-0 shadow-2xl text-white p-6", gradient)}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-white/70 text-sm font-medium mb-1">{label}</p>
+          <p className="text-3xl font-black text-white">{value}</p>
+          {sub ? <p className="text-white/60 text-xs mt-1">{sub}</p> : null}
+        </div>
+        <Icon className="w-12 h-12 text-white/30" aria-hidden="true" />
       </div>
     </div>
   );
@@ -142,7 +172,10 @@ export function CardTitleRow({
   );
 }
 
-/** The reference's segmented period control (1M 3M 6M 1Y). */
+/** The reference's segmented period control (1M 3M 6M 1Y) — the
+ * session-208 (F-208b) convergence: `flex gap-1 bg-stone-100
+ * dark:bg-stone-800/80 rounded-lg p-1` container, `font-semibold
+ * transition-all duration-200` buttons. */
 export function PeriodSegment({
   value,
   onChange,
@@ -153,7 +186,7 @@ export function PeriodSegment({
   options: readonly string[];
 }) {
   return (
-    <div className="inline-flex items-center rounded-lg bg-stone-100 p-1 dark:bg-stone-800" role="group" aria-label="Chart period">
+    <div className="flex gap-1 bg-stone-100 dark:bg-stone-800/80 rounded-lg p-1" role="group" aria-label="Chart period">
       {options.map((option) => (
         <button
           key={option}
@@ -161,7 +194,7 @@ export function PeriodSegment({
           onClick={() => onChange(option)}
           aria-pressed={value === option}
           className={cn(
-            "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
+            "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200",
             value === option
               ? "bg-amber-500 text-white shadow-sm"
               : "text-stone-600 hover:text-stone-900 dark:text-stone-500 dark:hover:text-stone-100",

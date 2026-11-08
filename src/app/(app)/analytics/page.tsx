@@ -176,7 +176,13 @@ export default function AnalyticsPage() {
                       <XAxis dataKey="label" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={formatAxisMoney} tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} width={56} />
                       <Tooltip formatter={(v) => formatMoney(Number(v))} />
-                      <Legend />
+                      {/* Session-208 (F-208f): recharts v3 sorts the
+                          legend payload alphabetically by default
+                          (itemSorter: 'value' → Expenses, Income, Net)
+                          while the reference (v2) preserves series order —
+                          Income first. itemSorter={null} disables the sort
+                          (the selector skips sortBy when falsy). */}
+                      <Legend itemSorter={null} />
                       <Line type="monotone" dataKey="income" name="Income" stroke={CHART_COLORS.income} strokeWidth={2.5} dot={false} />
                       <Line type="monotone" dataKey="expenses" name="Expenses" stroke={CHART_COLORS.expenses} strokeWidth={2.5} dot={false} />
                       <Line type="monotone" dataKey="net" name="Net" stroke={CHART_COLORS.net} strokeWidth={2} strokeDasharray="5 3" dot={false} />

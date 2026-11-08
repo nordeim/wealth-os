@@ -36,7 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CardTitleRow, EmptyState, KpiCard, PageHeader, PeriodSegment } from "@/components/shared/page-parts";
+import { CardTitleRow, EmptyState, GradientKpiCard, PageHeader, PeriodSegment } from "@/components/shared/page-parts";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { useIsDark } from "@/components/layout/theme";
 import { INVESTMENT_TYPES, PERIOD_MONTHS, PERIOD_OPTIONS } from "@/lib/constants";
@@ -105,30 +105,26 @@ export default function InvestmentsPage() {
         />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          <KpiCard
+          <GradientKpiCard
             label="Portfolio Value"
             value={formatMoney(stats.value)}
-            delta={`${investments.length} holdings`}
+            sub={`${investments.length} holdings`}
             icon={Wallet}
-            iconColor="#10b981"
-            iconSoft="#ecfdf5"
+            gradient="bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600"
           />
-          <KpiCard
+          <GradientKpiCard
             label="Total Gain / Loss"
             value={formatMoney(stats.gainLoss)}
-            delta={`${stats.gainLoss >= 0 ? "+" : ""}${stats.returnPct}% all time`}
-            deltaDirection={stats.gainLoss >= 0 ? "up" : "down"}
+            sub={`${stats.gainLoss >= 0 ? "+" : ""}${stats.returnPct}% all time`}
             icon={stats.gainLoss >= 0 ? ArrowUpRight : ArrowDownRight}
-            iconColor={stats.gainLoss >= 0 ? "#3b82f6" : "#f43f5e"}
-            iconSoft={stats.gainLoss >= 0 ? "#eff6ff" : "#fff1f2"}
+            gradient="bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600"
           />
-          <KpiCard
+          <GradientKpiCard
             label="Total Return %"
             value={`${stats.returnPct}%`}
-            delta="vs cost basis"
+            sub="vs cost basis"
             icon={PieIcon}
-            iconColor="#a855f7"
-            iconSoft="#faf5ff"
+            gradient="bg-gradient-to-br from-amber-500 via-yellow-500 to-amber-600"
           />
         </div>
 

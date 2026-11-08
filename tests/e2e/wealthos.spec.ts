@@ -57,14 +57,16 @@ test.describe("the dashboard's card genus (seeded data)", () => {
     }
   });
 
-  test("the Cash Flow Overview carries the 1M/3M/6M/1Y segment + the legend", async ({ page }) => {
+  test("the Cash Flow Overview carries the 1M/3M/6M/1Y segment — and NO legend row (the reference renders none)", async ({ page }) => {
     await expect(page.getByRole("heading", { name: "Cash Flow Overview" })).toBeVisible();
     for (const period of ["1M", "3M", "6M", "1Y"]) {
       await expect(page.getByRole("group", { name: "Chart period" }).getByRole("button", { name: period })).toBeVisible();
     }
-    for (const legend of ["Income", "Expenses", "Net Savings"]) {
-      await expect(page.locator("section[aria-label='Cash Flow Overview']").getByText(legend, { exact: true })).toBeVisible();
-    }
+    // Session-208 (F-208b): the custom dot-marker legend row is REMOVED —
+    // the reference's Cash Flow card renders no legend (the tooltip
+    // carries it); "Net Savings" existed ONLY in our retired chip row.
+    const section = page.locator("section[aria-label='Cash Flow Overview']");
+    await expect(section.getByText("Net Savings", { exact: true })).toHaveCount(0);
   });
 
   test("the health gauge, breakdown, budgets, alerts, activity and insights sections render", async ({

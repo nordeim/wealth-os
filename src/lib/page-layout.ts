@@ -134,6 +134,40 @@ export const CARD = {
   subtitle: "text-xs text-stone-500 dark:text-stone-400",
 } as const;
 
+// Session-208 (F-208a): the reference's saturated KPI tile gradients —
+// live-extracted from its Dashboard (all four tiles, full class strings):
+// `w-12 h-12 rounded-xl <gradient> flex items-center justify-center` with
+// `w-6 h-6 text-white` icons. FIXED size — the reference carries no md:
+// upsize (our retired `md:h-14 md:w-14` was added chrome).
+export const KPI_TONES = {
+  emerald: "bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600",
+  rose: "bg-gradient-to-r from-rose-500 via-red-500 to-rose-600",
+  amber: "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600",
+  purple: "bg-gradient-to-r from-purple-500 via-violet-500 to-purple-600",
+} as const;
+
+// Session-208 (F-208d): the Settings glass-card genus — the reference's
+// settings page carries its OWN card family (the F-205b navy/blue
+// treatment): border-0 glass with backdrop-blur + shadow-lg, the shadcn
+// CardHeader/CardTitle/CardContent anatomy, the navy CardTitle token, and
+// the blue GDPR / amber import boxes. Every other page keeps CARD (the
+// warm genus — the reference's own split).
+export const SETTINGS_CARD = {
+  base: "rounded-xl text-card-foreground bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg",
+  header: "flex flex-col space-y-1.5 p-6",
+  title: "font-semibold leading-none tracking-tight flex items-center gap-2 text-primary-navy dark:text-white",
+  content: "p-6 pt-0 space-y-4",
+  gdprBox: "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4",
+  gdprTitle: "font-semibold text-blue-800 dark:text-blue-200 mb-1",
+  importBox: "bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4",
+  importTitle: "font-semibold text-amber-800 dark:text-amber-200 mb-1",
+  boxBody: "flex items-start gap-3",
+  boxText: "text-sm text-stone-600 dark:text-stone-400",
+  saveRow: "flex justify-end",
+  saveButton:
+    "inline-flex items-center justify-center gap-2 rounded-md text-sm h-9 px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-stone-900 font-semibold shadow-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:pointer-events-none disabled:opacity-50",
+} as const;
+
 export const BUTTONS = {
   primary:
     "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:opacity-50",
@@ -254,9 +288,10 @@ export const GRID_COLS: Record<number, string> = {
 
 // ---------------------------------------------------------------------------
 // The login card (WealthOS) — the reference's single centered card on a
-// light blue-gray wash: circular navy logo badge with the bar-chart mark,
-// "Welcome to WealthOS", the four social buttons, the OR divider, and the
-// navy Sign in submit.
+// light blue-gray wash: the round WealthOS image logo (the reference's own
+// 192×192 asset, fetched to public/wealthos-logo.png at session 208 — the
+// CSS bar-chart mark retired), "Welcome to WealthOS", the four social
+// buttons, the OR divider, and the navy Sign in submit.
 // ---------------------------------------------------------------------------
 
 export const LOGIN_LAYOUT = {
@@ -269,11 +304,13 @@ export const LOGIN_LAYOUT = {
   accent: "absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200",
   inner: "p-8 sm:p-10 md:pt-12 md:pb-10 md:px-10",
   centered: "flex flex-col items-center text-center space-y-6",
-  logoWrap: "relative",
-  logoGlow: "absolute inset-0 rounded-full bg-amber-200/40 blur-xl",
-  logo: "relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#0f1e3d] shadow-lg ring-4 ring-white/60",
-  title: "text-2xl sm:text-3xl font-bold text-[#1b2437] tracking-tight",
-  subtitle: "text-[#6b7688] text-sm sm:text-base font-medium",
+  // Session-208 (F-208e): the reference's image-logo construction — the
+  // round `sm:`-upsizing wrapper with ring-white/50, the real asset inside
+  // (the retired construction was a CSS bar-chart mark on a navy disc).
+  logoWrap: "relative group",
+  logo: "flex shrink-0 overflow-hidden rounded-full relative h-20 w-20 sm:h-24 sm:w-24 shadow-lg ring-4 ring-white/50 group-hover:shadow-xl transition-all duration-300",
+  title: "text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight",
+  subtitle: "text-slate-500 text-sm sm:text-base font-medium",
   google:
     "flex w-full items-center justify-center gap-3 rounded-xl border border-[#e3e7ee] bg-white px-5 py-3 font-medium text-[#1b2437] text-[15px] transition-all duration-200 hover:border-slate-300 hover:bg-slate-50",
   googleIcon: "shrink-0",
