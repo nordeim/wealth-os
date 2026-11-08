@@ -18,6 +18,14 @@ import { describe, expect, it } from "vitest";
 //     case-insensitive platform — fixing that defect per the house rule);
 //   - the reference's og:image/favicon URLs are its platform's CDN assets —
 //     the self-hosted expression is OUR public/og-image.png (1200×630).
+//
+// Session-201 (D-201a): the sitemap pins re-anchored to the WealthOS
+// reference's own URL set (its sitemap fetched live 2026-11-08: the root
+// at 1.0 plus the eight finance sections at 0.8). The scaffold-era pins
+// still named the NEO-CRM route list — eight locs that 404 on this app
+// since the session-199 transformation; a green pin on a dead sitemap
+// was the exact failure mode this file exists to prevent.
+//
 // NEXT_PUBLIC_SITE_URL was documented in .env.example/README/CLAUDE as
 // "used for metadata, sitemap.xml, and robots.txt" but consumed NOWHERE
 // before this session — the siteUrl() seam closes that documented gap.
@@ -133,24 +141,32 @@ describe("session-18: the favicon (S18-P3)", () => {
 });
 
 describe("session-18: sitemap.xml + robots.txt (S18-P4)", () => {
-  it("serves the nine real routes with the reference's cadence", () => {
+  it("serves the reference's nine WealthOS URLs at our lowercase canonicals", () => {
     const src = sitemapSrc();
+    // The WealthOS reference's sitemap (fetched live 2026-11-08): 9 URLs —
+    // the root at 1.0 plus Accounts/Analytics/Expenses/Goals/Import/
+    // Income/Investments/Settings at 0.8. Its locs are CAPITALIZED (its
+    // platform routes case-insensitively); our router is case-sensitive,
+    // so ours lists the lowercase canonicals the router actually serves
+    // (the s14 house rule — the platform quirk is fixed, not copied). The
+    // reference lists NO /Dashboard (its root IS the dashboard for
+    // signed-in visitors) and no auth pages — mirrored exactly.
     for (const route of [
       "/",
       "/accounts",
-      "/contacts",
-      "/leads",
-      "/calendar",
-      "/activities",
-      "/reports",
+      "/analytics",
+      "/expenses",
+      "/goals",
+      "/import",
+      "/income",
+      "/investments",
       "/settings",
-      "/profile",
     ]) {
       expect(src).toContain(`{ path: "${route}"`);
     }
-    // The reference's own cadence: weekly across the board, 1.0 for the
-    // dashboard, 0.8 for the rest — as STRING literals because the
-    // reference's bytes say "1.0" (a JS number would serialize as "1").
+    // The cadence: weekly across the board, 1.0 for the root, 0.8 for the
+    // rest — as STRING literals because the reference's bytes say "1.0"
+    // (a JS number would serialize as "1").
     expect(src).toContain('<changefreq>weekly</changefreq>');
     expect(src).toContain('priority: "1.0"');
     expect(src).toContain('priority: "0.8"');
@@ -159,13 +175,25 @@ describe("session-18: sitemap.xml + robots.txt (S18-P4)", () => {
     expect(src).not.toContain('"/Accounts"');
   });
 
-  it("session-142: the marketing layer's two routes join the sitemap (D-142a3)", () => {
+  it("session-201 (D-201a): carries no loc the router does not serve", () => {
     const src = sitemapSrc();
-    // The reference's s142 URL surface adds /About + /Contact (its new
-    // marketing-layer app pages); ours mirrors them at the lowercase
-    // canonicals — `/` stays 1.0 (now the public landing page).
-    expect(src).toContain('{ path: "/about", priority: "0.8" }');
-    expect(src).toContain('{ path: "/contact", priority: "0.8" }');
+    // The session-199 transformation rebuilt the route tree, but the
+    // scaffold-era sitemap kept advertising the NEO-CRM sections plus the
+    // s142 marketing pair — eight locs that 404 on this app. A sitemap
+    // entry names a route the router serves; this pin guards that
+    // contract so the class cannot regress silently.
+    for (const dead of [
+      "/contacts",
+      "/leads",
+      "/calendar",
+      "/activities",
+      "/reports",
+      "/profile",
+      "/about",
+      "/contact",
+    ]) {
+      expect(src).not.toContain(`{ path: "${dead}"`);
+    }
   });
 
   it("serves robots.txt in the reference's byte format", () => {

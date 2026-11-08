@@ -1,35 +1,33 @@
 import { siteUrl } from "@/lib/site";
 
-// Session-18 (S18-P4): /sitemap.xml — the reference's exact format
-// (byte-verified 2026-10-01: LF-only, no trailing newline, 4-space URL
-// indent, changefreq weekly on every entry, priority "1.0" for the
-// dashboard and "0.8" for the rest). Served through an explicit route
-// handler because Next's sitemap.ts serializer DROPS the number
-// formatting ("1.0" serializes as "1") — and its MetadataRoute type
-// spells the field changeFrequency, easy to mis-pin. One deliberate fix:
-// the reference's locs are CAPITALIZED (/Accounts…) — its platform routes
+// Session-201 (D-201a): /sitemap.xml — the WealthOS reference's URL set,
+// fetched live 2026-11-08: 9 URLs — the root at priority "1.0" plus the
+// eight finance sections (Accounts, Analytics, Expenses, Goals, Import,
+// Income, Investments, Settings) at "0.8", changefreq weekly, LF-only, no
+// trailing newline, 4-space URL indent. Served through an explicit route
+// handler because Next's sitemap.ts serializer DROPS the number formatting
+// ("1.0" serializes as "1") — and its MetadataRoute type spells the field
+// changeFrequency, easy to mis-pin.
+// The reference's locs are CAPITALIZED (/Accounts…) — its platform routes
 // case-insensitively; our router is case-sensitive (the documented s14
-// decision, /Profile as the one aliased casing), so this sitemap lists
-// the real lowercase routes the router actually serves.
-// Session-142 (D-142a3): + /about + /contact (the reference's two new
-// marketing-layer app pages — its URL surface now includes them; ours
-// mirrors at the lowercase canonicals). `/` stays 1.0 — it is now the
-// PUBLIC landing page (the reference's own root), still the highest-
-// priority crawlable route.
+// decision), so this sitemap lists the real lowercase routes the router
+// actually serves. The reference lists NO /Dashboard (its root IS the
+// dashboard for signed-in visitors) and no auth pages — mirrored exactly.
+// The scaffold-era CRM list (contacts/leads/calendar/activities/reports/
+// profile + the s142 /about + /contact marketing pair) died with the
+// session-199 transformation — every one of those locs 404'd here.
 export const dynamic = "force-static";
 
 const ROUTES: Array<{ path: string; priority: string }> = [
   { path: "/", priority: "1.0" },
   { path: "/accounts", priority: "0.8" },
-  { path: "/contacts", priority: "0.8" },
-  { path: "/leads", priority: "0.8" },
-  { path: "/calendar", priority: "0.8" },
-  { path: "/activities", priority: "0.8" },
-  { path: "/reports", priority: "0.8" },
+  { path: "/analytics", priority: "0.8" },
+  { path: "/expenses", priority: "0.8" },
+  { path: "/goals", priority: "0.8" },
+  { path: "/import", priority: "0.8" },
+  { path: "/income", priority: "0.8" },
+  { path: "/investments", priority: "0.8" },
   { path: "/settings", priority: "0.8" },
-  { path: "/profile", priority: "0.8" },
-  { path: "/about", priority: "0.8" },
-  { path: "/contact", priority: "0.8" },
 ];
 
 export function GET(): Response {

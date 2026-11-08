@@ -40,11 +40,13 @@ export function siteUrl(
 }
 
 /**
- * Session-19: the reference's per-route OG description prefix — every
+ * Session-19: the per-route OG description prefix — every
  * inner page's og/twitter description is
  * `"<Page> on WealthOS. " + <the 405-char root paragraph>`
- * (live-verified on /Accounts, /Contacts, /Leads, /Calendar, /Activities,
- * /Reports, /Settings, /Profile; the root and /login stay unprefixed).
+ * (live-verified on the reference's inner pages; consumed here by the
+ * eight section pages + login/signup/reset-password through
+ * pageMetadata(); the root and /Dashboard inherit the layout's
+ * metadata wholesale — the unprefixed family).
  */
 export function pageOgDescription(page: string): string {
   return `${page} on WealthOS. ${SITE_DESCRIPTION}`;
