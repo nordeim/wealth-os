@@ -260,85 +260,90 @@ export const TOLERANCE = 12;
  * with --clusters, re-derives the affected page. PURE by design:
  * pinned in tests/sweep-tool.test.ts.
  *
- * Session-208 (R-7.9 — the R-7 tail re-derivation): the tables
- * re-derived after the R-7.6–R-7.8 cures (the KPI gradient tiles +
- * Investments' full-card gradient KPIs + the Cash Flow legend row
- * removed + the health-widget bars/tip/gauge overlay + the Analytics
- * legend order + the Settings glass-card/blue-accent genus + the
- * auth-face image logo/slate tokens). Settings collapsed everywhere
- * (51.9→20.0 desktop, 68.9→18.7 phone, 72.9→32.4 tablet, 58.1→19.6
- * landscape — the glass genus was its dominant delta); investments
- * dropped at desktop/phone (19.3→9.6, 49.3→27.7) and rose honestly
- * at tablet/landscape (17.8→22.3, 20.8→24.8 — the F-208g app-wide
- * card genus is the residual there); login dropped (6.7→6.0 desktop,
- * 6.2→4.6 landscape — the image logo). The standing genera after
- * this convergence:
+ * Session-209 (R-7.10 — the F-209a card-genus re-derivation): the
+ * tables re-derived after the per-surface card convergence (the four
+ * decoded families: CARD.base → the warm-simple genus on Dashboard mid
+ * + Investments; CARD.kpi → the warm-hover KPI genus; GLASS_CARD on
+ * Expenses/Income/Goals/Analytics + Dashboard's bottom row;
+ * STOCK_CARD on Accounts/Import; the Quick Actions one-off; the
+ * F-209b Analytics stat row; the .card-hover utility + the card
+ * tokens). The card-heavy pages collapsed — the biggest drops of the
+ * program: goals 33.4→7.2 desktop / 41.2→11.7 phone / 34.4→6.6
+ * tablet / 36.1→9.9 landscape; import 31.2→9.4 / 36.2→13.5 /
+ * 31.5→8.8 / 33.9→11.8; income 48.2→30.0 / 60.8→41.2 / 50.7→31.5 /
+ * 51.7→33.6; expenses 47.3→13.5 desktop (its summary trio now the
+ * reference's hover glass); accounts 21.3→10.9 desktop; analytics
+ * 53.8→40.4 / 49.0→31.5 landscape (the stat row added). Investments
+ * dropped at three widths and rose honestly at phone (27.7→27.9 — the
+ * KPI row's hover/padding construction at 390; recorded, not hidden).
+ * The untouched faces stayed flat (settings 20.0/32.4→32.5/19.6→19.7,
+ * login, reset-password — the sanity signature). The standing genera
+ * after this convergence:
  *   (1) the empty-state construction genus — STILL the dominant share
- *       on income/expenses/analytics/goals (the two apps' empty
- *       layouts differ in their inner constructions);
- *   (2) the app-wide in-page card genus (F-208g, the NEXT slice): the
- *       reference's warm-gradient cards (from-white/90 via-amber-50/20
- *       + card-hover + p-6 + border-amber-100/50 + shadow-xl) vs our
- *       stone CARD.base — every in-page card outside the converged
- *       faces (also the investments tablet/landscape residual);
+ *       on income/analytics (the two apps' empty layouts differ in
+ *       their inner constructions — our corpus fills ours);
+ *   (2) the in-page CONTENT deltas: the populated tables/lists/charts
+ *       our functional superset renders where the reference's empty
+ *       workspace shows placeholder faces (the allowances absorb
+ *       these by design);
  *   (3) the smaller residuals: the empty-data scoring genus (our
  *       health score computes 100/Excellent on empty data, the
  *       reference 0/Needs Work) and the mobile auth-face inner-content
  *       micro-deltas (login cardH 826 vs 848 at 390). */
 export const STANDING_BASELINES = {
-  // 1440x900 — the desktop class (>= 1280) — session-208 re-derivation
+  // 1440x900 — the desktop class (>= 1280) — session-209 re-derivation
   desktop: {
-    dashboard: 10.4,
-    income: 48.2,
-    expenses: 47.3,
-    accounts: 21.3,
-    investments: 9.6,
-    import: 31.2,
-    analytics: 53.8,
-    goals: 33.4,
+    dashboard: 9.1,
+    income: 30.0,
+    expenses: 13.5,
+    accounts: 10.9,
+    investments: 8.5,
+    import: 9.4,
+    analytics: 40.4,
+    goals: 7.2,
     settings: 20.0,
     login: 6.0,
     "reset-password": 3.9,
   },
-  // 390x844 — the phone class (< 768) — session-208 re-derivation
+  // 390x844 — the phone class (< 768) — session-209 re-derivation
   phone: {
-    dashboard: 18.7,
-    income: 60.8,
-    expenses: 51.8,
-    accounts: 29.0,
-    investments: 27.7,
-    import: 36.2,
-    analytics: 59.1,
-    goals: 41.2,
-    settings: 18.7,
+    dashboard: 16.5,
+    income: 41.2,
+    expenses: 41.8,
+    accounts: 17.5,
+    investments: 28.0,
+    import: 13.5,
+    analytics: 52.4,
+    goals: 11.7,
+    settings: 18.9,
     login: 11.0,
     "reset-password": 16.5,
   },
-  // 768x1024 — the tablet class (< 1024) — session-208 re-derivation
+  // 768x1024 — the tablet class (< 1024) — session-209 re-derivation
   tablet: {
-    dashboard: 9.0,
-    income: 50.7,
-    expenses: 49.1,
-    accounts: 21.6,
-    investments: 22.3,
-    import: 31.5,
-    analytics: 54.1,
-    goals: 34.4,
-    settings: 32.4,
+    dashboard: 8.1,
+    income: 31.5,
+    expenses: 29.5,
+    accounts: 10.5,
+    investments: 21.0,
+    import: 8.8,
+    analytics: 49.8,
+    goals: 6.6,
+    settings: 32.5,
     login: 11.5,
     "reset-password": 6.5,
   },
-  // 1024x768 — the landscape class (< 1280) — session-208 re-derivation
+  // 1024x768 — the landscape class (< 1280) — session-209 re-derivation
   landscape: {
-    dashboard: 12.5,
-    income: 51.7,
-    expenses: 49.3,
-    accounts: 23.9,
-    investments: 24.8,
-    import: 33.9,
-    analytics: 49.0,
-    goals: 36.1,
-    settings: 19.6,
+    dashboard: 11.2,
+    income: 33.6,
+    expenses: 26.5,
+    accounts: 14.4,
+    investments: 24.0,
+    import: 11.8,
+    analytics: 31.5,
+    goals: 9.9,
+    settings: 19.7,
     login: 4.6,
     "reset-password": 6.4,
   },
@@ -411,16 +416,20 @@ export function standingBaseline(width: number): BaselineTable {
  * the construction delta between the two empty layouts). */
 export function standingExplained(width: number): string {
   return (
-    `[sweep] standing explained (R-4.2 derivation, F-206a-corrected, R-7.5+R-7.9 re-derived, width ${width}): ` +
+    `[sweep] standing explained (R-4.2 derivation, F-206a-corrected, R-7.5+R-7.9+R-7.10 re-derived, width ${width}): ` +
     `the tables bake in the standing genera — the empty-state construction genus (BOTH sides render their empty ` +
     `states — the F-206a correction of the R-4.2 "demo corpus" misdecode; the residual is ` +
     `the construction delta between the two empty layouts; the shells, headers, and H1s ` +
-    `around them converged at session 207), the app-wide in-page card ` +
-    `genus (F-208g, the next slice — the reference's warm-gradient ` +
-    `cards vs our stone CARD.base), and the smaller residuals (the ` +
-    `empty-data scoring genus, the mobile auth-face inner-content ` +
-    `micro-deltas). The settings glass/blue genus + the stat faces + ` +
-    `the image logo converged at session 208 (R-7.6–R-7.8). The ` +
+    `around them converged at session 207), the in-page CONTENT deltas ` +
+    `(the populated tables/lists/charts our functional superset renders ` +
+    `where the reference's empty workspace shows placeholder faces), and ` +
+    `the smaller residuals (the empty-data scoring genus, the mobile ` +
+    `auth-face inner-content micro-deltas). The settings glass/blue genus ` +
+    `+ the stat faces + the image logo converged at session 208 ` +
+    `(R-7.6–R-7.8); the four card families (warm-simple, warm-hover ` +
+    `KPI, glass, stock) + the Analytics stat row + the card-hover ` +
+    `utility/tokens converged at session 209 (R-7.10, the F-209a ` +
+    `per-surface convergence). The ` +
     `comparison is theme-matched per page (F-205a); a trip is drift ABOVE these genera — ` +
     `decode with --clusters, and re-derive the affected page if the reference's own state ` +
     `shifted (the drift-probe's sentinel census watches that side)`
