@@ -203,7 +203,7 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Smoke ladder | `bun run smoke` (14 assertions; needs build) |
 | DB push / seed / census | `bun run db:push` / `db:seed` / `db:census` |
 | Full gate | `bun run gate` = lint → typecheck → test → build → smoke → e2e |
-| Parity gate | `bun run gate:full` (adds viewport sweeps 390/768/1024 + fullpage + interior census) |
+| Parity gate | `bun run gate:full` — dormant (CRM-era sweep config; see §11) |
 
 ## 4. The Design System (Code-First)
 
@@ -626,9 +626,9 @@ Expected steady-state numbers (verify, don't assume):
       finance API walk + the guest-root server-side wall)
 - [ ] `CI=1 bun run test:e2e` — 84/84 (5 specs)
 - [ ] `bun run db:census` — `census: MATCH`
-- [ ] Visual parity (when UI changed): `bun run gate:full` (adds the
-      390/768/1024 sweeps + fullpage + interior census) and/or
-      `bun run probe:ref`
+- [ ] Visual parity (when UI changed): the e2e battery + VLM-verified
+      captures under `docs/screenshots/` (the `gate:full` sweep legs
+      are dormant — CRM-era config pending the WealthOS re-derivation)
 
 Security items (each traces to a real incident class in the family):
 
@@ -748,9 +748,9 @@ including the real AUTH_SECRET. The smoke hygiene loop re-checks it.
 - **Commit atomically with Conventional Commits**; the message explains
   why. Session-199 shipped six logical units (data → core → api → ui →
   test → docs) — that granularity is the house style.
-- **Run the drift sweep after visual changes** (`bun run sweep --
-  --fail-on-drift`, plus the 390/768/1024 and fullpage variants in
-  `gate:full`).
+- **Capture + VLM-verify after visual changes** (the sweep legs of
+  `gate:full` are dormant CRM-era config; the operative parity
+  evidence is the e2e battery + VLM-verified captures).
 - **VLM-verify screenshots** when capturing evidence (the A-12 catch was
   a VLM find); save captures under `docs/screenshots/`.
 
@@ -1138,8 +1138,10 @@ The essentials:
 - **Reference probing** (`bun run probe:ref`): drift-probes the live
   reference for genus changes.
 - **Sweeps** (`bun run sweep` / `sweep:fullpage` / `census:interior`):
-  per-viewport drift detection (390/768/1024) and landing/interior
-  censuses — `--fail-on-drift` makes them gates (`gate:full`).
+  dormant — the scripts still carry the scaffold's NEO-CRM reference
+  URL, page lists, and measured baselines; the WealthOS re-derivation
+  is the named next round (until then, parity evidence = e2e + VLM
+  captures).
 - **agent-browser + VLM**: for capturing evidence (login, nine sections,
   mobile faces, drawer-open) — save under `docs/screenshots/`, verify
   with the VLM battery (the A-12 catch was a VLM find), and target

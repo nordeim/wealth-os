@@ -171,7 +171,7 @@ short secret **fails the production boot by design**.
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 84 checks / 5 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
-| Parity sweeps | `bun run gate:full` | the gate + viewport drift sweeps (390 / 768 / 1024) + landing/interior censuses |
+| Parity sweeps | `bun run gate:full` | dormant — the sweep/census legs still carry the scaffold's NEO-CRM reference URL, page lists, and measured baselines (the WealthOS re-derivation is the named next round); the pre-push bar is `bun run gate` |
 
 Special prerequisites: none — the e2e suite pins its own `DATABASE_URL`
 (`db/e2e.db`) and reseeds in global setup; the smoke ladder boots the

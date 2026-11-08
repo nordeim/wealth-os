@@ -163,8 +163,11 @@ rejected alternatives live there.
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
   → vitest (497) → `next build` → the 14-assertion smoke ladder on the
-  standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`;
-  `gate:full` adds per-viewport drift sweeps.
+  standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
+  `gate:full`'s extra legs (per-viewport drift sweeps + interior
+  censuses) are dormant — the tooling still carries the scaffold's
+  NEO-CRM reference URL, page lists, and measured baselines; its
+  WealthOS re-derivation is the named next round.
 - **Rationale:** Each leg catches a class the others miss: lint (smells),
   tsc (contracts), unit (logic), build (route/module graph), smoke (the
   shipped artifact + boot posture), e2e (journeys + a11y).
@@ -665,9 +668,9 @@ Full verification setup (what CI-less agents run before pushing):
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
 | `bun run test` / `CI=1 bun run test:e2e` | root | 497 unit / 84 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
-| `bun run sweep -- --width 390 --height 844` | root | Visual drift sweep at a viewport |
-| `bun run probe:ref` | root | Live parity probe against the reference |
-| `bun run gate` / `gate:full` | root | The chain / chain + parity sweeps |
+| `bun run sweep -- --width 390 --height 844` | root | (dormant, CRM-era config) visual drift sweep at a viewport |
+| `bun run probe:ref` | root | (dormant, CRM-era reference) live parity probe |
+| `bun run gate` / `gate:full` | root | The chain / chain + (dormant, CRM-era) parity sweeps |
 
 ### 9.3 Code Style Rules
 

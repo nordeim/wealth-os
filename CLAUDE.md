@@ -172,7 +172,9 @@ bun run typecheck   # tsc --noEmit
   failure modes are in `AGENTS.md` § "Gotchas that have bitten before"
   (bun DATABASE_URL absolutization, Radix aria-hidden trap, SSR window
   access, stale .prisma client).
-- `bun run sweep -- --fail-on-drift` catches visual drift per viewport.
+- Visual parity evidence: the e2e battery + VLM-verified captures
+  (`docs/screenshots/`); the `gate:full` sweep legs are dormant CRM-era
+  config pending the WealthOS re-derivation.
 
 ## Communication & Documentation
 
