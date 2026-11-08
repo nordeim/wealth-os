@@ -1145,8 +1145,16 @@ async function main() {
 }
 
 // run only when executed directly (bun scripts/sweep.ts / bun run sweep),
-// never on the vitest import (the unit pins)
-if (process.argv[1] && process.argv[1].endsWith("sweep.ts")) {
+// never on the vitest import (the unit pins).
+// Session-210 (F-210c — the suffix-collision lesson): the guard is an
+// EXACT basename match. The suffix form (endsWith("sweep.ts")) also
+// matched fullpage-sweep.ts — and the moment the fullpage tool imported
+// this module (the R-4.4 re-anchor), ITS process argv fired THIS run():
+// the sweep zeroed, captured, and RESEEDED mid-fullpage-run, corrupting
+// the maiden's measurements (caught by the fullpage tool's zero-data
+// sentinel, F-210b). A guard that a sibling tool's filename can
+// satisfy is not a guard.
+if (process.argv[1] && path.basename(process.argv[1]) === "sweep.ts") {
   main().catch((e) => {
     console.error("[sweep]", e);
     process.exit(1);

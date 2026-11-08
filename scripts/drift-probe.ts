@@ -60,6 +60,7 @@
 
 import { createHash } from "node:crypto";
 import { chromium } from "@playwright/test";
+import path from "node:path";
 
 const REF_URL = process.env.REF_URL ?? "https://wealth-os-d93bd04e.base44.app";
 const REF_EMAIL = process.env.REF_EMAIL ?? "sepnetflix2023@outlook.com";
@@ -354,9 +355,10 @@ async function main(): Promise<void> {
   }
 }
 
-// run only when executed directly (bun scripts/drift-probe.ts /
+// run only when executed directly (EXACT basename — the F-210c
+// suffix-collision lesson, session 210; bun scripts/drift-probe.ts /
 // bun run probe:ref), never on the vitest import (the unit pins)
-if (process.argv[1] && process.argv[1].endsWith("drift-probe.ts")) {
+if (process.argv[1] && path.basename(process.argv[1]) === "drift-probe.ts") {
   main().catch((e) => {
     console.error("[probe]", e);
     process.exit(1);

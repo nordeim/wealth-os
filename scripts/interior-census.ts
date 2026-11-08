@@ -2214,9 +2214,10 @@ async function run() {
   }
 }
 
-// run only when executed directly (bun scripts/interior-census.ts / bun run
+// run only when executed directly (EXACT basename — the F-210c
+// suffix-collision lesson, session 210; bun scripts/interior-census.ts / bun run
 // census:interior), never on the vitest import (the unit pins)
-if (process.argv[1] && process.argv[1].endsWith("interior-census.ts")) {
+if (process.argv[1] && path.basename(process.argv[1]) === "interior-census.ts") {
   run().catch((e) => {
     console.error("[census]", e);
     process.exit(1);
