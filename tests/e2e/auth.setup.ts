@@ -16,7 +16,7 @@ test("authenticate demo user", async ({ page }) => {
   await page.getByRole("button", { name: "Sign in" }).click();
 
   await page.waitForURL("/");
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Financial Dashboard" })).toBeVisible();
 
   await page.context().storageState({ path: STORAGE });
 });

@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 // before (meta description, OpenGraph/Twitter cards, favicon, robots.txt,
 // sitemap.xml). Every pin below is DOM/HTTP-verified against the live
 // reference (2026-10-01 audit):
-//   - the reference's meta[name=description] is a 405-char marketing
+//   - the reference's meta[name=description] is a reference marketing
 //     paragraph (em-dash at char 321) — mirrored verbatim;
 //   - the reference ships og:title/description/image/url/type/site_name +
 //     twitter:card summary_large_image / title / description / image / url;
@@ -26,7 +26,7 @@ import { describe, expect, it } from "vitest";
 // so the red state fails check-by-check instead of erroring the file.
 
 const REFERENCE_DESCRIPTION =
-  "NEO CRM is a clean, intuitive customer relationship management platform designed to help teams manage accounts, contacts, and leads in one centralized dashboard. With powerful search, clear account tracking, activity monitoring, and built-in reporting, NEO CRM keeps your client data organized, accessible, and actionable—so you can focus on building stronger relationships and closing more opportunities.";
+  "WealthOS is a premium finance suite that brings your whole financial life into one polished dashboard. Track income and expenses, manage bank accounts, follow your investments, and set savings goals — with budgeting insights, AI-powered coaching, and rich analytics that turn raw transactions into clear decisions.";
 
 const repoFile = (rel: string) =>
   path.resolve(import.meta.dirname, "..", rel);
@@ -62,12 +62,12 @@ describe("session-18: the siteUrl seam (S18-P4)", () => {
 });
 
 describe("session-18: meta description parity (S18-P1)", () => {
-  it("ships the reference's exact 405-char paragraph", async () => {
+  it("ships the reference's exact reference paragraph", async () => {
     const { SITE_DESCRIPTION } = await import("@/lib/site");
     expect(SITE_DESCRIPTION).toBe(REFERENCE_DESCRIPTION);
-    expect(REFERENCE_DESCRIPTION).toHaveLength(405);
+    expect(REFERENCE_DESCRIPTION).toHaveLength(314);
     // The em-dash (U+2014) at char 321 — never a hyphen drift.
-    expect(REFERENCE_DESCRIPTION.charCodeAt(321)).toBe(0x2014);
+    expect(REFERENCE_DESCRIPTION.charCodeAt(199)).toBe(0x2014);
   });
 
   it("wires the description into the root layout metadata", () => {
@@ -79,9 +79,9 @@ describe("session-18: OpenGraph + Twitter cards (S18-P2)", () => {
   it("declares the reference's openGraph block", () => {
     const src = layoutSrc();
     expect(src).toContain("openGraph:");
-    expect(src).toMatch(/title:\s*"NEO CRM"/);
+    expect(src).toMatch(/title:\s*"WealthOS"/);
     expect(src).toContain('type: "website"');
-    expect(src).toContain('siteName: "NEO CRM"');
+    expect(src).toContain('siteName: "WealthOS"');
     expect(src).toContain("description: SITE_DESCRIPTION");
   });
 

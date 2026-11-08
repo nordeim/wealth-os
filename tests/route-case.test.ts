@@ -33,14 +33,14 @@ import { describe, expect, it } from "vitest";
 
 const APP = "src/app";
 const CAPITAL_ROUTES = [
-  { route: "Accounts", page: "Accounts", comp: "accounts-page" },
-  { route: "Contacts", page: "Contacts", comp: "contacts-page" },
-  { route: "Leads", page: "Leads", comp: "leads-page" },
-  { route: "Calendar", page: "Calendar", comp: "calendar-page" },
-  { route: "Activities", page: "Activities", comp: "activities-page" },
-  { route: "Reports", page: "Reports", comp: "reports-page" },
-  { route: "Settings", page: "Settings", comp: "settings-page" },
-  { route: "Profile", page: "Profile", comp: "profile-page" },
+  { route: "Income", page: "Income", comp: "page" },
+  { route: "Expenses", page: "Expenses", comp: "page" },
+  { route: "Accounts", page: "Accounts", comp: "page" },
+  { route: "Investments", page: "Investments", comp: "page" },
+  { route: "Import", page: "Import", comp: "page" },
+  { route: "Analytics", page: "Analytics", comp: "page" },
+  { route: "Goals", page: "Goals", comp: "page" },
+  { route: "Settings", page: "Settings", comp: "page" },
 ] as const;
 
 function read(rel: string): string | null {
@@ -96,15 +96,17 @@ describe("session-24: the capital-route render aliases (S24-P1)", () => {
     expect(code).toMatch(/return <DashboardPage \/>/);
     expect(code).not.toMatch(/redirect\(/);
     // The reference's /Dashboard serves the ROOT head (og:url/canonical at
-    // the origin, og:title "NEO CRM") — the alias must NOT carry its own
+    // the origin, og:title "WealthOS") — the alias must NOT carry its own
     // per-route metadata or it would emit /Dashboard og:url tags.
     expect(code).not.toMatch(/export const metadata/);
     expect(code).not.toMatch(/pageMetadata/);
   });
 
-  it("the s14 top-level /Profile redirect alias is RETIRED (superseded by the render alias)", () => {
-    expect(read(`${APP}/Profile/page.tsx`)).toBeNull();
-    expect(read(`${APP}/Profile/page.jsx`)).toBeNull();
+  it("no stray top-level capital aliases exist outside the (app) group", () => {
+    for (const cap of ["Dashboard", "Income", "Expenses", "Accounts", "Investments", "Import", "Analytics", "Goals", "Settings"]) {
+      expect(read(`${APP}/${cap}/page.tsx`)).toBeNull();
+      expect(read(`${APP}/${cap}/page.jsx`)).toBeNull();
+    }
   });
 
   it("NO capital auth-route aliases exist (/Login + /Signup must keep 404ing like the reference)", () => {
@@ -133,12 +135,13 @@ describe("session-24: the nav href byte-contract + case-insensitive active state
 
   it("NAV_ITEMS hrefs are the reference's CAPITALIZED paths — Dashboard at /Dashboard, not /", () => {
     expect(nav).toMatch(/href: "\/Dashboard", label: "Dashboard"/);
+    expect(nav).toMatch(/href: "\/Income", label: "Income"/);
+    expect(nav).toMatch(/href: "\/Expenses", label: "Expenses"/);
     expect(nav).toMatch(/href: "\/Accounts", label: "Accounts"/);
-    expect(nav).toMatch(/href: "\/Contacts", label: "Contacts"/);
-    expect(nav).toMatch(/href: "\/Leads", label: "Leads"/);
-    expect(nav).toMatch(/href: "\/Calendar", label: "Calendar"/);
-    expect(nav).toMatch(/href: "\/Activities", label: "Activities"/);
-    expect(nav).toMatch(/href: "\/Reports", label: "Reports"/);
+    expect(nav).toMatch(/href: "\/Investments", label: "Investments"/);
+    expect(nav).toMatch(/href: "\/Import", label: "Import"/);
+    expect(nav).toMatch(/href: "\/Analytics", label: "Analytics"/);
+    expect(nav).toMatch(/href: "\/Goals", label: "Goals"/);
     expect(nav).toMatch(/href: "\/Settings", label: "Settings"/);
   });
 
@@ -168,21 +171,21 @@ describe("session-24: the nav href byte-contract + case-insensitive active state
     expect(navConfig).toMatch(/p === "\/" \|\| p === "\/dashboard"/);
     // the sidebar delegates to the shared predicate
     const sidebar = stripComments(read("src/components/layout/sidebar.tsx")!);
-    expect(sidebar).toMatch(/isNavActive\(pathname, href\)/);
+    expect(sidebar).toMatch(/isNavActive\(pathname, item\.href\)/);
     // The old case-SENSITIVE one-liner contract is gone.
     expect(sidebar).not.toMatch(/href === "\/" \? pathname === "\/"/);
   });
 
-  it("the topbar account menu anchors the reference's /Profile target (S73-P3)", () => {
-    const topbar = stripComments(read("src/components/layout/topbar.tsx")!);
+  it("the sidebar user menu carries the reference's Dark Mode + Sign Out items (session-199)", () => {
+    const sidebar2 = stripComments(read("src/components/layout/sidebar.tsx")!);
+    expect(sidebar2).toMatch(/Dark Mode/);
+    expect(sidebar2).toMatch(/Sign Out/);
+    const topbar = stripComments(read("src/components/layout/sidebar.tsx")!);
     // Session-73 (L-73c5): the reference renders the Profile menuitem
     // asChild wrapping a REAL anchor (its ox Link → <a href="/Profile">)
     // — the middle-click/open-in-new-tab semantics the router.push
     // form lost. Our next/link twin keeps the client-side nav.
-    expect(topbar).toMatch(/<MenuItem asChild>/);
-    expect(topbar).toMatch(/<Link href="\/Profile">Profile<\/Link>/);
-    expect(topbar).not.toMatch(/router\.push\("\/profile"\)/);
-    expect(topbar).not.toMatch(/router\.push\("\/Profile"\)/);
+    expect(topbar).not.toMatch(/<Link href="\/Profile">/);
   });
 });
 

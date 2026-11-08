@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 # The smoke leg (session-170, WP-5 — the web-app-foundation §13.4
-# skeleton, the neo-crm form). Boots the STANDALONE ARTIFACT (not the dev
+# skeleton, the WealthOS form). Boots the STANDALONE ARTIFACT (not the dev
 # server — the e2e doctrine: validate what ships) on :3210 with its OWN
 # scratch database (db/smoke.db, gitignored like db/custom.db) and a
 # dedicated throwaway AUTH_SECRET, then walks the assertion ladder:
 #
 #   01  /api/health 200 + "status":"healthy"        (the db round-trip)
-#   02  unauthenticated /api/contacts -> 401        (the session wall)
+#   02  unauthenticated /api/transactions -> 401    (the session wall)
 #   03  unauthenticated /api/dashboard -> 401
 #   04  /login renders the page title               (the SSR shell)
-#   05  / renders the landing hero                  (the public surface)
+#   05  the guest root serves NO dashboard HTML     (the server-side wall)
 #   06  the demo login -> the neo_session cookie    (the auth round-trip)
-#   07  the sessioned /api/contacts -> 200          (the envelope ok:true)
+#   07  the sessioned /api/transactions -> 200      (the envelope ok:true)
 #   08  an invalid payload POST -> 400              (the Zod seam)
 #   09  a valid create -> 200                       (the CRUD round-trip)
-#   10  logout -> /api/auth/me 401                  (the cookie teardown)
+#   10  logout -> /api/auth/me data:null            (the cookie teardown)
 #   11  the login rate-limit probe -> the 11th -> 429 (LAST: it exhausts
 #       the login bucket for this IP for 15 min)
 #   12  /sitemap.xml + /robots.txt + /manifest.json all 200 (the SEO family)
@@ -82,12 +82,16 @@ code() { curl -s -o /dev/null -w "%{http_code}" "$@"; }
   && ok 01 "health 200 + healthy" || { fail 01 "health"; exit 1; }
 
 # 02/03 — the session wall
-[ "$(code "$BASE/api/contacts")" = 401 ] && ok 02 "unauth contacts 401" || { fail 02 "unauth contacts"; exit 1; }
+[ "$(code "$BASE/api/transactions")" = 401 ] && ok 02 "unauth transactions 401" || { fail 02 "unauth transactions"; exit 1; }
 [ "$(code "$BASE/api/dashboard")" = 401 ] && ok 03 "unauth dashboard 401" || { fail 03 "unauth dashboard"; exit 1; }
 
 # 04/05 — the pages render
 body "$BASE/login" | grep -q "<title>" && ok 04 "login renders" || { fail 04 "login page"; exit 1; }
-body "$BASE/" | grep -q "<title>" && body "$BASE/" | grep -qi "neo" && ok 05 "landing renders" || { fail 05 "landing page"; exit 1; }
+# The WealthOS root login-walls guests SERVER-side (the reference's own
+# behavior): a guest gets the shell HTML + the client redirect shim, never
+# the dashboard's data surface.
+body "$BASE/" | grep -q "<title>" && ! body "$BASE/" | grep -q "Financial Dashboard" \
+  && ok 05 "guest root serves no dashboard HTML (the server-side wall)" || { fail 05 "guest root"; exit 1; }
 
 # 06 — the demo login round-trip (the seed contract's credentials)
 login_code=$(code -c "$COOKIE_JAR" -H "Content-Type: application/json" \
@@ -96,18 +100,20 @@ login_code=$(code -c "$COOKIE_JAR" -H "Content-Type: application/json" \
   && ok 06 "demo login + the neo_session cookie" || { fail 06 "login"; exit 1; }
 
 # 07 — the sessioned envelope
-[ "$(code -b "$COOKIE_JAR" "$BASE/api/contacts")" = 200 ] && body -b "$COOKIE_JAR" "$BASE/api/contacts" | grep -q '"ok":true' \
-  && ok 07 "sessioned contacts 200 + ok:true" || { fail 07 "sessioned read"; exit 1; }
+[ "$(code -b "$COOKIE_JAR" "$BASE/api/transactions")" = 200 ] && body -b "$COOKIE_JAR" "$BASE/api/transactions" | grep -q '"ok":true' \
+  && ok 07 "sessioned transactions 200 + ok:true" || { fail 07 "sessioned read"; exit 1; }
 
-# 08 — the invalid payload (the Zod seam's 400)
-[ "$(code -b "$COOKIE_JAR" -H "Content-Type: application/json" -d '{"name":""}' "$BASE/api/contacts")" = 400 ] \
+# 08 — the invalid payload (the Zod seam's 400 — an empty description
+# fails the min(1) floor)
+[ "$(code -b "$COOKIE_JAR" -H "Content-Type: application/json" -d '{"description":""}' "$BASE/api/transactions")" = 400 ] \
   && ok 08 "invalid payload 400" || { fail 08 "invalid payload"; exit 1; }
 
 # 09 — the valid create (the CRUD round-trip; smoke.db is disposable —
-# the minimal body: priority defaults to Standard, status to active)
+# the minimal body: category defaults to Other, budgetCategory to needs,
+# recurring to false)
 [ "$(code -b "$COOKIE_JAR" -H "Content-Type: application/json" \
-  -d '{"name":"Smoke Test Contact","email":"smoke@example.com"}' \
-  "$BASE/api/contacts")" = 200 ] \
+  -d '{"description":"Smoke Test Transaction","amount":12.34,"type":"expense","date":"2026-01-15"}' \
+  "$BASE/api/transactions")" = 200 ] \
   && ok 09 "valid create 200" || { fail 09 "valid create"; exit 1; }
 
 # 10 — the logout teardown (-c: the jar takes the cleared cookie; /me is

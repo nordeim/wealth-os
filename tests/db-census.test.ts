@@ -70,12 +70,12 @@ describe("session-53: the census seam (S53-P2, N-53b)", () => {
     // accounts / 23 activities / 12 events + 4 users) + a non-zero exit
     // on mismatch — the probe-residue check the s51/s52 batteries
     // believed they had.
-    expect(src).toMatch(/contacts:\s*15/);
-    expect(src).toMatch(/leads:\s*24/);
-    expect(src).toMatch(/accounts:\s*10/);
-    expect(src).toMatch(/activities:\s*23/);
-    expect(src).toMatch(/events:\s*12/);
-    expect(src).toMatch(/users:\s*4/);
+    expect(src).toMatch(/transactions:\s*151/);
+    expect(src).toMatch(/incomeSources:\s*4/);
+    expect(src).toMatch(/bankAccounts:\s*3/);
+    expect(src).toMatch(/investments:\s*6/);
+    expect(src).toMatch(/goals:\s*5/);
+    expect(src).toMatch(/users:\s*1/);
     expect(src).toMatch(/process\.exit\(1\)/);
   });
 

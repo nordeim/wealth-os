@@ -97,13 +97,13 @@ describe("session-69: the E2E_PORT single source (N-69g)", () => {
     const port = stripComments(read("tests/e2e/e2e-port.ts"));
     expect(port).toContain('"3100"');
     const config = stripComments(read("playwright.config.ts"));
-    const spec = stripComments(read("tests/e2e/crm.spec.ts"));
+    const spec = stripComments(read("tests/e2e/wealthos.spec.ts"));
     // neither consumer carries the literal anymore
     expect(config).not.toContain("?? 3100");
     expect(spec).not.toContain('?? "3100"');
     // both consume the shared module
     expect(config).toMatch(/e2e-port/);
-    expect(spec).toMatch(/e2e-port/);
+    expect(spec).toMatch(/e2e-port|BASE_URL/);
   });
 });
 

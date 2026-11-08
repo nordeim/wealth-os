@@ -28,7 +28,7 @@ test.describe("reset-password landing (no token → the invalid-link card)", () 
 
     await page.getByRole("button", { name: "Back to login" }).click();
     await expect(page).toHaveURL(/\/login$/);
-    await expect(page.getByRole("heading", { name: "Welcome to NEO CRM" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
   });
 
   test("an empty token and a differently-named param both render the invalid card", async ({ page }) => {
@@ -76,7 +76,7 @@ test.describe("reset-password form (a non-empty token)", () => {
     await page.goto("/reset-password?token=e2e-shape-probe");
     await page.getByRole("button", { name: "Back to login" }).first().click();
     await expect(page).toHaveURL(/\/login$/);
-    await expect(page.getByRole("heading", { name: "Welcome to NEO CRM" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
   });
 });
 
