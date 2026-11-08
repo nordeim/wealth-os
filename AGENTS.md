@@ -28,7 +28,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
 | **Full gate (run before push)** | `bun run gate` = lint → typecheck → test → build → smoke → `CI=1 test:e2e` |
-| Parity gate | `bun run gate:full` — dormant: the sweep/census scripts still target the NEO-CRM reference and page set (the WealthOS re-derivation is the named next round); the pre-push bar is `bun run gate` |
+| Parity gate | `bun run gate:full` — dormant: `sweep.ts` + `sweep-state.ts` are re-anchored to the WealthOS reference (R-4.1: the URL + the 11-page set + the CRM baselines retired; pinned in `tests/sweep-tool.test.ts`), but the drift-probe/interior-census/fullpage legs (R-4.3/R-4.4) and the baseline derivation (R-4.2) remain; the pre-push bar is `bun run gate` |
 | DB push / seed / census | `bun run db:push` / `db:seed` / `db:census` |
 
 ## Non-negotiable conventions

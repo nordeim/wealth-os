@@ -54,6 +54,7 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-203d | Low | **Scaffold-era comment in a load-bearing config.** `vitest.config.ts`'s header still describes "the pure domain seams of the CRM" — the finance-domain reality is transactions/finance/auth/CSV-import seams. Comments are docs; this one misleads. | vitest.config.ts:3–6 | **R-3** |
 | F-203e | Medium (programmed) | **The `gate:full` parity toolchain is CRM-era** — dormant, documented honestly since D-201b. `sweep.ts` defaults `REF_URL` to the NEO-CRM reference and walks contacts/leads; `drift-probe.ts`, `interior-census.ts`, `fullpage-sweep.ts` carry the same era's page sets and CRM-measured baselines. Re-derivation against the WealthOS reference is a multi-session parity-walk program (the CRM original took ~190 sessions to converge). | scripts/sweep.ts:97, :156–157, :285–286; AGENTS.md gate:full row (dormant status) | **R-4** |
 | F-203f | Info (by design) | **The AI provider seam ships deterministic-local only** (`WEALTHOS_AI_PROVIDER` is a named future hook, not a wired env). Honest per ADR-005 and the PAD known-issues row; an LLM-backed implementation is additive, on-demand work. | src/lib/ai.ts:54–55, :274–275; PAD §10 row 3 | **R-5** |
+| F-204a | Medium | **The docs-counts pin's site inventory is incomplete.** The R-2 port pinned seven sites — but the doc set carries more live-tense count claims, and ten of them silently kept the stale 497/35-files numbers THROUGH the session-203 lockstep pass (the exact rot the pin exists to prevent, recurring inside its own blind spot): CLAUDE.md:109 + :121 · README.md:62 + :103 + :170 · PAD:165 + :599 · SKILL:125 + :200 + :623. Verified by grep + the cold 508/508 baseline this session (the stale sites claimed 497/35 while the suite measured 508/37). | grep over the doc set (session 204); tests/docs-counts.test.ts (the R-2 site list) | **R-6** |
 
 ## 3. The remediation program (R-items)
 
@@ -97,11 +98,13 @@ The cure for F-203b + F-203c — port the neo-crm count-lockstep mechanism:
    closing line), wealth-os_SKILL.md (header). A count change now fails `bun
    run test` until the docs are updated in the same commit.
 2. **The site fixes** (the GREEN step, two passes — the pin's own tests
-   count toward the suite, so the totals re-converged): the final live
-   counts are **508 unit / 37 files / 592 badge** (CLAUDE gate line ·
+   count toward the suite, so the totals re-converged): the counts landed
+   at **508 unit / 37 files / 592 badge** at v2.0.0 (CLAUDE gate line ·
    README badge + status row · PAD §7.1 distribution + §9 command table +
    §10 closing line · SKILL header; historical rows untouched — they keep
-   the counts that were true at their time).
+   the counts that were true at their time). Session 204's R-6 then found
+   ten more sites the pin had missed (F-204a) and moved the live totals to
+   521/38/605 with the completed inventory.
 3. The phantom-reference cure rides along: with the file now real, the
    AGENTS.md:80 and PAD:566 references become true statements — and the
    PAD's pin inventory row is now honestly "9 architecture pins"
@@ -114,14 +117,29 @@ The cure for F-203d: rewrite the header comment for the finance domain
 CSV import codec, rate limiter). Comment-only; zero behavior change; the
 unit suite re-run green is the equivalence proof.
 
-### R-4 — The gate:full WealthOS re-derivation — Status: Programmed (sessions ≥ 204)
+### R-4 — The gate:full WealthOS re-derivation — Status: In progress (R-4.1 Done at v2.1.0; R-4.2 next)
 
 The multi-session program for F-203e. Sub-item ladder (each its own session
 slice, TDD where a pin exists, in dependency order):
 
-- **R-4.1** `sweep.ts` re-anchor: `REF_URL` default → the WealthOS reference
-  (`https://wealth-os-d93bd04e.base44.app`), the page list → the 9 sections
-  (+login/reset-password public faces), the CRM genera/baselines retired.
+- **R-4.1** `sweep.ts` re-anchor — **Status: Done(v2.1.0)** (session 204).
+  Shipped: `REF_URL` default → `https://wealth-os-d93bd04e.base44.app`
+  (both `scripts/sweep.ts` and `scripts/sweep-state.ts` — the login-chain
+  consistency: the pair-state module probes/logs into the reference on its
+  own); the page list → the 11-entry WealthOS set (the 9 sections + the
+  login/reset-password public faces, all verified 200 on the reference live
+  at re-anchor time); the CRM genera/baselines RETIRED (the four class
+  tables emptied — every page judges at baseline 0 + margin, the fail-fast
+  pending state); the header's live-tense CRM claims rewritten. The TDD vehicle:
+  `tests/sweep-tool.test.ts` (new, 9 pins — genuinely RED at birth against
+  the CRM-era config, GREEN after the re-anchor; the CRM page names now
+  fail `--pages` fast, the re-anchor's own regression guard). The maiden
+  report-only run executed end-to-end: the re-anchored login pair worked
+  against the WealthOS reference, all 11 pages captured both sides at
+  1440×900, the diff table produced (the ~85–87% section shares are the
+  data genus — ours zeroed vs the reference's demo corpus, exactly R-4.2's
+  first derivation question; login 6.96% / reset-password 3.84% are
+  comparable-genus auth faces), the seed restored, census MATCH after.
 - **R-4.2** Baseline derivation at the four widths (390/768/1024/1440) with
   the data-vs-empty genus handled per the reference's own empty-state rows.
 - **R-4.3** `drift-probe.ts` + `interior-census.ts` re-anchor (page sets +
@@ -142,6 +160,21 @@ The optional F-203f work: implement an `AiProvider` backed by a real LLM
 behind `WEALTHOS_AI_PROVIDER` + credentials, keeping the deterministic
 engine as the default/fallback. Only on the owner's explicit ask (it changes
 the offline/no-keys posture of ADR-005). Not scheduled.
+
+### R-6 — The docs-counts site-inventory completion (session 204) — Status: Done(v2.1.0)
+
+The cure for F-204a, completing R-2's port: the pin now covers EVERY
+live-tense gate-count site in the doc set, not seven of them. Four new
+grouped pins (genuinely RED at birth against the ten stale sites):
+CLAUDE's command table + test pyramid · README's stack table + file
+hierarchy + testing table · the PAD's ADR-006 gate chain + §7.4 pre-push
+checklist · the SKILL's stack table + commands + pre-ship checklist —
+unit AND e2e AND smoke AND file-count claims alike, so the next count
+change of any kind fails `bun run test` until every site moves in the
+same commit. The ten stale sites fixed in the same stroke (497/35 → the
+live totals), and the totals re-converged with the round's own new tests:
+**521 unit / 38 files / 605 badge** (the sweep-tool pin's 9 + the
+docs-counts extension's 4 joined the suite).
 
 ## 4. Plan validation (the re-check, session 203)
 
@@ -165,7 +198,10 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | Version | Session | R-items executed | Gate at ship | Commit |
 |---|---|---|---|---|
 | v2.0.0 | 203 | plan created; **R-1** (security ledger + zod floor pin + PAD/AGENTS lockstep) · **R-2** (docs-counts port + 8 site fixes incl. §7.1) · **R-3** (vitest.config comment) | lint 0/0 · tsc 0 · **508 unit** (37 files; +10: 8 docs-counts + 2 security-ledger) · build · smoke 14/14 · e2e 84/84 · census MATCH | `905b8a4` (the execution commit) |
+| v2.1.0 | 204 | **R-4.1** (the sweep re-anchor: REF_URL + the 11-page WealthOS set + the CRM baselines retired, both sweep.ts and sweep-state.ts; tests/sweep-tool.test.ts born RED 9/9 → GREEN; the maiden report-only run green end-to-end) · **R-6** (the F-204a docs-counts site-inventory completion: 4 grouped pins born RED against 10 stale sites; totals re-converged 508/37/592 → 521/38/605) | lint 0/0 · tsc 0 · **521 unit** (38 files; +13: 9 sweep-tool + 4 docs-counts) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · the maiden sweep report (login pair + 11×2 captures + seed restore) | (this session's execution commit) |
 
-> The next iteration session (204) picks up **R-4.1** by default, or any
-> Critical/High finding a fresh audit surfaces (findings always pre-empt the
-> program).
+> The next iteration session (205) picks up **R-4.2** by default — the
+> baseline derivation at the four widths (390/768/1024/1440), whose first
+> question is the data-vs-empty genus (the maiden table's ~85–87% section
+> shares vs the 6.96%/3.84% auth faces) — or any Critical/High finding a
+> fresh audit surfaces (findings always pre-empt the program).

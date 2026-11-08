@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 508;
+const UNIT_TOTAL = 521;
 const E2E_TOTAL = 84;
 const SMOKE_TOTAL = 14;
-const TEST_FILES = 37;
+const TEST_FILES = 38;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -80,5 +80,55 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // session-199 doc rewrite — but the file did not exist until this
     // session. The reference and the artifact must stay in lockstep.
     expect(doc("AGENTS.md")).toContain("docs-counts");
+  });
+
+  // Session-204 (R-6, the F-204a cure): the site inventory completed. The
+  // R-2 port pinned seven sites — but the doc set carries MORE live-tense
+  // count claims, and ten of them silently kept the stale 497/35-files
+  // numbers through the session-203 lockstep pass (the exact rot this pin
+  // exists to prevent, recurring inside its own blind spot). The four
+  // blocks below pin every remaining live-tense gate-count site: the
+  // command tables, the stack/architecture tables, the file-hierarchy
+  // line, the ADR-006 gate chain, the §7.4 pre-push checklist, and the
+  // SKILL's commands + pre-ship checklist — the complete inventory, so
+  // the next count change (unit OR e2e OR smoke OR file count) fails
+  // `bun run test` until EVERY site moves in the same commit.
+
+  it("CLAUDE.md's command table + test pyramid carry the live counts (the F-204a sites)", () => {
+    const c = norm(doc("CLAUDE.md"));
+    expect(c).toContain(`Unit suite (Vitest, ${UNIT_TOTAL} checks)`);
+    expect(c).toContain(`E2E suite (Playwright, ${E2E_TOTAL} checks, own db + :3100)`);
+    expect(c).toContain(`property tests via fast-check. ${UNIT_TOTAL} checks / ${TEST_FILES} files.`);
+    expect(c).toContain(`${E2E_TOTAL} checks / 5 specs.`);
+  });
+
+  it("README's stack table + file hierarchy + testing table carry the live counts (the F-204a sites)", () => {
+    const r = norm(doc("README.md"));
+    expect(r).toContain(`${UNIT_TOTAL} checks incl. property tests`);
+    expect(r).toContain(`${E2E_TOTAL} checks; chromium; seeded`);
+    expect(r).toContain(`# ${TEST_FILES} unit suites + 📂 e2e/ 5 specs`);
+    expect(r).toContain(`| Unit (Vitest) | \`bun run test\` | ${UNIT_TOTAL} checks / ${TEST_FILES} files |`);
+    expect(r).toContain(`${E2E_TOTAL} checks / 5 specs — boots its own server`);
+    expect(r).toContain(`${SMOKE_TOTAL} assertions incl. boot-gate + artifact hygiene`);
+  });
+
+  it("the PAD's ADR-006 gate chain + §7.4 pre-push checklist carry the live counts (the F-204a sites)", () => {
+    const p = norm(doc("Project_Architecture_Document.md"));
+    expect(p).toContain(`→ vitest (${UNIT_TOTAL}) →`);
+    expect(p).toContain(`\`bun run test\` → ${UNIT_TOTAL}/${UNIT_TOTAL} (counts re-pinned if tests added/removed)`);
+    expect(p).toContain(`→ ${SMOKE_TOTAL}/${SMOKE_TOTAL} (incl. boot-gate + hygiene)`);
+    expect(p).toContain(`\`CI=1 bun run test:e2e\` → ${E2E_TOTAL}/${E2E_TOTAL}`);
+  });
+
+  it("wealth-os_SKILL.md's stack table + commands + pre-ship checklist carry the live counts (the F-204a sites)", () => {
+    const s = norm(doc("wealth-os_SKILL.md"));
+    expect(s).toContain(`Node env, jsdom-free; ${UNIT_TOTAL} checks / ${TEST_FILES} files`);
+    expect(s).toContain(`${E2E_TOTAL} checks / 5 specs; own db + port 3100`);
+    expect(s).toContain(`\`bun run test\` (${UNIT_TOTAL} checks)`);
+    expect(s).toContain(`\`CI=1 bun run test:e2e\` (${E2E_TOTAL} checks)`);
+    expect(s).toContain(`\`bun run smoke\` (${SMOKE_TOTAL} assertions; needs build)`);
+    expect(s).toContain(`\`bun run test\` — ${UNIT_TOTAL} passed / ${TEST_FILES} files`);
+    expect(s).toContain(`\`CI=1 bun run test:e2e\` — ${E2E_TOTAL}/${E2E_TOTAL} (5 specs)`);
+    expect(s).toContain(`\`bun run smoke\` — ${SMOKE_TOTAL}/${SMOKE_TOTAL} (boot-gate`);
   });
 });

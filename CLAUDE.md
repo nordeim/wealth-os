@@ -45,7 +45,7 @@ Follow this six-phase workflow for all implementation tasks:
   functionality.
 - **Determinism everywhere**: the seed, the AI coach, and the test data
   are all deterministic — no `Math.random()` in seeded paths.
-- **The gate is the contract**: lint 0/0 · tsc 0 · 508 unit · build ·
+- **The gate is the contract**: lint 0/0 · tsc 0 · 521 unit · build ·
   smoke 14/14 · 84 e2e. A green gate achieved by weakening a guardrail is
   not a fix.
 - **Offline-capable by default**: no runtime third-party calls (fonts,
@@ -106,7 +106,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 | `bun run dev` | Dev server (:3000) |
 | `bun run build` | Production standalone build |
 | `bun run start` | Serve the standalone artifact (needs build) |
-| `bun run test` | Unit suite (Vitest, 497 checks) |
+| `bun run test` | Unit suite (Vitest, 521 checks) |
 | `CI=1 bun run test:e2e` | E2E suite (Playwright, 84 checks, own db + :3100) |
 | `bun run lint` | ESLint, fails on warnings |
 | `bun run typecheck` | `tsc --noEmit` |
@@ -118,7 +118,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 
 - **Unit (Vitest)**: domain math, schemas, AI engine, auth contract,
   architecture pins (`gate-script`, `db-census`, `route-case`…), property
-  tests via fast-check. 497 checks / 35 files.
+  tests via fast-check. 521 checks / 38 files.
 - **E2E (Playwright, chromium)**: journeys per section, mobile drawer at
   390×844, dialogs, route-alias equivalence, the 401 auth-wall probe.
   84 checks / 5 specs. `playwright.config.ts` pins `db/e2e.db`, global
@@ -174,8 +174,9 @@ bun run typecheck   # tsc --noEmit
   (bun DATABASE_URL absolutization, Radix aria-hidden trap, SSR window
   access, stale .prisma client).
 - Visual parity evidence: the e2e battery + VLM-verified captures
-  (`docs/screenshots/`); the `gate:full` sweep legs are dormant CRM-era
-  config pending the WealthOS re-derivation.
+  (`docs/screenshots/`); `sweep.ts` is re-anchored to the WealthOS
+  reference (R-4.1) with its baselines pending the R-4.2 maiden
+  derivation — the other `gate:full` legs stay CRM-era until R-4.3/R-4.4.
 
 ## Communication & Documentation
 
