@@ -66,11 +66,13 @@ describe("session-53: the census seam (S53-P2, N-53b)", () => {
 
   it("carries the seed-contract expectations and fails on drift (the N-53a guard)", () => {
     const src = census();
-    // The prisma/seed.ts row counts (15 contacts / 24 leads / 10
-    // accounts / 23 activities / 12 events + 4 users) + a non-zero exit
-    // on mismatch — the probe-residue check the s51/s52 batteries
-    // believed they had.
-    expect(src).toMatch(/transactions:\s*151/);
+    // The prisma/seed.ts row counts: the STATIC entities pinned exactly
+    // (incomeSources / bankAccounts / investments / goals / users), and
+    // transactions BOUNDED (54..108) — the generator is date-dependent by
+    // design (never seeds the future; deterministic occasional-row skips),
+    // so a scalar would drift on every reseed. Plus a non-zero exit on
+    // mismatch — the probe-residue check.
+    expect(src).toMatch(/transactions:\s*\{\s*min:\s*54,\s*max:\s*108\s*\}/);
     expect(src).toMatch(/incomeSources:\s*4/);
     expect(src).toMatch(/bankAccounts:\s*3/);
     expect(src).toMatch(/investments:\s*6/);

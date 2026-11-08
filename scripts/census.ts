@@ -17,11 +17,17 @@
 import { db } from "../src/lib/db";
 import { runtimeDatabaseUrl } from "../src/lib/db-path";
 
-// The seed contract — prisma/seed.ts's row counts (transactions /
-// incomeSources / bankAccounts / investments / goals / budgets + users).
-// Keep in sync with the seed.
+// The seed contract — prisma/seed.ts's row counts (incomeSources /
+// bankAccounts / investments / goals / budgets + users are STATIC;
+// transactions are BOUNDED). The transaction generator is deliberately
+// date-dependent — it never seeds the future (a row dated after `now` is
+// dropped) and skips occasional rows by deterministic month parity — so
+// the total varies with the day (and month) the seed runs. A scalar pin
+// would drift on every reseed; the bounds cover the generator's full
+// range: floor = late-month seed with maximum parity skips, ceiling = the
+// hard plan maximum (18 rows × 6 months).
 const EXPECTED = {
-  transactions: 151,
+  transactions: { min: 54, max: 108 },
   incomeSources: 4,
   bankAccounts: 3,
   investments: 6,
@@ -29,6 +35,17 @@ const EXPECTED = {
   budgets: 7,
   users: 1,
 } as const;
+
+// A value is satisfied when it is a scalar equal to the pin, or a bounds
+// object containing the actual.
+function satisfies(actual: number, expected: number | { min: number; max: number }): boolean {
+  if (typeof expected === "number") return actual === expected;
+  return actual >= expected.min && actual <= expected.max;
+}
+
+function describeExpected(expected: number | { min: number; max: number }): string {
+  return typeof expected === "number" ? String(expected) : `${expected.min}..${expected.max}`;
+}
 
 type Counts = Record<keyof typeof EXPECTED, number>;
 
@@ -70,11 +87,13 @@ async function main(): Promise<void> {
 
   let mismatch = false;
   for (const [model, expected] of Object.entries(EXPECTED) as Array<
-    [keyof typeof EXPECTED, number]
+    [keyof typeof EXPECTED, number | { min: number; max: number }]
   >) {
     const actual = counts[model];
-    if (actual !== expected) {
-      console.error(`MISMATCH: ${model} expected ${expected}, found ${actual}`);
+    if (!satisfies(actual, expected)) {
+      console.error(
+        `MISMATCH: ${model} expected ${describeExpected(expected)}, found ${actual}`,
+      );
       mismatch = true;
     }
   }
