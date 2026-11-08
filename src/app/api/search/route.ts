@@ -3,62 +3,65 @@ import { ok, ERR, asString, isGuarded, requireSession } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
-/** Global "Search Anything..." — name/email/company across the big three. */
+/** Global search — descriptions/categories/institutions/symbols/goals
+ *  across the finance families (the shell's "Search" genus). */
 export async function GET(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
 
   const url = new URL(req.url);
   const q = (asString(url.searchParams.get("q"), { max: 80 }) ?? "").toLowerCase();
-  if (q.length < 2) return ok({ accounts: [], contacts: [], leads: [] });
+  if (q.length < 2) {
+    return ok({ transactions: [], accounts: [], investments: [], goals: [] });
+  }
 
-  // Session-42 (S42-P1): the read family joined the envelope — the
-  // null-guard answers the { ok, error } envelope on failure.
-  const rows = await (async () => {
-    try {
-      return await Promise.all([
-        db.account.findMany({
-          where: {
-            OR: [
-              { name: { contains: q } },
-              { industry: { contains: q } },
-              { email: { contains: q } },
-              { website: { contains: q } },
-            ],
-          },
-          take: 5,
-          orderBy: { name: "asc" },
-        }),
-        db.contact.findMany({
-          where: {
-            OR: [
-              { name: { contains: q } },
-              { email: { contains: q } },
-              { company: { contains: q } },
-              { position: { contains: q } },
-            ],
-          },
-          take: 5,
-          orderBy: { name: "asc" },
-        }),
-        db.lead.findMany({
-          where: {
-            OR: [
-              { name: { contains: q } },
-              { email: { contains: q } },
-              { company: { contains: q } },
-            ],
-          },
-          take: 5,
-          orderBy: { updatedAt: "desc" },
-        }),
-      ]);
-    } catch {
-      return null;
-    }
-  })();
-  if (!rows) return ERR.INTERNAL();
-  const [accounts, contacts, leads] = rows;
-
-  return ok({ accounts, contacts, leads });
+  try {
+    const [transactions, accounts, investments, goals] = await Promise.all([
+      db.transaction.findMany({
+        where: {
+          ownerId: guard.user.id,
+          OR: [
+            { description: { contains: q } },
+            { category: { contains: q } },
+            { notes: { contains: q } },
+          ],
+        },
+        take: 5,
+        orderBy: [{ date: "desc" }],
+      }),
+      db.bankAccount.findMany({
+        where: {
+          ownerId: guard.user.id,
+          OR: [
+            { name: { contains: q } },
+            { institution: { contains: q } },
+          ],
+        },
+        take: 5,
+        orderBy: { name: "asc" },
+      }),
+      db.investment.findMany({
+        where: {
+          ownerId: guard.user.id,
+          OR: [
+            { symbol: { contains: q } },
+            { name: { contains: q } },
+          ],
+        },
+        take: 5,
+        orderBy: { symbol: "asc" },
+      }),
+      db.goal.findMany({
+        where: {
+          ownerId: guard.user.id,
+          OR: [{ name: { contains: q } }, { category: { contains: q } }],
+        },
+        take: 5,
+        orderBy: { name: "asc" },
+      }),
+    ]);
+    return ok({ transactions, accounts, investments, goals });
+  } catch {
+    return ERR.INTERNAL();
+  }
 }

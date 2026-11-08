@@ -1,0 +1,51 @@
+import { db } from "@/lib/db";
+import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { csvImportSchema } from "@/lib/schemas";
+import { BUDGET_CATEGORIES, EXPENSE_CATEGORIES } from "@/lib/constants";
+
+export const dynamic = "force-dynamic";
+
+/** The Import page's commit step — validated rows (parsed + mapped
+ *  client-side through the preview table) land here. Every row rides the
+ *  csvImportSchema (Zod at the boundary); the response reports the
+ *  created count. */
+export async function POST(req: Request) {
+  const guard = await requireSession();
+  if (isGuarded(guard)) return guard.response;
+
+  const parsed = await parseBody(req, csvImportSchema);
+  if (!parsed.ok) return parsed.response;
+  const rows = parsed.data.rows;
+
+  try {
+    const created = await db.transaction.createMany({
+      data: rows.map((r) => ({
+        description: r.description,
+        amount: r.amount,
+        type: r.type,
+        category: r.category || "Other",
+        budgetCategory: r.budgetCategory,
+        date: new Date(r.date),
+        ownerId: guard.user.id,
+      })),
+    });
+    return ok({ imported: created.count });
+  } catch {
+    return ERR.INTERNAL();
+  }
+}
+
+/** Column-hint vocabulary for the client's mapping UI: the known
+ *  description/date/amount/category headers (case/space-insensitive
+ *  contains) + the budget-category inference from the category label. */
+export async function GET() {
+  const guard = await requireSession();
+  if (isGuarded(guard)) return guard.response;
+  return ok({
+    categories: EXPENSE_CATEGORIES.map((c) => ({
+      label: c.label,
+      budgetCategory: c.budgetCategory,
+    })),
+    budgetCategories: BUDGET_CATEGORIES,
+  });
+}

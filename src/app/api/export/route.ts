@@ -1,135 +1,49 @@
 import { db } from "@/lib/db";
-import { ERR, asString, isGuarded, requireSession } from "@/lib/api";
-import { toCsv, csvFilename, type CsvColumn } from "@/lib/csv";
-import { startOfDay, startOfMonth, startOfWeek, startOfYear, subMonthsClamped } from "@/lib/format";
-import { OPPORTUNITY_STAGES, REPORT_PERIODS, REPORT_STATUSES } from "@/lib/constants";
+import { ERR, isGuarded, requireSession } from "@/lib/api";
+import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-/** The /api/reports period vocabulary (session-25 S25-P6 + session-32
- *  S32-P4) — the reference's WIRE ids: today/thisWeek/thisMonth/quarter/
- *  ytd/all (the s25 week/month inferences corrected by the bundle
- *  decode). Session-74 (M-74c2/c3): the semantics re-decoded — thisWeek
- *  is the SUNDAY-default startOfWeek and quarter the ROLLING
- *  subMonths(now, 3) window (both routes mirror each other exactly). */
-function reportPeriodStart(period: string, now: Date): Date {
-  switch (period) {
-    case "today":
-      return startOfDay(now);
-    case "thisWeek":
-      return startOfWeek(now, "sunday");
-    case "thisMonth":
-      return startOfMonth(now);
-    case "quarter":
-      return subMonthsClamped(now, 3);
-    case "ytd":
-      return startOfYear(now);
-    default:
-      return new Date(0);
-  }
-}
-
-/** CSV export for the reports header (session-29 re-scope). The leads
- *  branch RETIRED with the client-side rewire: the reference's leads
- *  Export button builds a client-side blob from the FILTERED rows (the
- *  U bundle extract — src/lib/entity-export.ts unquotedHeaderCsv + the
- *  page's onExport), so the route now serves type=report only. The
- *  contacts/accounts/activities branches went the same way in s26. */
-export async function GET(req: Request) {
+/** GDPR-compliant full export — the Settings page's "Export All Data"
+ *  button (live-observed copy: "Download all your data in JSON format.
+ *  This includes expenses, income, goals, and account information."). */
+export async function GET() {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+  try {
+    const [transactions, incomeSources, accounts, investments, goals, budgets] =
+      await Promise.all([
+        db.transaction.findMany({
+          where: { ownerId: guard.user.id },
+          orderBy: [{ date: "desc" }],
+        }),
+        db.incomeSource.findMany({ where: { ownerId: guard.user.id } }),
+        db.bankAccount.findMany({ where: { ownerId: guard.user.id } }),
+        db.investment.findMany({ where: { ownerId: guard.user.id } }),
+        db.goal.findMany({ where: { ownerId: guard.user.id } }),
+        db.budget.findMany(),
+      ]);
 
-  const url = new URL(req.url);
-  const type = url.searchParams.get("type") ?? "report";
-  if (type !== "report") return ERR.BAD_REQUEST("Invalid type");
-  const download = url.searchParams.get("download") === "1";
-
-  let csv = "";
-  let filename = "";
-
-  {
-    // Session-25 (S25-P5) + Session-31: the reports header CSV — the
-    // reference's crm_report_YYYY-MM-DD.csv (SINGULAR "report", unlike the
-    // PDF's plural crm_reports): Deal Name,Account,Amount,Stage,Source,
-    // Owner,Close Date — one row per OPPORTUNITY in the filtered window
-    // (the reference's `y` export maps its filteredOppportunities), with
-    // the SAME period/owner/stage/status filter model as /api/reports.
-    // Session-42 (S42-P6): the parse went OPTIONAL — the non-optional form
-    // returned "" for a missing param, so the `?? "quarter"` default was
-    // DEAD and a bare export answered 400 "Invalid period".
-    const period = asString(url.searchParams.get("period"), { optional: true }) ?? "quarter";
-    if (!REPORT_PERIODS.some((p) => p.id === period)) return ERR.BAD_REQUEST("Invalid period");
-    const notAll = (v: string | null) => (v && v !== "all" ? v : null);
-    const owner = notAll(url.searchParams.get("owner"));
-    const stage = notAll(url.searchParams.get("stage"));
-    const status = notAll(url.searchParams.get("status"));
-    const source = notAll(url.searchParams.get("source"));
-    // Session-49 (S49-P1, pointer (a)): the filter-membership
-    // reconciliation, shared with /api/reports (the same filter model —
-    // see that route's record for the full rationale). The CLOSED
-    // vocabularies validate (stage vs the OPP six; status vs
-    // REPORT_STATUSES — a typo'd stage used to answer a silently EMPTY
-    // export, a typo'd status a silent NO-OP); owner (the data-dependent
-    // name-string join) and source (the s48 free-form decision) stay
-    // deliberately OPEN.
-    if (stage && !OPPORTUNITY_STAGES.some((s) => s === stage)) return ERR.BAD_REQUEST("Invalid stage");
-    if (status && !REPORT_STATUSES.some((s) => s.id === status)) return ERR.BAD_REQUEST("Invalid status");
-    const now = new Date();
-    const from = reportPeriodStart(period, now);
-    const oppWhere = {
-      ...(owner ? { owner } : {}),
-      ...(stage ? { stage } : {}),
-      ...(source ? { source } : {}),
-      // Session-49 (S49-P2, N-49n): AND-wrapped so a concurrent
-      // stage+status(won/lost) request yields the reference's
-      // INTERSECTION semantics (bundle D&&$&&V&&B&&R) instead of the
-      // object-spread overwrite (the old shape clobbered the stage
-      // filter — stage=prospecting&status=won exported every
-      // closed_won).
-      ...(status === "won" || status === "lost"
-        ? { AND: [{ stage: status === "won" ? "closed_won" : "closed_lost" }] }
-        : {}),
-      // Session-74 (N-74c6): BOTH bounds — the reference's inclusive
-      // ld(start, end) excludes future-dated rows from finite periods.
-      ...(period === "all" ? {} : { createdAt: { gte: from, lte: now } }),
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      format: "wealthos-export-v1",
+      user: { email: guard.user.email, name: guard.user.name },
+      data: {
+        transactions,
+        incomeSources,
+        accounts,
+        investments,
+        goals,
+        budgets,
+      },
     };
-    // Session-42 (S42-P1): the read joined the envelope — the CSV build
-    // below is pure; on failure the catch answers the { ok, error }
-    // envelope (the download flow only consumes the CSV on 200).
-    const fetched = await (async () => {
-      try {
-        return await db.opportunity.findMany({ where: oppWhere, orderBy: { createdAt: "desc" } });
-      } catch {
-        return null;
-      }
-    })();
-    if (!fetched) return ERR.INTERNAL();
-    const rows = status === "open" ? fetched.filter((o) => o.stage !== "closed_won" && o.stage !== "closed_lost") : fetched;
-    const columns: CsvColumn<(typeof rows)[number]>[] = [
-      { header: "Deal Name", value: (r) => r.name },
-      { header: "Account", value: (r) => r.accountName },
-      { header: "Amount", value: (r) => r.amount },
-      { header: "Stage", value: (r) => r.stage },
-      { header: "Source", value: (r) => r.source },
-      { header: "Owner", value: (r) => r.owner },
-      { header: "Close Date", value: (r) => (r.closeDate ? r.closeDate.toISOString() : "") },
-    ];
-    csv = toCsv(rows, columns);
-    filename = csvFilename("crm_report");
+    return new NextResponse(JSON.stringify(payload, null, 2), {
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Disposition": 'attachment; filename="wealthos-export.json"',
+      },
+    });
+  } catch {
+    return ERR.INTERNAL();
   }
-
-  // Session-123 (F-123a2, D-123a1): the artifact serves VERBATIM on both
-  // faces — the BOM retired. Live-walked on BOTH apps (the 123-c PASS
-  // 1): the reference's own client-side crm_report_ artifact is
-  // BOM-less (54 bytes at zero rows vs our 57 — the 3-byte \uFEFF was
-  // the only divergence; the content otherwise byte-identical). The s25
-  // "BOM keeps Excel happy" convention was OUR route's choice, never a
-  // decoded reference fact. The download face keeps its own headers
-  // (Content-Disposition) but the SAME body as the preview face.
-  return new Response(csv, {
-    headers: {
-      "Content-Type": "text/csv; charset=utf-8",
-      ...(download ? { "Content-Disposition": `attachment; filename="${filename}"` } : {}),
-    },
-  });
 }

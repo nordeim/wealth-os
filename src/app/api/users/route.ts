@@ -52,13 +52,13 @@ export async function PATCH(request: Request) {
     const first = parsed.error.issues[0];
     return ERR.BAD_REQUEST(first?.message ?? "Invalid JSON body");
   }
-  const { name, photoUrl } = parsed.data;
+  const { name } = parsed.data;
 
   // Session-36 (S36-P2): the update is envelope-held.
   try {
     const user = await db.user.update({
       where: { id: guard.user.id },
-      data: { name, ...(photoUrl !== undefined ? { photoUrl } : {}) },
+      data: { name },
       select: { id: true, email: true, name: true, avatarColor: true, photoUrl: true, role: true },
     });
     return ok(user);
