@@ -168,132 +168,135 @@ export default function ImportPage() {
   };
 
   return (
-    <div className={cn(PAGE_ROOT.standard, "max-w-3xl")}>
-      <PageHeader
-        title="Import Transactions"
-        subtitle="Upload a CSV from your bank to quickly add expenses."
-      />
+    <div className={PAGE_ROOT.navy}>
+      <div className={PAGE_ROOT.containerMid}>
+        <PageHeader
+        tone="navy"
+          title="Import Transactions"
+          subtitle="Upload a CSV from your bank to quickly add expenses."
+        />
 
-      {/* Step 1: upload */}
-      <section className={cn(CARD.base, CARD.padding)} aria-label="Step 1: Upload File">
-        <h2 className={cn(CARD.title, "mb-1")}>Step 1: Upload File</h2>
-        {/* A LABEL (not role=button): the click forwards to the input
-            natively and no interactive element nests inside another. */}
-        <label
-          className="mt-4 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-stone-300 bg-stone-50/50 px-6 py-12 text-center transition-colors hover:border-amber-400 hover:bg-amber-50/30 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/40 dark:border-stone-700 dark:bg-stone-800/30 dark:hover:border-amber-500/50"
-        >
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-500/10">
-            <Upload className="h-7 w-7 text-amber-500" />
-          </span>
-          <div>
-            <p className="font-medium text-stone-900 dark:text-stone-100">
-              {file ? file.name : "Upload a file"}
-            </p>
-            <p className="mt-0.5 text-xs text-stone-500 dark:text-stone-500">
-              CSV, XLS, XLSX up to 10MB
-            </p>
-          </div>
-          <input
-            ref={inputRef}
-            type="file"
-            accept=".csv,.xls,.xlsx,text/csv"
-            className="sr-only"
-            aria-label="Upload a CSV file"
-            onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
-          />
-        </label>
-        {error ? (
-          <p role="alert" className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-500/10 dark:text-red-400">
-            {error}
-          </p>
-        ) : null}
-        <div className="mt-4 flex justify-end">
-          <Button onClick={() => void extract(file)} disabled={!file || busy}>
-            <FileSpreadsheet className="h-4 w-4" />
-            Upload and Extract
-          </Button>
-        </div>
-      </section>
-
-      {/* Step 2: preview */}
-      {rows ? (
-        <section className={cn(CARD.base, CARD.padding)} aria-label="Step 2: Review">
-          <div className="mb-4 flex items-center justify-between">
+        {/* Step 1: upload */}
+        <section className={cn(CARD.base, CARD.padding)} aria-label="Step 1: Upload File">
+          <h2 className={cn(CARD.title, "mb-1")}>Step 1: Upload File</h2>
+          {/* A LABEL (not role=button): the click forwards to the input
+              natively and no interactive element nests inside another. */}
+          <label
+            className="mt-4 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-stone-300 bg-stone-50/50 px-6 py-12 text-center transition-colors hover:border-amber-400 hover:bg-amber-50/30 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/40 dark:border-stone-700 dark:bg-stone-800/30 dark:hover:border-amber-500/50"
+          >
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-500/10">
+              <Upload className="h-7 w-7 text-amber-500" />
+            </span>
             <div>
-              <h2 className={CARD.title}>Step 2: Review & Import</h2>
-              <p className={CARD.subtitle}>
-                {rows.length} transaction{rows.length === 1 ? "" : "s"} detected — sign and
-                categories inferred.
+              <p className="font-medium text-stone-900 dark:text-stone-100">
+                {file ? file.name : "Upload a file"}
+              </p>
+              <p className="mt-0.5 text-xs text-stone-500 dark:text-stone-500">
+                CSV, XLS, XLSX up to 10MB
               </p>
             </div>
-            <Button
-              variant="ghost"
-              className="text-xs text-stone-500"
-              onClick={() => {
-                setRows(null);
-                setFile(null);
-                if (inputRef.current) inputRef.current.value = "";
-              }}
-            >
-              <X className="h-3.5 w-3.5" />
-              Discard
-            </Button>
-          </div>
-          <div className="max-h-80 overflow-auto rounded-lg border border-stone-200 scrollbar-thin dark:border-stone-800">
-            <table className="w-full min-w-[560px] text-sm">
-              <thead className="sticky top-0 bg-stone-50 dark:bg-stone-800">
-                <tr className="text-left text-xs uppercase tracking-wide text-stone-500 dark:text-stone-500">
-                  <th className="p-2.5 font-semibold">Date</th>
-                  <th className="p-2.5 font-semibold">Description</th>
-                  <th className="p-2.5 font-semibold">Category</th>
-                  <th className="p-2.5 text-right font-semibold">Amount</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-200/70 bg-white dark:divide-stone-800 dark:bg-stone-900">
-                {rows.slice(0, 50).map((row, i) => (
-                  <tr key={i}>
-                    <td className="p-2.5 text-stone-600 dark:text-stone-500">
-                      {new Date(row.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "2-digit",
-                      })}
-                    </td>
-                    <td className="p-2.5 font-medium text-stone-900 dark:text-stone-100">
-                      {row.description}
-                    </td>
-                    <td className="p-2.5 text-stone-600 dark:text-stone-500">{row.category}</td>
-                    <td
-                      className={cn(
-                        "p-2.5 text-right font-semibold",
-                        row.type === "income" ? "text-emerald-600" : "text-stone-900 dark:text-stone-100",
-                      )}
-                    >
-                      {row.type === "income" ? "+" : "−"}$
-                      {row.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {rows.length > 50 ? (
-            <p className="mt-2 text-xs text-stone-500">
-              Showing the first 50 of {rows.length} rows — all will be imported.
+            <input
+              ref={inputRef}
+              type="file"
+              accept=".csv,.xls,.xlsx,text/csv"
+              className="sr-only"
+              aria-label="Upload a CSV file"
+              onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
+            />
+          </label>
+          {error ? (
+            <p role="alert" className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-500/10 dark:text-red-400">
+              {error}
             </p>
           ) : null}
-          <div className="mt-4 flex items-center justify-between">
-            <p className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-500">
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-              Importing adds to your existing records — nothing is overwritten.
-            </p>
-            <Button onClick={() => void commit()} disabled={busy}>
-              Import {rows.length} Transactions
-              <ArrowRight className="h-4 w-4" />
+          <div className="mt-4 flex justify-end">
+            <Button onClick={() => void extract(file)} disabled={!file || busy}>
+              <FileSpreadsheet className="h-4 w-4" />
+              Upload and Extract
             </Button>
           </div>
         </section>
-      ) : null}
+
+        {/* Step 2: preview */}
+        {rows ? (
+          <section className={cn(CARD.base, CARD.padding)} aria-label="Step 2: Review">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className={CARD.title}>Step 2: Review & Import</h2>
+                <p className={CARD.subtitle}>
+                  {rows.length} transaction{rows.length === 1 ? "" : "s"} detected — sign and
+                  categories inferred.
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                className="text-xs text-stone-500"
+                onClick={() => {
+                  setRows(null);
+                  setFile(null);
+                  if (inputRef.current) inputRef.current.value = "";
+                }}
+              >
+                <X className="h-3.5 w-3.5" />
+                Discard
+              </Button>
+            </div>
+            <div className="max-h-80 overflow-auto rounded-lg border border-stone-200 scrollbar-thin dark:border-stone-800">
+              <table className="w-full min-w-[560px] text-sm">
+                <thead className="sticky top-0 bg-stone-50 dark:bg-stone-800">
+                  <tr className="text-left text-xs uppercase tracking-wide text-stone-500 dark:text-stone-500">
+                    <th className="p-2.5 font-semibold">Date</th>
+                    <th className="p-2.5 font-semibold">Description</th>
+                    <th className="p-2.5 font-semibold">Category</th>
+                    <th className="p-2.5 text-right font-semibold">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-stone-200/70 bg-white dark:divide-stone-800 dark:bg-stone-900">
+                  {rows.slice(0, 50).map((row, i) => (
+                    <tr key={i}>
+                      <td className="p-2.5 text-stone-600 dark:text-stone-500">
+                        {new Date(row.date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "2-digit",
+                        })}
+                      </td>
+                      <td className="p-2.5 font-medium text-stone-900 dark:text-stone-100">
+                        {row.description}
+                      </td>
+                      <td className="p-2.5 text-stone-600 dark:text-stone-500">{row.category}</td>
+                      <td
+                        className={cn(
+                          "p-2.5 text-right font-semibold",
+                          row.type === "income" ? "text-emerald-600" : "text-stone-900 dark:text-stone-100",
+                        )}
+                      >
+                        {row.type === "income" ? "+" : "−"}$
+                        {row.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {rows.length > 50 ? (
+              <p className="mt-2 text-xs text-stone-500">
+                Showing the first 50 of {rows.length} rows — all will be imported.
+              </p>
+            ) : null}
+            <div className="mt-4 flex items-center justify-between">
+              <p className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-500">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                Importing adds to your existing records — nothing is overwritten.
+              </p>
+              <Button onClick={() => void commit()} disabled={busy}>
+                Import {rows.length} Transactions
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </section>
+        ) : null}
+      </div>
     </div>
   );
 }

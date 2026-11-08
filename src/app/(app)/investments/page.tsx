@@ -92,247 +92,249 @@ export default function InvestmentsPage() {
 
   return (
     <div className={PAGE_ROOT.standard}>
-      <PageHeader
-        title="Investments"
-        subtitle="Track your portfolio performance"
-        actions={
-          <Button onClick={openCreate}>
-            <PlusCircle className="h-4 w-4" />
-            Add Investment
-          </Button>
-        }
-      />
+      <div className={PAGE_ROOT.containerWide}>
+        <PageHeader
+          title="Investments"
+          subtitle="Track your portfolio performance"
+          actions={
+            <Button onClick={openCreate}>
+              <PlusCircle className="h-4 w-4" />
+              Add Investment
+            </Button>
+          }
+        />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <KpiCard
-          label="Portfolio Value"
-          value={formatMoney(stats.value)}
-          delta={`${investments.length} holdings`}
-          icon={Wallet}
-          iconColor="#10b981"
-          iconSoft="#ecfdf5"
-        />
-        <KpiCard
-          label="Total Gain / Loss"
-          value={formatMoney(stats.gainLoss)}
-          delta={`${stats.gainLoss >= 0 ? "+" : ""}${stats.returnPct}% all time`}
-          deltaDirection={stats.gainLoss >= 0 ? "up" : "down"}
-          icon={stats.gainLoss >= 0 ? ArrowUpRight : ArrowDownRight}
-          iconColor={stats.gainLoss >= 0 ? "#3b82f6" : "#f43f5e"}
-          iconSoft={stats.gainLoss >= 0 ? "#eff6ff" : "#fff1f2"}
-        />
-        <KpiCard
-          label="Total Return %"
-          value={`${stats.returnPct}%`}
-          delta="vs cost basis"
-          icon={PieIcon}
-          iconColor="#a855f7"
-          iconSoft="#faf5ff"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <section className={cn(CARD.base, CARD.padding, "lg:col-span-2")} aria-label="Portfolio Performance">
-          <CardTitleRow
-            title="Portfolio Performance"
-            trailing={<PeriodSegment value={period} onChange={setPeriod} options={PERIOD_OPTIONS} />}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <KpiCard
+            label="Portfolio Value"
+            value={formatMoney(stats.value)}
+            delta={`${investments.length} holdings`}
+            icon={Wallet}
+            iconColor="#10b981"
+            iconSoft="#ecfdf5"
           />
+          <KpiCard
+            label="Total Gain / Loss"
+            value={formatMoney(stats.gainLoss)}
+            delta={`${stats.gainLoss >= 0 ? "+" : ""}${stats.returnPct}% all time`}
+            deltaDirection={stats.gainLoss >= 0 ? "up" : "down"}
+            icon={stats.gainLoss >= 0 ? ArrowUpRight : ArrowDownRight}
+            iconColor={stats.gainLoss >= 0 ? "#3b82f6" : "#f43f5e"}
+            iconSoft={stats.gainLoss >= 0 ? "#eff6ff" : "#fff1f2"}
+          />
+          <KpiCard
+            label="Total Return %"
+            value={`${stats.returnPct}%`}
+            delta="vs cost basis"
+            icon={PieIcon}
+            iconColor="#a855f7"
+            iconSoft="#faf5ff"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <section className={cn(CARD.base, CARD.padding, "lg:col-span-2")} aria-label="Portfolio Performance">
+            <CardTitleRow
+              title="Portfolio Performance"
+              trailing={<PeriodSegment value={period} onChange={setPeriod} options={PERIOD_OPTIONS} />}
+            />
+            {investments.length === 0 ? (
+              <EmptyState
+                icon={PieIcon}
+                title="Add investments to see performance chart"
+              />
+            ) : (
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="pfFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                    <XAxis dataKey="label" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
+                    <YAxis
+                      tickFormatter={formatAxisMoney}
+                      tick={{ fontSize: 12, fill: axisColor }}
+                      axisLine={false}
+                      tickLine={false}
+                      width={56}
+                    />
+                    <Tooltip
+                      formatter={(value) => [formatMoney(Number(value)), "Value"]}
+                      contentStyle={{ borderRadius: 12, border: "1px solid #e7e5e4" }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="value"
+                      name="Value"
+                      stroke="#10b981"
+                      strokeWidth={2.5}
+                      fill="url(#pfFill)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </section>
+
+          <section className={cn(CARD.base, CARD.padding)} aria-label="Asset Allocation">
+            <CardTitleRow icon={PieIcon} title="Asset Allocation" />
+            {allocation.length === 0 ? (
+              <EmptyState icon={PieIcon} title="No investments to display" subtitle="Add investments to see risk analytics" />
+            ) : (
+              <>
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={allocation}
+                        dataKey="value"
+                        nameKey="type"
+                        innerRadius={48}
+                        outerRadius={76}
+                        paddingAngle={2}
+                        strokeWidth={0}
+                      >
+                        {allocation.map((slice) => {
+                          const meta = INVESTMENT_TYPES.find((t) => t.value === slice.type);
+                          return <Cell key={slice.type} fill={meta?.color ?? "#78716c"} />;
+                        })}
+                      </Pie>
+                      <Tooltip formatter={(value) => formatMoney(Number(value))} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <ul className="mt-3 space-y-1.5">
+                  {allocation.map((slice) => {
+                    const meta = INVESTMENT_TYPES.find((t) => t.value === slice.type);
+                    return (
+                      <li key={slice.type} className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2">
+                          <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: meta?.color }} />
+                          {meta?.label ?? slice.type}
+                        </span>
+                        <span className="font-medium text-stone-900 dark:text-stone-100">
+                          {slice.pct}%
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+          </section>
+        </div>
+
+        {/* Holdings table */}
+        <section className={cn(CARD.base, CARD.padding)} aria-label="Portfolio Holdings">
+          <h2 className={cn(CARD.title, "mb-4")}>Portfolio Holdings</h2>
           {investments.length === 0 ? (
             <EmptyState
-              icon={PieIcon}
-              title="Add investments to see performance chart"
+              icon={Wallet}
+              title="No investments yet"
+              action={
+                <Button onClick={openCreate}>
+                  <PlusCircle className="h-4 w-4" />
+                  Add Your First Investment
+                </Button>
+              }
             />
           ) : (
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="pfFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
-                  <YAxis
-                    tickFormatter={formatAxisMoney}
-                    tick={{ fontSize: 12, fill: axisColor }}
-                    axisLine={false}
-                    tickLine={false}
-                    width={56}
-                  />
-                  <Tooltip
-                    formatter={(value) => [formatMoney(Number(value)), "Value"]}
-                    contentStyle={{ borderRadius: 12, border: "1px solid #e7e5e4" }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    name="Value"
-                    stroke="#10b981"
-                    strokeWidth={2.5}
-                    fill="url(#pfFill)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+            <div className="overflow-x-auto scrollbar-thin">
+              <table className="w-full min-w-[720px] text-sm">
+                <thead>
+                  <tr className="border-b border-stone-200 text-left text-xs uppercase tracking-wide text-stone-500 dark:border-stone-800 dark:text-stone-500">
+                    <th className="pb-2 pr-4 font-semibold">Asset</th>
+                    <th className="pb-2 pr-4 font-semibold">Name</th>
+                    <th className="pb-2 pr-4 font-semibold">Type</th>
+                    <th className="pb-2 pr-4 text-right font-semibold">Invested</th>
+                    <th className="pb-2 pr-4 text-right font-semibold">Current Value</th>
+                    <th className="pb-2 pr-4 text-right font-semibold">Gain/Loss</th>
+                    <th className="pb-2 pr-4 text-right font-semibold">% of Portfolio</th>
+                    <th className="pb-2 font-semibold sr-only">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-stone-200/70 dark:divide-stone-800">
+                  {stats.holdings.map((row) => {
+                    const inv = investments.find((i) => i.symbol === row.symbol);
+                    const meta = INVESTMENT_TYPES.find((t) => t.value === row.type);
+                    return (
+                      <tr key={row.symbol} className="group">
+                        <td className="py-3 pr-4">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-stone-100 text-xs font-bold text-stone-600 dark:bg-stone-800 dark:text-stone-300">
+                            {row.symbol.slice(0, 3)}
+                          </span>
+                        </td>
+                        <td className="py-3 pr-4 font-medium text-stone-900 dark:text-stone-100">{row.name}</td>
+                        <td className="py-3 pr-4">
+                          <span
+                            className="rounded-full px-2 py-0.5 text-xs font-medium"
+                            style={{ backgroundColor: `${meta?.color ?? "#78716c"}1a`, color: meta?.color ?? "#78716c" }}
+                          >
+                            {meta?.label ?? row.type}
+                          </span>
+                        </td>
+                        <td className="py-3 pr-4 text-right text-stone-600 dark:text-stone-500">{formatMoney(row.invested)}</td>
+                        <td className="py-3 pr-4 text-right font-semibold text-stone-900 dark:text-stone-100">
+                          {formatMoney(row.value)}
+                        </td>
+                        <td
+                          className={cn(
+                            "py-3 pr-4 text-right font-semibold",
+                            row.gainLoss >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-500",
+                          )}
+                        >
+                          {row.gainLoss >= 0 ? "+" : ""}
+                          {formatMoney(row.gainLoss)}
+                          <span className="ml-1 text-xs">
+                            ({row.gainPct >= 0 ? "+" : ""}
+                            {row.gainPct}%)
+                          </span>
+                        </td>
+                        <td className="py-3 pr-4 text-right text-stone-600 dark:text-stone-500">{row.pctOfPortfolio}%</td>
+                        <td className="py-3 text-right">
+                          <span className="flex justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              className="h-7 px-2 text-xs"
+                              onClick={() => {
+                                if (inv) {
+                                  setEditing(inv);
+                                  setDialogOpen(true);
+                                }
+                              }}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              className="h-7 px-2 text-xs text-red-600 hover:text-red-700"
+                              onClick={async () => {
+                                if (!inv) return;
+                                const res = await store.deleteInvestment(inv.id);
+                                if (res.ok) toast.success("Investment removed");
+                                else toast.error("Delete failed", res.error);
+                              }}
+                            >
+                              <span className="sr-only">Delete {row.symbol}</span>
+                              ✕
+                            </Button>
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </section>
 
-        <section className={cn(CARD.base, CARD.padding)} aria-label="Asset Allocation">
-          <CardTitleRow icon={PieIcon} title="Asset Allocation" />
-          {allocation.length === 0 ? (
-            <EmptyState icon={PieIcon} title="No investments to display" subtitle="Add investments to see risk analytics" />
-          ) : (
-            <>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={allocation}
-                      dataKey="value"
-                      nameKey="type"
-                      innerRadius={48}
-                      outerRadius={76}
-                      paddingAngle={2}
-                      strokeWidth={0}
-                    >
-                      {allocation.map((slice) => {
-                        const meta = INVESTMENT_TYPES.find((t) => t.value === slice.type);
-                        return <Cell key={slice.type} fill={meta?.color ?? "#78716c"} />;
-                      })}
-                    </Pie>
-                    <Tooltip formatter={(value) => formatMoney(Number(value))} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <ul className="mt-3 space-y-1.5">
-                {allocation.map((slice) => {
-                  const meta = INVESTMENT_TYPES.find((t) => t.value === slice.type);
-                  return (
-                    <li key={slice.type} className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: meta?.color }} />
-                        {meta?.label ?? slice.type}
-                      </span>
-                      <span className="font-medium text-stone-900 dark:text-stone-100">
-                        {slice.pct}%
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
-          )}
-        </section>
+        <InvestmentDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
       </div>
-
-      {/* Holdings table */}
-      <section className={cn(CARD.base, CARD.padding)} aria-label="Portfolio Holdings">
-        <h2 className={cn(CARD.title, "mb-4")}>Portfolio Holdings</h2>
-        {investments.length === 0 ? (
-          <EmptyState
-            icon={Wallet}
-            title="No investments yet"
-            action={
-              <Button onClick={openCreate}>
-                <PlusCircle className="h-4 w-4" />
-                Add Your First Investment
-              </Button>
-            }
-          />
-        ) : (
-          <div className="overflow-x-auto scrollbar-thin">
-            <table className="w-full min-w-[720px] text-sm">
-              <thead>
-                <tr className="border-b border-stone-200 text-left text-xs uppercase tracking-wide text-stone-500 dark:border-stone-800 dark:text-stone-500">
-                  <th className="pb-2 pr-4 font-semibold">Asset</th>
-                  <th className="pb-2 pr-4 font-semibold">Name</th>
-                  <th className="pb-2 pr-4 font-semibold">Type</th>
-                  <th className="pb-2 pr-4 text-right font-semibold">Invested</th>
-                  <th className="pb-2 pr-4 text-right font-semibold">Current Value</th>
-                  <th className="pb-2 pr-4 text-right font-semibold">Gain/Loss</th>
-                  <th className="pb-2 pr-4 text-right font-semibold">% of Portfolio</th>
-                  <th className="pb-2 font-semibold sr-only">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-200/70 dark:divide-stone-800">
-                {stats.holdings.map((row) => {
-                  const inv = investments.find((i) => i.symbol === row.symbol);
-                  const meta = INVESTMENT_TYPES.find((t) => t.value === row.type);
-                  return (
-                    <tr key={row.symbol} className="group">
-                      <td className="py-3 pr-4">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-stone-100 text-xs font-bold text-stone-600 dark:bg-stone-800 dark:text-stone-300">
-                          {row.symbol.slice(0, 3)}
-                        </span>
-                      </td>
-                      <td className="py-3 pr-4 font-medium text-stone-900 dark:text-stone-100">{row.name}</td>
-                      <td className="py-3 pr-4">
-                        <span
-                          className="rounded-full px-2 py-0.5 text-xs font-medium"
-                          style={{ backgroundColor: `${meta?.color ?? "#78716c"}1a`, color: meta?.color ?? "#78716c" }}
-                        >
-                          {meta?.label ?? row.type}
-                        </span>
-                      </td>
-                      <td className="py-3 pr-4 text-right text-stone-600 dark:text-stone-500">{formatMoney(row.invested)}</td>
-                      <td className="py-3 pr-4 text-right font-semibold text-stone-900 dark:text-stone-100">
-                        {formatMoney(row.value)}
-                      </td>
-                      <td
-                        className={cn(
-                          "py-3 pr-4 text-right font-semibold",
-                          row.gainLoss >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-500",
-                        )}
-                      >
-                        {row.gainLoss >= 0 ? "+" : ""}
-                        {formatMoney(row.gainLoss)}
-                        <span className="ml-1 text-xs">
-                          ({row.gainPct >= 0 ? "+" : ""}
-                          {row.gainPct}%)
-                        </span>
-                      </td>
-                      <td className="py-3 pr-4 text-right text-stone-600 dark:text-stone-500">{row.pctOfPortfolio}%</td>
-                      <td className="py-3 text-right">
-                        <span className="flex justify-end gap-1">
-                          <Button
-                            variant="ghost"
-                            className="h-7 px-2 text-xs"
-                            onClick={() => {
-                              if (inv) {
-                                setEditing(inv);
-                                setDialogOpen(true);
-                              }
-                            }}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="h-7 px-2 text-xs text-red-600 hover:text-red-700"
-                            onClick={async () => {
-                              if (!inv) return;
-                              const res = await store.deleteInvestment(inv.id);
-                              if (res.ok) toast.success("Investment removed");
-                              else toast.error("Delete failed", res.error);
-                            }}
-                          >
-                            <span className="sr-only">Delete {row.symbol}</span>
-                            ✕
-                          </Button>
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      <InvestmentDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
     </div>
   );
 }

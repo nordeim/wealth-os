@@ -10,22 +10,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CARD, EMPTY_STATE, PAGE_HEADER } from "@/lib/page-layout";
 import type { LucideIcon } from "lucide-react";
 
-/** Page title row with actions — the reference's page-header anatomy:
- * title (text-3xl md:text-4xl bold) + muted subtitle, actions right on
- * md+, stacked on phones. */
+/** Page title row with actions — the reference's page-header anatomy
+ * (session-207, F-207e): the lg: rhythm + mb-8 band; the H1 stone tone
+ * on Dashboard/Investments and the navy `text-primary-navy` token on
+ * the other seven sections; muted subtitle; actions right on lg+,
+ * stacked on phones. */
 export function PageHeader({
   title,
   subtitle,
   actions,
+  tone = "stone",
 }: {
   title: string;
   subtitle?: string;
   actions?: React.ReactNode;
+  tone?: "stone" | "navy";
 }) {
   return (
     <div className={PAGE_HEADER.root}>
       <div className="space-y-1">
-        <h1 className={PAGE_HEADER.title}>{title}</h1>
+        <h1 className={tone === "navy" ? PAGE_HEADER.titleNavy : PAGE_HEADER.title}>{title}</h1>
         {subtitle ? <p className={PAGE_HEADER.subtitle}>{subtitle}</p> : null}
       </div>
       {actions ? <div className={PAGE_HEADER.actions}>{actions}</div> : null}

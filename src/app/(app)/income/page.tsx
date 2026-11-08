@@ -70,110 +70,113 @@ export default function IncomePage() {
 
   return (
     <div className={PAGE_ROOT.standard}>
-      <PageHeader
-        title="Income Sources"
-        subtitle="Track and manage all your income streams"
-        actions={
-          <Button onClick={openCreate}>
-            <PlusCircle className="h-4 w-4" />
-            Add Income Source
-          </Button>
-        }
-      />
+      <div className={PAGE_ROOT.containerMid}>
+        <PageHeader
+        tone="navy"
+          title="Income Sources"
+          subtitle="Track and manage all your income streams"
+          actions={
+            <Button onClick={openCreate}>
+              <PlusCircle className="h-4 w-4" />
+              Add Income Source
+            </Button>
+          }
+        />
 
-      <div className={cn(CARD.base, CARD.padding, "flex items-center gap-4")}>
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-500/10">
-          <TrendingUp className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-        </span>
-        <div>
-          <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Total Monthly Income</p>
-          <p className="text-2xl font-bold text-stone-900 dark:text-stone-50">
-            {formatMoney(monthlyTotal)}
-          </p>
-          <p className="text-xs text-stone-500">
-            From {active.length} active source{active.length === 1 ? "" : "s"}
-          </p>
+        <div className={cn(CARD.base, CARD.padding, "flex items-center gap-4")}>
+          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-500/10">
+            <TrendingUp className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+          </span>
+          <div>
+            <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Total Monthly Income</p>
+            <p className="text-2xl font-bold text-stone-900 dark:text-stone-50">
+              {formatMoney(monthlyTotal)}
+            </p>
+            <p className="text-xs text-stone-500">
+              From {active.length} active source{active.length === 1 ? "" : "s"}
+            </p>
+          </div>
         </div>
-      </div>
 
-      {sources.length === 0 ? (
-        <div className={cn(CARD.base, CARD.padding)}>
-          <EmptyState
-            icon={Briefcase}
-            title="No Income Sources Yet"
-            subtitle="Start by adding your income sources to track your financial progress"
-            action={
-              <Button onClick={openCreate}>
-                <PlusCircle className="h-4 w-4" />
-                Add Your First Income Source
-              </Button>
-            }
-          />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {sources.map((source) => {
-            const style = TYPE_STYLES[source.type] ?? TYPE_STYLES.other;
-            const monthly = source.amount * (FREQUENCY_TO_MONTHLY[source.frequency] ?? 1);
-            return (
-              <div key={source.id} className={cn(CARD.base, CARD.padding, "group")}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="flex h-10 w-10 items-center justify-center rounded-lg"
-                      style={{ backgroundColor: style.soft, color: style.color }}
-                    >
-                      <Briefcase className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <p className="font-semibold text-stone-900 dark:text-stone-100">{source.name}</p>
-                      <p className="text-xs capitalize text-stone-500 dark:text-stone-500">
-                        {source.type} · {source.frequency}
-                      </p>
+        {sources.length === 0 ? (
+          <div className={cn(CARD.base, CARD.padding)}>
+            <EmptyState
+              icon={Briefcase}
+              title="No Income Sources Yet"
+              subtitle="Start by adding your income sources to track your financial progress"
+              action={
+                <Button onClick={openCreate}>
+                  <PlusCircle className="h-4 w-4" />
+                  Add Your First Income Source
+                </Button>
+              }
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {sources.map((source) => {
+              const style = TYPE_STYLES[source.type] ?? TYPE_STYLES.other;
+              const monthly = source.amount * (FREQUENCY_TO_MONTHLY[source.frequency] ?? 1);
+              return (
+                <div key={source.id} className={cn(CARD.base, CARD.padding, "group")}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="flex h-10 w-10 items-center justify-center rounded-lg"
+                        style={{ backgroundColor: style.soft, color: style.color }}
+                      >
+                        <Briefcase className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <p className="font-semibold text-stone-900 dark:text-stone-100">{source.name}</p>
+                        <p className="text-xs capitalize text-stone-500 dark:text-stone-500">
+                          {source.type} · {source.frequency}
+                        </p>
+                      </div>
                     </div>
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 text-[11px] font-semibold",
+                        source.active
+                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
+                          : "bg-stone-100 text-stone-600 dark:bg-stone-800",
+                      )}
+                    >
+                      {source.active ? "Active" : "Paused"}
+                    </span>
                   </div>
-                  <span
-                    className={cn(
-                      "rounded-full px-2 py-0.5 text-[11px] font-semibold",
-                      source.active
-                        ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
-                        : "bg-stone-100 text-stone-600 dark:bg-stone-800",
-                    )}
-                  >
-                    {source.active ? "Active" : "Paused"}
-                  </span>
+                  <p className="mt-3 text-2xl font-bold text-stone-900 dark:text-stone-50">
+                    {formatMoney(source.amount)}
+                    <span className="ml-1 text-xs font-medium text-stone-500">
+                      /{source.frequency.replace("biweekly", "2 weeks").replace("annually", "year")}
+                    </span>
+                  </p>
+                  <p className="text-xs text-stone-500 dark:text-stone-500">
+                    ≈ {formatMoney(monthly)} / month
+                    {source.nextPaymentDate
+                      ? ` · next ${relativeDays(new Date(source.nextPaymentDate), new Date())}`
+                      : ""}
+                  </p>
+                  <div className="mt-4 flex gap-2">
+                    <Button variant="outline" className="h-8 flex-1 text-xs" onClick={() => openEdit(source)}>
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-8 flex-1 text-xs"
+                      onClick={() => void toggleActive(source)}
+                    >
+                      {source.active ? "Pause" : "Activate"}
+                    </Button>
+                  </div>
                 </div>
-                <p className="mt-3 text-2xl font-bold text-stone-900 dark:text-stone-50">
-                  {formatMoney(source.amount)}
-                  <span className="ml-1 text-xs font-medium text-stone-500">
-                    /{source.frequency.replace("biweekly", "2 weeks").replace("annually", "year")}
-                  </span>
-                </p>
-                <p className="text-xs text-stone-500 dark:text-stone-500">
-                  ≈ {formatMoney(monthly)} / month
-                  {source.nextPaymentDate
-                    ? ` · next ${relativeDays(new Date(source.nextPaymentDate), new Date())}`
-                    : ""}
-                </p>
-                <div className="mt-4 flex gap-2">
-                  <Button variant="outline" className="h-8 flex-1 text-xs" onClick={() => openEdit(source)}>
-                    Edit
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="h-8 flex-1 text-xs"
-                    onClick={() => void toggleActive(source)}
-                  >
-                    {source.active ? "Pause" : "Activate"}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
 
-      <IncomeSourceDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+        <IncomeSourceDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+      </div>
     </div>
   );
 }

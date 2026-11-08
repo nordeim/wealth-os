@@ -27,6 +27,14 @@ export const NAV_LAYOUT = {
   icon: "h-5 w-5",
   label: "",
   footer: "p-4 space-y-3 border-t border-amber-500/20 relative z-10",
+  // Session-207 (F-207h): the Synced badge genus, live-extracted from
+  // the reference's sidebar footer — the SAME badge the mobile topbar
+  // carries (rounded-md, semibold, green + the wifi glyph). One AA
+  // superset: green-700 in light mode (the reference's green-600
+  // measures 3.16:1 on the light wash — one step darker, per the
+  // AGENTS.md contrast-fix rule).
+  syncedPill:
+    "inline-flex items-center gap-1 rounded-md border px-2.5 py-0.5 text-xs font-semibold text-green-700 border-green-300 dark:text-green-400 dark:border-green-600",
 } as const;
 
 /** The mobile drawer — the reference's construction: a FULL-SCREEN
@@ -39,43 +47,83 @@ export const MOBILE_NAV_LAYOUT = {
 
 export const MOBILE_NAV_SHEET = {
   overlay: "fixed inset-0 z-40 bg-black/50 lg:hidden",
-  content:
-    "lg:hidden fixed inset-0 z-40 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 focus:outline-none",
+  // Session-207 (F-207d): the sheet carries the reference's sheen — its
+  // own inline-style overlay (a 3%-alpha gold→emerald tint, extracted
+  // verbatim) layered over the stone gradient. We keep the OPAQUE base
+  // (the readable superset — the reference's sheet is a transparent
+  // veil whose light mode ships stone-300-on-light text) and adopt the
+  // tint via the mobile-drawer-sheen utility (globals.css).
+  content: "lg:hidden fixed inset-0 z-40 mobile-drawer-sheen focus:outline-none",
   inner: "flex flex-col h-full pt-20",
   nav: "flex-1 px-4 py-6 space-y-2",
   link: "flex items-center gap-3 px-4 py-4 rounded-xl font-medium transition-all duration-200 text-stone-300 hover:bg-gradient-to-r hover:from-white/5 hover:to-amber-500/5 hover:text-amber-100",
+  // The active pill STAYS (the F-207c withdrawal): the reference's
+  // drawer renders it on the current-page link — byte-identical genus,
+  // re-verified live at full class length (session 207).
   linkActive:
     "flex items-center gap-3 px-4 py-4 rounded-xl font-medium transition-all duration-200 bg-gradient-to-r from-amber-500/20 to-emerald-600/20 text-amber-200 shadow-lg border border-amber-400/30",
   icon: "w-6 h-6",
   label: "text-lg",
+  // Session-207 (F-207d): the reference's drawer footer — a bordered
+  // band under the nav, with the ghost Sign Out (slate border,
+  // white/10 hover) — replacing our margin-footer chip.
+  footer: "p-4 border-t border-amber-500/20",
   signOut:
-    "mx-4 mb-6 flex items-center justify-center gap-2 rounded-xl border border-stone-700 bg-stone-800/60 px-4 py-3 text-stone-300 transition-all hover:border-red-500/40 hover:text-red-300",
+    "flex w-full h-9 items-center justify-center gap-2 rounded-md border border-slate-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
 } as const;
 
-/** The mobile sticky header (lg:hidden, above the drawer). */
+/** The mobile sticky header (lg:hidden, above the drawer). Session-207
+ *  (F-207b): re-pinned to the reference's live topbar genus — the
+ *  stone→amber→stone gradient wash with the amber/20 border + shadow-lg,
+ *  the w-8 h-8 logo, the gradient-clip wordmark, the borderless ghost
+ *  icon buttons. Kept supersets: sticky positioning (our in-flow flex
+ *  model — the reference's fixed bar is a positioning choice, not a
+ *  visible genus) and the aria-labels + focus ring. */
 export const MOBILE_HEADER = {
-  root: "lg:hidden sticky top-0 z-50 border-b border-stone-200/60 bg-[#faf9f7]/90 backdrop-blur-md dark:border-stone-800 dark:bg-[#0e1310]/90",
+  root: "lg:hidden sticky top-0 z-50 bg-gradient-to-r from-stone-50 via-amber-50/50 to-stone-50 dark:from-stone-950 dark:via-stone-900 dark:to-stone-950 backdrop-blur-md border-b border-amber-500/20 shadow-lg",
   inner: "flex h-16 items-center justify-between px-4",
   brandRow: "flex items-center gap-3",
   brandLogo:
-    "w-9 h-9 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-lg flex items-center justify-center shadow-md shadow-amber-500/20",
-  brandWordmark: "text-lg font-bold text-amber-600 dark:text-amber-400",
+    "w-8 h-8 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-lg flex items-center justify-center shadow-md shadow-amber-500/20",
+  brandWordmark:
+    "text-lg font-bold bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-600 dark:from-amber-400 dark:via-yellow-300 dark:to-amber-400 bg-clip-text text-transparent",
+  // The reference's badge genus (rounded-md, semibold, green + wifi),
+  // rendered in its RIGHT cluster beside the theme toggle + hamburger
+  // (F-207a: always visible — the old `hidden xs:inline-flex` rode a
+  // breakpoint Tailwind v4 never defines, hiding the pill below sm).
+  // green-700 = the AA superset (see NAV_LAYOUT.syncedPill).
   syncedPill:
-    "inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400",
+    "inline-flex items-center gap-1 rounded-md border px-2.5 py-0.5 text-xs font-semibold text-green-700 border-green-300 dark:text-green-400 dark:border-green-600",
   iconButton:
-    "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-stone-200 bg-white text-stone-600 transition-colors hover:bg-stone-50 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 dark:hover:bg-stone-800",
+    "inline-flex items-center justify-center rounded-md h-9 w-9 text-gray-700 dark:text-gray-300 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-stone-800 dark:hover:text-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
 } as const;
 
-/** Page headers inside main (every page's own top block). */
+/** Page headers inside main (every page's own top block). Session-207
+ *  (F-207e): re-pinned to the reference's rhythm — the lg: breakpoints,
+ *  the mb-8 band, the navy H1 token the seven non-dashboard pages carry
+ *  (Dashboard + Investments keep stone + mb-1), tracking-tight dropped. */
 export const PAGE_HEADER = {
-  root: "flex flex-col gap-4 md:flex-row md:items-center md:justify-between",
-  title: "text-3xl md:text-4xl font-bold tracking-tight text-stone-900 dark:text-stone-50",
+  root: "flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4",
+  title: "text-3xl lg:text-4xl font-bold text-stone-900 dark:text-white mb-1",
+  titleNavy: "text-3xl lg:text-4xl font-bold text-primary-navy dark:text-white mb-2",
   subtitle: "text-sm text-stone-500 dark:text-stone-400",
-  actions: "flex flex-wrap items-center gap-2",
+  actions: "flex gap-2 flex-wrap",
 } as const;
 
+/** The section shells. Session-207 (F-207e/g): re-pinned to the
+ *  reference's construction — a full-width gradient wash (p-4 lg:p-8,
+ *  min-h-screen) carrying ONE inner container that centers and spaces
+ *  the page (space-y-6 rides the container, matching the reference's
+ *  header mb-8 collapsing with the container rhythm). Import ships its
+ *  own navy wash — the reference's one divergent shell (F-205b). */
 export const PAGE_ROOT = {
-  standard: "p-4 md:p-6 lg:p-8 space-y-6",
+  standard:
+    "p-4 lg:p-8 min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/30 to-emerald-50/40 dark:from-stone-950 dark:via-stone-900 dark:to-emerald-950/30 transition-colors duration-300",
+  navy:
+    "p-4 lg:p-8 min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300",
+  containerWide: "max-w-7xl mx-auto space-y-6",
+  containerMid: "max-w-6xl mx-auto space-y-6",
+  containerNarrow: "max-w-4xl mx-auto space-y-6",
   bare: "",
 } as const;
 
@@ -213,9 +261,13 @@ export const GRID_COLS: Record<number, string> = {
 
 export const LOGIN_LAYOUT = {
   page: "min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-[#f5f7fa] to-slate-100 p-4",
-  card: "relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-xl",
-  accent: "absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300",
-  inner: "p-8 sm:p-10",
+  // Session-207 (F-207f): re-pinned to the reference's live auth card —
+  // the borderless glass (border-0 shadow-2xl bg-white/95 backdrop-blur)
+  // with the SLATE accent strip and the taller md: padding rhythm (the
+  // docblock always claimed this genus; the constants had drifted).
+  card: "relative overflow-hidden rounded-2xl border-0 bg-white/95 shadow-2xl backdrop-blur-sm",
+  accent: "absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200",
+  inner: "p-8 sm:p-10 md:pt-12 md:pb-10 md:px-10",
   centered: "flex flex-col items-center text-center space-y-6",
   logoWrap: "relative",
   logoGlow: "absolute inset-0 rounded-full bg-amber-200/40 blur-xl",

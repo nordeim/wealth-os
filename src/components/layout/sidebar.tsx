@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { DollarSign, Check, LogOut, Moon } from "lucide-react";
+import { DollarSign, LogOut, Moon, Wifi } from "lucide-react";
 import {
   Menu,
   MenuContent,
@@ -93,11 +93,13 @@ function SidebarFooter({ user }: { user: User }) {
 
   return (
     <div className={NAV_LAYOUT.footer}>
-      {/* The ✓ Synced status pill (live-observed in the reference's
-          sidebar footer). */}
+      {/* The Synced status pill (session-207, F-207h): the reference's
+          badge genus — rounded-md, semibold, green + the wifi glyph
+          (live-extracted from its sidebar footer; green-700 = the AA
+          step, see NAV_LAYOUT.syncedPill). */}
       <div className="flex">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
-          <Check className="h-3 w-3" strokeWidth={3} />
+        <span className={NAV_LAYOUT.syncedPill}>
+          <Wifi className="h-3 w-3" strokeWidth={2} aria-hidden="true" />
           Synced
         </span>
       </div>

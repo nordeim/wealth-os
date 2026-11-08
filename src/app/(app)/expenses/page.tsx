@@ -84,189 +84,192 @@ export default function ExpensesPage() {
 
   return (
     <div className={PAGE_ROOT.standard}>
-      <PageHeader
-        title="Expenses"
-        subtitle="Track and categorize all your spending"
-        actions={
-          <Button onClick={openCreate}>
-            <PlusCircle className="h-4 w-4" />
-            Add Expense
-          </Button>
-        }
-      />
+      <div className={PAGE_ROOT.containerWide}>
+        <PageHeader
+        tone="navy"
+          title="Expenses"
+          subtitle="Track and categorize all your spending"
+          actions={
+            <Button onClick={openCreate}>
+              <PlusCircle className="h-4 w-4" />
+              Add Expense
+            </Button>
+          }
+        />
 
-      {/* Summary trio */}
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        <div className={cn(CARD.base, CARD.padding)}>
-          <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Total Expenses</p>
-          <p className="mt-1 text-2xl font-bold text-stone-900 dark:text-stone-50">
-            {formatMoney(split.needs + split.wants + split.savings)}
-          </p>
-        </div>
-        {(["needs", "wants", "savings"] as const).map((key) => (
-          <div key={key} className={cn(CARD.base, CARD.padding)}>
-            <span className="flex items-center gap-1.5 text-sm font-medium text-stone-500 dark:text-stone-500">
-              <span
-                className="h-2.5 w-2.5 rounded-full"
-                style={{ backgroundColor: BUDGET_CATEGORY_META[key].color }}
-              />
-              {BUDGET_CATEGORY_META[key].label}
-            </span>
+        {/* Summary trio */}
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+          <div className={cn(CARD.base, CARD.padding)}>
+            <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Total Expenses</p>
             <p className="mt-1 text-2xl font-bold text-stone-900 dark:text-stone-50">
-              {formatMoney(split[key])}
+              {formatMoney(split.needs + split.wants + split.savings)}
             </p>
           </div>
-        ))}
-      </div>
-
-      {/* Search + filters */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search expenses..."
-            aria-label="Search expenses"
-            className="h-10 w-full rounded-lg border border-stone-200 bg-white pl-9 pr-3 text-sm text-stone-900 shadow-sm placeholder:text-stone-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
-          />
-        </div>
-        <div className="relative">
-          <Button variant="outline" onClick={() => setFiltersOpen((v) => !v)} aria-expanded={filtersOpen}>
-            <Filter className="h-4 w-4" />
-            Filters
-            {activeFilters > 0 ? (
-              <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[11px] font-bold text-white">
-                {activeFilters}
+          {(["needs", "wants", "savings"] as const).map((key) => (
+            <div key={key} className={cn(CARD.base, CARD.padding)}>
+              <span className="flex items-center gap-1.5 text-sm font-medium text-stone-500 dark:text-stone-500">
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: BUDGET_CATEGORY_META[key].color }}
+                />
+                {BUDGET_CATEGORY_META[key].label}
               </span>
-            ) : null}
-          </Button>
-          {filtersOpen ? (
-            <div
-              className="absolute right-0 top-12 z-20 w-64 rounded-lg border border-stone-200 bg-white p-4 shadow-lg dark:border-stone-700 dark:bg-stone-900"
-              role="group"
-              aria-label="Expense filters"
-            >
-              <div className="mb-2 flex items-center justify-between">
-                <span className="text-sm font-semibold text-stone-900 dark:text-stone-100">Filters</span>
-                <button
-                  type="button"
-                  aria-label="Close filters"
-                  onClick={() => setFiltersOpen(false)}
-                  className="rounded-md p-1 text-stone-500 hover:text-stone-600 dark:hover:text-stone-200"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-              <label className="mb-1 block text-xs font-medium text-stone-500 dark:text-stone-500" htmlFor="expense-category-filter">
-                Category
-              </label>
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger id="expense-category-filter" aria-label="Filter by category">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="max-h-64">
-                  <SelectItem value="all">All categories</SelectItem>
-                  {EXPENSE_CATEGORIES.map((c) => (
-                    <SelectItem key={c.label} value={c.label}>
-                      {c.emoji} {c.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <p className="mt-1 text-2xl font-bold text-stone-900 dark:text-stone-50">
+                {formatMoney(split[key])}
+              </p>
             </div>
-          ) : null}
+          ))}
         </div>
-      </div>
 
-      {/* History */}
-      <section className={cn(CARD.base, CARD.padding)}>
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className={CARD.title}>Expense History ({visible.length})</h2>
-          <Tabs
-            value={tab}
-            onValueChange={setTab}
-            variant="segmented"
-            tabs={[
-              { id: "all", label: "All" },
-              { id: "needs", label: "Needs" },
-              { id: "wants", label: "Wants" },
-              { id: "savings", label: "Savings" },
-            ]}
-          >
-            <TabsPanel tab={tab}>
-        {visible.length === 0 ? (
-          <EmptyState
-            icon={TrendingDown}
-            title="No expenses yet"
-            subtitle="Start tracking your spending to better manage your budget"
-            action={
-              <Button onClick={openCreate}>
-                <PlusCircle className="h-4 w-4" />
-                Add Your First Expense
-              </Button>
-            }
-          />
-        ) : (
-          <ul className="divide-y divide-stone-200/70 dark:divide-stone-800">
-            {visible.map((tx) => {
-              const meta = BUDGET_CATEGORY_META[tx.budgetCategory as "needs" | "wants" | "savings"] ?? BUDGET_CATEGORY_META.wants;
-              return (
-                <li key={tx.id} className="flex items-center justify-between gap-3 py-3">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                      style={{ backgroundColor: meta.soft, color: meta.color }}
-                    >
-                      <Receipt className="h-4 w-4" />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
-                        {tx.description}
-                      </p>
-                      <p className="text-xs text-stone-500 dark:text-stone-500">
-                        {tx.category} · {new Date(tx.date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                        {tx.recurring ? " · recurring" : ""}
-                      </p>
+        {/* Search + filters */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search expenses..."
+              aria-label="Search expenses"
+              className="h-10 w-full rounded-lg border border-stone-200 bg-white pl-9 pr-3 text-sm text-stone-900 shadow-sm placeholder:text-stone-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+            />
+          </div>
+          <div className="relative">
+            <Button variant="outline" onClick={() => setFiltersOpen((v) => !v)} aria-expanded={filtersOpen}>
+              <Filter className="h-4 w-4" />
+              Filters
+              {activeFilters > 0 ? (
+                <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[11px] font-bold text-white">
+                  {activeFilters}
+                </span>
+              ) : null}
+            </Button>
+            {filtersOpen ? (
+              <div
+                className="absolute right-0 top-12 z-20 w-64 rounded-lg border border-stone-200 bg-white p-4 shadow-lg dark:border-stone-700 dark:bg-stone-900"
+                role="group"
+                aria-label="Expense filters"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-stone-900 dark:text-stone-100">Filters</span>
+                  <button
+                    type="button"
+                    aria-label="Close filters"
+                    onClick={() => setFiltersOpen(false)}
+                    className="rounded-md p-1 text-stone-500 hover:text-stone-600 dark:hover:text-stone-200"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <label className="mb-1 block text-xs font-medium text-stone-500 dark:text-stone-500" htmlFor="expense-category-filter">
+                  Category
+                </label>
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger id="expense-category-filter" aria-label="Filter by category">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    <SelectItem value="all">All categories</SelectItem>
+                    {EXPENSE_CATEGORIES.map((c) => (
+                      <SelectItem key={c.label} value={c.label}>
+                        {c.emoji} {c.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        {/* History */}
+        <section className={cn(CARD.base, CARD.padding)}>
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className={CARD.title}>Expense History ({visible.length})</h2>
+            <Tabs
+              value={tab}
+              onValueChange={setTab}
+              variant="segmented"
+              tabs={[
+                { id: "all", label: "All" },
+                { id: "needs", label: "Needs" },
+                { id: "wants", label: "Wants" },
+                { id: "savings", label: "Savings" },
+              ]}
+            >
+              <TabsPanel tab={tab}>
+          {visible.length === 0 ? (
+            <EmptyState
+              icon={TrendingDown}
+              title="No expenses yet"
+              subtitle="Start tracking your spending to better manage your budget"
+              action={
+                <Button onClick={openCreate}>
+                  <PlusCircle className="h-4 w-4" />
+                  Add Your First Expense
+                </Button>
+              }
+            />
+          ) : (
+            <ul className="divide-y divide-stone-200/70 dark:divide-stone-800">
+              {visible.map((tx) => {
+                const meta = BUDGET_CATEGORY_META[tx.budgetCategory as "needs" | "wants" | "savings"] ?? BUDGET_CATEGORY_META.wants;
+                return (
+                  <li key={tx.id} className="flex items-center justify-between gap-3 py-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                        style={{ backgroundColor: meta.soft, color: meta.color }}
+                      >
+                        <Receipt className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
+                          {tx.description}
+                        </p>
+                        <p className="text-xs text-stone-500 dark:text-stone-500">
+                          {tx.category} · {new Date(tx.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                          {tx.recurring ? " · recurring" : ""}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <span className="text-sm font-bold text-stone-900 dark:text-stone-100">
-                      {formatMoney(tx.amount)}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      className="h-8 px-2 text-xs"
-                      onClick={() => {
-                        setEditing(tx);
-                        setDialogOpen(true);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="h-8 px-2 text-xs text-red-600 hover:text-red-700"
-                      onClick={() => void deleteExpense(tx)}
-                    >
-                      <X className="h-3.5 w-3.5" />
-                      <span className="sr-only">Delete {tx.description}</span>
-                    </Button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-            </TabsPanel>
-          </Tabs>
-        </div>
-      </section>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <span className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                        {formatMoney(tx.amount)}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        className="h-8 px-2 text-xs"
+                        onClick={() => {
+                          setEditing(tx);
+                          setDialogOpen(true);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="h-8 px-2 text-xs text-red-600 hover:text-red-700"
+                        onClick={() => void deleteExpense(tx)}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                        <span className="sr-only">Delete {tx.description}</span>
+                      </Button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+              </TabsPanel>
+            </Tabs>
+          </div>
+        </section>
 
-      <ExpenseDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+        <ExpenseDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+      </div>
     </div>
   );
 }

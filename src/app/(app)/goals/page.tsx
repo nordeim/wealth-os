@@ -43,133 +43,136 @@ export default function GoalsPage() {
 
   return (
     <div className={PAGE_ROOT.standard}>
-      <PageHeader
-        title="Savings Goals"
-        subtitle="Set and track your financial objectives"
-        actions={
-          <Button onClick={openCreate}>
-            <PlusCircle className="h-4 w-4" />
-            New Goal
-          </Button>
-        }
-      />
+      <div className={PAGE_ROOT.containerMid}>
+        <PageHeader
+        tone="navy"
+          title="Savings Goals"
+          subtitle="Set and track your financial objectives"
+          actions={
+            <Button onClick={openCreate}>
+              <PlusCircle className="h-4 w-4" />
+              New Goal
+            </Button>
+          }
+        />
 
-      {goals.length === 0 ? (
-        <div className={cn(CARD.base, CARD.padding)}>
-          <EmptyState
-            icon={Target}
-            title="No Goals Set Yet"
-            subtitle="Create your first savings goal to start tracking your financial objectives"
-            action={
-              <Button onClick={openCreate}>
-                <PlusCircle className="h-4 w-4" />
-                Create Your First Goal
-              </Button>
-            }
-          />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {goals.map((goal) => {
-            const progress = goalProgress(goal, now);
-            const category = GOAL_CATEGORIES.find((c) => c.value === goal.category);
-            const done = goal.status === "completed" || progress.pct >= 100;
-            return (
-              <div key={goal.id} className={cn(CARD.base, CARD.padding)}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-50 text-xl dark:bg-amber-500/10"
-                      aria-hidden="true"
-                    >
-                      {category?.emoji ?? "🎯"}
-                    </span>
-                    <div>
-                      <p className="font-semibold text-stone-900 dark:text-stone-100">{goal.name}</p>
-                      <p className="text-xs capitalize text-stone-500 dark:text-stone-500">
-                        {category?.label ?? goal.category}
-                      </p>
+        {goals.length === 0 ? (
+          <div className={cn(CARD.base, CARD.padding)}>
+            <EmptyState
+              icon={Target}
+              title="No Goals Set Yet"
+              subtitle="Create your first savings goal to start tracking your financial objectives"
+              action={
+                <Button onClick={openCreate}>
+                  <PlusCircle className="h-4 w-4" />
+                  Create Your First Goal
+                </Button>
+              }
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {goals.map((goal) => {
+              const progress = goalProgress(goal, now);
+              const category = GOAL_CATEGORIES.find((c) => c.value === goal.category);
+              const done = goal.status === "completed" || progress.pct >= 100;
+              return (
+                <div key={goal.id} className={cn(CARD.base, CARD.padding)}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-50 text-xl dark:bg-amber-500/10"
+                        aria-hidden="true"
+                      >
+                        {category?.emoji ?? "🎯"}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-stone-900 dark:text-stone-100">{goal.name}</p>
+                        <p className="text-xs capitalize text-stone-500 dark:text-stone-500">
+                          {category?.label ?? goal.category}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <span
-                    className={cn(
-                      "rounded-full px-2 py-0.5 text-[11px] font-semibold",
-                      goal.status === "completed" || done
-                        ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
-                        : goal.status === "paused"
-                          ? "bg-stone-100 text-stone-500 dark:bg-stone-800"
-                          : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
-                    )}
-                  >
-                    {goal.status === "completed" || done ? "Completed" : goal.status === "paused" ? "Paused" : "Active"}
-                  </span>
-                </div>
-
-                <div className="mt-4 flex items-end justify-between">
-                  <p className="text-2xl font-bold text-stone-900 dark:text-stone-50">
-                    {formatMoney(goal.currentAmount)}
-                  </p>
-                  <p className="text-sm text-stone-500 dark:text-stone-500">
-                    of {formatMoney(goal.targetAmount)}
-                  </p>
-                </div>
-                <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all",
-                      done
-                        ? "bg-emerald-500"
-                        : "bg-gradient-to-r from-amber-400 to-amber-500",
-                    )}
-                    style={{ width: `${progress.pct}%` }}
-                  />
-                </div>
-                <div className="mt-2 flex items-center justify-between text-xs text-stone-500 dark:text-stone-500">
-                  <span className="font-semibold text-amber-700 dark:text-amber-400">{progress.pct}% funded</span>
-                  {goal.targetDate ? (
-                    <span>
-                      by{" "}
-                      {new Date(goal.targetDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        year: "numeric",
-                      })}
-                      {progress.perMonthNeeded != null && !done
-                        ? ` · ${formatMoney(progress.perMonthNeeded)}/mo`
-                        : ""}
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 text-[11px] font-semibold",
+                        goal.status === "completed" || done
+                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
+                          : goal.status === "paused"
+                            ? "bg-stone-100 text-stone-500 dark:bg-stone-800"
+                            : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+                      )}
+                    >
+                      {goal.status === "completed" || done ? "Completed" : goal.status === "paused" ? "Paused" : "Active"}
                     </span>
-                  ) : null}
-                </div>
+                  </div>
 
-                <div className="mt-4 flex gap-2">
-                  <Button
-                    variant="outline"
-                    className="h-8 flex-1 text-xs"
-                    onClick={() => {
-                      setEditing(goal);
-                      setDialogOpen(true);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="h-8 flex-1 text-xs text-red-600 hover:text-red-700"
-                    onClick={async () => {
-                      const res = await store.deleteGoal(goal.id);
-                      if (res.ok) toast.success("Goal deleted");
-                      else toast.error("Delete failed", res.error);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+                  <div className="mt-4 flex items-end justify-between">
+                    <p className="text-2xl font-bold text-stone-900 dark:text-stone-50">
+                      {formatMoney(goal.currentAmount)}
+                    </p>
+                    <p className="text-sm text-stone-500 dark:text-stone-500">
+                      of {formatMoney(goal.targetAmount)}
+                    </p>
+                  </div>
+                  <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all",
+                        done
+                          ? "bg-emerald-500"
+                          : "bg-gradient-to-r from-amber-400 to-amber-500",
+                      )}
+                      style={{ width: `${progress.pct}%` }}
+                    />
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-xs text-stone-500 dark:text-stone-500">
+                    <span className="font-semibold text-amber-700 dark:text-amber-400">{progress.pct}% funded</span>
+                    {goal.targetDate ? (
+                      <span>
+                        by{" "}
+                        {new Date(goal.targetDate).toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                        })}
+                        {progress.perMonthNeeded != null && !done
+                          ? ` · ${formatMoney(progress.perMonthNeeded)}/mo`
+                          : ""}
+                      </span>
+                    ) : null}
+                  </div>
 
-      <GoalDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+                  <div className="mt-4 flex gap-2">
+                    <Button
+                      variant="outline"
+                      className="h-8 flex-1 text-xs"
+                      onClick={() => {
+                        setEditing(goal);
+                        setDialogOpen(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-8 flex-1 text-xs text-red-600 hover:text-red-700"
+                      onClick={async () => {
+                        const res = await store.deleteGoal(goal.id);
+                        if (res.ok) toast.success("Goal deleted");
+                        else toast.error("Delete failed", res.error);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <GoalDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+      </div>
     </div>
   );
 }

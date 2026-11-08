@@ -46,71 +46,74 @@ export default function AccountsPage() {
 
   return (
     <div className={PAGE_ROOT.standard}>
-      <PageHeader
-        title="My Accounts"
-        subtitle="Manage your connected bank accounts"
-        actions={
-          <Button onClick={openCreate}>
-            <PlusCircle className="h-4 w-4" />
-            Add Account
-          </Button>
-        }
-      />
+      <div className={PAGE_ROOT.containerMid}>
+        <PageHeader
+        tone="navy"
+          title="My Accounts"
+          subtitle="Manage your connected bank accounts"
+          actions={
+            <Button onClick={openCreate}>
+              <PlusCircle className="h-4 w-4" />
+              Add Account
+            </Button>
+          }
+        />
 
-      {accounts.length === 0 ? (
-        <div className={cn(CARD.base, CARD.padding)}>
-          <EmptyState
-            icon={Landmark}
-            title="No accounts yet"
-            subtitle="Add a bank account to start tracking your finances."
-            action={
-              <Button onClick={openCreate}>
-                <PlusCircle className="h-4 w-4" />
-                Add your first account
-              </Button>
-            }
-          />
-        </div>
-      ) : (
-        <>
-          <div className={cn(CARD.base, CARD.padding, "flex items-center gap-4")}>
-            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-500/10">
-              <Landmark className="h-6 w-6 text-amber-500" />
-            </span>
-            <div>
-              <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Net Balance</p>
-              <p
-                className={cn(
-                  "text-2xl font-bold",
-                  totalBalance >= 0 ? "text-stone-900 dark:text-stone-50" : "text-red-500",
-                )}
-              >
-                {formatMoney(totalBalance)}
-              </p>
-              <p className="text-xs text-stone-500">Across {accounts.length} accounts</p>
+        {accounts.length === 0 ? (
+          <div className={cn(CARD.base, CARD.padding)}>
+            <EmptyState
+              icon={Landmark}
+              title="No accounts yet"
+              subtitle="Add a bank account to start tracking your finances."
+              action={
+                <Button onClick={openCreate}>
+                  <PlusCircle className="h-4 w-4" />
+                  Add your first account
+                </Button>
+              }
+            />
+          </div>
+        ) : (
+          <>
+            <div className={cn(CARD.base, CARD.padding, "flex items-center gap-4")}>
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-500/10">
+                <Landmark className="h-6 w-6 text-amber-500" />
+              </span>
+              <div>
+                <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Net Balance</p>
+                <p
+                  className={cn(
+                    "text-2xl font-bold",
+                    totalBalance >= 0 ? "text-stone-900 dark:text-stone-50" : "text-red-500",
+                  )}
+                >
+                  {formatMoney(totalBalance)}
+                </p>
+                <p className="text-xs text-stone-500">Across {accounts.length} accounts</p>
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {accounts.map((account) => (
-              <AccountCard
-                key={account.id}
-                account={account}
-                onEdit={() => {
-                  setEditing(account);
-                  setDialogOpen(true);
-                }}
-                onDelete={async () => {
-                  const res = await store.deleteAccount(account.id);
-                  if (res.ok) toast.success("Account deleted");
-                  else toast.error("Delete failed", res.error);
-                }}
-              />
-            ))}
-          </div>
-        </>
-      )}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {accounts.map((account) => (
+                <AccountCard
+                  key={account.id}
+                  account={account}
+                  onEdit={() => {
+                    setEditing(account);
+                    setDialogOpen(true);
+                  }}
+                  onDelete={async () => {
+                    const res = await store.deleteAccount(account.id);
+                    if (res.ok) toast.success("Account deleted");
+                    else toast.error("Delete failed", res.error);
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
-      <AccountDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+        <AccountDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />
+      </div>
     </div>
   );
 }

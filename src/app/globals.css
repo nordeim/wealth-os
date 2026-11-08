@@ -36,6 +36,10 @@
   --color-primary-hover: #d97706;
   --color-primary-foreground: #ffffff;
   --color-brand: #f59e0b;
+  /* Session-207 (F-207e): the reference's H1 navy token — live-computed
+     rgb(15,20,25) on its seven non-dashboard section H1s
+     (`text-primary-navy`); a literal hex per the v4 tokens doctrine. */
+  --color-primary-navy: #0f1419;
 
   /* Neutrals — warm stone family + the light page wash */
   --color-background: #faf9f7;
@@ -292,6 +296,23 @@
     rgb(28, 25, 23) 50%,
     rgb(12, 10, 9) 100%
   );
+}
+
+/* The mobile drawer sheet (session-207, F-207d): the reference layers a
+   3%-alpha gold→emerald tint (extracted verbatim from its inline style)
+   over the stone-900→800→900 diagonal. We keep the OPAQUE base — the
+   reference's sheet is a transparent veil whose light mode ships
+   stone-300-on-light text (unreadable); the sheen rides as the top
+   background-image layer, exactly its tint. */
+@utility mobile-drawer-sheen {
+  background-image:
+    linear-gradient(
+      135deg,
+      rgb(212 175 55 / 0.03) 0%,
+      transparent 50%,
+      rgb(4 120 87 / 0.03) 100%
+    ),
+    linear-gradient(to bottom right, #1c1917, #292524, #1c1917);
 }
 
 /* The reference's light page wash: a warm off-white with a faint

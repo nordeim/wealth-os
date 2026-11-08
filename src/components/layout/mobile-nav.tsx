@@ -110,14 +110,16 @@ function DrawerNav({ onNavigate }: { onNavigate?: () => void }) {
           );
         })}
       </nav>
-      <button
-        type="button"
-        className={MOBILE_NAV_SHEET.signOut}
-        onClick={() => void signOut()}
-      >
-        <LogOut className="h-5 w-5" />
-        Sign Out
-      </button>
+      <div className={MOBILE_NAV_SHEET.footer}>
+        <button
+          type="button"
+          className={MOBILE_NAV_SHEET.signOut}
+          onClick={() => void signOut()}
+        >
+          <LogOut className="h-4 w-4" />
+          Sign Out
+        </button>
+      </div>
     </div>
   );
 }
