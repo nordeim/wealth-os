@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 604 / Playwright 84 / smoke 14). Covers the design system,
+  layer (Vitest 614 / Playwright 84 / smoke 14). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -122,7 +122,7 @@ Locked versions from `package.json` (verified at distillation):
 | State | `zustand` | 5.0.15 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` | 6.19.3 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3) |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses |
-| Unit tests | `vitest` + `fast-check` | 5.0.5 / 4.10.2 | Node env, jsdom-free; 604 checks / 42 files |
+| Unit tests | `vitest` + `fast-check` | 5.0.5 / 4.10.2 | Node env, jsdom-free; 614 checks / 42 files |
 | E2E tests | `@playwright/test` + `axe-core` | 1.64.1 / 4.13.0 | Chromium; 84 checks / 5 specs; own db + port 3100 |
 | PDF export | `jspdf` + `html2canvas-pro` | 4.2.1 / 2.5.2 | Client-side statements (`src/lib/pdf-export.ts`); `dompurify` override-pinned at 3.4.17 (session 198's critical cure, inherited) |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
@@ -197,13 +197,13 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (604 checks) |
+| Unit tests | `bun run test` (614 checks) |
 | E2E (boots own server) | `CI=1 bun run test:e2e` (84 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (14 assertions; needs build) |
 | DB push / seed / census | `bun run db:push` / `db:seed` / `db:census` |
 | Full gate | `bun run gate` = lint → typecheck → test → build → smoke → e2e |
-| Parity gate | `bun run gate:full` — dormant (the sweep + drift-probe + interior-census legs WealthOS-native through R-4.3, baselines re-derived at R-7.5: re-anchor + theme-matched baselines + the reference-stability probe + the interior census's four-axis standing allowances; the fullpage leg pending R-4.4 with the reactivation R-4.5; see §11) |
+| Parity gate | `bun run gate:full` — dormant (the sweep + drift-probe + interior-census + fullpage legs WealthOS-native through R-4.4, baselines re-derived at R-7.5/R-7.9/R-7.10 + the session-210 fullpage maiden: re-anchor + theme-matched baselines + the reference-stability probe + the interior census's four-axis standing allowances + the fullpage below-the-fold axis with the zero-data sentinel; only the reactivation R-4.5 pending; see §11) |
 
 ## 4. The Design System (Code-First)
 
@@ -647,7 +647,7 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 604 passed / 42 files
+- [ ] `bun run test` — 614 passed / 42 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 14/14 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)
@@ -658,7 +658,7 @@ Expected steady-state numbers (verify, don't assume):
       interior-census legs are WealthOS-native through R-4.3 —
       theme-matched baselines, the reference-stability probe, the
       interior census's four-axis standing allowances; the fullpage leg
-      stays CRM-era until R-4.4)
+      re-anchored at session 210 — R-4.4)
 
 Security items (each traces to a real incident class in the family):
 
@@ -781,8 +781,9 @@ including the real AUTH_SECRET. The smoke hygiene loop re-checks it.
 - **Capture + VLM-verify after visual changes** (the sweep, drift-probe,
   and interior-census legs are WealthOS-native through R-4.3 —
   theme-matched baselines, the reference-stability probe, the interior
-  census's four-axis standing allowances; the fullpage leg stays
-  CRM-era until R-4.4; the operative parity evidence is the e2e battery
+  census's four-axis standing allowances; the fullpage leg re-anchored
+  at session 210 (R-4.4 — clean at both classes); the operative parity
+  evidence is the e2e battery
   + VLM-verified captures).
 - **VLM-verify screenshots** when capturing evidence (the A-12 catch was
   a VLM find); save captures under `docs/screenshots/`.
@@ -1180,8 +1181,11 @@ The essentials:
   + the functional mobile-menu check, pinned in
   tests/drift-probe-tool.test.ts; the interior census — 11-page set,
   anchor fallback, four-axis standing allowances at zero margin, pinned
-  in tests/interior-census-tool.test.ts); `sweep:fullpage` remains
-  CRM-era (R-4.4). Until R-4.5 reactivates `gate:full`, parity evidence
+  in tests/interior-census-tool.test.ts); `sweep:fullpage` re-anchored
+  at session 210 (R-4.4 — the 11-page below-the-fold axis at the sweep's
+  own classes, the zero-data sentinel, the derived per-class baselines,
+  pinned in tests/fullpage-sweep-tool.test.ts). Until R-4.5 reactivates
+  `gate:full`, parity evidence
   = e2e + VLM captures.
 - **agent-browser + VLM**: for capturing evidence (login, nine sections,
   mobile faces, drawer-open) — save under `docs/screenshots/`, verify

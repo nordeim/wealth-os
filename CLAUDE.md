@@ -45,7 +45,7 @@ Follow this six-phase workflow for all implementation tasks:
   functionality.
 - **Determinism everywhere**: the seed, the AI coach, and the test data
   are all deterministic — no `Math.random()` in seeded paths.
-- **The gate is the contract**: lint 0/0 · tsc 0 · 604 unit · build ·
+- **The gate is the contract**: lint 0/0 · tsc 0 · 614 unit · build ·
   smoke 14/14 · 84 e2e. A green gate achieved by weakening a guardrail is
   not a fix.
 - **Offline-capable by default**: no runtime third-party calls (fonts,
@@ -106,7 +106,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 | `bun run dev` | Dev server (:3000) |
 | `bun run build` | Production standalone build |
 | `bun run start` | Serve the standalone artifact (needs build) |
-| `bun run test` | Unit suite (Vitest, 604 checks) |
+| `bun run test` | Unit suite (Vitest, 614 checks) |
 | `CI=1 bun run test:e2e` | E2E suite (Playwright, 84 checks, own db + :3100) |
 | `bun run lint` | ESLint, fails on warnings |
 | `bun run typecheck` | `tsc --noEmit` |
@@ -118,7 +118,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 
 - **Unit (Vitest)**: domain math, schemas, AI engine, auth contract,
   architecture pins (`gate-script`, `db-census`, `route-case`…), property
-  tests via fast-check. 604 checks / 42 files.
+  tests via fast-check. 614 checks / 42 files.
 - **E2E (Playwright, chromium)**: journeys per section, mobile drawer at
   390×844, dialogs, route-alias equivalence, the 401 auth-wall probe.
   84 checks / 5 specs. `playwright.config.ts` pins `db/e2e.db`, global
@@ -181,8 +181,9 @@ bun run typecheck   # tsc --noEmit
   sentinel demo census, functional mobile-menu check; the interior
   census — four-axis standing allowances at zero margin with
   mutation-proof teeth; the R-7 convergence dropped every section share —
-  import collapsed 75.1→31.2 desktop) — the fullpage leg stays CRM-era
-  until R-4.4.
+  import collapsed 75.1→31.2 desktop); the fullpage leg re-anchored at
+  session 210 (R-4.4: the 11-page below-the-fold axis, the zero-data
+  sentinel, the derived per-class baselines — clean at both classes).
 
 ## Communication & Documentation
 

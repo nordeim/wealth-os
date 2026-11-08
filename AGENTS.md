@@ -28,7 +28,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
 | **Full gate (run before push)** | `bun run gate` = lint → typecheck → test → build → smoke → `CI=1 test:e2e` |
-| Parity gate | `bun run gate:full` — dormant: the sweep, drift-probe, and interior-census legs are WealthOS-native (R-4.1 re-anchor + R-4.2 theme-matched baselines + R-4.3: the reference-stability probe — bundle fingerprint, sentinel demo census, functional mobile-menu check — and the interior census — four-axis standing allowances at zero margin, mutation-proof teeth; pinned in `tests/sweep-tool.test.ts`, `tests/drift-probe-tool.test.ts`, `tests/interior-census-tool.test.ts`), but the fullpage leg (R-4.4) and the reactivation (R-4.5) remain; the pre-push bar is `bun run gate` |
+| Parity gate | `bun run gate:full` — dormant: the sweep, drift-probe, interior-census, and fullpage legs are WealthOS-native (R-4.1 re-anchor + R-4.2 theme-matched baselines + R-4.3: the reference-stability probe — bundle fingerprint, sentinel demo census, functional mobile-menu check — and the interior census — four-axis standing allowances at zero margin, mutation-proof teeth; R-4.4 at session 210: the fullpage sweep — the 11-page below-the-fold axis, the zero-data sentinel guard, the derived per-class baselines; pinned in `tests/sweep-tool.test.ts`, `tests/drift-probe-tool.test.ts`, `tests/interior-census-tool.test.ts`, `tests/fullpage-sweep-tool.test.ts`), only the reactivation (R-4.5) remains; the pre-push bar is `bun run gate` |
 | DB push / seed / census | `bun run db:push` / `db:seed` / `db:census` |
 
 ## Non-negotiable conventions
@@ -161,3 +161,14 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   `payload` prop. The cure: `<Legend itemSorter={null} />` (the selector
   skips `sortBy` when the sorter is falsy). Pinned in
   `tests/parity-208.test.ts`.
+- **A script's direct-execution guard must be an EXACT basename match**
+  (session-210, F-210c): `"fullpage-sweep.ts".endsWith("sweep.ts")` is
+  TRUE — so the moment fullpage-sweep.ts imported `./sweep` (the R-4.4
+  re-anchor), sweep.ts's suffix-form guard fired THE SWEEP inside the
+  fullpage process: zero → capture → RESEED mid-run, corrupting the
+  maiden's measurements until the zero-data sentinel caught it (F-210b).
+  All four tool guards are now `path.basename(process.argv[1]) ===
+  "<name>.ts"` — a guard a sibling's filename can satisfy is not a
+  guard. Pinned in `tests/fullpage-sweep-tool.test.ts`; long-running
+  capture tools must also verify their workspace state mid-run (the
+  zero-data sentinel pattern) instead of trusting a one-time setup.
