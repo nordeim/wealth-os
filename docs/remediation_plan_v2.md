@@ -164,7 +164,7 @@ tree before shipping (the plan-validation pass the task spec mandates):
 
 | Version | Session | R-items executed | Gate at ship | Commit |
 |---|---|---|---|---|
-| v2.0.0 | 203 | plan created; **R-1** (security ledger + zod floor pin + PAD/AGENTS lockstep) · **R-2** (docs-counts port + 8 site fixes incl. §7.1) · **R-3** (vitest.config comment) | lint 0/0 · tsc 0 · **508 unit** (37 files; +10: 8 docs-counts + 2 security-ledger) · build · smoke 14/14 · e2e 84/84 · census MATCH | `<filled at commit>` |
+| v2.0.0 | 203 | plan created; **R-1** (security ledger + zod floor pin + PAD/AGENTS lockstep) · **R-2** (docs-counts port + 8 site fixes incl. §7.1) · **R-3** (vitest.config comment) | lint 0/0 · tsc 0 · **508 unit** (37 files; +10: 8 docs-counts + 2 security-ledger) · build · smoke 14/14 · e2e 84/84 · census MATCH | `905b8a4` (the execution commit) |
 
 > The next iteration session (204) picks up **R-4.1** by default, or any
 > Critical/High finding a fresh audit surfaces (findings always pre-empt the
