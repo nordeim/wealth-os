@@ -43,7 +43,7 @@ test.describe("reset-password form (a non-empty token)", () => {
   test("renders the set-password form with the helper text", async ({ page }) => {
     await page.goto("/reset-password?token=e2e-shape-probe");
     await expect(page.getByRole("heading", { name: "Set new password" })).toBeVisible();
-    await expect(page.getByText("Enter your new password for NEO CRM")).toBeVisible();
+    await expect(page.getByText("Enter your new password for WealthOS")).toBeVisible();
 
     const password = page.locator("input#password");
     const confirm = page.locator("input#confirmPassword");

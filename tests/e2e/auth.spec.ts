@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
-test("login page renders the NEO CRM card", async ({ page }) => {
+test("login page renders the WealthOS card", async ({ page }) => {
   await page.goto("/login");
   await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
   await expect(page.getByLabel("Email")).toBeVisible();

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -159,5 +159,45 @@ describe("session-97 (S97-P3): the gate:full composite — the drift gate promot
       .filter((s) => /^(bun run sweep|bun run census)/.test(s));
     expect(gates.length).toBe(6); // the four viewport sweeps + the s149 fullpage gate + the s152 interior census gate
     for (const s of gates) expect(s).toContain("--fail-on-drift");
+  });
+});
+
+describe("session-201 (D-201c): no scaffold-era brand strings in the rendered tree", () => {
+  // The WealthOS transformation (session 199) rebuilt every page, but
+  // the reset-password card's subtitle still greeted users with "NEO
+  // CRM" — the scaffold's product name, live in the rendered UI. The
+  // lowercase identifiers (neo_session, NEO_PROXY_HOPS, the
+  // neo-crm-prefixed localStorage/secret constants) are documented
+  // scaffold legacy; the HUMAN-READABLE brand is not. Historical
+  // comments keep the name (they are session records); rendered
+  // strings may not carry it. The scan walks the whole src/ tree with
+  // comments stripped — the N-69g stripComments idiom — so the class
+  // (any future paste wearing the old brand) trips a RED here, not a
+  // user's screenshot.
+  const stripBrandComments = (src: string): string =>
+    src
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/[^\n]*/g, "");
+
+  const walkSources = (dir: string): string[] => {
+    const files: string[] = [];
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, entry.name);
+      if (entry.isDirectory()) files.push(...walkSources(p));
+      else if (/\.(ts|tsx)$/.test(entry.name)) files.push(p);
+    }
+    return files;
+  };
+
+  it("no .ts/.tsx source renders the NEO CRM product name", () => {
+    const srcDir = path.resolve(import.meta.dirname, "..", "src");
+    const offenders: string[] = [];
+    for (const file of walkSources(srcDir)) {
+      const stripped = stripBrandComments(readFileSync(file, "utf8"));
+      if (/(NEO|Neo)\s+CRM/.test(stripped)) {
+        offenders.push(path.relative(srcDir, file));
+      }
+    }
+    expect(offenders, `brand-string offenders: ${offenders.join(", ")}`).toEqual([]);
   });
 });

@@ -118,7 +118,7 @@ export function ResetPasswordScreen() {
               <form onSubmit={onResetSubmit} className={LOGIN_LAYOUT.form} noValidate>
                 <div className="space-y-2 sm:space-y-3">
                   <h1 className={LOGIN_LAYOUT.title}>Set new password</h1>
-                  <p className={LOGIN_LAYOUT.subtitle}>Enter your new password for NEO CRM</p>
+                  <p className={LOGIN_LAYOUT.subtitle}>Enter your new password for WealthOS</p>
                 </div>
 
                 <div className={LOGIN_LAYOUT.fields}>
