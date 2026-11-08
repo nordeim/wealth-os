@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 562 / Playwright 84 / smoke 14). Covers the design system,
+  layer (Vitest 582 / Playwright 84 / smoke 14). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -122,7 +122,7 @@ Locked versions from `package.json` (verified at distillation):
 | State | `zustand` | 5.0.15 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` | 6.19.3 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3) |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses |
-| Unit tests | `vitest` + `fast-check` | 5.0.5 / 4.10.2 | Node env, jsdom-free; 562 checks / 40 files |
+| Unit tests | `vitest` + `fast-check` | 5.0.5 / 4.10.2 | Node env, jsdom-free; 582 checks / 41 files |
 | E2E tests | `@playwright/test` + `axe-core` | 1.64.1 / 4.13.0 | Chromium; 84 checks / 5 specs; own db + port 3100 |
 | PDF export | `jspdf` + `html2canvas-pro` | 4.2.1 / 2.5.2 | Client-side statements (`src/lib/pdf-export.ts`); `dompurify` override-pinned at 3.4.17 (session 198's critical cure, inherited) |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
@@ -197,7 +197,7 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (562 checks) |
+| Unit tests | `bun run test` (582 checks) |
 | E2E (boots own server) | `CI=1 bun run test:e2e` (84 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (14 assertions; needs build) |
@@ -225,6 +225,15 @@ CSS-first, no config file. Structure:
 --color-primary-hover: #d97706;    /* amber-600 */
 --color-primary-foreground: #ffffff;
 --color-primary-navy: #0f1419;      /* the section-H1 navy — 7 of 9 pages (session 207) */
+/* Session-208 parity genera (live-extracted):
+   KPI_TONES — the stat-tile gradients (emerald/teal · rose/red · amber/yellow ·
+     purple/violet) + GradientKpiCard (Investments' full-card gradients);
+   SETTINGS_CARD — the settings page's OWN glass genus (bg-white/80
+     backdrop-blur border-0 shadow-lg + the blue GDPR box + blue Export
+     button + amber import box + the shadcn badge family + the bottom
+     Save footer); every other page keeps the warm CARD genus;
+   public/wealthos-logo.png — the reference's own 192×192 login logo asset
+     (fetched session 208; the CSS bar-chart mark retired). */
 --color-background: #faf9f7;       /* warm stone page wash */
 --color-surface: #ffffff;          /* cards */
 --color-foreground: #1c1917;       /* stone-900 ink */
@@ -621,7 +630,7 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 562 passed / 40 files
+- [ ] `bun run test` — 582 passed / 41 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 14/14 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)

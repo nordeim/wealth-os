@@ -146,3 +146,10 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   `src/components/layout/`.
 - **A stale `node_modules/.prisma`** after schema edits: rerun
   `bun run db:generate` before blaming the query code.
+- **recharts v3 silently sorts `<Legend />` payloads alphabetically**
+  (session-208, F-208f): the legend settings default `itemSorter: 'value'`
+  reorders series by NAME (Expenses, Income, Net) while the reference
+  (recharts v2) preserves series order — and v3 REMOVED the explicit
+  `payload` prop. The cure: `<Legend itemSorter={null} />` (the selector
+  skips `sortBy` when the sorter is falsy). Pinned in
+  `tests/parity-208.test.ts`.
