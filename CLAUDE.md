@@ -25,7 +25,8 @@ Follow this six-phase workflow for all implementation tasks:
 
 1. **ANALYZE** — mine requirements deeply; never assume surface-level
    reading is enough. Read the repo docs (`AGENTS.md`, this file, the PAD,
-   `docs/Tailwind-V4-Validation-Report.md`) and `skills/skills-catalog.md`
+   `docs/Tailwind-V4-Validation-Report.md`, `wealth-os_SKILL.md` — the
+   distilled engineering skill) and `skills/skills-catalog.md`
    before building.
 2. **PLAN** — structured roadmap; save substantive plans under `docs/`.
 3. **VALIDATE** — confirm the plan against the codebase's pinned

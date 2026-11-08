@@ -285,7 +285,7 @@ wealth-os/
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
 ├── docs/                        # plans, validation reports, SSH runbook, screenshots/
-└── AGENTS.md · CLAUDE.md · README.md · worklog.md
+└── AGENTS.md · CLAUDE.md · README.md · wealth-os_SKILL.md · worklog.md
 ```
 
 ### 3.3 Critical Code Patterns

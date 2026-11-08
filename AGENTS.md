@@ -110,6 +110,10 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 - Layout constants (dialogs, tables, login): `src/lib/page-layout.ts`
 - Skills library: `skills/skills-catalog.md` (grep it before building
   anything non-trivial — replication, engineering, doc, and push skills)
+- The distilled engineering skill: `wealth-os_SKILL.md` (repo root — the
+  20-section reference: design tokens, domain seams, anti-pattern ledger,
+  debugging guide, pre-ship checklist; every fact verified against the
+  tree at session 199's ship state)
 - Session history: `worklog.md` (append your session at the top)
 
 ## Gotchas that have bitten before

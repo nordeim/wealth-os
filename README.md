@@ -106,7 +106,7 @@ wealth-os/
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
 ├── 📄 playwright.config.ts    # Port 3100; pinned e2e.db; authenticated storageState
 ├── 📄 vitest.config.ts        # Node environment, jsdom-free
-└── 📄 AGENTS.md / CLAUDE.md / Project_Architecture_Document.md / worklog.md
+└── 📄 AGENTS.md / CLAUDE.md / Project_Architecture_Document.md / wealth-os_SKILL.md / worklog.md
 ```
 
 ## Quick Start
@@ -222,7 +222,7 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
 | Verification layer | ✅ Complete | 497 unit · 84 e2e · 14 smoke · full gate green |
-| Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, worklog |
+| Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License
