@@ -1,7 +1,9 @@
-// NEO CRM — Prisma schema (SQLite)
-// Domain model cloned from the reference app: login users (sales reps /
-// owners), accounts, contacts, leads (deals), calendar events, activities,
-// saved reports and a settings singleton (editable picklists + defaults).
+// WealthOS — Prisma schema (SQLite)
+// Session-199: the finance domain, cloned from the reference app
+// (https://wealth-os-d93bd04e.base44.app/): login users, income sources,
+// transactions (income + expense, needs/wants/savings budgeting), bank
+// accounts, investments, savings goals, category budgets and a settings
+// singleton (currency, date format, notifications, theme).
 
 generator client {
   provider = "prisma-client-js"
@@ -17,246 +19,168 @@ model User {
   email        String   @unique
   name         String
   passwordHash String
-  avatarColor  String   @default("#2563eb")
-  // Session-30 (S30-P3): the profile-photo round-trip — the reference's
-  // aCe stores the uploaded file's URL via updateMe({profile_picture}).
-  // Null = never uploaded (the gray-200 initial fallback renders).
+  avatarColor  String   @default("#f59e0b")
   photoUrl     String?
-  role         String   @default("rep") // rep | admin
-  // Session-21 (S21-P5): the email-verification funnel. A NULL
-  // verificationExpiresAt means "no verification pending" — the seeded
-  // demo users and every pre-session-21 account pass straight through
-  // login. The code itself is stored HASHED (scrypt, auth.ts's format);
-  // the plaintext rides only the server console log.
-  verificationCodeHash   String?
-  verificationAttempts   Int      @default(0)
-  verificationExpiresAt  DateTime?
-  // Session-163 (the digma S67-A port): the revocation dimension. Every
-  // session token embeds the row's tokenVersion at mint time; a password
-  // reset increments it and every previously minted cookie dies at the
-  // getSessionUser comparison (a stolen session no longer outlives the
-  // reset performed specifically to kill it).
+  role         String   @default("user") // user | admin
+  // The email-verification funnel (kept from the hardened auth): a NULL
+  // verificationExpiresAt means "no verification pending" — seeded demo
+  // users pass straight through login. The code is stored HASHED.
+  verificationCodeHash String?
+  verificationAttempts Int      @default(0)
+  verificationExpiresAt DateTime?
+  // The revocation dimension: every session token embeds the row's
+  // tokenVersion; a password reset increments it and every previously
+  // minted cookie dies at the getSessionUser comparison.
   tokenVersion Int @default(0)
-  // Session-163 (the digma S46/S64 port): the password-reset funnel. A
-  // NULL resetToken means "no reset pending"; the token is a 32-byte
-  // crypto-random hex consumed ATOMICALLY and SINGLE-USE (the conditional
-  // updateMany carries token + live expiry in its WHERE — a racing replay
-  // lands count 0 and answers the invalid-token 400). 60-minute TTL.
-  // Session-164 (the skill §12 hashed-at-rest compliance): the column
-  // stores hashResetToken(token) — the SHA-256 hex of the raw token, the
-  // same hashed-storage posture as verificationCodeHash; the raw token
-  // lives only in the delivery URL, so a DB read compromise never mints
-  // live reset links.
-  resetToken           String?
-  resetTokenExpiresAt  DateTime?
+  // The password-reset funnel: the resetToken column stores the hashed
+  // form — hashResetToken(token), the SHA-256 hex of the raw token,
+  // consumed ATOMICALLY and SINGLE-USE (60-minute TTL).
+  resetToken          String?
+  resetTokenExpiresAt DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  accounts  Account[]
-  contacts  Contact[]
-  leads     Lead[]
-  events    Event[]
-  activities Activity[]
+  incomeSources IncomeSource[]
+  transactions  Transaction[]
+  bankAccounts  BankAccount[]
+  investments   Investment[]
+  goals         Goal[]
 }
 
-model Account {
-  id            String    @id @default(cuid())
-  name          String
-  industry      String?
-  email         String?
-  phone         String?
-  website       String?
-  annualRevenue Float? // in default currency units (not minor units — display app)
-  employees     Int?
-  status        String    @default("active") // active | inactive | prospect (session-86: the reference's bce/wce dialog trio)
-  // Session-26 (S26-P5): the reference's Account entity carries a STORED
-  // health (Healthy | At Risk | Needs Attention — its detail view's
-  // class-map), backend-defaulted (its New Account dialog has NO health
-  // field — live-verified: 8 labels, none health). Our accounts page
-  // export includes the Health column; the field rides the raw JSON the
-  // same way the reference's does.
-  health        String    @default("Healthy") // Healthy | At Risk | Needs Attention
-  ownerId       String?
-  lastActivityAt DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+model IncomeSource {
+  id              String    @id @default(cuid())
+  name            String
+  // salary | freelance | business | investment | rental | other
+  type            String    @default("salary")
+  amount          Float     @default(0)
+  // monthly | weekly | biweekly | quarterly | annually
+  frequency       String    @default("monthly")
+  active          Boolean   @default(true)
+  nextPaymentDate DateTime?
+  notes           String?
+  ownerId         String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  owner      User?      @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-  contacts   Contact[]
-  leads      Lead[]
-  events     Event[]
-  activities Activity[]
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  @@index([name])
-  @@index([status])
-}
-
-model Contact {
-  id            String    @id @default(cuid())
-  name          String
-  email         String?
-  phone         String?
-  company       String?
-  position      String?
-  source        String? // RAW value: call | email | website | partner | referral (emojis are create-dialog labels only)
-  // Session-28 (S28-P1): the reference's contact vocabulary — priority is
-  // Key | Standard | At Risk (NOT the lead hot/warm/cold temperature), and
-  // role/engagement/companySize/photoUrl are first-class fields (the inline
-  // role select, the 3-bar engagement cell, the company-size stack, the
-  // photo-driven avatar).
-  priority      String    @default("Standard") // key | standard | at_risk — stored "Key"/"Standard"/"At Risk"
-  role          String? // Decision Maker | Key Contact | Influencer | End User | Other
-  engagementLevel String? // High | Medium | Low
-  companySize   String? // "Small (1-50)" | "Medium (51-500)" | "Large (500+)"
-  photoUrl      String?
-  status        String    @default("active")
-  accountId     String?
-  ownerId       String?
-  lastActivityAt DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  account   Account?   @relation(fields: [accountId], references: [id], onDelete: SetNull)
-  owner     User?      @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-  leads     Lead[]
-  events    Event[]
-  activities Activity[]
-
-  @@index([name])
-  @@index([email])
-  @@index([priority])
-}
-
-model Lead {
-  id               String    @id @default(cuid())
-  name             String
-  email            String?
-  phone            String?
-  company          String?
-  value            Float     @default(0)
-  stage            String    @default("new") // new | contacted | qualified | proposal | negotiation | won | lost
-  source           String?
-  status           String    @default("open") // open | closed_won | closed_lost
-  expectedCloseDate DateTime?
-  closedAt         DateTime?
-  nextFollowUp     DateTime?
-  accountId        String?
-  contactId        String?
-  ownerId          String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  account    Account?  @relation(fields: [accountId], references: [id], onDelete: SetNull)
-  contact    Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
-  owner      User?     @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-
-  @@index([name])
-  @@index([stage])
-  @@index([status])
   @@index([ownerId])
+  @@index([type])
 }
 
-model Event {
+model Transaction {
   id          String   @id @default(cuid())
-  title       String
-  description String?
-  type        String   @default("meeting") // meeting | call | demo | task | reminder | appointment
-  status      String   @default("scheduled") // scheduled | completed | cancelled
-  startAt     DateTime
-  endAt       DateTime?
-  allDay      Boolean  @default(false)
-  location    String?
-  relatedType String? // session-5: the reference's "Related To" picker (none | contact | account | opportunity | lead)
-  // Session-76 (M-76c13, bundle-decoded from the reference's SAe dialog):
-  // the reference's CalendarEvent carries related_to_name — the
-  // conditional "Name" field renders in the Related To pair's second
-  // cell when a type is chosen. Our model lacked the column entirely.
-  relatedName String?
+  description String
+  amount      Float
+  // income | expense
+  type        String   @default("expense")
+  // free-form category label ("Groceries", "Rent/Mortgage", …)
+  category    String   @default("Other")
+  // needs | wants | savings — the reference's 50/30/20-style budget split
+  budgetCategory String @default("needs")
+  date        DateTime
+  notes       String?
+  recurring   Boolean  @default(false)
+  // next occurrence for recurring rows (feeds Upcoming & Alerts)
+  nextDate    DateTime?
   accountId   String?
-  contactId   String?
-  ownerId     String?
+  ownerId     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  account Account? @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  contact Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
-  owner   User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  account BankAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  owner   User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  @@index([startAt])
+  @@index([ownerId])
+  @@index([date])
+  @@index([type])
+  @@index([category])
+  @@index([budgetCategory])
+}
+
+model BankAccount {
+  id           String    @id @default(cuid())
+  name         String
+  // checking | savings | credit | investment | cash
+  type         String    @default("checking")
+  institution  String?
+  balance      Float     @default(0)
+  currency     String    @default("USD")
+  lastSyncedAt DateTime  @default(now())
+  color        String?
+  ownerId      String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  owner        User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([ownerId])
   @@index([type])
 }
 
-model Activity {
-  id          String    @id @default(cuid())
-  type        String    @default("call") // call | email | meeting | whatsapp | task | note
-  subject     String
-  notes       String?
-  status      String    @default("scheduled") // scheduled | completed
-  priority    String    @default("normal") // high | normal | low
-  dueAt       DateTime?
-  completedAt DateTime?
-  relatedType String? // session-5: the reference's "Related To (Type)" picker
-  relatedName String? // session-5: the reference's freeform "Related To (Name)" input
-  accountId   String?
-  contactId   String?
-  ownerId     String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+model Investment {
+  id           String    @id @default(cuid())
+  symbol       String
+  name         String
+  // stock | etf | bond | crypto | realestate | other
+  type         String    @default("stock")
+  shares       Float     @default(1)
+  avgCost      Float     @default(0)
+  currentValue Float     @default(0)
+  purchaseDate DateTime?
+  notes        String?
+  ownerId      String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  account Account? @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  contact Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
-  owner   User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  @@index([dueAt])
+  @@index([ownerId])
   @@index([type])
+}
+
+model Goal {
+  id            String    @id @default(cuid())
+  name          String
+  targetAmount  Float
+  currentAmount Float     @default(0)
+  targetDate    DateTime?
+  // emergency | vacation | house | car | retirement | education | other
+  category      String    @default("other")
+  // active | completed | paused
+  status        String    @default("active")
+  icon          String?
+  ownerId       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
   @@index([status])
 }
 
-// Session-31 (S31-P1): the reference's SECOND deal model (bundle-decoded
-// from index-DZ-xbrIm.js). The reference ships a full Opportunity entity
-// with NO create-edit UI (the leads "Convert to Opportunity" item is dead —
-// no onClick; no New Opportunity dialog exists); its data feeds the
-// dashboard, all five reports tabs, and both insights surfaces.
-// accountName/owner are NAME STRINGS — the reference stores display names,
-// not relations (its Top Reps card groups by the owner string; its
-// insights join by account_name).
-model Opportunity {
-  id          String    @id @default(cuid())
-  name        String
-  accountName String?
-  stage       String    @default("prospecting") // prospecting | qualification | proposal | negotiation | closed_won | closed_lost
-  amount      Float     @default(0)
-  probability Int? // 0-100 — feeds the Forecast by Probability bands + the accuracy forecast
-  closeDate   DateTime?
-  source      String?
-  owner       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([stage])
-  @@index([accountName])
-}
-
-model SavedReport {
+model Budget {
   id        String   @id @default(cuid())
-  name      String
-  tab       String   @default("sales") // sales | pipeline | activity | sources | health
-  config    String // JSON: { period, ownerId, stage, status }
+  category  String
+  amount    Float
+  // monthly (the reference's single period today; enum kept for growth)
+  period    String   @default("monthly")
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([category, period])
 }
 
 model Setting {
   id               String   @id @default("singleton")
-  contactSources   String   @default("[\"Email\",\"Phone\",\"Website\",\"Referral\",\"Event\",\"Social Media\"]")
-  leadStages       String   @default("[\"new\",\"contacted\",\"qualified\",\"proposal\",\"negotiation\",\"won\",\"lost\"]")
-  activityTypes    String   @default("[\"call\",\"email\",\"meeting\",\"whatsapp\",\"task\",\"note\"]")
-  accountTiers     String   @default("[\"A\",\"B\",\"C\"]")
-  industries       String   @default("[\"Technology\",\"Manufacturing\",\"Retail\",\"Finance\",\"Healthcare\",\"Education\",\"Logistics\",\"Energy\"]")
-  defaultCurrency  String   @default("AED")
-  defaultLeadStage String   @default("new")
-  defaultTier      String   @default("B")
-  followUpDays     Int      @default(3)
-  calendarView     String   @default("month")
-  firstDayOfWeek   String   @default("monday")
+  defaultCurrency  String   @default("USD")
+  dateFormat       String   @default("MM/dd/yyyy")
+  pushNotifications Boolean @default(false)
+  emailAlerts      Boolean  @default(false)
+  budgetWarnings   Boolean  @default(true)
+  monthlyReports   Boolean  @default(false)
+  theme            String   @default("light") // light | dark | system
   updatedAt        DateTime @updatedAt
 }
