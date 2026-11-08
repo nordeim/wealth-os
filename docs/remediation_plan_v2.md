@@ -6,6 +6,9 @@
 > replaces the session-203 placeholder (a one-line dummy committed by the
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
+>
+> **Current version: v2.4.0** (session 207 — the R-7 parity-convergence
+> round; §5 carries the execution history).
 
 ---
 
@@ -56,10 +59,18 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-203f | Info (by design) | **The AI provider seam ships deterministic-local only** (`WEALTHOS_AI_PROVIDER` is a named future hook, not a wired env). Honest per ADR-005 and the PAD known-issues row; an LLM-backed implementation is additive, on-demand work. | src/lib/ai.ts:54–55, :274–275; PAD §10 row 3 | **R-5** |
 | F-204a | Medium | **The docs-counts pin's site inventory is incomplete.** The R-2 port pinned seven sites — but the doc set carries more live-tense count claims, and ten of them silently kept the stale 497/35-files numbers THROUGH the session-203 lockstep pass (the exact rot the pin exists to prevent, recurring inside its own blind spot): CLAUDE.md:109 + :121 · README.md:62 + :103 + :170 · PAD:165 + :599 · SKILL:125 + :200 + :623. Verified by grep + the cold 508/508 baseline this session (the stale sites claimed 497/35 while the suite measured 508/37). | grep over the doc set (session 204); tests/docs-counts.test.ts (the R-2 site list) | **R-6** |
 | F-205a | High | **The maiden table's ~85% section shares were a THEME genus, not the data genus the session-204 record hypothesized.** The theme-matched maiden decode (cluster buckets + region pixel fingerprints + VLM page reads, session 205): every section's diff was 98.4–99.7% ONE full-frame bucket because the reference serves its app shell DARK (whole-frame ≈ rgb(28,24,21)) while ours rendered LIGHT (≈ rgb(211,210,207)) — and the auth faces match (both light), exactly why login/reset sat at 6.96%/3.84%. Baking a full-frame inversion into the baselines would have blinded the drift gate permanently. | scripts/sweep.ts maiden runs (session 205); the fingerprint probe; docs/screenshots/ sweep captures | **R-4.2** |
-| F-205b | Medium (programmed) | **The reference's import + settings pages carry their own navy/blue treatment** — a navy bg wash on import (rgb(26,35,50) vs our rgb(14,20,17): Δblue=33, every pixel differs); navy-tinted cards + the blue "Export All Data" button + the blue GDPR box on settings — while every other page keeps the app-wide amber/warm genus our clone mirrors (7 of 9 page backgrounds match within tolerance). The original app's own inconsistency; a parity round re-skinning those two pages (then re-deriving their baselines) is the cure. Standing shares until then: import 75.1/92.3/93.0/76.5, settings 57.1/74.5/77.5/60.3 (desktop/phone/tablet/landscape). | The VLM page reads + the bg-sample table (session 205) | **R-7** |
+| F-205b | Medium (programmed) | **The reference's import + settings pages carry their own navy/blue treatment** — a navy bg wash on import (rgb(26,35,50) vs our rgb(14,20,17): Δblue=33, every pixel differs); navy-tinted cards + the blue "Export All Data" button + the blue GDPR box on settings — while every other page keeps the app-wide amber/warm genus our clone mirrors (7 of 9 page backgrounds match within tolerance). The original app's own inconsistency; a parity round re-skinning those two pages (then re-deriving their baselines) is the cure. Standing shares until then: import 75.1/92.3/93.0/76.5, settings 57.1/74.5/77.5/60.3 (desktop/phone/tablet/landscape). *(Session-207 update: the IMPORT half is CURED — import carries its own navy wash, its shares re-derived to 31.2/36.2/31.5/33.9; the settings accents remain the open half.)* | The VLM page reads + the bg-sample table (session 205) | **R-7** (half-cured at v2.4.0) |
 | F-205c | Low (programmed) | **The smaller styling deltas the theme-matched maiden exposed** (all dark-mode): the ref's solid saturated stat-icon fills vs our tinted badges; its line-segment chart legend vs our dots; its gauge health score vs our blobs; our sidebar active pill (the ref shows none); the mobile auth-face layouts (login/reset run 13.2–14.0 at phone/tablet vs 3.9–7.1 at desktop). Each is a small share; together they are the residual under the data genus. | The VLM dashboard/settings reads (session 205) | **R-7** |
 | F-206a | Medium | **The R-4.2 "demo corpus" belief was a misdecode — the reference's workspace renders EMPTY STATES.** The session-206 maiden probes found every section showing its empty-state copy ("No expenses yet", "No Income Sources Yet", "No accounts yet", "No Goals Set Yet", "0 holdings", $0.00 KPIs) — and the session-205 captures, re-read, show the same (the genus was decoded from the diff shares, never verified against the captures). Both sides run empty: the true first genus is the EMPTY-STATE CONSTRUCTION delta, not data-vs-empty. The living language (the sweep's STANDING_BASELINES docblock + standingExplained, zero-data.ts's header, this plan's R-4.2 bullet) asserted the corpus belief as live doctrine. | The session-206 quiescence-settled census + the re-read session-205 captures; scripts/drift-probe.ts DEMO_SENTINELS (the live-measured phrases) | **R-4.3** (cured in-commit) |
 | F-206b | Medium (programmed) | **The R-4.3 census decode surfaced the construction genera in detail** — measured, baked into the census's STANDING_CENSUS allowances, programmed as R-7 convergence work: the section-shell wrapper stack (ours `p-4 md:p-6 lg:p-8 space-y-6` vs the ref's `flex-1 pt-16 lg:pt-0` + `max-w-{6,7}xl mx-auto` inner container); the page-header vocabulary (the ref's `lg:` breakpoints, its H1 `text-primary-navy` tokens, its `mb-8`/`mb-2` rhythms); the auth-card family (the ref's `border-0 shadow-2xl bg-white/95` vs our bordered `shadow-xl`, its slate accent bar vs our amber, its taller padding driving login mainH −40); the reference's reset-password face carrying NO `<main>` (ours keeps the landmark — the superset; the census's anchor fallback covers it); the investments height genus (−649 desktop); the mobile topbar's Synced-pill placement (the ref's right cluster beside sun+hamburger vs our left beside the wordmark). | The four-axis census maidens (the STANDING_CENSUS decode) + the TRUE-390 anatomy probes | **R-7** |
+| F-207a | High | **The mobile header's Synced pill is INVISIBLE at phone widths — a phantom-breakpoint class (the Tailwind v4 bug the owner flagged).** The pill carries `hidden xs:inline-flex sm:inline-flex` (mobile-header.tsx:33): `xs` is NOT a default Tailwind v4 breakpoint and this repo ships no config file to define it, so the `xs:inline-flex` variant silently generates NO CSS (v4 drops unknown variants without warning) — the pill stays `display:none` until `sm` (640px). Live-verified: ours computed `display: none` at 390×844; the reference renders its pill in the topbar's RIGHT cluster at 390, visible. | src/components/layout/mobile-header.tsx:33; src/lib/page-layout.ts (MOBILE_HEADER.syncedPill); agent-browser probes both apps (session 207) | **R-7.1** |
+| F-207b | Medium | **The mobile topbar's wash/brand genus diverges.** Reference (live-extracted): gradient wash `bg-gradient-to-r from-stone-50 via-amber-50/50 to-stone-50 dark:from-stone-950 dark:via-stone-900 dark:to-stone-950 backdrop-blur-md border-b border-amber-500/20 shadow-lg`; logo `w-8 h-8`; wordmark GRADIENT-CLIP text (`from-amber-600 via-yellow-600 to-amber-600` / dark `from-amber-400 via-yellow-300`); pill genus `rounded-md … text-xs font-semibold text-green-600 border-green-300` with the WIFI icon; icon buttons are BORDERLESS ghosts (`rounded-md h-9 w-9 text-gray-700 hover:bg-accent`). Ours: flat `bg-[#faf9f7]/90` wash, stone border, no shadow; `w-9 h-9` logo; solid-amber wordmark; `rounded-full font-medium` emerald pill with a Check icon; bordered chip icon buttons. | The session-207 topbar DOM probes (both apps); src/lib/page-layout.ts MOBILE_HEADER | **R-7.1** |
+| F-207c | WITHDRAWN (session 207) | **The "drawer active pill is added chrome" hypothesis was a probe artifact — the reference's drawer DOES render the active pill.** The session-206-era decode sampled link classes truncated at 150 chars (the base `text-stone-300 hover:…` prefix fills exactly that window; the active suffix `bg-gradient-to-r from-amber-500/20 to-emerald-600/20 text-amber-200 shadow-lg border border-amber-400/30` was cut off). The session-207 full-class census on the logged-in reference found the current-page drawer link carrying the pill — byte-identical to our MOBILE_NAV_SHEET.linkActive. Our drawer active state is CORRECT parity; no change. (Recorded so the phantom finding cannot resurface.) | The session-207 race-free drawer census (full class strings, /Dashboard current) | n/a (withdrawn) |
+| F-207d | Low | **The drawer footer + sheen diverge.** Reference: footer wrapper `p-4 border-t border-amber-500/20`; Sign Out a ghost button (`h-9 px-4 py-2 w-full text-white border-slate-600 hover:bg-white/10`, rounded-md); the drawer sheet carries a subtle gold/emerald 3%-alpha sheen overlay (`linear-gradient(135deg, rgba(212,175,55,.03), transparent 50%, rgba(4,120,87,.03))`). Ours: `mx-4 mb-6` margin-footer, a filled `rounded-xl border-stone-700 bg-stone-800/60` button, no sheen. Note: the reference's sheet is a transparent VEIL (its light mode ships unreadable stone-300-on-light text — a reference flaw); our opaque gradient drawer is the sanctioned readable superset — we add only the sheen layer, keeping opacity. | The session-207 drawer DOM + pixel probes (dark AND light veils); src/lib/page-layout.ts MOBILE_NAV_SHEET | **R-7.2** |
+| F-207e | Medium | **The section shells, page headers, and H1 tokens diverge** (the F-206b shell/header genera, now fully mapped per page). Reference (live census, all 9 pages): shell `p-4 lg:p-8 bg-gradient-to-br from-stone-50 via-amber-50/30 to-emerald-50/40 dark:from-stone-950 dark:via-stone-900 dark:to-emerald-950/30 min-h-screen` + inner containers per page (7xl: Dashboard/Expenses/Investments/Analytics · 6xl: Income/Accounts/Import/Goals · 4xl: Settings); page header `flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4`; H1 `text-3xl lg:text-4xl font-bold` + NO tracking-tight + `dark:text-white` + `mb-1` on Dashboard/Investments and `text-primary-navy … mb-2` on the other seven (primary-navy computed `rgb(15,20,25)` = `#0f1419`). Ours: flat `p-4 md:p-6 lg:p-8 space-y-6` wash (no gradient, no min-h-screen, no inner container except import/settings), `md:` breakpoints, `tracking-tight`, `dark:text-stone-50`, uniform stone H1, no mb rhythm. | The session-207 nine-page census (wash/container/H1 per page, both apps); src/lib/page-layout.ts PAGE_ROOT/PAGE_HEADER | **R-7.3** |
+| F-207f | Medium | **The auth-card family diverges from BOTH the reference and our own doc comment** (the F-206b auth genus). Reference login card: `border-0 shadow-2xl bg-white/95 backdrop-blur-sm rounded-2xl`, accent bar `from-slate-200 via-slate-300 to-slate-200`, inner `p-8 sm:p-10 md:pt-12 md:pb-10 md:px-10`. Ours (LOGIN_LAYOUT): `border border-slate-200/60 bg-white shadow-xl`, AMBER accent `from-amber-300 via-yellow-400`, `p-8 sm:p-10` — while login-card.tsx's own docblock claims "A borderless glass card (bg-white/95 backdrop-blur-sm shadow-2xl)": the code drifted from a documented re-pin that never landed. | The session-207 login-face probes; src/lib/page-layout.ts LOGIN_LAYOUT; login-card.tsx docblock | **R-7.4** |
+| F-207g | Medium | **The Import page's navy wash is missing** (the F-205b genus, precisely mapped). Reference /Import shell wash: `bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800` — its own navy/blue treatment, distinct from the other eight pages' warm wash; its inner container max-w-6xl. Ours: the standard warm shell + `max-w-3xl`. (Settings KEEPS the standard warm wash on the reference — its navy treatment lives in the export/GDPR accents only, F-205b.) | The session-207 wash census (Import navy confirmed twice, logged in, both themes) | **R-7.3** |
+| F-207h | Low | **The sidebar footer's Synced pill shares the topbar's divergence** — reference: `rounded-md … font-semibold text-green-600 border-green-300` with the wifi icon (same badge genus as the topbar); ours: `rounded-full … font-medium` emerald with a Check. | The session-207 sidebar-footer probe; src/components/layout/sidebar.tsx | **R-7.1** |
 
 ## 3. The remediation program (R-items)
 
@@ -122,7 +133,7 @@ The cure for F-203d: rewrite the header comment for the finance domain
 CSV import codec, rate limiter). Comment-only; zero behavior change; the
 unit suite re-run green is the equivalence proof.
 
-### R-4 — The gate:full WealthOS re-derivation — Status: In progress (R-4.1 Done at v2.1.0; R-4.2 Done at v2.2.0; R-4.3 Done at v2.3.0; R-4.4 next)
+### R-4 — The gate:full WealthOS re-derivation — Status: In progress (R-4.1 Done at v2.1.0; R-4.2 Done at v2.2.0; R-4.3 Done at v2.3.0; the baselines re-derived at v2.4.0's R-7.5; R-4.4 next)
 
 The multi-session program for F-203e. Sub-item ladder (each its own session
 slice, TDD where a pin exists, in dependency order):
@@ -242,18 +253,53 @@ live totals), and the totals re-converged with the round's own new tests:
 **521 unit / 38 files / 605 badge** (the sweep-tool pin's 9 + the
 docs-counts extension's 4 joined the suite).
 
-### R-7 — The dark-mode parity convergence (import + settings navy genus + the styling deltas) — Status: Programmed
+### R-7 — The parity convergence (shells, headers, mobile family, auth cards, navy genus) — Status: In progress (R-7.1–R-7.5 executed at v2.4.0; the F-205c micro-deltas + F-205b's settings accents remain)
 
-The optional F-205b/F-205c work the R-4.2 decode surfaced: re-skin the
-import + settings pages to the reference's own navy/blue treatment
-(its bg wash, its navy cards, its blue Export/GDPR accents), walk the
-smaller deltas (stat-icon fills, legend markers, the health-score
-gauge, the sidebar active pill, the mobile auth faces), and re-derive
-the affected baselines DOWNWARD as each converges (the drift gate only
-catches upward drift — lowering a baseline is a deliberate, pinned
-re-derivation). Entry criteria: a session with a green gate and no
-open Critical/High findings; slices are independently shippable per
-page. Not scheduled — the R-4 ladder (R-4.3–R-4.5) has priority.
+The F-205b/F-205c/F-206b convergence work, executed by the session-207
+slice after a fresh live census (both apps, agent-browser, logged-in,
+both themes) re-derived every genus at full fidelity (the F-207
+findings). Slices, in dependency order:
+
+- **R-7.1 The mobile header + pill family (F-207a/b/h)** — the
+  phantom-`xs:` cure (the pill moves to the reference's RIGHT cluster,
+  always visible at 390), the topbar's gradient wash + amber border +
+  shadow-lg, the `w-8 h-8` logo, the gradient-clip wordmark, the
+  borderless ghost icon buttons, and the badge genus everywhere
+  (`rounded-md … font-semibold text-green-600 border-green-300` + the
+  wifi icon — topbar AND sidebar footer). The kept supersets: sticky
+  positioning (vs the ref's fixed — our in-flow model), aria-labels,
+  the focus-visible ring.
+- **R-7.2 The drawer footer + sheen (F-207d)** — the `p-4 border-t
+  border-amber-500/20` footer wrapper, the ghost Sign Out
+  (`border-slate-600 hover:bg-white/10`), the 3% gold/emerald sheen
+  layer (a globals.css utility) over our opaque gradient (the
+  readability superset — the reference's transparent veil ships
+  unreadable light-mode text; F-207c's withdrawal keeps the active
+  pill, proven reference parity).
+- **R-7.3 The section shells + headers + H1 tokens (F-207e/g)** — the
+  warm gradient wash + `p-4 lg:p-8` + `min-h-screen` on all nine
+  shells; the per-page inner containers (7xl: Dashboard/Expenses/
+  Investments/Analytics · 6xl: Income/Accounts/Import/Goals · 4xl:
+  Settings); the page-header `lg:` breakpoints + `mb-8 gap-4` rhythm;
+  the H1 navy token (`--color-primary-navy: #0f1419`) on the seven
+  navy pages + the mb-1/mb-2 rhythm + `dark:text-white`, tracking-tight
+  dropped; the Import page's own navy wash
+  (`from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800`).
+- **R-7.4 The auth-card family (F-207f)** — `border-0 shadow-2xl
+  bg-white/95 backdrop-blur-sm`, the slate accent bar, the taller
+  `md:pt-12 md:pb-10 md:px-10` padding (login + reset faces).
+- **R-7.5 The baseline re-derivation** — after the convergence, the
+  four-width sweep maidens + the interior census re-run, the standing
+  baselines/allowances re-derived DOWNWARD (the drift gate only
+  catches upward drift — lowering is a deliberate, pinned
+  re-derivation in the same commit), per the R-7 doctrine.
+
+Entry criteria: a session with a green gate and no open Critical/High
+findings (met at v2.3.0 → 535/535 green, F-207a the round's High).
+Remaining after this slice: the F-205c micro-deltas (stat-icon fills,
+legend markers, the health-score gauge, the mobile auth-face layouts)
++ the F-205b settings-page navy accents — the next parity slice, or
+R-4.4 (the fullpage-sweep re-anchor) per the program ladder.
 
 ## 4. Plan validation (the re-check, session 203)
 
@@ -280,12 +326,13 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | v2.1.0 | 204 | **R-4.1** (the sweep re-anchor: REF_URL + the 11-page WealthOS set + the CRM baselines retired, both sweep.ts and sweep-state.ts; tests/sweep-tool.test.ts born RED 9/9 → GREEN; the maiden report-only run green end-to-end) · **R-6** (the F-204a docs-counts site-inventory completion: 4 grouped pins born RED against 10 stale sites; totals re-converged 508/37/592 → 521/38/605) | lint 0/0 · tsc 0 · **521 unit** (38 files; +13: 9 sweep-tool + 4 docs-counts) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · the maiden sweep report (login pair + 11×2 captures + seed restore) | (this session's execution commit) |
 | v2.2.0 | 205 | **R-4.2** (the maiden derivation: the F-205a per-page resolved-theme match — planThemeWrites born RED 3× → GREEN, the table collapsed ~85% → 12–75%; the four class tables derived from the theme-matched maidens at 390/768/1024/1440 — 12 literal values each, deep-pinned with the 3 session-204 pending-state pins replaced; the byte-identical re-run noise calibration; all four --fail-on-drift runs clean + the live --drift-margin -5 teeth check; the genera decoded — data-vs-empty, F-205b import+settings navy, F-205c styling deltas; R-7 programmed for the parity convergence) | lint 0/0 · tsc 0 · **524 unit** (38 files; +3 net: 3 planThemeWrites + 3 derived-state − 3 pending-state) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · 4× drift-gate clean | (this session's execution commit) |
 | v2.3.0 | 206 | **R-4.3** (the drift-probe + interior-census re-anchor: the probe's standing layers re-derived — the bundle fingerprint, the 256/9 sidebar, the functional mobile-menu census, the sentinel demo-data census; the census's 11-page set + anchor fallback + the STANDING_CENSUS four-axis allowances at zero margin, the mutation-proof teeth proven on both ghost classes) · **F-206a cured in-commit** (the demo-corpus misdecode: the living language corrected across the sweep docblock/standingExplained/zero-data header/the pin label/this plan's R-4.2 bullet) · **F-206b programmed** (the census-decoded construction genera → R-7) | lint 0/0 · tsc 0 · **535 unit** (39 files; +11 net: the new 12-test interior-census-tool pin + the drift-probe-tool rewrite 12→11) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · the four-axis census gate clean (exit 0) + both teeth proofs RED · the live probe run STABLE | (this session's execution commit) |
+| v2.4.0 | 207 | **R-7.1–R-7.5** (the parity convergence, owner-directed over the R-4.4 default — a fresh live census both apps/both themes re-derived every genus at full class length): **R-7.1** the mobile family (F-207a High — the phantom-`xs:` Tailwind v4 bug cured: the Synced pill now rides the reference's RIGHT cluster, visible at 390; F-207b the topbar gradient wash + amber border + shadow-lg + w-8 logo + gradient-clip wordmark + ghost icon buttons; F-207h the badge genus everywhere: rounded-md semibold green + the wifi glyph, green-700 = the AA step) · **R-7.2** the drawer footer band + ghost Sign Out + the 3% gold/emerald sheen utility (F-207d; F-207c WITHDRAWN — the reference's drawer DOES render the active pill, the session-206-era "no active state" read was a 150-char truncation artifact; the withdrawal is pinned so it cannot resurface) · **R-7.3** the section shells (the warm gradient wash + `p-4 lg:p-8` + min-h-screen + `transition-colors duration-300` + the per-page 7xl/6xl/4xl inner containers) + the page headers (the lg: rhythm + mb-8) + the H1 navy token (`--color-primary-navy: #0f1419` on the seven navy pages, stone+mb-1 on Dashboard/Investments, tracking-tight dropped) + Import's own navy wash (F-207e/g) · **R-7.4** the auth-card family — border-0 shadow-2xl bg-white/95 backdrop-blur-sm, the slate accent bar, the taller md: padding (F-207f) · **R-7.5** the baseline re-derivation: the four sweep class tables re-derived (import collapsed 75.1→31.2 desktop — the navy wash was its dominant genus; every section dropped 2–6pct; phone reset-password alone rose 14.0→16.5, the auth re-pin's honest record) + the STANDING_CENSUS allowances re-derived (44 entries, every one at or below its v2.3.0 value except phone settings/analytics +2 each) + both drift gates proven clean at all four widths. Pins: tests/shell-parity.test.ts born RED 26/27 → GREEN 27/27 (the 27th = the F-207c withdrawal pin, green at birth by design) | lint 0/0 · tsc 0 · **562 unit** (40 files; +27: the shell-parity pin) · build · smoke 14/14 · e2e 84/84 (1.5m) · census MATCH · 4× sweep drift-gate clean + the 4-axis interior-census gate clean at margin 0 · docs lockstep (535/39/619 → 562/40/646 everywhere; the pins row 12→13 with shell-parity) | (this session's execution commit) |
 
-> The next iteration session (207) picks up **R-4.4** by default — the
+> The next iteration session (208) picks up **R-4.4** by default — the
 > fullpage-sweep.ts re-anchor (its page set + baselines, following the
 > R-4.1/R-4.2/R-4.3 pattern: pin born RED against the CRM-era config,
 > re-anchor, maiden run) — or any Critical/High finding a fresh audit
-> surfaces (findings always pre-empt the program). R-7 (the dark-mode +
-> construction parity convergence, now carrying F-206b's decoded genera)
-> is available as an alternate slice if the owner prefers parity work
-> over tooling.
+> surfaces (findings always pre-empt the program). R-7's remaining tail
+> (the F-205c micro-deltas: stat-icon fills, legend markers, the
+> health-score gauge, the mobile auth-face layouts; F-205b's settings
+> navy accents) remains available as an alternate parity slice.

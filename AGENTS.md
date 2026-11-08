@@ -127,6 +127,13 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 
 ## Gotchas that have bitten before
 
+- **A phantom breakpoint variant silently generates NO CSS in Tailwind v4**
+  (session-207, F-207a): `hidden xs:inline-flex sm:inline-flex` hid the
+  mobile Synced pill below `sm` because `xs` is not a default v4
+  breakpoint and this repo ships no config file — v4 drops unknown
+  variants without warning. `tests/shell-parity.test.ts` now scans src
+  for `xs:`/`2xs:`/`3xs:` variants; use only real breakpoints
+  (sm/md/lg/xl/2xl…) or define the variant in `@theme`.
 - **Bun absolutizes relative `file:` DATABASE_URL** against the `.env`
   file's directory when running scripts — `src/lib/db-path.ts` re-anchors;
   don't bypass the `db` singleton.

@@ -162,12 +162,13 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (535) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (562) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + interior
   censuses) are dormant — the sweep, drift-probe, and interior-census
   legs are WealthOS-native (session 204's R-4.1 re-anchor + session
-  205's R-4.2 theme-matched baselines + session 206's R-4.3: the
+  205's R-4.2 theme-matched baselines + session 206's R-4.3 + session
+  207's R-7.5 re-derivation (the parity convergence): the
   reference-stability probe — bundle fingerprint, sentinel demo
   census, functional mobile-menu check — and the interior census with
   its four-axis standing allowances at zero margin, proven live at all
@@ -288,7 +289,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 39 unit suites (incl. architecture pins) + e2e/ 5 specs
+├── tests/                       # 40 unit suites (incl. architecture pins) + e2e/ 5 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -484,6 +485,7 @@ as **literal hex in `@theme`** (`src/app/globals.css`):
 |-------|-------|-------|----------|
 | `--color-primary` | `#f59e0b` amber-500 | Primary buttons (amber→yellow-600 gradient), active-nav chip | on white 2.2:1 — decorative fills; text uses stone-900 |
 | `--color-primary-hover` | `#d97706` amber-600 | Hover | — |
+| `--color-primary-navy` | `#0f1419` | The section-H1 navy (7 of 9 pages — `text-primary-navy`, live-computed on the reference, session 207) | 16.9:1 on white (AAA) |
 | `--color-background` | `#faf9f7` | Light page wash | — |
 | `--color-foreground` | `#1c1917` stone-900 | Headings/body | 16.1:1 on background (AAA) |
 | `--color-muted` | `#78716c` stone-500 | Secondary text | 4.7:1 on white (AA) |
@@ -566,9 +568,9 @@ the product is single-user-per-install by design.
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 39 | 535 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 40 | 562 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 12 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool) | `tests/` | source-scanning contracts |
+| — architecture pins | 13 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity) | `tests/` | source-scanning contracts |
 | — infrastructure | 24 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -601,7 +603,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 535/535 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 562/562 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 84/84
@@ -671,11 +673,11 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 535 unit / 84 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 562 unit / 84 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
-| `bun run gate` / `gate:full` | root | The chain / chain + (dormant) parity sweeps — the sweep + drift-probe + interior-census legs WealthOS-native through R-4.3, the fullpage leg + reactivation pending R-4.4–R-4.5 |
+| `bun run gate` / `gate:full` | root | The chain / chain + (dormant) parity sweeps — the sweep + drift-probe + interior-census legs WealthOS-native (through R-4.3, baselines re-derived at R-7.5), the fullpage leg + reactivation pending R-4.4–R-4.5 |
 
 ### 9.3 Code Style Rules
 
@@ -705,7 +707,7 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 535 unit · build · smoke 14/14 ·
+the time of writing (lint 0/0 · tsc 0 · 562 unit · build · smoke 14/14 ·
 84 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

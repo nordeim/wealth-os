@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.3-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.19.3-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-619%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-646%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.0.15 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma + SQLite | 6.19.3 | 8 models; `db/` at repo root, git-ignored |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.0.5 / 4.10.2 | 535 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.0.5 / 4.10.2 | 562 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.64.1 / 4.13.0 | 84 checks; chromium; seeded `db/e2e.db` |
 | PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.5.2 | Client-side statements |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
@@ -100,7 +100,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 39 unit suites + 📂 e2e/ 5 specs
+├── 📂 tests/                  # 40 unit suites + 📂 e2e/ 5 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -167,11 +167,11 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 535 checks / 39 files |
+| Unit (Vitest) | `bun run test` | 562 checks / 40 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 84 checks / 5 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
-| Parity sweeps | `bun run gate:full` | dormant — the sweep, drift-probe, and interior-census legs are WealthOS-native (R-4.1/R-4.2/R-4.3: the theme-matched baselines; the reference-stability probe — bundle fingerprint + sentinel demo census + the functional mobile-menu check; the interior census — four-axis standing allowances at zero margin, the drift gate clean at all four widths with mutation-proof teeth); the fullpage leg remains CRM-era (R-4.4) with the reactivation (R-4.5) pending; the pre-push bar is `bun run gate` |
+| Parity sweeps | `bun run gate:full` | dormant — the sweep, drift-probe, and interior-census legs are WealthOS-native (R-4.1/R-4.2/R-4.3 + the session-207 R-7 parity convergence and baseline re-derivation: the theme-matched baselines; the reference-stability probe — bundle fingerprint + sentinel demo census + the functional mobile-menu check; the interior census — four-axis standing allowances at zero margin, the drift gate clean at all four widths with mutation-proof teeth); the fullpage leg remains CRM-era (R-4.4) with the reactivation (R-4.5) pending; the pre-push bar is `bun run gate` |
 
 Special prerequisites: none — the e2e suite pins its own `DATABASE_URL`
 (`db/e2e.db`) and reseeds in global setup; the smoke ladder boots the
@@ -221,9 +221,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 535 unit · 84 e2e · 14 smoke · full gate green |
+| Verification layer | ✅ Complete | 562 unit · 84 e2e · 14 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 206: the R-4.3 drift-probe + interior-census re-anchor shipped — the sentinel demo census, the functional mobile-menu check, the four-axis standing allowances; next: the R-4.4 fullpage-sweep re-anchor) |
+| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 207: the R-7 parity convergence shipped — the phantom-`xs:` mobile-nav bug cured, the topbar/drawer/badge family, the section shells + navy H1 tokens, the auth-card glass, Import's navy wash, and the four-width baseline re-derivation; next: the R-4.4 fullpage-sweep re-anchor) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License
