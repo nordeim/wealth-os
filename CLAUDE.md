@@ -25,6 +25,7 @@ Follow this six-phase workflow for all implementation tasks:
 
 1. **ANALYZE** — mine requirements deeply; never assume surface-level
    reading is enough. Read the repo docs (`AGENTS.md`, this file, the PAD,
+   `docs/remediation_plan_v2.md` (the living findings ledger),
    `docs/Tailwind-V4-Validation-Report.md`, `wealth-os_SKILL.md` — the
    distilled engineering skill) and `skills/skills-catalog.md`
    before building.
@@ -44,7 +45,7 @@ Follow this six-phase workflow for all implementation tasks:
   functionality.
 - **Determinism everywhere**: the seed, the AI coach, and the test data
   are all deterministic — no `Math.random()` in seeded paths.
-- **The gate is the contract**: lint 0/0 · tsc 0 · 497 unit · build ·
+- **The gate is the contract**: lint 0/0 · tsc 0 · 508 unit · build ·
   smoke 14/14 · 84 e2e. A green gate achieved by weakening a guardrail is
   not a fix.
 - **Offline-capable by default**: no runtime third-party calls (fonts,

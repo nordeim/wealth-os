@@ -36,6 +36,12 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 - **Gate order is fixed**: lint → typecheck → test → build → smoke → e2e.
   No hosted CI exists; the local gate is the only gate. Never weaken it
   (no `--max-warnings` increases, no skipped tests, no `any`).
+- **Pre-ship `bun audit` re-triage** (the security ledger, PAD §10): re-run
+  it before every push. A NEW runtime-chain advisory is cured same-session,
+  never deferred; dev-toolchain bumps wait for a dedicated dependency round.
+  The census + the runtime-zod floor are pinned
+  (`tests/security-ledger.test.ts`) — keep the ledger and the pins in
+  lockstep.
 - **The db lives at `<repo>/db/custom.db`** (`DATABASE_URL="file:../db/custom.db"`
   in `.env`, resolved against `prisma/schema.prisma` in CLI, `next build`,
   AND the running server — `src/lib/db-path.ts` implements the anchor
@@ -110,6 +116,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 - Layout constants (dialogs, tables, login): `src/lib/page-layout.ts`
 - Skills library: `skills/skills-catalog.md` (grep it before building
   anything non-trivial — replication, engineering, doc, and push skills)
+- The living remediation program: `docs/remediation_plan_v2.md` (the
+  versioned findings ledger + R-item program — read §2 before auditing,
+  append an execution-history row every session that ships a cure)
 - The distilled engineering skill: `wealth-os_SKILL.md` (repo root — the
   20-section reference: design tokens, domain seams, anti-pattern ledger,
   debugging guide, pre-ship checklist; every fact verified against the

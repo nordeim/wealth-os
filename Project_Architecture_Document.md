@@ -561,10 +561,10 @@ the product is single-user-per-install by design.
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 35 | 497 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 37 | 508 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 8 | (gate-script, db-census, route-case, nav-config, page-titles, metadata, pwa-metadata, docs-counts*) | `tests/` | source-scanning contracts |
-| — infrastructure | 24 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
+| — architecture pins | 9 | (gate-script, db-census, docs-counts, security-ledger, route-case, nav-config, page-titles, metadata, pwa-metadata) | `tests/` | source-scanning contracts |
+| — infrastructure | 25 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
@@ -666,7 +666,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 497 unit / 84 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 508 unit / 84 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | (dormant, CRM-era config) visual drift sweep at a viewport |
 | `bun run probe:ref` | root | (dormant, CRM-era reference) live parity probe |
@@ -692,6 +692,7 @@ comments explain why.
 
 | Priority | Issue | Impact | Status |
 |----------|-------|--------|--------|
+| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 203): 10 advisories: 4 high / 5 moderate / 1 low — all dev-toolchain, zero runtime chains | Chains: minimatch←eslint · deepmerge-ts←prisma CLI · vite/launch-editor←vitest · zod←the nested eslint-plugin-react-hooks copy (the RUNTIME `zod@^4.6.7` is safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) · source-map-js←postcss | Accepted (re-triaged session 203; pins: `tests/security-ledger.test.ts`) |
 | LOW | Session cookie name is `neo_session` (scaffold legacy) | Cosmetic; smoke + specs grep it — a rename is a coordinated change | Accepted |
 | LOW | No migration journal (db:push workflow) | Schema history lives in git, not SQL files — acceptable for the single-user product | Accepted |
 | LOW | AI coach is rule-based (honest labeling) | No LLM answers offline; the provider seam exists for a future engine | By design (ADR-005) |
@@ -699,8 +700,15 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 497 unit · build · smoke 14/14 ·
+the time of writing (lint 0/0 · tsc 0 · 508 unit · build · smoke 14/14 ·
 84 e2e).
+
+**Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
+advisory is cured same-session, never deferred; dev-toolchain bumps stay
+under the no-mid-rotation toolchain posture (bump them in a dedicated
+dependency round, gate-verified). The census row above and the runtime-zod
+floor are pinned in `tests/security-ledger.test.ts` — a stale ledger or a
+vulnerable runtime resolution trips the unit gate.
 
 ---
 

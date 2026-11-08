@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 497 / Playwright 84 / smoke 14). Covers the design system,
+  layer (Vitest 508 / Playwright 84 / smoke 14). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
