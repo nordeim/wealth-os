@@ -60,7 +60,10 @@ export const SWEEP_STATE_FILE = path.join(REPO, "scripts", ".sweep-auth-state.js
 export const SWEEP_STATE_TTL_MS = 15 * 60 * 1000;
 
 const OUR_URL = process.env.OUR_URL ?? "http://localhost:3000";
-const REF_URL = process.env.REF_URL ?? "https://neo-crm-8ab2c17c.base44.app";
+// Session-204 (R-4.1): re-anchored with scripts/sweep.ts's own default (the
+// login-chain consistency — this module probes + logs into the reference on
+// its own, so a stale default here would pair our cookies with the wrong app).
+const REF_URL = process.env.REF_URL ?? "https://wealth-os-d93bd04e.base44.app";
 
 const log = (s: string) => console.log(`[sweep-state] ${s}`);
 

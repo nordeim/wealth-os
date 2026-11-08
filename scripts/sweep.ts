@@ -2,52 +2,48 @@
 // session's strong-sweep methodology promoted into the repo as a
 // ONE-COMMAND regression (the s91 first-listed suggested next).
 //
+// Session-204 (R-4.1, the remediation-plan-v2 F-203e program's first
+// slice): the tool is RE-ANCHORED to the WealthOS reference — the
+// REF_URL default, the PAGES list (the 9 finance sections + the
+// login/reset-password public faces), and sweep-state.ts's own REF_URL
+// with it (the login-chain consistency). The CRM-era measured baselines
+// are RETIRED (below). The zero-data step keeps its CRM-era shape for
+// now — the WealthOS reference carries its own demo corpus, so the
+// data-vs-empty genus is the R-4.2 maiden derivation's first question.
+//
 // What it does (bun run sweep):
 //   1. boots (or reuses) the dev server on :3000
-//   2. drives OUR app to the ZERO-DATA state — the reference's own
-//      standing state (its workspace has been empty for 13 censuses) —
-//      via scripts/zero-data.ts (the s91 tool, reused not duplicated;
-//      users + the Setting singleton stay functional)
+//   2. drives OUR app to the ZERO-DATA state via scripts/zero-data.ts
+//      (the s91 tool, reused not duplicated; users + the Setting
+//      singleton stay functional — whether zero-data or seeded is the
+//      apples-to-apples state is the R-4.2 derivation's call)
 //   3. resolves the CROSS-PROCESS auth pair state
 //      (scripts/sweep-state.ts — the 162-c login consolidation: the
 //      first invocation pays the login pair and writes the state file,
 //      the next invocations reuse it while fresh; ZERO logins on a
 //      reuse), captures the PAGES list per app at the given viewport
 //      (default 1440x900; the reference's Base44 badge closed,
-//      content-waits per page — the shell's main, or the not-found
-//      entry's h1-404 override since session-197)
+//      content-waits per page — the shell's main)
 //   4. pairwise pixel-diffs each page (per-channel tolerance 12, the
 //      s91 value) — the PNGs decode in a browser canvas (getImageData);
 //      the PURE diffPixels seam is the same function the unit pins
 //      exercise in node. ZERO new dependencies.
 //   5. prints the % table + restores the seed (bun run db:seed)
 //
-// The standing EXPLAINED diffs (do not treat as drift):
-//   settings ~4.7%  the picklist-DATA genus (the reference's picklists
-//                    wiped with its workspace, ours seeded)
-//   landing  ~9.6%  the s142 brand-token genus (the reference's CSS
-//                    build dropped its brand utilities — its CTAs
-//                    render invisible; ours the working blue)
-//   login    ~0.28% the brand-mark logo genus (constant-absolute px)
-// Session-146 (the baselines re-derivation): the s91-era contacts
-//   ~0.5% (the "lucide superset + noise") and dashboard ~0.3% (the 2px
-//   chart-baseline artifact) genera are RETIRED — contacts 0.00 and
-//   dashboard 0.03 at the s142–s146 gates alike (the s91 comment
-//   misattributed the DOM-level N-89c6 aria-hidden superset to a pixel
-//   diff; the artifact left with the s139/s142 chart re-derivations).
-// Every other page ran 0.00-0.01% at the s91/s92 ships. The tool is a
-// drift REPORT (exit 0 with the table); pass --max-diff <pct> (the
-// space-separated form — the one the parser reads) to gate
-// a threshold CI-style (exit 1 when any page exceeds it).
+// Session-204 (R-4.1): the CRM-era standing genera — settings ~4.7%
+//   (the picklist-DATA genus), landing ~9.6% (the s142 brand-token
+//   genus), login ~0.28% (the brand-mark logo genus), the phone ~0.5%
+//   mobile-nav topbar floor, and the s146-retired contacts/dashboard
+//   entries — are RETIRED with the re-anchor: they described the
+//   NEO-CRM reference pairing, dead since the session-199
+//   transformation. No WealthOS baselines exist yet; the class tables
+//   sit EMPTY and every page judges at baseline 0 + margin (R-4.2
+//   derives them from the maiden runs at the four widths).
 //
-// The PHONE-WIDTH standing table (session-94 maiden run, 390x844 —
-// the first phone sweep): a uniform ~0.5% floor on EVERY page (the
-// mobile-nav superset topbar genus — ours renders [hamburger LEFT] +
-// [account RIGHT], the reference [account LEFT] alone; the displaced
-// account glyphs + the hamburger ≈ 1600 px ≈ 0.49% of the 390x844
-// frame) · settings ~7.3% (the same picklist genus, a LARGER share of
-// the narrower frame) · reports ~0.7% (the floor + chart noise). The
-// desktop table above still governs the default run.
+// The tool is a drift REPORT (exit 0 with the table); pass
+// --max-diff <pct> (the space-separated form — the one the parser
+// reads) to gate a threshold CI-style (exit 1 when any page exceeds
+// it).
 //
 // Run: bun run sweep   (or: bun scripts/sweep.ts)
 //   Phone-width mode (session-94, the s93 suggested next — the 390px
@@ -94,7 +90,7 @@
 //   a gate. The `gate:full` package script chains the standing gate +
 //   all four drift sweeps.
 // Env:  OUR_URL (default http://localhost:3000)
-//       REF_URL (default https://neo-crm-8ab2c17c.base44.app)
+//       REF_URL (default https://wealth-os-d93bd04e.base44.app)
 //       REF_EMAIL / REF_PASSWORD (the documented demo login defaults)
 //       HEADLESS=0 to watch the captures
 //
@@ -120,11 +116,11 @@ import { chromium } from "@playwright/test";
 
 import { preflightPairState } from "./sweep-state";
 
-// Session-197 (D-197a1): the per-page capture-wait override. The
-// not-found entry is the first PAGES member that does NOT render
-// inside the app shell (no `main`), so its content-wait rides the
-// h1 "404" heading; every other page keeps the shell's main-wait
-// (the default face, `waitFor` absent).
+// Session-197 (D-197a1): the per-page capture-wait override. No current
+// entry uses it (the CRM not-found entry retired with the R-4.1
+// WealthOS list — every current page renders a `main`), but the member
+// stays: a future entry outside every shell (a bare 404, a print view)
+// re-uses it instead of re-inventing the seam.
 export interface PageEntry {
   readonly name: string;
   readonly path: string;
@@ -134,57 +130,28 @@ export interface PageEntry {
 // The explicit annotation (not the bare `as const` literal union)
 // keeps `p.waitFor` accessible on every element for captureAll +
 // the unit pins.
+//
+// Session-204 (R-4.1): the WealthOS page set — the 9 finance sections
+// (the app's own nav list, tests/nav-config.test.ts's contract) + the
+// two public auth faces. All 11 verified 200 on the reference live
+// this session (the lowercase canonicals — both apps serve the capital
+// twins too; the s14 case-sensitivity house rule). The reference's
+// authenticated-visit behavior on the auth faces is a maiden-run
+// question (R-4.2 decodes any redirect genus it finds).
 export const PAGES: readonly PageEntry[] = [
-  // Session-142 (D-142a6): the dashboard entry re-anchored to /dashboard
-  // (the root `/` became the PUBLIC landing page — the reference's
-  // marketing-layer parity event) + the NEW landing entry below it.
   { name: "dashboard", path: "/dashboard" },
-  // the reference's new public marketing surface — swept at the same
-  // viewport banding; the maiden run measured its baseline (the CSS
-  // mock-dashboards render near-identically two-app; the landing's own
-  // noise floor sits at the chart-bars' anti-aliasing).
-  { name: "landing", path: "/" },
-  // Session-144 (D-144a2/F-144c1): the marketing pair joins the standing
-  // sweep — the reference serves /about + /contact PUBLICLY (walk34,
-  // rendered-level) and ours now mirrors it (the (marketing) group is
-  // session-optional). The sweep captures both apps LOGGED-IN: the same
-  // app chrome + the real-user topbar on both sides (the s142 landing
-  // precedent). The maiden runs measured their baselines.
-  { name: "about", path: "/about" },
-  { name: "contact", path: "/contact" },
+  { name: "income", path: "/income" },
+  { name: "expenses", path: "/expenses" },
   { name: "accounts", path: "/accounts" },
-  { name: "contacts", path: "/contacts" },
-  { name: "leads", path: "/leads" },
-  { name: "calendar", path: "/calendar" },
-  { name: "activities", path: "/activities" },
-  { name: "reports", path: "/reports" },
+  { name: "investments", path: "/investments" },
+  { name: "import", path: "/import" },
+  { name: "analytics", path: "/analytics" },
+  { name: "goals", path: "/goals" },
   { name: "settings", path: "/settings" },
-  { name: "profile", path: "/Profile" },
-  // Session-96 (S96-P0): the login card joins the standing sweep — the
-  // reference serves the login card to AUTHENTICATED visitors too (the
-  // S23-P2 finding) and ours mirrors it, so the post-login capture works
-  // on BOTH apps. The auth surface is now pixel-swept: the form-family
-  // walk found the v4 space-y genus living there precisely because
-  // /login was never swept.
+  // the public auth faces — both render a `main` (the login card
+  // family), so the default content-wait applies
   { name: "login", path: "/login" },
-  // Session-197 (D-197a1): the 404 joins the standing sweep — the
-  // sweep-state's own coverage audit's genuine find. The designed 404
-  // is the only two-app-renderable surface the drift-gate family did
-  // not carry: the s194 walk67 decoded its faces, the s195 pins hold
-  // its render + its TRUE-404 status + its a11y registrations — no
-  // gate held its PIXELS. The path is unknown on BOTH apps by
-  // construction: OURS renders the designed 404 with the true HTTP
-  // 404 (session-independent, the D-194a5 construction), the REF
-  // renders its own designed 404 PAST its auth guard (http 200, its
-  // platform badge — closed by the closeBadge idiom before the
-  // capture). The waitFor override: the 404 renders BARE (the root
-  // not-found carries no shell — NO main element on either app), so
-  // the content-wait rides the h1 "404" heading instead (the walk67
-  // decode's own anchor), curing the 15s soft-fall burn the
-  // shell-wait would pay per capture. The D-197a1 maiden measured
-  // 0.01/0.04/0.01/0.01 at the four bands (badge-closed) — the 0.1
-  // family floor at every band, no genus.
-  { name: "not-found", path: "/no-such-sweep-route", waitFor: "heading-404" },
+  { name: "reset-password", path: "/reset-password" },
 ];
 
 /** Session-95 (S95-P0): the --pages filter — `bun run sweep --
@@ -241,225 +208,22 @@ export function parseNumberArg(
 /** The per-channel anti-aliasing tolerance (the s91 value). */
 export const TOLERANCE = 12;
 
-/** Session-96 (S96-P2): the per-page STANDING baselines — the documented
- * explained-diff genera by viewport class (the session-97 3-way md/lg
- * banding grown 4-WAY at session-99: phone = width < 768, the md
- * breakpoint — BOTH walked phone widths 390x844 and 375x812 ride the
- * phone table · tablet = width < 1024, the lg breakpoint — the maiden
- * 768x1024 run's table, the accounts overflow genus at the md boundary
- * · landscape = width < 1280, the xl breakpoint — the maiden 1024x768
- * run's table, the same overflow genus at its lg-band share (the
- * reference's bare flex-1 floors at its table's min-content, squeezes
- * its own w-80 rail, and pokes main; ours the min-w-0 consistent
- * pattern) · else DESKTOP). The values sit just
- * above the measured standing tables (the s91–s99 runs) so the default
- * margin (0.5pct) absorbs run-to-run noise while any NEW drift — a
- * 0.00% page moving to 5%, invisible to a global --max-diff 8 gate —
- * fails. PURE by design: pinned in tests/sweep-tool.test.ts beside
- * PAGES/TOLERANCE/diffPixels/parsePagesArg. */
+/** Session-204 (R-4.1, the remediation-plan-v2 F-203e program's first
+ * slice): the CRM-era standing baselines RETIRED. The four class tables
+ * (the session-99 4-way md/lg/xl banding: phone < 768 · tablet < 1024
+ * · landscape < 1280 · else desktop) sit EMPTY pending the R-4.2 maiden
+ * derivation against the WealthOS reference — every page is judged at
+ * baseline 0 + margin (the driftVerdict default), the fail-fast
+ * pending state: nothing passes unmeasured. R-4.2 fills each class
+ * table from its maiden run's measured standing share, the values
+ * sitting just above the measured table (the s91-s99 doctrine) so the
+ * default 0.5pct margin absorbs run-to-run noise while any NEW drift
+ * fails. PURE by design: pinned in tests/sweep-tool.test.ts. */
 export const STANDING_BASELINES = {
-  desktop: {
-    // session-148 (the F-147c3 mirror): re-anchored 0.15 → 0.1 — the
-    // reference's KPI delta chips + its Recent-Deals middle select +
-    // its More... ghost are MIRRORED now (walk38k); the dashboard
-    // measures 0.00 (byte-stable). The family floor.
-    dashboard: 0.1,
-    // session-148 (the F-147c3 mirror): re-anchored 8.0 → 0.1 — the
-    // landing mock morph is MIRRORED (the Accounts 4-row micro-table
-    // + the Reports 7-bar "Revenue by month" card + the middle-row
-    // lg:order-2 flip + the sm: leading pins — walk38d/e/f/h); the
-    // landing measures 0.00, the genus COLLAPSED. 0.1 trips at 0.6.
-    landing: 0.1,
-    // session-144 (D-144a2): the marketing pair — the maiden runs
-    // measured 0.00% (the app chrome + the censused content
-    // pixel-identical logged-in); the 0.1 entry rides the family floor
-    about: 0.1,
-    contact: 0.1,
-    // session-148 (the F-147c3 mirror): re-anchored 2.5 → 0.1 — the
-    // accounts interior is MIRRORED (the KPI chips + the toolbar trio
-    // + the rail's Save All/Filter retired, the magnifier KEPT —
-    // walk38j); the page measures 0.00. The family floor.
-    accounts: 0.1,
-    // session-148 (the F-147c3 mirror): re-anchored 3.0 → 0.1 — the
-    // contacts "+0" chip retired (mirrored); 0.00 measured.
-    contacts: 0.1,
-    leads: 0.1,
-    calendar: 0.1,
-    // session-148 (the F-147c3 mirror): re-anchored 5.2 → 0.1 — the
-    // activities KPI chips + the Priority card's plain "More" ghost
-    // retired (mirrored, walk38); 0.01 measured.
-    activities: 0.1,
-    reports: 0.1,
-    // session-148: re-anchored 3.2 → 2.9 — the picklist-DATA genus
-    // (the reference's workspace Setting lists, re-populated at s147:
-    // Won/Lost/converted + LinkedIn) — 2.65 measured; volatile
-    // workspace data, NOT for mirroring (the s143-s146 precedent).
-    settings: 2.9,
-    profile: 0.1,
-    // the maiden 10-page run measured 0.27% — the CSS brand-mark logo
-    // genus (the reference hotlinks a screenshot; ours draws the
-    // white-circle/blue-dot shape — the s7 note)
-    login: 0.3,
-    // Session-197 (D-197a1): the 404 joins the sweep — the maiden
-    // desktop run measured 0.01% (badge-closed, the byte-identical
-    // family floor; no genus at any band)
-    "not-found": 0.1,
-  },
-  phone: {
-    // session-148 (the F-147c3 mirror): the chips family collapsed at
-    // the phone share too — 0.01 measured; the family floor.
-    dashboard: 0.1,
-    // session-146 (F-146c1, the baselines re-derivation): RE-ANCHORED
-    // 8.5 → 6.0. The s142 maiden (the PRIOR sandbox) measured 8.5; the
-    // s146 re-measurement measures 5.32 — byte-stable ×3 runs, the
-    // cluster decode the SAME brand-token genus (the stacked CTA band
-    // 4.30% + the hero badge 0.76% + the logo 0.22%; the reference's
-    // invisible CTAs, ours the working blue — the genus unchanged). The
-    // share rides the sandbox's font rasterization: the above-the-fold
-    // composition at 390 (the mock's sliver) varies cross-environment —
-    // the s142 value carried 3.2 points of dead slack under which a real
-    // +3% blue-shift regression passed the drift gate asleep. 6.0 trips
-    // at 6.5 (+1.2 regression sensitivity, 0.68 intra-sandbox headroom
-    // over the ×3-stable 5.32).
-    // session-147: the phone landing genus COLLAPSED — the reference's
-    // CTAs now render visible (the parity event fixed its CSS build):
-    // 5.32 (the s146 re-anchor) → 0.01 measured. Re-anchored 6.0 → 0.1
-    // (trips at 0.6 — the tightest tripwire in the table; a real
-    // blue-shift regression at the phone landing now trips awake).
-    landing: 0.1,
-    // session-147: the floor family collapsed with the reference's own
-    // hamburger — 0.00-0.51 measured; the 0.1 entries ride the family
-    // floor
-    about: 0.1,
-    contact: 0.1,
-    // session-148 (the F-147c3 mirror): 0.05 measured — the family
-    // floor (the chips/toolbar family collapsed).
-    accounts: 0.1,
-    // session-148 (the F-147c3 mirror): 0.00 measured — the "+0" chip
-    // retired; the family floor.
-    contacts: 0.1,
-    leads: 0.1,
-    calendar: 0.1,
-    activities: 0.1,
-    reports: 0.25,
-    // 3.63 measured (the picklist data genus at its new shape) —
-    // session-148: re-anchored 4.0 → 3.8. Session-150 (walk40): the
-    // genus is LIVE-EDITED INTRADAY by the owner — the ref-vs-ref
-    // re-capture (the same reference page minutes apart) drifted
-    // 2.65% within ~40 min, and the ours-vs-ref share wobbled
-    // 3.63 → 6.08 across the same window. A settings-class trip is
-    // FIRST adjudicated by the ref-vs-ref idiom (re-capture the
-    // reference; if IT moved, the trip is data volatility, not a
-    // defect) — the tripwire stays TIGHT (the s146 doctrine: the
-    // wobble is absorbed by the decode protocol, never the margin).
-    settings: 3.8,
-    profile: 0.1,
-    // the phone login entry rides the CLASS CEILING (s103): the CSS
-    // brand-mark logo genus is constant-ABSOLUTE (~2,500px — the
-    // reference hotlinks a screenshot; ours draws the white-circle/
-    // blue-dot shape — the s7 note), so its SHARE scales inversely with
-    // the frame: 0.75% at 390x844 · 0.82% at 375x812 · 0.67% at 414x896
-    // · 1.39% at the 320x568 class floor (the maiden s103 walk — the
-    // frame is 45% smaller, the genus unchanged). One entry covers all
-    // four walked widths; the share-based cost is the 390 ceiling
-    // loosening to ~1.9 — a real login regression stacks pixels ON TOP
-    // of the constant genus and still trips.
-    login: 1.4,
-    // Session-197 (D-197a1): the 404 at phone — the maiden 390x844 run
-    // measured 0.04% (the family floor, no genus)
-    "not-found": 0.1,
-  },
-  // Session-97 (S97-P0): the TABLET class — the md..lg band (768 <= w <
-  // 1024) walked by the maiden 768x1024 run. The desktop layout family
-  // is active (the sidebar shows from md) but the narrower frame gives
-  // the standing genera different shares. accounts carries the s95
-  // overflow genus at the md boundary: the reference's table rides the
-  // bare flex-1 container and POKES OUT (main h-scroll), ours scrolls
-  // in-box (min-w-0) — the th distribution differs downstream; ours the
-  // consistent pattern, documented STANDING since the phone walk.
-  tablet: {
-    // session-148 (the F-147c3 mirror): 0.06 measured — the chips
-    // family collapsed; the family floor.
-    dashboard: 0.1,
-    // session-148 (the F-147c3 mirror): the mock morph is MIRRORED —
-    // 0.01 measured; the genus COLLAPSED. The family floor (0.1 trips
-    // at 0.6).
-    landing: 0.1,
-    // session-144: the marketing pair — 0.00% measured (the maiden
-    // tablet run)
-    about: 0.1,
-    contact: 0.1,
-    // session-148: 0.14 measured — re-anchored 0.5 → 0.2 (the chips
-    // share retired; the md-boundary overflow residue)
-    accounts: 0.2,
-    // session-148 (the F-147c3 mirror): 0.00 measured — the "+0" chip
-    // retired; the family floor.
-    contacts: 0.1,
-    leads: 0.1,
-    calendar: 0.1,
-    // session-148 (the F-147c3 mirror): 0.01 measured — the chips
-    // family + the Priority "More" retired; the family floor.
-    activities: 0.1,
-    reports: 0.1,
-    // 3.92 measured (the picklist data genus at its new shape) —
-    // session-148: re-anchored 4.4 → 4.2
-    settings: 4.2,
-    profile: 0.1,
-    // the maiden tablet run measured 0.44% — the logo genus at the
-    // tablet share
-    login: 0.5,
-    // Session-197 (D-197a1): the 404 at tablet — the maiden 768x1024 run
-    // measured 0.01% (the family floor, no genus)
-    "not-found": 0.1,
-  },
-  // Session-99 (S99-P0): the LANDSCAPE class — the lg..xl band
-  // (1024 <= w < 1280) walked by the maiden 1024x768 run. The desktop
-  // layout family is active (the w-80 filter rail joins at lg) but
-  // the reference's accounts row is BROKEN at this band: its bare
-  // flex-1 content FLOORS at the table's min-content (535), which
-  // SQUEEZES its own w-80 rail from 320 to 183 (flex-shrink absorbs
-  // the shortfall — its filter dropdowns visibly compress) and still
-  // overflows the row, poking main +6px past the viewport (scrollW 774
-  // vs clientW 768). Ours keeps content flex-1 min-w-0 (360, the table
-  // scrolling IN-BOX inside the card's overflow-x-auto) + the rail at
-  // its designed full 320 — the s95 consistent pattern, the same
-  // doctrine the phone/md walks documented. The 2.43% share is the
-  // genus at its lg-band maximum (the squeeze shrinks as width grows
-  // toward 1280; 1440 rides the desktop table).
-  landscape: {
-    // session-148 (the F-147c3 mirror): 0.07 measured — the chips
-    // family collapsed; the family floor.
-    dashboard: 0.1,
-    // session-148 (the F-147c3 mirror): the mock morph is MIRRORED —
-    // 0.01 measured; the genus COLLAPSED. The family floor.
-    landing: 0.1,
-    // session-144: the marketing pair — 0.00% measured (the maiden
-    // landscape run)
-    about: 0.1,
-    contact: 0.1,
-    // session-148 (the F-147c3 mirror): 1.67 measured — the chips
-    // share RETIRED (mirrored); the residual is the PURE s95 overflow
-    // genus (the reference's bare flex-1 poke-out vs our min-w-0
-    // in-box scroll). Re-anchored 3.9 → 1.9.
-    accounts: 1.9,
-    contacts: 0.1,
-    leads: 0.1,
-    calendar: 0.1,
-    // session-148 (the F-147c3 mirror): 0.01 measured — the chips
-    // family + the Priority "More" retired; the family floor.
-    activities: 0.1,
-    reports: 0.1,
-    // 1.91 measured (the picklist data genus at its new shape) —
-    // session-148: re-anchored 2.4 → 2.1
-    settings: 2.1,
-    profile: 0.1,
-    // the maiden landscape run measured 0.44% — the logo genus at
-    // the landscape share
-    login: 0.5,
-    // Session-197 (D-197a1): the 404 at landscape — the maiden
-    // 1024x768 run measured 0.01% (the family floor, no genus)
-    "not-found": 0.1,
-  },
+  desktop: {},
+  phone: {},
+  tablet: {},
+  landscape: {},
 } as const;
 
 export type BaselineTable = Record<string, number>;
@@ -476,49 +240,18 @@ export function standingBaseline(width: number): BaselineTable {
   return { ...STANDING_BASELINES.desktop };
 }
 
-/** PURE (Session-98, N-98a1): the class-appropriate "standing explained"
- * genera line — the desktop trio used to print on EVERY run regardless
- * of viewport class, describing shares that only exist at 1440 (the
- * phone settings genus is ~7.3, not ~4.7; the tablet surface carries
- * the accounts overflow genus). Mirrors the standingBaseline banding.
- * Session-146 (the baselines re-derivation): the desktop line's
- * contacts + dashboard genera retired (0.00/0.03 measured — the s91
- * entries were stale); the phone landing share re-anchored 8.5 → 5.32
- * (the same brand-token genus, the prior-sandbox share).
- * Session-148 (the F-147c3 MIRROR): the desktop-interior family is
- * MIRRORED — the reference's KPI delta chips (all five core pages),
- * its accounts toolbar trio + rail buttons, its dashboard middle
- * select + More... ghost, its activities Priority "More", and its
- * landing mock morph (the Accounts micro-table + the Reports 7-bar
- * card + the middle-row flip + the ≥sm leading inertness) all
- * retired/decoded and re-derived on our side (walk38). The whole
- * family COLLAPSED to the 0.00-0.01 floor at every class; the only
- * standing genera left: the settings picklist-DATA genus (volatile
- * workspace data — NOT for mirroring, the s143-s146 precedent), the
- * login logo genus (constant-absolute px), and the s95 landscape
- * accounts overflow genus (the reference's own table poke-out). */
+/** PURE (Session-98, N-98a1; Session-204 R-4.1): the per-run
+ * "standing explained" line. The CRM-era genus decodes (the four
+ * class-specific branches) retired with the re-anchor — they described
+ * the NEO-CRM pairing's measured genera, none of which transfer. Until
+ * R-4.2 derives the WealthOS baselines, the line states the pending
+ * state honestly: there is no genus knowledge to print. */
 export function standingExplained(width: number): string {
-  if (width < 768) {
-    return (
-      "[sweep] standing explained (phone): the F-147c3 chips/toolbar family MIRRORED (s148 — every page at the 0.00-0.20 floor) " +
-      "· settings ~3.6% the picklist-data genus (volatile workspace data, not for mirroring; LIVE-EDITED INTRADAY by the owner — walk40: the ref-vs-ref re-capture drifted 2.65% within 40 min; a settings trip is FIRST adjudicated ref-vs-ref before any defect claim) · login ~0.78% the logo genus (constant-absolute px)"
-    );
-  }
-  if (width < 1024) {
-    return (
-      "[sweep] standing explained (tablet): the F-147c3 family MIRRORED (s148 — the chips + the landing mock morph collapsed; every page at the floor) " +
-      "· settings ~3.9% the picklist-data genus (volatile workspace data) · login ~0.46% the logo genus"
-    );
-  }
-  if (width < 1280) {
-    return (
-      "[sweep] standing explained (landscape): accounts ~1.7% the PURE s95 overflow genus (the reference's bare flex-1 table poke-out — the F-147c3 chips share retired with the mirror) " +
-      "· settings ~1.9% the picklist-data genus (volatile workspace data) · login ~0.46% the logo genus · every other page at the floor (the F-147c3 family MIRRORED, s148)"
-    );
-  }
   return (
-    "[sweep] standing explained (desktop): the F-147c3 desktop-interior family MIRRORED (s148 — the KPI delta chips + the accounts toolbar trio/rail buttons + the dashboard middle select/More... + the landing mock morph all retired on our side; every page at the 0.00-0.01 floor) " +
-      "· settings ~2.7% the picklist-data genus (volatile workspace data — the reference's re-populated lists, not for mirroring) · login ~0.28% the logo genus (constant-absolute px)"
+    `[sweep] standing explained (R-4.1 re-anchor, width ${width}): the CRM-era genera retired — ` +
+    `no WealthOS baselines derived yet (R-4.2 measures the four widths and fills the class ` +
+    `tables); every page currently judges at baseline 0 + margin, so treat any trip as ` +
+    `unmeasured drift pending the maiden derivation`
   );
 }
 
@@ -739,7 +472,7 @@ export function clusterDiff(
 
 const REPO = path.resolve(import.meta.dirname, "..");
 const OUR_URL = process.env.OUR_URL ?? "http://localhost:3000";
-const REF_URL = process.env.REF_URL ?? "https://neo-crm-8ab2c17c.base44.app";
+const REF_URL = process.env.REF_URL ?? "https://wealth-os-d93bd04e.base44.app";
 const REF_EMAIL = process.env.REF_EMAIL ?? "sepnetflix2023@outlook.com";
 const REF_PASSWORD = process.env.REF_PASSWORD ?? "$Abcd1234";
 const SHOTS = path.join(REPO, "scripts", "sweep-shots");
