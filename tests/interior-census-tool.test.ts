@@ -140,8 +140,8 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
       },
     ]);
     expect(red.ok).toBe(false);
-    expect(red.failures[0]).toContain("[desktop] login: 66 unexplained");
-    expect(red.failures[0]).toContain("standing 63 + margin 0");
+    expect(red.failures[0]).toContain("[desktop] login: 55 unexplained");
+    expect(red.failures[0]).toContain("standing 52 + margin 0");
     // a mainH drift off the standing value → RED
     const hRed = censusVerdict([
       { page: "login", axis: "desktop", mainHDelta: 0, oursEls: 57, refEls: 56, matches: 2, explained: [], unexplained: [] },
@@ -165,58 +165,58 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
     expect(settings.ok).toBe(true);
   });
 
-  it("STANDING_CENSUS: the R-7.5 re-derivation — the parity-convergence cures dropped the allowances (the literal values are the contract; drift above them is the event)", async () => {
+  it("STANDING_CENSUS: the R-7.9 re-derivation — the R-7 tail cures collapsed the settings allowances everywhere (the literal values are the contract; drift above them is the event)", async () => {
     const { STANDING_CENSUS } = await census();
     expect({ ...STANDING_CENSUS.desktop }).toEqual({
-      dashboard: { unexplained: 284, mainH: -97 },
+      dashboard: { unexplained: 257, mainH: -135 },
       income: { unexplained: 40, mainH: 49 },
       expenses: { unexplained: 115, mainH: 49 },
       accounts: { unexplained: 22, mainH: 49 },
-      investments: { unexplained: 136, mainH: -641 },
+      investments: { unexplained: 129, mainH: -643 },
       import: { unexplained: 31, mainH: 49 },
       analytics: { unexplained: 66, mainH: 49 },
       goals: { unexplained: 23, mainH: 49 },
-      settings: { unexplained: 175, mainH: -81 },
-      login: { unexplained: 63, mainH: -40 },
+      settings: { unexplained: 53, mainH: 103 },
+      login: { unexplained: 52, mainH: -40 },
       "reset-password": { unexplained: 19, mainH: 0 },
     });
     expect({ ...STANDING_CENSUS.phone }).toEqual({
-      dashboard: { unexplained: 323, mainH: 156 },
+      dashboard: { unexplained: 317, mainH: 85 },
       income: { unexplained: 38, mainH: -15 },
       expenses: { unexplained: 112, mainH: -303 },
       accounts: { unexplained: 20, mainH: -15 },
-      investments: { unexplained: 159, mainH: -727 },
+      investments: { unexplained: 134, mainH: -673 },
       import: { unexplained: 32, mainH: -15 },
       analytics: { unexplained: 74, mainH: -45 },
       goals: { unexplained: 21, mainH: -15 },
-      settings: { unexplained: 182, mainH: -167 },
-      login: { unexplained: 52, mainH: -22 },
+      settings: { unexplained: 68, mainH: 75 },
+      login: { unexplained: 50, mainH: -22 },
       "reset-password": { unexplained: 19, mainH: 0 },
     });
     expect({ ...STANDING_CENSUS.tablet }).toEqual({
-      dashboard: { unexplained: 277, mainH: 43 },
+      dashboard: { unexplained: 262, mainH: -11 },
       income: { unexplained: 38, mainH: -15 },
       expenses: { unexplained: 112, mainH: -15 },
       accounts: { unexplained: 20, mainH: -15 },
-      investments: { unexplained: 150, mainH: -483 },
+      investments: { unexplained: 141, mainH: -487 },
       import: { unexplained: 32, mainH: -15 },
       analytics: { unexplained: 73, mainH: 103 },
       goals: { unexplained: 21, mainH: -15 },
-      settings: { unexplained: 176, mainH: -75 },
-      login: { unexplained: 62, mainH: 0 },
+      settings: { unexplained: 53, mainH: 19 },
+      login: { unexplained: 55, mainH: 0 },
       "reset-password": { unexplained: 19, mainH: 0 },
     });
     expect({ ...STANDING_CENSUS.landscape }).toEqual({
-      dashboard: { unexplained: 278, mainH: 142 },
+      dashboard: { unexplained: 258, mainH: 67 },
       income: { unexplained: 40, mainH: 49 },
       expenses: { unexplained: 116, mainH: 109 },
       accounts: { unexplained: 22, mainH: 49 },
-      investments: { unexplained: 150, mainH: -451 },
+      investments: { unexplained: 142, mainH: -455 },
       import: { unexplained: 31, mainH: 49 },
       analytics: { unexplained: 60, mainH: 65 },
       goals: { unexplained: 23, mainH: 49 },
-      settings: { unexplained: 175, mainH: -63 },
-      login: { unexplained: 65, mainH: -74 },
+      settings: { unexplained: 55, mainH: 83 },
+      login: { unexplained: 53, mainH: -58 },
       "reset-password": { unexplained: 19, mainH: 0 },
     });
   });
