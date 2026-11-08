@@ -162,7 +162,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (582) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (604) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + interior
   censuses) are dormant — the sweep, drift-probe, and interior-census
@@ -487,6 +487,9 @@ as **literal hex in `@theme`** (`src/app/globals.css`):
 | `--color-primary-hover` | `#d97706` amber-600 | Hover | — |
 | `--color-primary-navy` | `#0f1419` | The section-H1 navy (7 of 9 pages — `text-primary-navy`, live-computed on the reference, session 207) | 16.9:1 on white (AAA) |
 | KPI tone gradients | `KPI_TONES` (page-layout.ts) | The reference's saturated stat tiles (session 208, F-208a): `from-emerald-500 via-teal-500 to-emerald-600` · rose/red · amber/yellow · purple/violet — `w-12 h-12 rounded-xl` + `text-white` icons; Investments renders them as FULL-CARD gradients (`GradientKpiCard`, shadow-2xl) | white-on-gradient (the icons ride the 500–600 band) |
+| The four card families | `CARD`/`GLASS_CARD`/`STOCK_CARD`/`QUICK_ACTIONS_CARD` (page-layout.ts) | The per-surface card genera (session 209, F-209a): **warm-simple** `CARD.base` (`from-white/90 to-stone-50/90` gradient, amber-100/50 border, shadow-xl — Dashboard mid + Investments); **warm-hover** `CARD.kpi` (the KPI row: + `via-amber-50/20` + `card-hover` + `p-6` in-base + backdrop-blur-md); **glass** `GLASS_CARD` (Expenses/Income/Goals/Analytics + Dashboard's bottom row; + `card-hover` on Expenses' summary trio); **stock** `STOCK_CARD` (`border bg-card` — Accounts/Import); the Quick Actions one-off (`via-30`, rounded-2xl, amber-200 border). Padding is a flat `p-6` | card-foreground #0a0a0a on near-white gradients 17+:1 (AAA) |
+| Card tokens + hover utility | `--color-card-foreground` / `--color-card` + `.card-hover` (globals.css) | The shadcn tokens behind the families (`#0a0a0a`/`#ffffff`, flipped `#fafafa`/`#0a0a0a` by the `.dark` runtime override — the reference's own mechanism; live-decoded session 209) + the reference's custom hover utility (`translateY(-2px)` + the xl shadow pair, CSSOM-verbatim) | #fafafa on stone-900/90 dark cards 15+:1 (AAA) |
+| Analytics stat gradients | `STAT_GRADIENTS` (page-layout.ts) | The reference's three saturated `to-r` stat tiles under the Analytics header (session 209, F-209b): emerald (Avg Monthly Income, TrendingUp) · red (Avg Monthly Expenses, TrendingUp `rotate-180`) · blue (Avg Monthly Savings, Calendar) — `text-white` values + `text-X-100` labels over the tested `monthlyAverages()` | white-on-gradient (large text) |
 | Settings glass genus | `SETTINGS_CARD` (page-layout.ts) | The settings page's OWN card family (F-205b's second half, session 208): `bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg` + the shadcn CardHeader/CardTitle/CardContent anatomy + the blue GDPR box (`bg-blue-600` Export button) + the amber import box | blue-800 on blue-50 = 7.2:1 (AA) |
 | `--color-background` | `#faf9f7` | Light page wash | — |
 | `--color-foreground` | `#1c1917` stone-900 | Headings/body | 16.1:1 on background (AAA) |
@@ -570,9 +573,9 @@ the product is single-user-per-install by design.
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 41 | 582 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 42 | 604 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 14 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208) | `tests/` | source-scanning contracts |
+| — architecture pins | 15 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209) | `tests/` | source-scanning contracts |
 | — infrastructure | 24 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -605,7 +608,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 582/582 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 604/604 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 84/84
@@ -675,7 +678,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 582 unit / 84 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 604 unit / 84 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -709,7 +712,7 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 582 unit · build · smoke 14/14 ·
+the time of writing (lint 0/0 · tsc 0 · 604 unit · build · smoke 14/14 ·
 84 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

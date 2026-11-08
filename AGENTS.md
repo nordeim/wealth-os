@@ -134,6 +134,14 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   variants without warning. `tests/shell-parity.test.ts` now scans src
   for `xs:`/`2xs:`/`3xs:` variants; use only real breakpoints
   (sm/md/lg/xl/2xl…) or define the variant in `@theme`.
+- **An unknown utility TOKEN is silently inert in Tailwind v4** (the
+  F-207a lesson's token edition, cured session 209): classes like
+  `text-card-foreground`/`bg-card` generate NO CSS unless
+  `--color-card-foreground`/`--color-card` are pinned in `@theme` — the
+  session-208 usages were inert until the pins landed
+  (`globals.css` + the `.dark` runtime flip). Copying a reference class
+  string means porting its tokens too. Pinned in
+  `tests/parity-209.test.ts`.
 - **Bun absolutizes relative `file:` DATABASE_URL** against the `.env`
   file's directory when running scripts — `src/lib/db-path.ts` re-anchors;
   don't bypass the `db` singleton.

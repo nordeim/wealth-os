@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.3-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.19.3-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-666%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-688%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.0.15 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma + SQLite | 6.19.3 | 8 models; `db/` at repo root, git-ignored |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.0.5 / 4.10.2 | 582 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.0.5 / 4.10.2 | 604 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.64.1 / 4.13.0 | 84 checks; chromium; seeded `db/e2e.db` |
 | PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.5.2 | Client-side statements |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
@@ -100,7 +100,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 41 unit suites + 📂 e2e/ 5 specs
+├── 📂 tests/                  # 42 unit suites + 📂 e2e/ 5 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -167,7 +167,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 582 checks / 41 files |
+| Unit (Vitest) | `bun run test` | 604 checks / 42 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 84 checks / 5 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -221,9 +221,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 582 unit · 84 e2e · 14 smoke · full gate green |
+| Verification layer | ✅ Complete | 604 unit · 84 e2e · 14 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 208: the R-7 tail shipped — the KPI gradient tiles + Investments' full-card gradient KPIs, the health-widget/tip/legend convergence, the Settings glass-card/blue-accent genus, the reference's own login logo asset, and the four-width baseline re-derivation; next: R-7.10 the app-wide card genus, then the R-4.4 fullpage-sweep re-anchor) |
+| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 209: the R-7.10 card-genus convergence shipped — the reference's four per-surface card families (warm-simple, warm-hover KPI, glass, stock) + the Quick Actions one-off + the Analytics saturated stat row + the `.card-hover` utility and the card tokens, with the four-width baseline re-derivation (goals collapsed 33.4→7.2 desktop); next: R-4.4 the fullpage-sweep re-anchor, then R-4.5 the gate:full reactivation) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License
