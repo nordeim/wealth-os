@@ -258,62 +258,83 @@ export const TOLERANCE = 12;
  * by the drift-probe's sentinel census, R-4.3) is the one documented
  * re-derivation trigger: the drift gate trips, the operator decodes
  * with --clusters, re-derives the affected page. PURE by design:
- * pinned in tests/sweep-tool.test.ts. */
+ * pinned in tests/sweep-tool.test.ts.
+ *
+ * Session-207 (R-7.5 — the parity-convergence re-derivation): the
+ * tables re-derived DOWNWARD after the R-7.1–R-7.4 cures (the shell
+ * wash + per-page containers + the lg: header rhythm + the navy H1
+ * token + Import's own navy wash + the mobile topbar/pill/drawer
+ * family + the auth-card glass). Import collapsed 75.1→31.2 at
+ * desktop (the navy wash was its dominant genus); every section
+ * dropped 2–6pct; phone reset-password alone rose 14.0→16.5 (the
+ * auth-card re-pin legitimately moved that face). The standing genera
+ * after the convergence:
+ *   (1) the empty-state construction genus — STILL the dominant share
+ *       on income/expenses/analytics/goals (the two apps' empty
+ *       layouts differ in their inner constructions); the shells,
+ *       headers, and H1s around them now match;
+ *   (2) the settings navy accents (F-205b's settings half — the blue
+ *       Export button/GDPR box; the import half is CURED — import now
+ *       carries its own navy wash like the reference);
+ *   (3) the smaller styling deltas (F-205c): the ref's solid stat-icon
+ *       fills vs our tinted badges, its line-segment chart legend vs
+ *       our dots, its gauge health score vs our blobs, the mobile
+ *       auth-face layouts. */
 export const STANDING_BASELINES = {
-  // 1440x900 — the desktop class (>= 1280)
+  // 1440x900 — the desktop class (>= 1280) — session-207 re-derivation
   desktop: {
-    dashboard: 12.4,
-    income: 53.6,
-    expenses: 51.8,
-    accounts: 26.9,
-    investments: 20.0,
-    import: 75.1,
-    analytics: 58.0,
-    goals: 43.2,
-    settings: 57.1,
-    login: 7.0,
+    dashboard: 10.3,
+    income: 48.2,
+    expenses: 47.3,
+    accounts: 21.3,
+    investments: 19.3,
+    import: 31.2,
+    analytics: 53.8,
+    goals: 33.4,
+    settings: 51.9,
+    login: 6.7,
     "reset-password": 3.9,
   },
-  // 390x844 — the phone class (< 768; both walked widths 390x844 + 375x812)
+  // 390x844 — the phone class (< 768) — session-207 re-derivation
   phone: {
-    dashboard: 28.2,
-    income: 68.7,
-    expenses: 60.0,
-    accounts: 41.4,
-    investments: 54.1,
-    import: 92.3,
-    analytics: 65.7,
-    goals: 54.5,
-    settings: 74.5,
-    login: 13.6,
-    "reset-password": 14.0,
+    dashboard: 18.4,
+    income: 60.8,
+    expenses: 51.8,
+    accounts: 29.0,
+    investments: 49.3,
+    import: 36.2,
+    analytics: 59.1,
+    goals: 41.2,
+    settings: 68.9,
+    login: 12.0,
+    "reset-password": 16.5,
   },
-  // 768x1024 — the tablet class (< 1024)
+  // 768x1024 — the tablet class (< 1024) — session-207 re-derivation
   tablet: {
-    dashboard: 18.5,
-    income: 61.3,
-    expenses: 57.9,
-    accounts: 34.0,
-    investments: 23.0,
-    import: 93.0,
-    analytics: 60.2,
-    goals: 48.8,
-    settings: 77.5,
-    login: 13.2,
-    "reset-password": 6.4,
-  },
-  // 1024x768 — the landscape class (< 1280)
-  landscape: {
-    dashboard: 16.9,
-    income: 54.8,
-    expenses: 51.0,
-    accounts: 28.1,
-    investments: 22.6,
-    import: 76.5,
+    dashboard: 10.0,
+    income: 50.7,
+    expenses: 49.1,
+    accounts: 21.6,
+    investments: 17.8,
+    import: 31.5,
     analytics: 54.1,
-    goals: 43.5,
-    settings: 60.3,
-    login: 7.1,
+    goals: 34.4,
+    settings: 72.9,
+    login: 12.7,
+    "reset-password": 6.5,
+  },
+  // 1024x768 — the landscape class (< 1280) — session-207 re-derivation
+  landscape: {
+    dashboard: 12.9,
+    income: 51.7,
+    expenses: 49.3,
+    accounts: 23.9,
+    investments: 20.8,
+    import: 33.9,
+    analytics: 49.0,
+    goals: 36.1,
+    settings: 58.1,
+    login: 6.2,
     "reset-password": 6.4,
   },
 } as const;
@@ -385,12 +406,14 @@ export function standingBaseline(width: number): BaselineTable {
  * the construction delta between the two empty layouts). */
 export function standingExplained(width: number): string {
   return (
-    `[sweep] standing explained (R-4.2 derivation, F-206a-corrected, width ${width}): the tables bake in the ` +
-    `standing genera — the empty-state construction genus (BOTH sides render their empty ` +
+    `[sweep] standing explained (R-4.2 derivation, F-206a-corrected, R-7.5 re-derived, width ${width}): ` +
+    `the tables bake in the standing genera — the empty-state construction genus (BOTH sides render their empty ` +
     `states — the F-206a correction of the R-4.2 "demo corpus" misdecode; the residual is ` +
-    `the construction delta between the two empty layouts), the import+settings navy genus ` +
-    `(the reference's own blue treatment on those two pages), and the smaller styling ` +
-    `deltas (stat-icon fills, legend markers, the mobile auth-face layouts). The ` +
+    `the construction delta between the two empty layouts; the shells, headers, and H1s ` +
+    `around them converged at session 207), the settings navy accents ` +
+    `(F-205b's settings half — the import half is CURED: import carries ` +
+    `its own navy wash), and the smaller styling deltas (stat-icon ` +
+    `fills, legend markers, the mobile auth-face layouts). The ` +
     `comparison is theme-matched per page (F-205a); a trip is drift ABOVE these genera — ` +
     `decode with --clusters, and re-derive the affected page if the reference's own state ` +
     `shifted (the drift-probe's sentinel census watches that side)`

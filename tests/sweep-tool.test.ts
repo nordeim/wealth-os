@@ -66,27 +66,27 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     expect(read("scripts/sweep-state.ts")).not.toContain("neo-crm-8ab2c17c.base44.app");
   });
 
-  it("the four class tables carry the R-4.2 maiden derivation — measured theme-matched at the four widths (the literal values are the contract)", async () => {
+  it("the four class tables carry the R-7.5 re-derivation — the parity-convergence cures dropped every section (import collapsed 75.1→31.2; the literal values are the contract)", async () => {
     const { STANDING_BASELINES } = await sweep();
     expect({ ...STANDING_BASELINES.desktop }).toEqual({
-      dashboard: 12.4, income: 53.6, expenses: 51.8, accounts: 26.9,
-      investments: 20.0, import: 75.1, analytics: 58.0, goals: 43.2,
-      settings: 57.1, login: 7.0, "reset-password": 3.9,
+      dashboard: 10.3, income: 48.2, expenses: 47.3, accounts: 21.3,
+      investments: 19.3, import: 31.2, analytics: 53.8, goals: 33.4,
+      settings: 51.9, login: 6.7, "reset-password": 3.9,
     });
     expect({ ...STANDING_BASELINES.phone }).toEqual({
-      dashboard: 28.2, income: 68.7, expenses: 60.0, accounts: 41.4,
-      investments: 54.1, import: 92.3, analytics: 65.7, goals: 54.5,
-      settings: 74.5, login: 13.6, "reset-password": 14.0,
+      dashboard: 18.4, income: 60.8, expenses: 51.8, accounts: 29.0,
+      investments: 49.3, import: 36.2, analytics: 59.1, goals: 41.2,
+      settings: 68.9, login: 12.0, "reset-password": 16.5,
     });
     expect({ ...STANDING_BASELINES.tablet }).toEqual({
-      dashboard: 18.5, income: 61.3, expenses: 57.9, accounts: 34.0,
-      investments: 23.0, import: 93.0, analytics: 60.2, goals: 48.8,
-      settings: 77.5, login: 13.2, "reset-password": 6.4,
+      dashboard: 10.0, income: 50.7, expenses: 49.1, accounts: 21.6,
+      investments: 17.8, import: 31.5, analytics: 54.1, goals: 34.4,
+      settings: 72.9, login: 12.7, "reset-password": 6.5,
     });
     expect({ ...STANDING_BASELINES.landscape }).toEqual({
-      dashboard: 16.9, income: 54.8, expenses: 51.0, accounts: 28.1,
-      investments: 22.6, import: 76.5, analytics: 54.1, goals: 43.5,
-      settings: 60.3, login: 7.1, "reset-password": 6.4,
+      dashboard: 12.9, income: 51.7, expenses: 49.3, accounts: 23.9,
+      investments: 20.8, import: 33.9, analytics: 49.0, goals: 36.1,
+      settings: 58.1, login: 6.2, "reset-password": 6.4,
     });
   });
 
@@ -121,8 +121,8 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     // the measured standing shares sit INSIDE their baselines + margin
     const ok = driftVerdict(
       [
-        ["dashboard", 12.39],
-        ["settings", 57.03],
+        ["dashboard", 10.23],
+        ["settings", 51.88],
       ],
       { ...STANDING_BASELINES.desktop },
       0.5,
@@ -131,16 +131,16 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     // a real drift — above the baseline + margin — fails with the evidence
     const drift = driftVerdict(
       [
-        ["dashboard", 12.39],
-        ["settings", 57.03],
-        ["login", 7.6],
+        ["dashboard", 10.23],
+        ["settings", 51.88],
+        ["login", 7.3],
       ],
       { ...STANDING_BASELINES.desktop },
       0.5,
     );
     expect(drift.ok).toBe(false);
     expect(drift.failures).toEqual([
-      { page: "login", pct: 7.6, baseline: 7.0, allowed: 7.5 },
+      { page: "login", pct: 7.3, baseline: 6.7, allowed: 7.2 },
     ]);
   });
 
