@@ -162,14 +162,14 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (521) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (524) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + interior
-  censuses) are dormant — `sweep.ts` + `sweep-state.ts` are re-anchored
-  to the WealthOS reference (session 204's R-4.1: the URL, the 11-page
-  set, the CRM baselines retired empty pending the R-4.2 maiden
-  derivation); the drift-probe/interior-census/fullpage legs remain
-  CRM-era (R-4.3/R-4.4).
+  censuses) are dormant — the sweep leg is fully WealthOS-native
+  (session 204's R-4.1 re-anchor + session 205's R-4.2: the per-page
+  resolved-theme match and the four derived baseline class tables, the
+  drift gate proven live at all four widths); the
+  drift-probe/interior-census/fullpage legs remain CRM-era (R-4.3/R-4.4).
 - **Rationale:** Each leg catches a class the others miss: lint (smells),
   tsc (contracts), unit (logic), build (route/module graph), smoke (the
   shipped artifact + boot posture), e2e (journeys + a11y).
@@ -563,7 +563,7 @@ the product is single-user-per-install by design.
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 38 | 521 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 38 | 524 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
 | — architecture pins | 10 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata) | `tests/` | source-scanning contracts |
 | — infrastructure | 25 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
@@ -598,7 +598,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 521/521 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 524/524 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 84/84
@@ -668,11 +668,11 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 521 unit / 84 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 524 unit / 84 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
-| `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (re-anchored to the WealthOS reference, R-4.1; baselines pending R-4.2 — run report-only until derived) |
+| `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | (dormant, CRM-era reference) live parity probe (R-4.3) |
-| `bun run gate` / `gate:full` | root | The chain / chain + (dormant) parity sweeps — sweep re-anchored (R-4.1), the rest pending R-4.2–R-4.5 |
+| `bun run gate` / `gate:full` | root | The chain / chain + (dormant) parity sweeps — the sweep leg WealthOS-native through R-4.2, the rest pending R-4.3–R-4.5 |
 
 ### 9.3 Code Style Rules
 
@@ -702,7 +702,7 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 521 unit · build · smoke 14/14 ·
+the time of writing (lint 0/0 · tsc 0 · 524 unit · build · smoke 14/14 ·
 84 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
