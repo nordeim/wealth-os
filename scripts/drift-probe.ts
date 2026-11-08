@@ -1,49 +1,67 @@
-// Session-101 (S101-P1): the REFERENCE-STABILITY DRIFT PROBE — the
-// per-session throwaway promoted into a repo tool (the s100-close
-// suggested next #2). Every session since s92 has re-derived the same
-// three-step probe by hand before trusting the drift gates:
+// Session-206 (R-4.3): the REFERENCE-STABILITY DRIFT PROBE — the
+// WealthOS re-anchor (the CRM-era S101-P1 tool, its NEO-CRM standing
+// layers retired with the R-4.1/R-4.3 page-set re-anchors). The
+// probe's question never changed: HAS THE REFERENCE ITSELF MOVED?
+// Every drift gate below it (the sweep class tables, the interior
+// census) judges OUR tree against the reference's STANDING state —
+// a reference-side change invalidates them all. The standing layers,
+// derived from the session-206 maiden (every constant measured live):
 //
-//   1. the reference bundle md5 — the POST-LOGIN app-shell JS (the
-//      pre-auth login shell references different rolldown chunks; the
-//      tracked bundle is what the authenticated app rides). 81
-//      consecutive sessions measured the SAME fingerprint:
-//      index-DZ-xbrIm.js · a70a637fcf1d4291da8e0d965676dc11 ·
-//      1,631,071 bytes.
-//   2. the reference census — the demo data (ZERO since the s3 wipe;
-//      a re-seed changes every zero-data parity baseline) + the
-//      desktop sidebar geometry (256px / 8 visible links).
-//   3. the TRUE-390 mobile-nav defect — the reference's OWN bug: nav
-//      w=0, 0 visible links, NO menu button at phone width (the 31st
-//      consecutive census). Our drawer is the documented superset.
+//   1. the reference bundle fingerprint — the POST-LOGIN app-shell
+//      JS (index-BMU57229.js · md5 6d3779af85c060852d9b7cd10bacecab
+//      · 1,402,874 bytes; the only other post-login script is the
+//      21,914-byte badge.js — the Base44 edit pill).
+//   2. the demo-data census — the reference's workspace renders its
+//      EMPTY STATES: $0.00 KPIs, "No expenses yet", "No Income
+//      Sources Yet", "No accounts yet", "No Goals Set Yet", "0
+//      holdings" (the F-206a decode — the R-4.2-era "demo corpus"
+//      belief was a misdecode; the session-205 captures AND the live
+//      quiescence-settled census both read empty). ZERO is the
+//      standing state (the CRM-era semantics restored): a re-seed
+//      changes every zero-data parity baseline the sweep rides. The
+//      census keys on per-page SENTINELS — the reference's data
+//      renders div/card lists, not table rows, so the CRM row-count
+//      detector would read 0 even on a seeded workspace.
+//   3. the desktop sidebar census — 256px + 9 visible links (the
+//      w-64 ASIDE; Dashboard/Income/Expenses/Accounts/Investments/
+//      Import/Analytics/Goals/Settings — measured live, in order).
+//   4. the TRUE-390 mobile menu census — FUNCTIONAL: the reference's
+//      non-semantic topbar (div.lg:hidden.fixed, h65 — no <header>,
+//      no <nav>) carries the brand left and the Synced pill + sun
+//      toggle + icon-only hamburger BUTTON right; the click opens
+//      the full-screen plain-div overlay drawer (div.lg:hidden.
+//      fixed.inset-0.z-40 > nav) with the 9 destinations (0 links
+//      visible before the click, 9 after — measured). The button
+//      carries no aria-label (the reference's own a11y gap; OUR
+//      hamburger is the labeled superset — the e2e battery's
+//      accessible-name open). Drift in EITHER direction (the menu
+//      breaking, the destination count changing) is the event.
 //
-// A CHANGED verdict anywhere is a parity EVENT, not a failure of this
-// repo: re-run the maiden sweeps, re-walk the interactive families,
-// and re-evaluate the standing baselines before trusting any
-// drift-gate result. The probe exits 1 on any CHANGED — gateable.
+// The CRM-era marketing-LANDING census is RETIRED: the WealthOS
+// reference has no public landing — `/` login-walls guests (a
+// client redirect to /login?from_url=…, verified live session 206).
+// The s142 surface does not exist here to guard.
 //
-// Session-147 (probe:ref #119 — the second parity event): the standing
-// fingerprint moved to the mobile-nav-fix bundle (index-n8TZHw0K.js ·
-// 46bc2d9c… · 1,699,576) and the TRUE-390 census anchor RETIRED the
-// defect triple-zero: the reference now ships a working menu button
-// (nav w=0 · 0 links · 1 menu button — its Radix Sheet, walk37-decoded;
-// our drawer was re-derived onto the same construction). The mobile
-// verdict is a STANDING comparison now: drift in EITHER direction (the
-// defect returning, the anatomy changing) is the event.
+// A CHANGED verdict anywhere is a parity EVENT, not a failure of
+// this repo: re-run the maiden sweeps, re-walk the interactive
+// families, and re-evaluate the standing baselines before trusting
+// any drift-gate result. The probe exits 1 on any CHANGED —
+// gateable.
 //
 // Run: bun run probe:ref   (or: bun scripts/drift-probe.ts)
 //   --json   machine-readable output (one verdict object per check)
-// Env:  REF_URL (default https://neo-crm-8ab2c17c.base44.app)
+// Env:  REF_URL (default https://wealth-os-d93bd04e.base44.app)
 //       REF_EMAIL / REF_PASSWORD (the documented demo login defaults)
 //       HEADLESS=0 to watch the drive
 // NOT part of `gate`/`gate:full` — the reference is a NETWORK
-// dependency; the offline gate must stay offline-runnable. The drawer
-// battery (scripts/drawer-battery-390.ts) covers OUR mobile-nav
-// superset; this probe covers the reference side.
+// dependency; the offline gate must stay offline-runnable. The e2e
+// mobile battery covers OUR mobile-nav superset; this probe covers
+// the reference side.
 
 import { createHash } from "node:crypto";
 import { chromium } from "@playwright/test";
 
-const REF_URL = process.env.REF_URL ?? "https://neo-crm-8ab2c17c.base44.app";
+const REF_URL = process.env.REF_URL ?? "https://wealth-os-d93bd04e.base44.app";
 const REF_EMAIL = process.env.REF_EMAIL ?? "sepnetflix2023@outlook.com";
 const REF_PASSWORD = process.env.REF_PASSWORD ?? "$Abcd1234";
 
@@ -76,7 +94,8 @@ export interface BundleFingerprint {
 }
 
 /** PURE: STABLE only on the EXACT md5 + byte count — a new reference
- *  bundle is a parity EVENT (the 71-consecutive-stable contract). */
+ *  bundle is a parity EVENT (a reference redeploy rewrites every
+ *  standing layer below this one). */
 export function stabilityVerdict(
   observed: BundleFingerprint,
   standing: BundleFingerprint,
@@ -87,10 +106,9 @@ export function stabilityVerdict(
 export interface NavCensus {
   width: number;
   visibleLinks: number;
-  menuButtons: number;
 }
 
-/** PURE: the desktop sidebar census — STANDING at 256px + 8 visible
+/** PURE: the desktop sidebar census — STANDING at 256px + 9 visible
  *  links (any drift is a reference layout change worth a re-walk). */
 export function desktopNavVerdict(
   nav: NavCensus,
@@ -101,90 +119,59 @@ export function desktopNavVerdict(
     : "CHANGED";
 }
 
-/** PURE: the reference's mobile-nav state at TRUE 390 — the s91–s146
- *  era tracked the DEFECT (DEFECT-STANDS at the triple-zero: nav w=0 ·
- *  0 visible links · 0 menu buttons; ANY phone navigation = NAV-FIXED,
- *  the parity re-evaluation trigger). Session-147: the reference FIXED
- *  the defect (its Radix Sheet, probe #119) — the standing state is
- *  now the menu-button-1 triple, and the verdict compares AGAINST it:
- *  STANDING when the triple matches, CHANGED when it drifts in EITHER
- *  direction (the defect returning, or the anatomy changing again).
- *  The historical vocabulary stays for the walk records. */
-export function mobileNavVerdict(
-  nav: NavCensus,
-  standing: { width: number; visibleLinks: number; menuButtons: number } = STANDING.mobileNav,
-): "DEFECT-STANDS" | "STANDING" | "CHANGED" {
-  const defect = nav.width === 0 && nav.visibleLinks === 0 && nav.menuButtons === 0;
-  if (defect) return "DEFECT-STANDS";
-  return nav.width === standing.width &&
-    nav.visibleLinks === standing.visibleLinks &&
-    nav.menuButtons === standing.menuButtons
-    ? "STANDING"
-    : "CHANGED";
+export interface MobileMenuCensus {
+  opens: boolean;
+  drawerLinks: number;
 }
 
-/** PURE: the demo-data census — ZERO when every walked surface
- *  reports 0 data rows; SEEDED the moment any does (the standing
- *  state since the s3 wipe; a re-seed changes every zero-data
- *  baseline the sweep rides). */
-export function demoDataVerdict(rowsByPage: Record<string, number>): "ZERO" | "SEEDED" {
-  const seeded = Object.values(rowsByPage).some((n) => n > 0);
-  return seeded ? "SEEDED" : "ZERO";
-}
-
-export interface LandingCensus {
-  navLinks: number;
-  sections: number;
-}
-
-/** PURE: the s142 LANDING census — STANDING at the marketing layer's
- *  7 header links + 5 sections (any drift is a landing-content change
- *  worth a re-walk of the marketing surface). */
-export function landingNavVerdict(
-  landing: LandingCensus,
-  standing: { navLinks: number; sections: number } = STANDING.landing,
+/** PURE: the TRUE-390 mobile-menu census — the FUNCTIONAL form (the
+ *  session-206 decode: the reference's mobile shell is a non-semantic
+ *  topbar whose icon-only hamburger button opens the full-screen
+ *  plain-div overlay drawer). STANDING when the menu opens and shows
+ *  the 9 destinations; CHANGED when it breaks, the destination count
+ *  moves, or the anatomy changes again — drift in EITHER direction is
+ *  the event (the CRM-era DEFECT-STANDS vocabulary retired with the
+ *  CRM reference: the WealthOS menu was never broken). */
+export function mobileMenuVerdict(
+  menu: MobileMenuCensus,
+  standing: { opens: boolean; drawerLinks: number } = STANDING.mobileMenu,
 ): "STANDING" | "CHANGED" {
-  return landing.navLinks === standing.navLinks && landing.sections === standing.sections
+  return menu.opens === standing.opens && menu.drawerLinks === standing.drawerLinks
     ? "STANDING"
     : "CHANGED";
+}
+
+/** The walked empty-state sentinels — the WealthOS reference's own
+ *  empty-state copy, live-measured (session 206, quiescence-settled).
+ *  A page counts as EMPTY iff its sentinel appears in main's text.
+ *  (The R-4.2-era belief that the reference carried a demo corpus was
+ *  the F-206a misdecode — both the session-205 captures and the live
+ *  census read empty.) */
+export const DEMO_SENTINELS = {
+  expenses: "No expenses yet",
+  income: "No Income Sources Yet",
+  accounts: "No accounts yet",
+  goals: "No Goals Set Yet",
+  investments: "0 holdings",
+} as const;
+
+/** PURE: the demo-data census — ZERO when every walked surface shows
+ *  its empty-state sentinel; SEEDED the moment any does not (the
+ *  standing state: the reference's workspace is EMPTY — a re-seed
+ *  changes every zero-data parity baseline the sweep rides). */
+export function demoDataVerdict(emptyByPage: Record<string, boolean>): "ZERO" | "SEEDED" {
+  const seeded = Object.values(emptyByPage).some((v) => !v);
+  return seeded ? "SEEDED" : "ZERO";
 }
 
 /** The standing reference fingerprint + census the probe reports
  *  against (re-anchor deliberately — every value here is a decoded,
- *  repeatedly-re-measured constant, not a guess).
- *  Session-142 (D-142a4): the re-anchor after the MARKETING-LAYER parity
- *  event — the reference's first bundle change in 82 sessions. The
- *  standing fingerprint moves to index-Dc6wvGtA.js (the landing page +
- *  /About + /Contact + the post-login redirect to `/`). The TRUE-390
- *  census is RETARGETED from `/` (now the reference's LANDING page — its
- *  own hamburger made the old 390 census read "NAV-FIXED" while the CRM
- *  shell kept the defect) to /Dashboard, restoring the app-shell
- *  mobile-defect tracker. The landing census (step 6b) guards the NEW
- *  surface. */
+ *  live-measured constant from the session-206 maiden, not a guess). */
 export const STANDING = {
-  // Session-147 (probe:ref #119 — the second parity event, the first
-  // since s142): the mobile-nav-fix bundle (index-n8TZHw0K.js: the
-  // Radix Sheet drawer + the guest re-gating, walk37-decoded; +2,675
-  // bytes over the s142 fingerprint).
-  bundle: { md5: "46bc2d9c6bfa2c0ec13e2e5cef61d5b6", bytes: 1_699_576 },
-  desktopNav: { width: 256, visibleLinks: 8 },
-  // Session-147: the reference's mobile-nav state — the s91–s146
-  // DEFECT triple-zero RETIRED (its own fix: the menu button at 390).
-  // Drift in EITHER direction (the defect returning · the anatomy
-  // changing) is a parity event.
-  mobileNav: { width: 0, visibleLinks: 0, menuButtons: 1 },
-  // the reference's landing page at `/` (the s142 marketing layer):
-  // the sticky header's 7 visible nav links + the 5 sections
-  landing: { navLinks: 7, sections: 5 },
-  // the walked demo-data surfaces (data rows on each; the zero-data
-  // empty-state rows are single-cell colspan rows — excluded by the
-  // >1-cells predicate)
-  censusPages: ["/contacts", "/leads", "/accounts"],
-  // the TRUE-390 census target: the CRM SHELL (not the landing) — the
-  // s147 standing state: the reference's own menu button (the defect
-  // retired at its parity-event bundle); the landing's own hamburger
-  // is censused by the landing check
-  mobileCensusPage: "/Dashboard",
+  bundle: { md5: "6d3779af85c060852d9b7cd10bacecab", bytes: 1_402_874 },
+  desktopNav: { width: 256, visibleLinks: 9 },
+  mobileMenu: { opens: true, drawerLinks: 9 },
+  mobileCensusPage: "/dashboard",
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -204,6 +191,20 @@ async function login(page: import("@playwright/test").Page, base: string) {
   ]);
   await page.waitForTimeout(1500);
 }
+
+/** The 9 finance destinations (the nav-config contract — the same
+ *  list tests/nav-config.test.ts pins on OUR side). */
+const SECTIONS = [
+  "Dashboard",
+  "Income",
+  "Expenses",
+  "Accounts",
+  "Investments",
+  "Import",
+  "Analytics",
+  "Goals",
+  "Settings",
+];
 
 async function main(): Promise<void> {
   const json = process.argv.includes("--json");
@@ -251,27 +252,30 @@ async function main(): Promise<void> {
     log(`app bundle: ${name} (${buf.byteLength.toLocaleString("en-US")} bytes)`);
     log(`bundle md5: ${md5} — ${stability}`);
 
-    // 4. the demo-data census (the walked surfaces, data rows only)
-    const rowsByPage: Record<string, number> = {};
-    for (const p of STANDING.censusPages) {
-      await page.goto(`${REF_URL}${p}`, { waitUntil: "domcontentloaded" });
-      await page.locator("main").first().waitFor({ state: "visible", timeout: 15000 }).catch(() => undefined);
-      await page.waitForTimeout(1500);
-      rowsByPage[p.slice(1)] = await page.evaluate(() => {
-        // data rows exclude the single-cell colspan empty-state row
-        return Array.from(document.querySelectorAll("table tbody tr")).filter(
-          (tr) => (tr as HTMLTableRowElement).cells.length > 1,
-        ).length;
-      });
+    // 4. the demo-data census (the walked surfaces, sentinel-settled)
+    const emptyByPage: Record<string, boolean> = {};
+    for (const [p, sentinel] of Object.entries(DEMO_SENTINELS)) {
+      await page.goto(`${REF_URL}/${p}`, { waitUntil: "domcontentloaded" });
+      await page
+        .locator("main")
+        .first()
+        .waitFor({ state: "visible", timeout: 15000 })
+        .catch(() => undefined);
+      await page.waitForTimeout(3000);
+      emptyByPage[p] = await page.evaluate(
+        (phrase) => (document.querySelector("main")?.textContent ?? "").includes(phrase),
+        sentinel,
+      );
     }
-    const demo = demoDataVerdict(rowsByPage);
+    const demo = demoDataVerdict(emptyByPage);
     log(
-      `demo data: ${demo} (${Object.entries(rowsByPage)
-        .map(([k, v]) => `${k} ${v}`)
-        .join(" · ")} data rows)`,
+      `demo data: ${demo} (${Object.entries(emptyByPage)
+        .map(([k, v]) => `${k} ${v ? "empty" : "SEEDED"}`)
+        .join(" · ")})`,
     );
 
-    // 5. the desktop nav census
+    // 5. the desktop nav census (the sidebar renders on every app page
+    //    at 1440 — censused on the last demo-walked surface)
     const desktop: NavCensus = await page.evaluate(() => {
       const nav = document.querySelector("nav");
       return {
@@ -279,69 +283,60 @@ async function main(): Promise<void> {
         visibleLinks: nav
           ? Array.from(nav.querySelectorAll("a")).filter((a) => a.getClientRects().length > 0).length
           : 0,
-        menuButtons: 0,
       };
     });
     const desktopVerdict = desktopNavVerdict(desktop);
-    log(`desktop census: nav ${desktop.width}px · ${desktop.visibleLinks} visible links — ${desktopVerdict}`);
-
-    // 6. the TRUE-390 mobile-nav census (the reference's own defect —
-    //    s142: measured on the CRM SHELL at STANDING.mobileCensusPage;
-    //    the landing page's own working hamburger is no longer conflated
-    //    with the app shell's missing navigation)
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`${REF_URL}${STANDING.mobileCensusPage}`, { waitUntil: "domcontentloaded" });
-    await page.locator("main").first().waitFor({ state: "visible", timeout: 15000 }).catch(() => undefined);
-    await page.waitForTimeout(1500);
-    const mobile: NavCensus = await page.evaluate(() => {
-      const nav = document.querySelector("nav");
-      const menuButtons = Array.from(document.querySelectorAll("button")).filter((b) =>
-        /menu|navigation/i.test(`${b.getAttribute("aria-label") ?? ""} ${b.textContent ?? ""}`),
-      ).length;
-      return {
-        width: nav ? Math.round(nav.getBoundingClientRect().width) : 0,
-        visibleLinks: nav
-          ? Array.from(nav.querySelectorAll("a")).filter((a) => a.getClientRects().length > 0).length
-          : 0,
-        menuButtons,
-      };
-    });
-    const mobileVerdict = mobileNavVerdict(mobile);
     log(
-      `TRUE 390 census (${STANDING.mobileCensusPage}): nav w=${mobile.width} · ${mobile.visibleLinks} visible links · ${mobile.menuButtons} menu buttons — ${mobileVerdict}`,
+      `desktop census: nav ${desktop.width}px · ${desktop.visibleLinks} visible links — ${desktopVerdict}`,
     );
 
-    // 6b. the LANDING census (s142: the new public marketing surface —
-    //     its header link count + section count; any drift here is a
-    //     landing-content change worth a re-walk)
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${REF_URL}/`, { waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(1500);
-    const landing = await page.evaluate(() => {
-      const nav = document.querySelector("nav");
-      return {
-        navLinks: nav
-          ? Array.from(nav.querySelectorAll("a")).filter((a) => a.getClientRects().length > 0).length
-          : 0,
-        sections: document.querySelectorAll("section").length,
-      };
-    });
-    const landingVerdict = landingNavVerdict(landing, STANDING.landing);
+    // 6. the TRUE-390 mobile-menu census (the functional form — the
+    //    reference's icon-only hamburger button opens the overlay
+    //    drawer; the census counts the visible destinations after)
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`${REF_URL}${STANDING.mobileCensusPage}`, { waitUntil: "domcontentloaded" });
+    await page
+      .locator("main")
+      .first()
+      .waitFor({ state: "visible", timeout: 15000 })
+      .catch(() => undefined);
+    await page.waitForTimeout(2500);
+    const menuButton = page.locator('svg[class*="lucide-menu"]').first();
+    const menu: MobileMenuCensus = { opens: false, drawerLinks: 0 };
+    if ((await menuButton.count()) > 0) {
+      await menuButton.click({ timeout: 5000 }).catch(() => undefined);
+      await page.waitForTimeout(1200);
+      const links = await page.evaluate((sects: string[]) => {
+        return Array.from(document.querySelectorAll("a")).filter(
+          (a) =>
+            a.getClientRects().length > 0 &&
+            sects.includes((a.textContent ?? "").replace(/\s+/g, " ").trim()),
+        ).length;
+      }, SECTIONS);
+      menu.opens = links > 0;
+      menu.drawerLinks = links;
+    }
+    const mobileVerdict = mobileMenuVerdict(menu);
     log(
-      `landing census: nav ${landing.navLinks} links · ${landing.sections} sections — ${landingVerdict}`,
+      `TRUE-390 menu census (${STANDING.mobileCensusPage}): opens=${menu.opens} · ${menu.drawerLinks} destination links — ${mobileVerdict}`,
     );
 
     // 7. the report + the gate
     const changed =
       stability === "CHANGED" ||
       desktopVerdict === "CHANGED" ||
-      landingVerdict === "CHANGED" ||
-      mobileVerdict !== "STANDING" ||
+      mobileVerdict === "CHANGED" ||
       demo === "SEEDED";
     if (json) {
       console.log(
         JSON.stringify(
-          { reference: REF_URL, bundle: { url: bundleUrl, ...fingerprint, verdict: stability }, demoData: { rowsByPage, verdict: demo }, desktopNav: { ...desktop, verdict: desktopVerdict }, mobileNav: { ...mobile, verdict: mobileVerdict }, landing: { ...landing, verdict: landingVerdict } },
+          {
+            reference: REF_URL,
+            bundle: { url: bundleUrl, ...fingerprint, verdict: stability },
+            demoData: { emptyByPage, verdict: demo },
+            desktopNav: { ...desktop, verdict: desktopVerdict },
+            mobileMenu: { ...menu, verdict: mobileVerdict },
+          },
           null,
           2,
         ),

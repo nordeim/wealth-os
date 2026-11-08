@@ -109,7 +109,8 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
       const line = standingExplained(width);
       expect(line).toContain("R-4.2");
       expect(line).toContain("theme-matched");
-      expect(line).toContain("data-vs-empty");
+      expect(line).toContain("empty-state construction");
+      expect(line).not.toContain("data-vs-empty");
       expect(line).not.toContain("no WealthOS baselines derived yet");
       expect(line).not.toContain("picklist-data genus");
     }

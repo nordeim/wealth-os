@@ -18,10 +18,11 @@
 // `wealthos-theme` localStorage to match before each of our captures
 // (planThemeWrites — the app-dark/auth-light genus pays exactly two
 // writes). The zero-data step keeps its shape by the STABILITY call:
-// our deterministic empty states vs the reference's static demo corpus
-// (a seeded our-side would roll with the calendar and drift its own
-// baseline); the residual data-vs-empty genus is baked into the class
-// tables per the s91-s99 doctrine.
+// BOTH sides render their empty states (the F-206a decode, session 206)
+// — the zero-data state stays the apples-to-apples form, and the
+// stability call stands (a seeded our-side would roll with the calendar
+// and drift its own baseline); the residual empty-state construction
+// genus is baked into the class tables per the s91-s99 doctrine.
 //
 // What it does (bun run sweep):
 //   1. boots (or reuses) the dev server on :3000
@@ -225,20 +226,23 @@ export function parseNumberArg(
 /** The per-channel anti-aliasing tolerance (the s91 value). */
 export const TOLERANCE = 12;
 
-/** Session-205 (R-4.2, the maiden derivation): the WealthOS standing
- * baselines — measured THEME-MATCHED (the F-205a per-page resolved-theme
- * match) at the four walked widths against the WealthOS reference, our
- * side in the zero-data state (the stability call: our deterministic
- * empty states vs the reference's static demo corpus — a seeded our-side
- * would roll with the calendar and drift its own baseline). The values
- * sit just above the measured tables (round-up to the next 0.1pct) so
- * the default 0.5pct drift margin absorbs run-to-run noise — which the
+/** Session-205 (R-4.2, the maiden derivation; session-206 F-206a
+ * correction): the WealthOS standing baselines — measured THEME-MATCHED
+ * (the F-205a per-page resolved-theme match) at the four walked widths
+ * against the WealthOS reference, our side in the zero-data state (the
+ * stability call: BOTH sides render their empty states — the F-206a
+ * decode corrected the R-4.2 "demo corpus" belief, a misdecode; our
+ * empty states are deterministic, while a seeded our-side would roll
+ * with the calendar and drift its own baseline). The values sit just
+ * above the measured tables (round-up to the next 0.1pct) so the
+ * default 0.5pct drift margin absorbs run-to-run noise — which the
  * noise calibration measured at ~0: a byte-identical 1440x900 re-run
  * (every page within 0.01pct). The standing genera, decoded per the
  * maiden clusters + the pixel fingerprints + the VLM page reads:
- *   (1) the data-vs-empty genus — our zero-data empty-state rows vs the
- *       reference's demo-corpus rows/charts (the dominant share on
- *       income/expenses/analytics/goals at every width);
+ *   (1) the empty-state construction genus — the delta between the two
+ *       empty layouts (the reference's own wrapper stack, header
+ *       vocabulary, and card constructions vs ours — the dominant
+ *       share on income/expenses/analytics/goals at every width);
  *   (2) the import+settings navy genus — the reference's own blue
  *       treatment on exactly those two pages (a navy bg wash on import;
  *       navy cards + the blue Export button/GDPR box on settings) while
@@ -250,9 +254,10 @@ export const TOLERANCE = 12;
  *       dots, its gauge health score vs our blobs, our sidebar active
  *       pill, the mobile auth-face layouts (login/reset run higher at
  *       phone/tablet widths).
- * A cross-month shift of the reference's current-month KPIs is the one
- * documented re-derivation trigger: the drift gate trips, the operator
- * decodes with --clusters, re-derives the affected page. PURE by design:
+ * A reference-state change (a re-seed of its empty workspace — watched
+ * by the drift-probe's sentinel census, R-4.3) is the one documented
+ * re-derivation trigger: the drift gate trips, the operator decodes
+ * with --clusters, re-derives the affected page. PURE by design:
  * pinned in tests/sweep-tool.test.ts. */
 export const STANDING_BASELINES = {
   // 1440x900 — the desktop class (>= 1280)
@@ -371,22 +376,24 @@ export function standingBaseline(width: number): BaselineTable {
   return { ...STANDING_BASELINES.desktop };
 }
 
-/** PURE (Session-98, N-98a1; Session-204 R-4.1; Session-205 R-4.2): the
- * per-run "standing explained" line — the drift table's decode key. The
- * R-4.2 derivation replaced the pending note with the WealthOS standing
- * genera: what the baselines BAKE IN (the data-vs-empty genus, the
- * import+settings navy genus, the smaller styling deltas) and how the
- * comparison is held genus-consistent (the per-page theme match). */
+/** PURE (Session-98, N-98a1; Session-204 R-4.1; Session-205 R-4.2;
+ * Session-206 F-206a): the per-run "standing explained" line — the
+ * drift table's decode key. The R-4.2 derivation replaced the pending
+ * note with the WealthOS standing genera; session-206's F-206a
+ * correction re-labeled the first genus (both sides render empty
+ * states — the "demo corpus" belief was a misdecode; the residual is
+ * the construction delta between the two empty layouts). */
 export function standingExplained(width: number): string {
   return (
-    `[sweep] standing explained (R-4.2 derivation, width ${width}): the tables bake in the ` +
-    `standing genera — the data-vs-empty genus (our zero-data empty-state rows vs the ` +
-    `reference's demo corpus), the import+settings navy genus (the reference's own blue ` +
-    `treatment on those two pages), and the smaller styling deltas (stat-icon fills, ` +
-    `legend markers, the mobile auth-face layouts). The comparison is theme-matched ` +
-    `per page (F-205a); a trip is drift ABOVE these genera — decode with --clusters, ` +
-    `and re-derive the affected page if the reference's own corpus shifted (the ` +
-    `cross-month KPI trigger)`
+    `[sweep] standing explained (R-4.2 derivation, F-206a-corrected, width ${width}): the tables bake in the ` +
+    `standing genera — the empty-state construction genus (BOTH sides render their empty ` +
+    `states — the F-206a correction of the R-4.2 "demo corpus" misdecode; the residual is ` +
+    `the construction delta between the two empty layouts), the import+settings navy genus ` +
+    `(the reference's own blue treatment on those two pages), and the smaller styling ` +
+    `deltas (stat-icon fills, legend markers, the mobile auth-face layouts). The ` +
+    `comparison is theme-matched per page (F-205a); a trip is drift ABOVE these genera — ` +
+    `decode with --clusters, and re-derive the affected page if the reference's own state ` +
+    `shifted (the drift-probe's sentinel census watches that side)`
   );
 }
 

@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 524;
+const UNIT_TOTAL = 535;
 const E2E_TOTAL = 84;
 const SMOKE_TOTAL = 14;
-const TEST_FILES = 38;
+const TEST_FILES = 39;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -54,6 +54,14 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   it("the PAD's §7.1 distribution table carries the live unit totals", () => {
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
       `| Unit | ${TEST_FILES} | ${UNIT_TOTAL} |`,
+    );
+    // Session-206 (R-4.3): the §7.1 sub-rows ride the same lockstep — the
+    // architecture-pins family grew 10 → 12 (drift-probe-tool +
+    // interior-census-tool joined the standing families), so the
+    // enumeration itself is pinned: a pin family added without this row
+    // (or this row edited without the family) fails the gate.
+    expect(norm(doc("Project_Architecture_Document.md"))).toContain(
+      "| — architecture pins | 12 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool) |",
     );
   });
 
