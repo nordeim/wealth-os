@@ -58,6 +58,8 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-205a | High | **The maiden table's ~85% section shares were a THEME genus, not the data genus the session-204 record hypothesized.** The theme-matched maiden decode (cluster buckets + region pixel fingerprints + VLM page reads, session 205): every section's diff was 98.4–99.7% ONE full-frame bucket because the reference serves its app shell DARK (whole-frame ≈ rgb(28,24,21)) while ours rendered LIGHT (≈ rgb(211,210,207)) — and the auth faces match (both light), exactly why login/reset sat at 6.96%/3.84%. Baking a full-frame inversion into the baselines would have blinded the drift gate permanently. | scripts/sweep.ts maiden runs (session 205); the fingerprint probe; docs/screenshots/ sweep captures | **R-4.2** |
 | F-205b | Medium (programmed) | **The reference's import + settings pages carry their own navy/blue treatment** — a navy bg wash on import (rgb(26,35,50) vs our rgb(14,20,17): Δblue=33, every pixel differs); navy-tinted cards + the blue "Export All Data" button + the blue GDPR box on settings — while every other page keeps the app-wide amber/warm genus our clone mirrors (7 of 9 page backgrounds match within tolerance). The original app's own inconsistency; a parity round re-skinning those two pages (then re-deriving their baselines) is the cure. Standing shares until then: import 75.1/92.3/93.0/76.5, settings 57.1/74.5/77.5/60.3 (desktop/phone/tablet/landscape). | The VLM page reads + the bg-sample table (session 205) | **R-7** |
 | F-205c | Low (programmed) | **The smaller styling deltas the theme-matched maiden exposed** (all dark-mode): the ref's solid saturated stat-icon fills vs our tinted badges; its line-segment chart legend vs our dots; its gauge health score vs our blobs; our sidebar active pill (the ref shows none); the mobile auth-face layouts (login/reset run 13.2–14.0 at phone/tablet vs 3.9–7.1 at desktop). Each is a small share; together they are the residual under the data genus. | The VLM dashboard/settings reads (session 205) | **R-7** |
+| F-206a | Medium | **The R-4.2 "demo corpus" belief was a misdecode — the reference's workspace renders EMPTY STATES.** The session-206 maiden probes found every section showing its empty-state copy ("No expenses yet", "No Income Sources Yet", "No accounts yet", "No Goals Set Yet", "0 holdings", $0.00 KPIs) — and the session-205 captures, re-read, show the same (the genus was decoded from the diff shares, never verified against the captures). Both sides run empty: the true first genus is the EMPTY-STATE CONSTRUCTION delta, not data-vs-empty. The living language (the sweep's STANDING_BASELINES docblock + standingExplained, zero-data.ts's header, this plan's R-4.2 bullet) asserted the corpus belief as live doctrine. | The session-206 quiescence-settled census + the re-read session-205 captures; scripts/drift-probe.ts DEMO_SENTINELS (the live-measured phrases) | **R-4.3** (cured in-commit) |
+| F-206b | Medium (programmed) | **The R-4.3 census decode surfaced the construction genera in detail** — measured, baked into the census's STANDING_CENSUS allowances, programmed as R-7 convergence work: the section-shell wrapper stack (ours `p-4 md:p-6 lg:p-8 space-y-6` vs the ref's `flex-1 pt-16 lg:pt-0` + `max-w-{6,7}xl mx-auto` inner container); the page-header vocabulary (the ref's `lg:` breakpoints, its H1 `text-primary-navy` tokens, its `mb-8`/`mb-2` rhythms); the auth-card family (the ref's `border-0 shadow-2xl bg-white/95` vs our bordered `shadow-xl`, its slate accent bar vs our amber, its taller padding driving login mainH −40); the reference's reset-password face carrying NO `<main>` (ours keeps the landmark — the superset; the census's anchor fallback covers it); the investments height genus (−649 desktop); the mobile topbar's Synced-pill placement (the ref's right cluster beside sun+hamburger vs our left beside the wordmark). | The four-axis census maidens (the STANDING_CENSUS decode) + the TRUE-390 anatomy probes | **R-7** |
 
 ## 3. The remediation program (R-items)
 
@@ -120,7 +122,7 @@ The cure for F-203d: rewrite the header comment for the finance domain
 CSV import codec, rate limiter). Comment-only; zero behavior change; the
 unit suite re-run green is the equivalence proof.
 
-### R-4 — The gate:full WealthOS re-derivation — Status: In progress (R-4.1 Done at v2.1.0; R-4.2 Done at v2.2.0; R-4.3 next)
+### R-4 — The gate:full WealthOS re-derivation — Status: In progress (R-4.1 Done at v2.1.0; R-4.2 Done at v2.2.0; R-4.3 Done at v2.3.0; R-4.4 next)
 
 The multi-session program for F-203e. Sub-item ladder (each its own session
 slice, TDD where a pin exists, in dependency order):
@@ -161,11 +163,12 @@ slice, TDD where a pin exists, in dependency order):
     pending-state pins replaced in the same commit, per the doctrine).
   - **The noise calibration**: a byte-identical 1440×900 re-run (every
     page within 0.01pct) — the 0.5pct margin's headroom is real.
-  - **The zero-data state kept, by the stability call**: our
-    deterministic empty states vs the reference's static demo corpus
-    (a seeded our-side would roll with the calendar and drift its own
-    baseline); zero-data.ts's CRM-era header comment rewritten for the
-    honest rationale.
+  - **The zero-data state kept, by the stability call**: BOTH sides
+    render their empty states (the F-206a correction, session 206 — the
+    R-4.2-era "demo corpus" belief was a misdecode; a seeded our-side
+    would roll with the calendar and drift its own baseline);
+    zero-data.ts's CRM-era header comment rewritten for the honest
+    rationale.
   - **The live proof**: all four `--fail-on-drift` runs clean, PLUS the
     live teeth check (`--drift-margin -5` trips exactly as designed:
     `dashboard 12.39% > allowed 7.40%`) and census MATCH after the chain.
@@ -174,8 +177,39 @@ slice, TDD where a pin exists, in dependency order):
     the import+settings navy genus (F-205b), the smaller styling deltas
     (F-205c) — all documented in the STANDING_BASELINES docblock and
     printed per run by the rewritten standingExplained().
-- **R-4.3** `drift-probe.ts` + `interior-census.ts` re-anchor (page sets +
-  the WealthOS reference census).
+- **R-4.3** `drift-probe.ts` + `interior-census.ts` re-anchor —
+  **Status: Done(v2.3.0)** (session 206). Shipped, TDD throughout:
+  - **drift-probe.ts**: the reference URL, the standing fingerprint
+    (index-BMU57229.js · md5 6d3779af… · 1,402,874 bytes), the desktop
+    sidebar census (256px + 9 links), the FUNCTIONAL TRUE-390
+    mobile-menu check (the reference's icon-only hamburger opens its
+    full-screen plain-div drawer — 0 links before the click, 9 after;
+    drift in either direction is the event), and the demo-data census
+    re-based on per-page EMPTY-STATE SENTINELS (the F-206a decode: the
+    reference's workspace is EMPTY — the standing state; a re-seed
+    changes every zero-data baseline and the probe catches it). The
+    CRM marketing-landing census RETIRED (the WealthOS `/` login-walls
+    guests — verified live). Pins: tests/drift-probe-tool.test.ts
+    (born RED 8, GREEN 11). The live probe run: every standing layer
+    STABLE, exit 0.
+  - **interior-census.ts**: the 11-page WealthOS set (lockstep with
+    the sweep's PAGES — pinned), the public leg RETIRED (empty
+    PUBLIC_PAGES; the machinery stays), the data-page scope re-anchored
+    to the 9 sections, the reset-password ANCHOR FALLBACK (the
+    reference's no-main card face — div.min-h-screen.bg-gray-50.p-4),
+    and the verdict re-based on the STANDING_CENSUS allowances: the
+    four-axis maidens' measured unexplained counts + mainH deltas per
+    page per axis (44 literal values, deep-pinned), CENSUS_MARGIN cut
+    2 → 0 by the PROOF-A decode (an inline header ghost slipped inside
+    a 2-event margin; the zero margin is licensed by the
+    three-measurement-per-axis noise calibration, all byte-identical),
+    the fail-safe zero for unknown pages. Pins:
+    tests/interior-census-tool.test.ts (new, born RED 5, GREEN 12).
+  - **The live proofs**: the four-axis `--fail-on-drift --parallel 4`
+    run CLEAN (all 44 legs exactly at standing) + BOTH teeth classes
+    RED (the inline header ghost: 286 > allowed 285; the below-fold
+    displacing ghost: mainH −79 ≠ standing −105) + the seed restored
+    every run.
 - **R-4.4** `fullpage-sweep.ts` page set + baselines.
 - **R-4.5** `gate:full` reactivation: un-dormant the five docs (README,
   AGENTS, CLAUDE, PAD, SKILL), wire `bun run gate:full` back into the
@@ -245,11 +279,13 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | v2.0.0 | 203 | plan created; **R-1** (security ledger + zod floor pin + PAD/AGENTS lockstep) · **R-2** (docs-counts port + 8 site fixes incl. §7.1) · **R-3** (vitest.config comment) | lint 0/0 · tsc 0 · **508 unit** (37 files; +10: 8 docs-counts + 2 security-ledger) · build · smoke 14/14 · e2e 84/84 · census MATCH | `905b8a4` (the execution commit) |
 | v2.1.0 | 204 | **R-4.1** (the sweep re-anchor: REF_URL + the 11-page WealthOS set + the CRM baselines retired, both sweep.ts and sweep-state.ts; tests/sweep-tool.test.ts born RED 9/9 → GREEN; the maiden report-only run green end-to-end) · **R-6** (the F-204a docs-counts site-inventory completion: 4 grouped pins born RED against 10 stale sites; totals re-converged 508/37/592 → 521/38/605) | lint 0/0 · tsc 0 · **521 unit** (38 files; +13: 9 sweep-tool + 4 docs-counts) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · the maiden sweep report (login pair + 11×2 captures + seed restore) | (this session's execution commit) |
 | v2.2.0 | 205 | **R-4.2** (the maiden derivation: the F-205a per-page resolved-theme match — planThemeWrites born RED 3× → GREEN, the table collapsed ~85% → 12–75%; the four class tables derived from the theme-matched maidens at 390/768/1024/1440 — 12 literal values each, deep-pinned with the 3 session-204 pending-state pins replaced; the byte-identical re-run noise calibration; all four --fail-on-drift runs clean + the live --drift-margin -5 teeth check; the genera decoded — data-vs-empty, F-205b import+settings navy, F-205c styling deltas; R-7 programmed for the parity convergence) | lint 0/0 · tsc 0 · **524 unit** (38 files; +3 net: 3 planThemeWrites + 3 derived-state − 3 pending-state) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · 4× drift-gate clean | (this session's execution commit) |
+| v2.3.0 | 206 | **R-4.3** (the drift-probe + interior-census re-anchor: the probe's standing layers re-derived — the bundle fingerprint, the 256/9 sidebar, the functional mobile-menu census, the sentinel demo-data census; the census's 11-page set + anchor fallback + the STANDING_CENSUS four-axis allowances at zero margin, the mutation-proof teeth proven on both ghost classes) · **F-206a cured in-commit** (the demo-corpus misdecode: the living language corrected across the sweep docblock/standingExplained/zero-data header/the pin label/this plan's R-4.2 bullet) · **F-206b programmed** (the census-decoded construction genera → R-7) | lint 0/0 · tsc 0 · **535 unit** (39 files; +11 net: the new 12-test interior-census-tool pin + the drift-probe-tool rewrite 12→11) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · the four-axis census gate clean (exit 0) + both teeth proofs RED · the live probe run STABLE | (this session's execution commit) |
 
-> The next iteration session (206) picks up **R-4.3** by default — the
-> drift-probe.ts + interior-census.ts re-anchor (their page sets + the
-> WealthOS reference census, following the R-4.1/R-4.2 pattern: pin born
-> RED against the CRM-era config, re-anchor, maiden run) — or any
-> Critical/High finding a fresh audit surfaces (findings always pre-empt
-> the program). R-7 (the dark-mode parity convergence) is available as an
-> alternate slice if the owner prefers parity work over tooling.
+> The next iteration session (207) picks up **R-4.4** by default — the
+> fullpage-sweep.ts re-anchor (its page set + baselines, following the
+> R-4.1/R-4.2/R-4.3 pattern: pin born RED against the CRM-era config,
+> re-anchor, maiden run) — or any Critical/High finding a fresh audit
+> surfaces (findings always pre-empt the program). R-7 (the dark-mode +
+> construction parity convergence, now carrying F-206b's decoded genera)
+> is available as an alternate slice if the owner prefers parity work
+> over tooling.
