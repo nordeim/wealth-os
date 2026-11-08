@@ -1,549 +1,198 @@
-// Canonical vocabularies + presentation metadata for the CRM domain.
-// Every status vocabulary is distinct — never mix them (scaffold convention).
+// WealthOS domain vocabulary — the finance constants (session-199).
+// Every list here is either live-observed from the reference (the Add
+// Expense quick-select chips, the Needs/Wants/Savings tabs, the Settings
+// currency/date options) or a documented superset choice.
 
-export const LEAD_STAGES = [
-  "new",
-  "contacted",
-  "qualified",
-  "unqualified",
-  "proposal",
-  "negotiation",
-  "won",
-  "lost",
-] as const;
-// Session-58 (S58-P2, N-58b): `export type LeadStage =
-// (typeof LEAD_STAGES)[number]` RETIRED here — definition-only since
-// birth (zero non-definition references repo-wide; the `defaultLeadStage`
-// settings FIELD is a different identifier). The s48/s49/s54 retirement
-// policy, TYPE variant. The array + its consumers stay.
+export type BudgetCategory = "needs" | "wants" | "savings";
 
-// Session-54 (S54-P2, N-54b): OPEN_STAGES + DROPPED_STAGES/isDroppedStage
-// RETIRED here — each had zero src consumers (the OPEN_STAGES set was a
-// pre-s29 scaffold whose "Open = not-won" reading the live KPI
-// contradicts; isDroppedStage's "dropped = lost + unqualified" reading
-// was the s5 vocabulary the live S29-P5 KPI ["Dropped Deals" = lost
-// STRICTLY, leads-page] supersedes). The s48/s49/s53 retirement
-// precedent.
+export const BUDGET_CATEGORIES: BudgetCategory[] = ["needs", "wants", "savings"];
 
-// Session-31 (S31-P1): the OPPORTUNITY stage vocabulary — the reference's
-// SECOND deal model (bundle-decoded from index-DZ-xbrIm.js). The reference
-// ships a full Opportunity entity with NO create-edit UI (the leads
-// "Convert to Opportunity" item is dead — no onClick; no New Opportunity
-// dialog exists); its data feeds the dashboard, all five reports tabs, and
-// both insights surfaces.
-export const OPPORTUNITY_STAGES = [
-  "prospecting",
-  "qualification",
-  "proposal",
-  "negotiation",
-  "closed_won",
-  "closed_lost",
-] as const;
-export type OpportunityStage = (typeof OPPORTUNITY_STAGES)[number];
-
-// Session-54 (S54-P2, N-54b): isClosedOppStage RETIRED here — zero src
-// consumers since the s31 opportunity layer landed (the closed-branch
-// checks inline `stage === "closed_won"` where needed).
-
-/**
- * The OPP badge tints — the reference's P map (its table/insight badges):
- * prospecting blue, qualification PURPLE (not the lead cyan), proposal
- * yellow, negotiation orange, closed_won green, closed_lost red.
- */
-export const OPP_STAGE_META: Record<string, { label: string; badge: string; color: string }> = {
-  prospecting: { label: "Prospecting", badge: "bg-blue-100 text-blue-800", color: "#3b82f6" },
-  qualification: { label: "Qualification", badge: "bg-purple-100 text-purple-800", color: "#06b6d4" },
-  proposal: { label: "Proposal", badge: "bg-yellow-100 text-yellow-800", color: "#eab308" },
-  negotiation: { label: "Negotiation", badge: "bg-orange-100 text-orange-800", color: "#f97316" },
-  // Session-74 (M-74c1): the closed pair's labels are the FULL forms —
-  // the reference's lCe stage select decodes `closed_won → "Closed
-  // Won"` / `closed_lost → "Closed Lost"` (the six-item list). The
-  // s31-era "Won"/"Lost" shorts matched the STATUS vocabulary, not the
-  // stage select's.
-  closed_won: { label: "Closed Won", badge: "bg-green-100 text-green-800", color: "#10b981" },
-  closed_lost: { label: "Closed Lost", badge: "bg-red-100 text-red-800", color: "#ef4444" },
+export const BUDGET_CATEGORY_META: Record<
+  BudgetCategory,
+  { label: string; color: string; soft: string }
+> = {
+  needs: { label: "Needs", color: "#3b82f6", soft: "#eff6ff" },
+  wants: { label: "Wants", color: "#a855f7", soft: "#faf5ff" },
+  savings: { label: "Savings", color: "#10b981", soft: "#ecfdf5" },
 };
 
-/**
- * Session-31 REDEFINITION: the dashboard's stage vocabulary IS the
- * opportunity open+won vocabulary (the reference's chart maps
- * ["prospecting","qualification","proposal","negotiation","closed_won"]
- * with VALUE sums from OPPORTUNITIES). The scaffold-era lead-stage list
- * (new/qualified/…) was a zero-data inference; the labels stay
- * Prospecting/Qualification/Proposal/Negotiation/Won via PIPELINE_LABELS.
- */
-export const PIPELINE_STAGES: readonly OpportunityStage[] = [
-  "prospecting",
-  "qualification",
-  "proposal",
-  "negotiation",
-  "closed_won",
-];
-
-export interface StageMeta {
+/** The reference's Add Expense quick-select chips (live-observed, emoji
+ *  labels included — the emoji are functional markers, preserved
+ *  deliberately per the replicate-web-app skill). */
+export const QUICK_EXPENSE_CATEGORIES: Array<{
+  emoji: string;
   label: string;
-  /** Tailwind classes for a pill badge. */
-  badge: string;
-  /** Hex for charts. */
-  color: string;
-}
-
-export const STAGE_META: Record<string, StageMeta> = {
-  new: { label: "New", badge: "bg-blue-50 text-blue-700 border-blue-200", color: "#3b82f6" },
-  contacted: { label: "Contacted", badge: "bg-sky-50 text-sky-700 border-sky-200", color: "#0ea5e9" },
-  qualified: { label: "Qualified", badge: "bg-cyan-50 text-cyan-700 border-cyan-200", color: "#06b6d4" },
-  proposal: { label: "Proposal", badge: "bg-amber-50 text-amber-700 border-amber-200", color: "#eab308" },
-  negotiation: { label: "Negotiation", badge: "bg-orange-50 text-orange-700 border-orange-200", color: "#f97316" },
-  // Chart hex is grey-400 on the reference dashboard pipeline (DOM-verified
-  // rgb(156,163,175)); the table BADGE stays emerald via `badge` classes —
-  // the reference itself splits chart vs badge colors this way.
-  won: { label: "Won", badge: "bg-emerald-50 text-emerald-700 border-emerald-200", color: "#9ca3af" },
-  lost: { label: "Lost", badge: "bg-rose-50 text-rose-700 border-rose-200", color: "#ef4444" },
-  // Session-5: the reference's Create Lead dialog offers Unqualified as a
-  // fourth status (live listbox: New/Contacted/Qualified/Unqualified). Grey
-  // badge — the reference renders no badge for it we can extract, so it
-  // shares the neutral pill.
-  unqualified: { label: "Unqualified", badge: "bg-gray-100 text-gray-600 border-gray-200", color: "#9ca3af" },
-};
-
-/** Dashboard funnel uses friendlier names for two stages. */
-export const PIPELINE_LABELS: Record<string, string> = {
-  prospecting: "Prospecting",
-  qualification: "Qualification",
-  proposal: "Proposal",
-  negotiation: "Negotiation",
-  closed_won: "Won",
-  closed_lost: "Lost",
-  new: "Prospecting",
-  contacted: "Contacted",
-  qualified: "Qualification",
-  won: "Won",
-  lost: "Lost",
-  unqualified: "Unqualified",
-};
-
-// Session-5 (re-scoped session-29): the reference's lead Create/Edit
-// dialogs and the dashboard source surfaces store RAW values — value
-// "call", label "Call" (bundle-extracted from the Tke/Mke selects; the
-// s28 contact-source precedent). Referral exists in the FILTERS popover's
-// five-option list only — no dialog can create it.
-//
-// Session-49 (S49-P5, N-49c): the src-dead LEAD_SOURCES array (zero src
-// consumers; only its own constants.test.ts pin read it) was REMOVED
-// with the s48-P2 CONTACT_SOURCES precedent — the LIVING vocabulary is
-// LEAD_SOURCE_OPTIONS below (the dialogs' own list: entity-dialogs'
-// create/edit selects + the dashboard's Lead Sources rows). Source
-// stays FREE-FORM at the route boundary (the s48 documented-parity
-// decision — no canonical list exists to validate against).
-export const LEAD_SOURCE_OPTIONS: Array<{ value: string; label: string }> = [
-  { value: "call", label: "Call" },
-  { value: "email", label: "Email" },
-  { value: "website", label: "Website" },
-  { value: "partner", label: "Partner" },
+  budgetCategory: BudgetCategory;
+}> = [
+  { emoji: "🏠", label: "Rent/Mortgage", budgetCategory: "needs" },
+  { emoji: "🛒", label: "Groceries", budgetCategory: "needs" },
+  { emoji: "⚡", label: "Utilities", budgetCategory: "needs" },
+  { emoji: "🚗", label: "Transportation", budgetCategory: "needs" },
+  { emoji: "🏥", label: "Healthcare", budgetCategory: "needs" },
 ];
 
-// Session-29 (S29-P2, the C2 bundle extract): the leads table's INLINE
-// status select ships EXACTLY the five raw options — the table's
-// 5-status set (new/contacted/qualified/won/lost), NOT the 8-stage
-// vocabulary and NOT the edit dialog's 4-option set.
-export const LEAD_INLINE_STATUS_OPTIONS: Array<{ value: string; label: string }> = [
-  { value: "new", label: "New" },
-  { value: "contacted", label: "Contacted" },
-  { value: "qualified", label: "Qualified" },
-  { value: "won", label: "Won" },
-  { value: "lost", label: "Lost" },
+/** The full expense-category vocabulary (the reference's category
+ *  combobox + our seeded genera). Emoji map the quick-select face. */
+export const EXPENSE_CATEGORIES: Array<{
+  label: string;
+  emoji: string;
+  budgetCategory: BudgetCategory;
+}> = [
+  { emoji: "🏠", label: "Rent/Mortgage", budgetCategory: "needs" },
+  { emoji: "🛒", label: "Groceries", budgetCategory: "needs" },
+  { emoji: "⚡", label: "Utilities", budgetCategory: "needs" },
+  { emoji: "🚗", label: "Transportation", budgetCategory: "needs" },
+  { emoji: "🏥", label: "Healthcare", budgetCategory: "needs" },
+  { emoji: "🎓", label: "Education", budgetCategory: "needs" },
+  { emoji: "🛡️", label: "Insurance", budgetCategory: "needs" },
+  { emoji: "🍽️", label: "Dining Out", budgetCategory: "wants" },
+  { emoji: "🎬", label: "Entertainment", budgetCategory: "wants" },
+  { emoji: "👕", label: "Shopping", budgetCategory: "wants" },
+  { emoji: "✈️", label: "Travel", budgetCategory: "wants" },
+  { emoji: "☕", label: "Coffee", budgetCategory: "wants" },
+  { emoji: "🎮", label: "Subscriptions", budgetCategory: "wants" },
+  { emoji: "💰", label: "Savings Transfer", budgetCategory: "savings" },
+  { emoji: "📈", label: "Investment", budgetCategory: "savings" },
+  { emoji: "💳", label: "Debt Payment", budgetCategory: "savings" },
+  { emoji: "📦", label: "Other", budgetCategory: "wants" },
 ];
 
-// ---------------------------------------------------------------------------
-// Session-10 vocabulary pins (reports/chart internals — DOM-verified on the
-// live reference at 1512×945, 2026-09-30; pinned by tests/constants.test.ts).
-// ---------------------------------------------------------------------------
-
-/**
- * S10-6: the reports Conversion Funnel's EIGHT raw slugs. Session-31
- * CORRECTION (bundle-decoded): the list is a CONCATENATION — the leads'
- * new/contacted/qualified counts (by lead status) followed by the
- * OPPORTUNITY five-stage counts (prospecting/qualification/proposal/
- * negotiation/closed_won). The s10 "merged-list double-report" reading
- * (new≡prospecting, qualified≡qualification, won→closed_won) was a
- * zero-data inference and is RETIRED — reports-data.ts's
- * pipelineStageCounts(leads, opps) builds the real split.
- */
-// Session-54 (S54-P2, N-54b): REPORTS_PIPELINE_SLUGS RETIRED here — zero
-// src consumers since the s31 split moved into pipelineStageCounts
-// (whose tests/reports-data.test.ts pins the complete ordered arrays).
-
-// Session-54 (S54-P2, N-54b): FUNNEL_STAGES RETIRED here — the s10
-// zero-data scaffold vocabulary, superseded by LEADS_FUNNEL below (the
-// s27 bundle extraction; pinned in leads-charts.test.ts).
-
-/**
- * Session-27 (S27-P9, bundle-extracted from the reference's leads `Xke`
- * component): the LEADS Conversion Funnel's true vocabulary — the labels
- * are New Leads / Contacted / Qualified / Won (NOT the FUNNEL_STAGES
- * new/qualified/won/lost our scaffold inferred from the zero-data DOM,
- * where the funnel renders nothing and the sibling chart's ticks elide
- * "Contacted" at 331px). The counts are STATUS-CUMULATIVE:
- *
- *   New Leads  = status "new"
- *   Contacted  = status in [contacted, qualified, won]
- *   Qualified  = status in [qualified, won]
- *   Won        = status "won"
- */
-export const LEADS_FUNNEL = [
-  { id: "new-leads", label: "New Leads", fill: "#3b82f6" },
-  { id: "contacted", label: "Contacted", fill: "#8b5cf6" },
-  { id: "qualified", label: "Qualified", fill: "#10b981" },
-  { id: "won", label: "Won", fill: "#22c55e" },
+export const INCOME_CATEGORIES = [
+  { emoji: "💼", label: "Salary" },
+  { emoji: "🧑‍💻", label: "Freelance" },
+  { emoji: "🏢", label: "Business" },
+  { emoji: "📊", label: "Investment" },
+  { emoji: "🏘️", label: "Rental" },
+  { emoji: "🎁", label: "Gift" },
+  { emoji: "📦", label: "Other" },
 ] as const;
 
-/**
- * Session-27 (S27-P11, bundle-extracted `B` map): the calendar's
- * event-type CHIP tints — the day-cell chips + rail rows carry
- * bg-*-100 / text-*-800 SURFACES with solid bg-*-600 DOTS (meeting blue /
- * call green / demo purple / task orange / reminder yellow / appointment
- * cyan). The solid EVENT_TYPE_META.color entries stay on the quick-log
- * + agenda-dot surfaces that already use them.
- */
-export const EVENT_TYPE_CHIP: Record<string, { bg: string; text: string; dot: string }> = {
-  meeting: { bg: "bg-blue-100", text: "text-blue-800", dot: "bg-blue-600" },
-  call: { bg: "bg-green-100", text: "text-green-800", dot: "bg-green-600" },
-  demo: { bg: "bg-purple-100", text: "text-purple-800", dot: "bg-purple-600" },
-  task: { bg: "bg-orange-100", text: "text-orange-800", dot: "bg-orange-600" },
-  reminder: { bg: "bg-yellow-100", text: "text-yellow-800", dot: "bg-yellow-600" },
-  appointment: { bg: "bg-cyan-100", text: "text-cyan-800", dot: "bg-cyan-600" },
-};
-
-/**
- * S10-8: the reference's tab-2 "Aging Pipeline" bar chart renders 4 bar
- * rects at zero — a FIXED bucket list (ticks <30 days / 30-60 days /
- * >90 days render; the 60-90 label elides at 331px — recharts tick
- * elision, the DATA list is 4).
- */
-export const AGING_BUCKETS = [
-  { label: "<30 days", min: 0, max: 30 },
-  { label: "30-60 days", min: 30, max: 60 },
-  { label: "60-90 days", min: 60, max: 90 },
-  { label: ">90 days", min: 90, max: Number.POSITIVE_INFINITY },
+export const INCOME_SOURCE_TYPES = [
+  { value: "salary", label: "Salary" },
+  { value: "freelance", label: "Freelance" },
+  { value: "business", label: "Business" },
+  { value: "investment", label: "Investment" },
+  { value: "rental", label: "Rental" },
+  { value: "other", label: "Other" },
 ] as const;
 
-
-// Session-28 (S28-P1): the reference's contact model, bundle-extracted.
-// Its SOURCE stores RAW values (call/email/website/partner/referral) —
-// the create dialog's emoji strings are LABELS ONLY (its table badge
-// and its CSV export carry the raw value; its EDIT dialog's source select
-// is plain "Call/Email/Website/Partner/Referral" with no emojis).
-//
-// Session-48 (S48-P2): the source-vocabulary RECONCILIATION record — the
-// operator decision, landed after seven sessions of deferral. The
-// vocabulary is deliberately FRAGMENTED, mirroring the reference's own
-// product design (bundle-verified 2026-10-04): its settings
-// contactSources is an ENTITY-BACKED CRUD list whose ONLY consumer is
-// the settings page's own ConfigEditor (exactly one ContactSource.list
-// query site in the bundle — it drives nothing functional); its create
-// dialog HARDCODES the five emoji options below; its DB stores the raw
-// values. The five disagreeing surfaces (create dialog / edit dialog /
-// seed maps / CSV import arbitrary + "email" fallback / settings
-// Capitalized defaults) all stand — NO enum-membership on the routes
-// (a single-list guard is case-disjoint from another surface and would
-// 400 the reference's own accepted arbitrary import strings), the
-// settings list feeds no consumer BY DESIGN. The src-dead s5-era
-// CONTACT_SOURCES constant (zero src consumers; its "stored values
-// include the emoji" header comment contradicted this correction) was
-// removed this session — THIS options list is the surviving vocabulary.
-export const CONTACT_SOURCE_OPTIONS = [
-  { value: "call", label: "📞 Phone Call" },
-  { value: "email", label: "✉️ Email" },
-  { value: "website", label: "🌐 Website" },
-  { value: "partner", label: "🤝 Partner Referral" },
-  { value: "referral", label: "👥 Personal Referral" },
+export const INCOME_FREQUENCIES = [
+  { value: "weekly", label: "Weekly" },
+  { value: "biweekly", label: "Bi-weekly" },
+  { value: "monthly", label: "Monthly" },
+  { value: "quarterly", label: "Quarterly" },
+  { value: "annually", label: "Annually" },
 ] as const;
 
-// Session-54 (S54-P2, N-54b): CONTACT_SOURCE_LABEL RETIRED here — a
-// pre-s28 lookup scaffold with zero consumers (the surfaces read
-// CONTACT_SOURCE_OPTIONS directly; the raw values store verbatim).
-
-// The contact PRIORITY vocabulary: Key / Standard / At Risk (NOT the lead
-// hot/warm/cold temperature — bundle `ne` map + the Pke slide-over's `i`).
-export const CONTACT_PRIORITIES_REF = ["Key", "Standard", "At Risk"] as const;
-
-export const CONTACT_PRIORITY_META: Record<string, string> = {
-  Key: "bg-amber-100 text-amber-800 border-amber-300",
-  Standard: "bg-blue-100 text-blue-800 border-blue-300",
-  "At Risk": "bg-red-100 text-red-800 border-red-300",
+/** Monthly-equivalent multiplier per frequency (the Income page's Total
+ *  Monthly Income card normalizes every source onto a monthly footing). */
+export const FREQUENCY_TO_MONTHLY: Record<string, number> = {
+  weekly: 52 / 12,
+  biweekly: 26 / 12,
+  monthly: 1,
+  quarterly: 1 / 3,
+  annually: 1 / 12,
 };
 
-// The contact ROLE vocabulary — the inline table select's five options
-// (bundle `kke` + the row's inline Select).
-export const CONTACT_ROLES = [
-  "Decision Maker",
-  "Key Contact",
-  "Influencer",
-  "End User",
-  "Other",
+export const ACCOUNT_TYPES = [
+  { value: "checking", label: "Checking", icon: "🏦" },
+  { value: "savings", label: "Savings", icon: "🐖" },
+  { value: "credit", label: "Credit Card", icon: "💳" },
+  { value: "investment", label: "Investment", icon: "📈" },
+  { value: "cash", label: "Cash", icon: "💵" },
 ] as const;
 
-export const ENGAGEMENT_LEVELS = ["High", "Medium", "Low"] as const;
-
-// The 3-bar engagement cell classes — the TABLE variant ships the -500s
-// with shadow-sm; the slide-over hero uses the -600 solids (its own
-// inconsistency, mirrored).
-export const ENGAGEMENT_BARS = {
-  High: "bg-green-500 shadow-sm",
-  Medium: "bg-yellow-500 shadow-sm",
-  Low: "bg-red-500 shadow-sm",
-  empty: "bg-gray-200",
-} as const;
-
-export const ENGAGEMENT_BARS_SOLID = {
-  High: "bg-green-600",
-  Medium: "bg-yellow-600",
-  Low: "bg-red-600",
-  empty: "bg-gray-200",
-} as const;
-
-export function engagementBarCount(level: string | null | undefined): number {
-  if (level === "High") return 3;
-  if (level === "Medium") return 2;
-  if (level === "Low") return 1;
-  return 0;
-}
-
-// The company-size filter values (stored verbatim on the model).
-export const COMPANY_SIZES = ["Small (1-50)", "Medium (51-500)", "Large (500+)"] as const;
-
-// The contact STATUS select vocabulary (the W7 edit dialog).
-export const CONTACT_STATUSES = ["active", "inactive"] as const;
-
-// The account status vocabulary — the reference's bce CREATE dialog and
-// wce EDIT dialog both ship the SAME trio Active/Inactive/Prospect
-// (value "prospect").
-// Session-54 (S54-P2, N-54b): the then-dead ACCOUNT_EDIT_STATUSES constant
-// retired here; its "stale s28 decode" note mis-read WHICH surface the
-// trio rode — the s28 wce EDIT-config decode was RIGHT (prospect), and
-// the live CREATE select + both API validators carried churned instead.
-// Session-86 (M-86c1): the split retired — the unified trio mirrors the
-// reference's own dialogs (the edit dialog's previously-offered Prospect
-// option ALWAYS 400'd against the churned validators; pinned in
-// tests/accounts-rail-parity.test.ts).
-
-// The lead EDIT vocabularies — the Mke dialog's own inconsistencies: the
-// status set is New/Contacted/Qualified/Unqualified (NOT the table's
-// 5-status set) and the source has FOUR options (no Referral).
-// Session-54 (S54-P2, N-54b): the LEAD_EDIT_STATUSES/LEAD_EDIT_SOURCES
-// pair RETIRED here — a pre-s50 scaffold with zero consumers since the
-// s50 create-only retirement (the live EntityEditDialog fields carry
-// their own option sets — the F-47c documented parity).
-
-// The accounts-page badge maps (bundle B/H functions): the tier badge and
-// the HEALTH badge rendered under the "Status" header (the reference's own
-// header/cell mismatch, mirrored).
-export const ACCOUNT_TIER_BADGE: Record<string, string> = {
-  Key: "bg-yellow-100 text-yellow-800",
-  A: "bg-green-100 text-green-800",
-  B: "bg-blue-100 text-blue-800",
-  C: "bg-gray-100 text-gray-800",
-};
-
-export const ACCOUNT_HEALTH_BADGE: Record<string, string> = {
-  Healthy: "bg-green-100 text-green-800",
-  "At Risk": "bg-yellow-100 text-yellow-800",
-  "Needs Attention": "bg-red-100 text-red-800",
-};
-
-// Session-44 (S44-P1): the route-side membership vocabulary for the
-// account health field — the seed's three values and the badge map's
-// three keys, one named constant instead of anonymous literals (the
-// ACCOUNT_STATUSES pattern).
-export const ACCOUNT_HEALTH_STATUSES = ["Healthy", "At Risk", "Needs Attention"] as const;
-
-// The ce() last-activity formatter (bundle-extracted): Never / Today /
-// "1 day ago" / "N days ago" (<30) / "N months ago" (floor 30). The
-// reference computes it with moment; this is the pure equivalent.
-export function lastActivityCe(
-  d: Date | string | null | undefined,
-  now: Date | number = new Date(),
-): string {
-  if (!d) return "Never";
-  const t = new Date(d).getTime();
-  if (Number.isNaN(t)) return "Never";
-  const n = typeof now === "number" ? now : now.getTime();
-  const days = Math.floor((n - t) / 86400000);
-  if (days === 0) return "Today";
-  if (days === 1) return "1 day ago";
-  if (days < 30) return `${days} days ago`;
-  return `${Math.floor(days / 30)} months ago`;
-}
-
-export const ACCOUNT_TIERS = ["A", "B", "C"] as const;
-
-// Session-54 (S54-P2, N-54b): TIER_META RETIRED here — a pre-s28 badge
-// scaffold with zero consumers (the live tier badge is ACCOUNT_TIER_BADGE,
-// the s28 bundle B map; pinned in contact-model.test.ts).
-
-export const ACCOUNT_STATUSES = ["active", "inactive", "prospect"] as const;
-
-export const ACCOUNT_STATUS_META: Record<string, { label: string; badge: string; color: string }> = {
-  active: { label: "Active", badge: "bg-emerald-50 text-emerald-700 border-emerald-200", color: "#10b981" },
-  inactive: { label: "Inactive", badge: "bg-gray-100 text-gray-600 border-gray-200", color: "#6b7280" },
-  // Session-86 (M-86c1): prospect replaces churned — the reference's own
-  // dialog vocabulary. The badge/color pair is OURS (the reference never
-  // badges account status; our Cards view + insights supersets render it
-  // — amber for the prospective semantic).
-  prospect: { label: "Prospect", badge: "bg-amber-50 text-amber-700 border-amber-200", color: "#f59e0b" },
-};
-
-export const ACTIVITY_TYPES = ["call", "email", "meeting", "whatsapp", "task", "note"] as const;
-// Session-58 (S58-P2, N-58b): `export type ActivityType` RETIRED here —
-// definition-only (the LeadStage class, same retirement). The array +
-// ACTIVITY_TYPE_META stay on their live consumers.
-
-/** Session-76 (M-76c14/L-76c6, bundle-decoded from the reference's Mce
- *  dialog): the Log Activity dialog's type select lists FIVE options —
- *  Call/Email/Meeting/Task/Note. WhatsApp is NEVER in the list: the
- *  reference's quick-log applies the preset at SUBMIT time
- *  (`type: i || N.type` — the preset state wins over the form value),
- *  so the emerald quick-log's type never renders in the select. The
- *  full ACTIVITY_TYPES array stays (the rail + the KPI card read
- *  whatsapp). */
-export const ACTIVITY_DIALOG_TYPES = ["call", "email", "meeting", "task", "note"] as const;
-
-/** Session-76 (M-76c2, bundle-decoded from the reference's Rce timeline):
- *  the tinted icon-square pairs per activity type — the square carries
- *  the bg-100 + text-600 classes and the w-5 h-5 icon inherits the text
- *  color. Unknown types (task among the reference's own vocabulary gaps)
- *  fall to the gray terminal — the reference's `|| "bg-gray-100
- *  text-gray-600"` fallback. */
-export const ACTIVITY_TIMELINE_TINT: Record<string, string> = {
-  email: "bg-blue-100 text-blue-600",
-  call: "bg-green-100 text-green-600",
-  meeting: "bg-purple-100 text-purple-600",
-  whatsapp: "bg-emerald-100 text-emerald-600",
-  note: "bg-gray-100 text-gray-600",
-};
-
-export const ACTIVITY_TYPE_META: Record<string, { label: string; color: string; badge: string }> = {
-  call: { label: "Call", color: "#3b82f6", badge: "bg-blue-50 text-blue-700 border-blue-200" },
-  email: { label: "Email", color: "#06b6d4", badge: "bg-cyan-50 text-cyan-700 border-cyan-200" },
-  meeting: { label: "Meeting", color: "#f59e0b", badge: "bg-amber-50 text-amber-700 border-amber-200" },
-  whatsapp: { label: "WhatsApp", color: "#22c55e", badge: "bg-green-50 text-green-700 border-green-200" },
-  task: { label: "Task", color: "#8b5cf6", badge: "bg-violet-50 text-violet-700 border-violet-200" },
-  note: { label: "Note", color: "#6b7280", badge: "bg-gray-100 text-gray-600 border-gray-200" },
-};
-
-export const ACTIVITY_STATUS_META: Record<string, { label: string; badge: string }> = {
-  scheduled: { label: "Scheduled", badge: "bg-blue-50 text-blue-700 border-blue-200" },
-  completed: { label: "Completed", badge: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-};
-
-// Session-5: the reference's New Event dialog lists exactly these six event
-// types in this order (live listbox: Meeting/Call/Demo/Task/Reminder/
-// Appointment).
-export const EVENT_TYPES = ["meeting", "call", "demo", "task", "reminder", "appointment"] as const;
-// Session-58 (S58-P2, N-58b): `export type EventType` RETIRED here —
-// definition-only (the LeadStage class, same retirement). The array +
-// EVENT_TYPE_META stay on their live consumers.
-
-export const EVENT_TYPE_META: Record<string, { label: string; color: string }> = {
-  meeting: { label: "Meeting", color: "#f59e0b" },
-  call: { label: "Call", color: "#3b82f6" },
-  demo: { label: "Demo", color: "#22d3ee" },
-  task: { label: "Task", color: "#10b981" },
-  reminder: { label: "Reminder", color: "#f97316" },
-  appointment: { label: "Appointment", color: "#8b5cf6" },
-};
-
-// Session-53 (S53-P3, N-53c): EVENT_STATUS_META retired — the s27 cleanup
-// left its only import (calendar-page) orphaned, and with that import gone
-// the constant had zero src consumers (the s48 CONTACT_SOURCES / s49
-// LEAD_SOURCES src-dead retirement precedent). The event STATUS vocabulary
-// itself (scheduled/completed/cancelled — schema + seed) is untouched; only
-// this never-rendered badge map is gone.
-
-export const CONTACT_PRIORITIES = ["hot", "warm", "cold"] as const;
-
-// Session-54 (S54-P2, N-54b): PRIORITY_META RETIRED here — the pre-s28
-// hot/warm/cold badge map with zero consumers (the live contact-priority
-// vocabulary is CONTACT_PRIORITIES_REF + CONTACT_PRIORITY_META — the s28
-// Key/Standard/At Risk bundle `ne` map; the API validates both sets).
-
-export const REPORT_TABS = [
-  { id: "sales", label: "Sales Overview" },
-  { id: "pipeline", label: "Pipeline & Forecast" },
-  { id: "activity", label: "Activity & Productivity" },
-  { id: "sources", label: "Lead Sources" },
-  // Session-83 (N-83c6): the reference's fifth tab id is "accounts"
-  // (its value:"accounts") — an invisible internal id (no URL state,
-  // the s24 census); was "health" since the s25 scaffold.
-  { id: "accounts", label: "Account Health" },
+export const INVESTMENT_TYPES = [
+  { value: "stock", label: "Stock", color: "#3b82f6" },
+  { value: "etf", label: "ETF", color: "#10b981" },
+  { value: "bond", label: "Bond", color: "#f59e0b" },
+  { value: "crypto", label: "Crypto", color: "#a855f7" },
+  { value: "realestate", label: "Real Estate", color: "#f43f5e" },
+  { value: "other", label: "Other", color: "#78716c" },
 ] as const;
 
-// Session-25 (S25-P6) + Session-32 (S32-P4): the reference's SIX periods
-// with its WIRE ids — its expanded listbox reads Today / This Week / This
-// Month / This Quarter / YTD / All Time. The s25 ids were
-// today/week/month/quarter/ytd/all (week/month inferred from the
-// pattern); the s32 bundle decode of the i3e reports filter proves the
-// wire ids are today/thisWeek/thisMonth/quarter/ytd/all. Stale s25
-// localStorage entries migrate through normalizeSavedPeriod()
-// (src/lib/saved-reports.ts).
-export const REPORT_PERIODS = [
-  { id: "today", label: "Today" },
-  { id: "thisWeek", label: "This Week" },
-  { id: "thisMonth", label: "This Month" },
-  { id: "quarter", label: "This Quarter" },
-  { id: "ytd", label: "YTD" },
-  { id: "all", label: "All Time" },
+export const GOAL_CATEGORIES = [
+  { value: "emergency", label: "Emergency Fund", emoji: "🛡️" },
+  { value: "vacation", label: "Vacation", emoji: "✈️" },
+  { value: "house", label: "House", emoji: "🏠" },
+  { value: "car", label: "Car", emoji: "🚗" },
+  { value: "retirement", label: "Retirement", emoji: "🏖️" },
+  { value: "education", label: "Education", emoji: "🎓" },
+  { value: "other", label: "Other", emoji: "🎯" },
 ] as const;
 
-/**
- * Session-49 (S49-P1, pointer (a)): the reports STATUS filter
- * vocabulary — the reference's status select offers All Status / Open /
- * Won / Lost (bundle: its De-value items; "all" is the page's no-filter
- * sentinel, normalized away by notAll on the routes). ONE vocabulary
- * shared by the reports-page select and BOTH route guards (reports +
- * export) — the REPORT_PERIODS precedent. Won/lost map onto the OPP
- * stages (closed_won/closed_lost) inside the routes' where builders;
- * "open" is the post-filter (neither closed branch).
- */
-export const REPORT_STATUSES = [
-  { id: "open", label: "Open" },
-  { id: "won", label: "Won" },
-  { id: "lost", label: "Lost" },
+/** The reference's Settings currency list (observed option "USD - US
+ *  Dollar ($)"; siblings follow the same label shape). */
+export const CURRENCIES = [
+  { value: "USD", label: "USD - US Dollar ($)" },
+  { value: "EUR", label: "EUR - Euro (€)" },
+  { value: "GBP", label: "GBP - British Pound (£)" },
+  { value: "JPY", label: "JPY - Japanese Yen (¥)" },
+  { value: "AED", label: "AED - UAE Dirham (د.إ)" },
+  { value: "SGD", label: "SGD - Singapore Dollar (S$)" },
+  { value: "AUD", label: "AUD - Australian Dollar (A$)" },
+  { value: "CAD", label: "CAD - Canadian Dollar (C$)" },
 ] as const;
 
+export const DATE_FORMATS = [
+  { value: "MM/dd/yyyy", label: "MM/dd/yyyy (12/25/2024)" },
+  { value: "dd/MM/yyyy", label: "dd/MM/yyyy (25/12/2024)" },
+  { value: "yyyy-MM-dd", label: "yyyy-MM-dd (2024-12-25)" },
+  { value: "MMM d, yyyy", label: "MMM d, yyyy (Dec 25, 2024)" },
+] as const;
+
+/** The dashboard's segmented period control (live-observed: 1M 3M 6M 1Y,
+ *  6M active by default). */
+export const PERIOD_OPTIONS = ["1M", "3M", "6M", "1Y"] as const;
+export type PeriodOption = (typeof PERIOD_OPTIONS)[number];
+
+export const PERIOD_MONTHS: Record<PeriodOption, number> = {
+  "1M": 1,
+  "3M": 3,
+  "6M": 6,
+  "1Y": 12,
+};
+
+/** Chart palette — the reference's cash-flow genus (live-observed legend
+ *  dots): Income teal, Expenses rose, Net Savings amber. */
 export const CHART_COLORS = {
-  // Session-60 (N-60a): six never-read keys retired — blue/cyan/teal/
-  // amber/orange/green had zero key-reads AND zero computed access
-  // repo-wide (the s54 fully-dead class, KEY variant). The CSS
-  // --color-chart-1…6 token family in globals.css is a different
-  // surface and stays whole.
-  // Session-90 (L-90c4): the -400 family + gray RETIRED — the
-  // stat-card mini bars ride the bg-CLASS color maps in page-parts.tsx
-  // now (BAR_BG_GM/BAR_BG_ZV keyed by the reference's own color
-  // strings), leaving these keys with zero key-reads.
-  // Session-142 (D-142b0): red RETIRED — its last consumer was the
-  // dashboard revenue chart's target series (the s31 construction),
-  // which the reference's index-Dc6wvGtA.js bundle retired (the one
-  // "Won" area series, no legend). The live read set: the dashboard
-  // KPI sparklines + the won-series area (violet/emerald).
-  violet: "#8b5cf6",
-  emerald: "#10b981",
-};
-
-/** Session-70 (N-70c4): the reports LabelPie fill palettes — the
- *  reference's literal arrays, bundle-verified byte-identical
- *  (`["#3b82f6","#06b6d4","#8b5cf6","#ec4899"]` on the forecast-by-
- *  probability pie; the 5-color `[…,"#f97316"]` on the
- *  activities-by-type + leads-by-source pies). Unpinned until now —
- *  #ec4899 appeared in zero test assertions, so a fill drift would
- *  have passed every unit. HEALTH_PIE_FILLS + LEADS_FUNNEL fills are
- *  different seams with their own pins. */
-export const REPORTS_PIE_FILLS = {
-  four: ["#3b82f6", "#06b6d4", "#8b5cf6", "#ec4899"],
-  five: ["#3b82f6", "#06b6d4", "#8b5cf6", "#ec4899", "#f97316"],
+  income: "#14b8a6",
+  expenses: "#f43f5e",
+  net: "#f59e0b",
 } as const;
 
-// Session-41 (S41-P5): the dead DEFAULT_SETTINGS export deleted — zero
-// consumers repo-wide (grep-verified), and it still carried the pre-s28
-// EMOJI contact-source vocabulary (a stale session-5 leftover; the s40-P6
-// dead-export precedent).
+export const CATEGORY_PALETTE = [
+  "#f59e0b",
+  "#14b8a6",
+  "#f43f5e",
+  "#a855f7",
+  "#3b82f6",
+  "#10b981",
+  "#f97316",
+  "#64748b",
+  "#eab308",
+  "#ec4899",
+] as const;
+
+/** The AI Coach's suggested questions (live-observed chips). */
+export const AI_SUGGESTED_QUESTIONS = [
+  "How much did I spend on dining this month?",
+  "What are my top spending categories?",
+  "Am I on track with my savings goals?",
+  "Show me unusual transactions",
+  "How can I save more money?",
+] as const;
+
+export const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  JPY: "¥",
+  AED: "د.إ",
+  SGD: "S$",
+  AUD: "A$",
+  CAD: "C$",
+};
+
+export const APP_NAME = "WealthOS";
+export const APP_TAGLINE = "Premium Finance Suite";

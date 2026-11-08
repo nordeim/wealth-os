@@ -1,4 +1,5 @@
-// Shared client-side domain types (API wire shapes).
+// Shared client-side domain types (API wire shapes) — session-199
+// (WealthOS finance domain).
 
 export type Result<T, E> = { ok: true; data: T } | { ok: false; error: E };
 
@@ -7,274 +8,118 @@ export interface User {
   email: string;
   name: string;
   avatarColor: string;
-  // Session-30 (S30-P3): the profile-photo URL (the reference's
-  // profile_picture) — null = the gray-200 initial fallback.
   photoUrl: string | null;
   role: string;
 }
 
-export interface Account {
+export interface Transaction {
   id: string;
-  name: string;
-  industry: string | null;
-  email: string | null;
-  phone: string | null;
-  website: string | null;
-  annualRevenue: number | null;
-  employees: number | null;
-  status: string;
-  // Session-26 (S26-P5): the reference's stored health (Healthy | At Risk |
-  // Needs Attention) — backend-defaulted, surfaced through the accounts
-  // page export's Health column.
-  health: string;
-  ownerId: string | null;
-  owner?: Pick<User, "id" | "name" | "avatarColor"> | null;
-  lastActivityAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Contact {
-  id: string;
-  name: string;
-  email: string | null;
-  phone: string | null;
-  company: string | null;
-  position: string | null;
-  source: string | null;
-  // Session-28 (S28-P1): the reference's contact vocabulary — priority is
-  // Key/Standard/At Risk; role/engagementLevel/companySize/photoUrl are
-  // first-class fields (the inline role select, the 3-bar engagement cell,
-  // the company-size stack, the photo avatar).
-  priority: string; // Key | Standard | At Risk
-  role: string | null; // Decision Maker | Key Contact | Influencer | End User | Other
-  engagementLevel: string | null; // High | Medium | Low
-  companySize: string | null; // "Small (1-50)" | "Medium (51-500)" | "Large (500+)"
-  photoUrl: string | null;
-  status: string;
-  accountId: string | null;
-  account?: { id: string; name: string } | null;
-  ownerId: string | null;
-  owner?: Pick<User, "id" | "name" | "avatarColor"> | null;
-  lastActivityAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Lead {
-  id: string;
-  name: string;
-  email: string | null;
-  phone: string | null;
-  company: string | null;
-  value: number;
-  stage: string;
-  source: string | null;
-  status: string;
-  expectedCloseDate: string | null;
-  closedAt: string | null;
-  nextFollowUp: string | null;
-  accountId: string | null;
-  account?: { id: string; name: string } | null;
-  contactId: string | null;
-  ownerId: string | null;
-  owner?: Pick<User, "id" | "name" | "avatarColor"> | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Session-31 (S31-P1): the reference's SECOND deal model — serialized shape.
-// accountName/owner are NAME STRINGS (the reference stores display names,
-// not relations); stage is the OPPORTUNITY_STAGES vocabulary.
-export interface Opportunity {
-  id: string;
-  name: string;
-  accountName: string | null;
-  stage: string;
+  description: string;
   amount: number;
-  probability: number | null;
-  closeDate: string | null;
-  source: string | null;
-  owner: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CrmEvent {
-  id: string;
-  title: string;
-  description: string | null;
-  type: string;
-  status: string;
-  startAt: string;
-  endAt: string | null;
-  allDay: boolean;
-  location: string | null;
-  relatedType: string | null;
-  // Session-76 (M-76c13): the reference's CalendarEvent carries
-  // related_to_name — mirrored at the model, route and dialog.
-  relatedName: string | null;
-  accountId: string | null;
-  account?: { id: string; name: string } | null;
-  contactId: string | null;
-  contact?: { id: string; name: string } | null;
-  ownerId: string | null;
-  owner?: Pick<User, "id" | "name" | "avatarColor"> | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Activity {
-  id: string;
-  type: string;
-  subject: string;
+  type: "income" | "expense" | string;
+  category: string;
+  budgetCategory: string;
+  date: string;
   notes: string | null;
-  status: string;
-  priority: string;
-  dueAt: string | null;
-  completedAt: string | null;
-  relatedType: string | null;
-  relatedName: string | null;
+  recurring: boolean;
+  nextDate: string | null;
   accountId: string | null;
-  account?: { id: string; name: string } | null;
-  contactId: string | null;
-  contact?: { id: string; name: string } | null;
-  ownerId: string | null;
-  owner?: Pick<User, "id" | "name" | "avatarColor"> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IncomeSource {
+  id: string;
+  name: string;
+  type: string;
+  amount: number;
+  frequency: string;
+  active: boolean;
+  nextPaymentDate: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BankAccount {
+  id: string;
+  name: string;
+  type: string;
+  institution: string | null;
+  balance: number;
+  currency: string;
+  lastSyncedAt: string;
+  color: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Investment {
+  id: string;
+  symbol: string;
+  name: string;
+  type: string;
+  shares: number;
+  avgCost: number;
+  currentValue: number;
+  purchaseDate: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Goal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  targetDate: string | null;
+  category: string;
+  status: string;
+  icon: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Budget {
+  id: string;
+  category: string;
+  amount: number;
+  period: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface Settings {
-  contactSources: string[];
-  leadStages: string[];
-  activityTypes: string[];
-  accountTiers: string[];
-  industries: string[];
   defaultCurrency: string;
-  defaultLeadStage: string;
-  defaultTier: string;
-  followUpDays: number;
-  calendarView: string;
-  firstDayOfWeek: string;
+  dateFormat: string;
+  pushNotifications: boolean;
+  emailAlerts: boolean;
+  budgetWarnings: boolean;
+  monthlyReports: boolean;
+  theme: string;
 }
-
-// Session-59 (S59-P2, N-59a): the `SavedReport` interface RETIRED here —
-// zero references repo-wide INCLUDING this file. The LIVE SavedReport is
-// a different localStorage shape in src/lib/saved-reports.ts (the s25
-// seam, consumed by save-report-dialog + the reports page). This one
-// mirrored the dead Prisma model's DB wire shape (the ledger-10
-// deferral — its only db consumers are the reset + seed-time wipes).
-// The s54 fully-dead class, TYPE variant. The SKILL §20 carrier
-// followed the code.
-
-// ---- computed aggregates ---------------------------------------------------
 
 export interface DashboardData {
-  // Session-31 (S31-P2; slimmed session-78 M-78c2): the bundle's Eke KPI
-  // memo's UNFILTERED members — salesTarget is the reference's HARDCODED 0
-  // (its literal V=0) with targetProgress 0; avgSalesCycleDays is the
-  // average AGE of won leads (now − created). dealsClosedValue +
-  // revenueThisMonth moved CLIENT-SIDE with the filter re-derivation (the
-  // reference's `p` memo reads the stage/source-filtered opps — the page's
-  // filteredOpps memo); pipeline/topReps/recentDeals went with them (the
-  // route's copies retired, zero consumers).
-  kpis: {
-    totalLeads: number;
-    salesTarget: number;
-    salesTargetProgress: number;
-    conversionRate: string;
-    avgSalesCycleDays: number;
-  };
-  /** Session-142 (D-142b0): the ROLLING last-7-months window (labels =
-   *  the data months, ending at the current month — the reference's new
-   *  bundle retired its fixed Nov..May quirk) — over the UNFILTERED
-   *  opps (the reference's `b` memo reads `f`). The WON series only:
-   *  the synthetic target member retired with the reference's
-   *  index-Dc6wvGtA.js bundle (one area series, no legend). */
-  revenueOverTime: Array<{ month: string; won: number }>;
-  leadSources: Array<{ source: string; count: number; value: number }>;
-  /** Session-78 (L-78c4): the reference's `A` memo — the top-10-by-date
-   *  window filtered to date >= now, slice(0,3). */
-  upcomingActivities: Activity[];
+  transactions: Transaction[];
+  incomeSources: IncomeSource[];
+  accounts: BankAccount[];
+  investments: Investment[];
+  goals: Goal[];
+  budgets: Budget[];
+  user: Pick<User, "id" | "name" | "email" | "avatarColor">;
 }
 
-export interface ReportsData {
-  // Session-31 (S31-P3): the bundle's reports KPI memo — openLeads counts
-  // leads with status new+contacted ONLY; won/lost count+value and the
-  // conversion rate derive from OPPORTUNITIES (won/(won+lost), toFixed(1)).
-  kpis: {
-    totalLeads: number;
-    openLeads: number;
-    wonDeals: number;
-    wonValue: number;
-    lostDeals: number;
-    lostValue: number;
-    conversionRate: string;
-  };
-  /** WON opp amounts per close month ("MMM yyyy" keys, insertion order). */
-  revenueOverTime: Array<{ month: string; revenue: number }>;
-  wonVsLostOverTime: Array<{ month: string; won: number; lost: number }>;
-  /** Session-31: the 8-slug funnel SPLIT — leads' new/contacted/qualified
-   *  counts + the OPP five-stage counts (pipelineStageCounts). */
-  pipeline: Array<{ slug: string; count: number }>;
-  /** OPEN opps grouped by stage — RAW slug ticks, row-derived (empty at zero). */
-  pipelineByStageRows: Array<{ stage: string; count: number; value: number }>;
-  /** Session-10 (S10-8): ROW-DERIVED (types actually present; empty at
-   *  zero, like the reference's tab-3 charts). */
-  activitiesByType: Array<{ type: string; label: string; count: number; color: string }>;
-  /** "Activity Log by Owner" — Owner/Activities rows (slice 10). */
-  activitiesByOwner: Array<{ name: string; total: number }>;
-  /** The sources tab: leads counted from LEADS; won/lost/revenue/winRate/
-   *  avgValue from OPPORTUNITIES (the reference's split model). */
-  leadSources: Array<{
-    source: string;
-    leads: number;
-    won: number;
-    lost: number;
-    revenue: number;
-    winRate: string;
-    avgValue: number;
-  }>;
-  /** Session-27 (S27-P1): the COMPUTED health distribution (name/value pairs for the pie). */
-  accountHealth: Array<{ name: string; value: number }>;
-  topAccounts: Array<{ id: string; name: string; revenue: number; industry: string | null }>;
-  atRiskAccounts: Array<{ id: string; name: string; daysSinceActivity: number; health: string }>;
-  accountSummary: Array<{ id: string; name: string; industry: string | null; status: string; contacts: number; openLeads: number }>;
-  /** WON opps slice(0,10) — Deal/Account/Amount rows. */
-  recentWonDeals: Array<{ id: string; name: string; account: string | null; amount: number }>;
-  /** ALL opps amount-desc slice(0,10) — Deal/Stage/Amount rows. */
-  topDeals: Array<{ id: string; name: string; stage: string; amount: number }>;
-  // ---- Session-10 (S10-8): tab 2–4 additions -------------------------------
-  /** Fixed 4-bucket aging list (AGING_BUCKETS; all buckets present at zero). */
-  agingPipeline: Array<{ label: string; count: number }>;
-  /** The tab-2 wide chart + its "Average Accuracy: N%" caption (strings —
-   *  the reference's toFixed(1) chain). */
-  forecastingAccuracy: {
-    points: Array<{ month: string; forecasted: number; actual: number; accuracy: string | number }>;
-    average: string;
-  };
-  /** Session-27 (S27-P4): the FIXED 4 probability bands with value sums (the reference's pie data). */
-  forecastByProbability: Array<{ band: string; value: number }>;
-  /** Open deals table rows (Deal/Stage/Amount) — slice(0,10), list order. */
-  openDealsByStage: Array<{ id: string; deal: string; stage: string; amount: number }>;
-  /** Open opps with no linked activity for >14 days (Deal/Account/Amount) — slice(0,20). */
-  dealsAtRisk: Array<{ id: string; deal: string; account: string | null; amount: number }>;
-  /** Row-derived activity month series (Activities Over Time chart). */
-  activitiesOverTime: Array<{ month: string; count: number }>;
-  /** Months with activities count vs won-OPP count (Activities vs Wins chart). */
-  activitiesVsWins: Array<{ month: string; activities: number; wins: number }>;
-  /** Overdue activities table rows (Activity/Type/Due Date) — slice(0,20). */
-  // Session-85 (N-85c5): dueAt narrows to string — the overdue filter's
-  // date-present guard (the reference's `f.date &&` arm) guarantees it.
-  overdueActivities: Array<{ id: string; subject: string; type: string; dueAt: string }>;
-  /** Leads list by source table rows (Lead/Source/Status). */
-  leadsListBySource: Array<Lead>;
+export interface SearchResults {
+  transactions: Transaction[];
+  accounts: BankAccount[];
+  investments: Investment[];
+  goals: Goal[];
 }
 
-// Session-58 (S58-P2, N-58b): the `SearchResult` interface RETIRED here —
-// definition-only since birth (zero references repo-wide INCLUDING this
-// file) AND shape-inaccurate: it claimed full Account[]/Contact[]/Lead[]
-// entities while the live topbar consumes its own slimmer inline row
-// shape ({ id, name } + the leads' stage/value). The s54 fully-dead
-// class, TYPE variant. The SKILL §20 carrier followed the code.
+export interface InsightDto {
+  id: string;
+  tone: "positive" | "neutral" | "warning";
+  title: string;
+  body: string;
+}

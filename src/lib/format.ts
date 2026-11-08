@@ -1,350 +1,69 @@
 // Pure formatting/date helpers (unit-tested seam — tests/format.test.ts).
+// Session-199: the WealthOS formatters. The money formatters live in
+// finance.ts (formatMoney/formatAxisMoney); this module keeps the
+// calendar helpers the pages share.
 
-/**
- * Currency display follows the reference app exactly: a dollar sign
- * attached to the amount. (The reference keeps a "Default Currency" setting
- * on its Settings page but its formatters ignore it — mirrored here.)
- */
-export function formatCurrency(value: number | null | undefined): string {
-  const v = value ?? 0;
-  const abs = Math.abs(v);
-  const sign = v < 0 ? "-" : "";
-  const num = abs.toLocaleString("en-US", { maximumFractionDigits: 0 });
-  return `${sign}$${num}`;
+export function startOfDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-/**
- * $1.2k / $34k / $1.4M compact form used by KPI cards (lowercase k, uppercase
- * M). Session-5 variants, DOM-verified per page: the reports page renders an
- * UPPERCASE-K form (`$0.0K` won with one decimal, `$0K` lost with zero) —
- * pass `{ upper: true }` / `{ decimals: 0 }`.
- */
-export function formatCompactCurrency(
-  value: number | null | undefined,
-  options?: { decimals?: number; upper?: boolean; scale?: "k" | "M" },
+export function startOfWeek(date: Date, firstDay: "sunday" | "monday" = "sunday"): Date {
+  const d = startOfDay(date);
+  const day = d.getDay();
+  const shift = firstDay === "sunday" ? day : (day + 6) % 7;
+  d.setDate(d.getDate() - shift);
+  return d;
+}
+
+export function startOfMonth(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+export function startOfYear(date: Date): Date {
+  return new Date(date.getFullYear(), 0, 1);
+}
+
+/** `subMonths(now, 3)` with month-end clamping (Mar 31 - 1m = Feb 28). */
+export function subMonthsClamped(date: Date, months: number): Date {
+  const d = new Date(date);
+  const day = d.getDate();
+  d.setDate(1);
+  d.setMonth(d.getMonth() - months);
+  const daysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  d.setDate(Math.min(day, daysInMonth));
+  return d;
+}
+
+/** yyyy-MM-dd for native date inputs. */
+export function toDateInputValue(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+export const MONTHS_SHORT = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+/** The Settings date-format vocabulary applied to display dates. */
+export function formatDateByPattern(
+  date: Date,
+  pattern: string,
 ): string {
-  const decimals = options?.decimals ?? 1;
-  const suffixK = options?.upper ? "K" : "k";
-  const v = value ?? 0;
-  const abs = Math.abs(v);
-  const sign = v < 0 ? "-" : "";
-  // Session-32 (S32-P1): the FIXED-SCALE variants mirror the reference's
-  // LITERAL formulas — the dashboard's currency KPIs are always
-  // `$${(v/1e3).toFixed(n)}k` and the accounts' revenue family always
-  // `$${(v/1e6).toFixed(1)}M`, at ANY magnitude ("$0.0k" and "$1400.0k"
-  // are both valid k-scale outputs; "$0.0M" and "$0.9M" both valid M).
-  // No scale (the default) keeps the legacy magnitude branching.
-  if (options?.scale === "k") {
-    return `${sign}$${(abs / 1_000).toFixed(decimals)}${suffixK}`;
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  const yyyy = date.getFullYear();
+  switch (pattern) {
+    case "dd/MM/yyyy":
+      return `${dd}/${mm}/${yyyy}`;
+    case "yyyy-MM-dd":
+      return `${yyyy}-${mm}-${dd}`;
+    case "MMM d, yyyy":
+      return `${MONTHS_SHORT[date.getMonth()]} ${date.getDate()}, ${yyyy}`;
+    case "MM/dd/yyyy":
+    default:
+      return `${mm}/${dd}/${yyyy}`;
   }
-  if (options?.scale === "M") {
-    return `${sign}$${(abs / 1_000_000).toFixed(decimals)}M`;
-  }
-  if (abs >= 1_000_000) return `${sign}$${(abs / 1_000_000).toFixed(decimals)}M`;
-  if (abs >= 1_000) return `${sign}$${(abs / 1_000).toFixed(decimals)}${suffixK}`;
-  // Sub-1000: the legacy default keeps the bare rounded number (pinned by
-  // tests). The variant arm below (options passed, no scale) has had NO
-  // src consumer since session-68's S68-P2 landed scale:"k" at the
-  // reports call-sites — it survives as the test-pinned zero-state guard
-  // ("$0.0K"/"$0K" for options-without-scale, matching the reference's
-  // persistent zero KPIs byte-for-byte; the only options-without-scale
-  // caller left is the topbar hint, which passes NO options at all and
-  // so rides the default arm).
-  if (options) return `${sign}$${abs.toFixed(decimals)}${suffixK}`;
-  return `${sign}$${Math.round(abs)}`;
 }
-
-// Session-69 (F-69a5): exported — contact-detail-panel's mmmDyyyy rides
-// it (the N-68h dedupe class closed repo-wide: the array is declared
-// exactly once, consumed by every MMM-short surface).
-export const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const MONTHS_LONG = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
-
-// Session-76 (M-76c10): the long weekday names for the agenda timestamp's
-// "EEEE" component — Sunday-indexed like every getDay() consumer here.
-const DAYS_LONG = [
-  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-];
-
-function asDate(d: Date | string | number): Date {
-  return d instanceof Date ? d : new Date(d);
-}
-
-export function formatDate(d: Date | string | number | null | undefined): string {
-  if (!d) return "—";
-  const date = asDate(d);
-  if (Number.isNaN(date.getTime())) return "—";
-  return `${MONTHS_SHORT[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-}
-
-export function formatDateShort(d: Date | string | number | null | undefined): string {
-  if (!d) return "—";
-  const date = asDate(d);
-  if (Number.isNaN(date.getTime())) return "—";
-  return `${MONTHS_SHORT[date.getMonth()]} ${date.getDate()}`;
-}
-
-export function formatMonthYear(d: Date | string | number): string {
-  const date = asDate(d);
-  // Session-45 (S45-P5): the sibling NaN guard — a bad input used to
-  // render "undefined NaN" instead of the em-dash convention every
-  // other formatter here carries.
-  if (Number.isNaN(date.getTime())) return "—";
-  return `${MONTHS_LONG[date.getMonth()]} ${date.getFullYear()}`;
-}
-
-/**
- * Session-27 (S27-P11): the reference's upcoming/agenda row timestamp —
- * date-fns format "MMM d, h:mm a" (e.g. "Oct 5, 10:00 AM"), hand-rolled
- * here (no date-fns dependency).
- */
-export function formatMonthDayTime(d: Date | string | number | null | undefined): string {
-  if (!d) return "—";
-  const date = asDate(d);
-  if (Number.isNaN(date.getTime())) return "—";
-  // Session-68 (N-68h): rides MONTHS_SHORT — this used to re-declare a
-  // byte-identical local month array.
-  let h = date.getHours();
-  const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return `${MONTHS_SHORT[date.getMonth()]} ${date.getDate()}, ${h}:${date.getMinutes().toString().padStart(2, "0")} ${ampm}`;
-}
-
-/** Session-82 (M-82c3, bundle-decoded from the reference's slide-over
- *  activity card): the contact panel's activity timestamp — the moment
- *  format "MMM D, YYYY h:mm A" (e.g. "Oct 5, 2026 10:00 AM"), with the
- *  year AND the 12-hour time. The reference's own per-surface split:
- *  the panel's Last Activity row stays date-only ("MMM D, YYYY" —
- *  mmmDyyyy in the panel), the upcoming row keeps formatMonthDayTime
- *  ("MMM d, h:mm a" — no year), the agenda row formatWeekdayBulletTime. */
-export function formatMonthDayYearTime(d: Date | string | number | null | undefined): string {
-  if (!d) return "—";
-  const date = asDate(d);
-  if (Number.isNaN(date.getTime())) return "—";
-  let h = date.getHours();
-  const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return `${MONTHS_SHORT[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${h}:${date.getMinutes().toString().padStart(2, "0")} ${ampm}`;
-}
-
-/** Session-76 (M-76c10, bundle-decoded from the reference's agenda row):
- *  the calendar AGENDA timestamp — date-fns format
- *  "EEEE, MMM d • h:mm a" (e.g. "Monday, Oct 5 • 10:00 AM"), with the
- *  U+2022 bullet separator. The UPCOMING row keeps formatMonthDayTime
- *  ("MMM d, h:mm a") — the reference's own per-surface split. */
-export function formatWeekdayBulletTime(d: Date | string | number | null | undefined): string {
-  if (!d) return "—";
-  const date = asDate(d);
-  if (Number.isNaN(date.getTime())) return "—";
-  let h = date.getHours();
-  const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return `${DAYS_LONG[date.getDay()]}, ${MONTHS_SHORT[date.getMonth()]} ${date.getDate()} \u2022 ${h}:${date.getMinutes().toString().padStart(2, "0")} ${ampm}`;
-}
-
-export function formatTime(d: Date | string | number | null | undefined): string {
-  if (!d) return "—";
-  const date = asDate(d);
-  if (Number.isNaN(date.getTime())) return "—";
-  let h = date.getHours();
-  const m = date.getMinutes().toString().padStart(2, "0");
-  const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return `${h}:${m} ${ampm}`;
-}
-
-/** "just now" / "5m ago" / "3h ago" / "2d ago" / "Mar 4" */
-export function timeAgo(d: Date | string | number | null | undefined, now = Date.now()): string {
-  if (!d) return "—";
-  const t = asDate(d).getTime();
-  if (Number.isNaN(t)) return "—";
-  const diff = now - t;
-  if (diff < 0) return "upcoming";
-  const sec = Math.floor(diff / 1000);
-  if (sec < 60) return "just now";
-  const min = Math.floor(sec / 60);
-  if (min < 60) return `${min}m ago`;
-  const hr = Math.floor(min / 60);
-  if (hr < 24) return `${hr}h ago`;
-  const day = Math.floor(hr / 24);
-  if (day < 7) return `${day}d ago`;
-  return formatDateShort(t);
-}
-
-/** "in 2d" / "in 3h" / "in 45m" relative future label (a past or
- *  current instant reads "overdue"; null/invalid reads "—"). The
- *  Never/Today/N-days-ago last-activity vocabulary is NOT here — it
- *  lives in constants.ts (lastActivityCe) + account-health.ts.
- *  (Session-68 N-68g: the doc used to promise a "Today" output this
- *  function never returned.) */
-export function timeUntil(d: Date | string | number | null | undefined, now = Date.now()): string {
-  if (!d) return "—";
-  const t = asDate(d).getTime();
-  if (Number.isNaN(t)) return "—";
-  const diff = t - now;
-  if (diff <= 0) return "overdue";
-  const hr = Math.floor(diff / 3_600_000);
-  if (hr < 1) return `in ${Math.max(1, Math.floor(diff / 60_000))}m`;
-  if (hr < 24) return `in ${hr}h`;
-  return `in ${Math.floor(hr / 24)}d`;
-}
-
-export function isSameDay(a: Date | string | number, b: Date | string | number): boolean {
-  const x = asDate(a);
-  const y = asDate(b);
-  return (
-    x.getFullYear() === y.getFullYear() && x.getMonth() === y.getMonth() && x.getDate() === y.getDate()
-  );
-}
-
-// Session-63 (N-63d): the startOf* family is the period-window seam for
-// the export + reports routes (today/thisWeek/quarter/ytd). Every
-// setHours/setDate call computes in the SERVER's local timezone — the
-// reference app computes its periods CLIENT-side (in the visitor's TZ).
-// Same result whenever server and users share a TZ (the self-hosted
-// single-team posture); a server/user TZ split shifts the window edges
-// by the offset difference. Documented divergence, not a defect.
-export function startOfDay(d: Date | string | number): Date {
-  const x = new Date(asDate(d));
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
-
-export function endOfDay(d: Date | string | number): Date {
-  const x = new Date(asDate(d));
-  x.setHours(23, 59, 59, 999);
-  return x;
-}
-
-export function addDays(d: Date | string | number, days: number): Date {
-  const x = new Date(asDate(d));
-  x.setDate(x.getDate() + days);
-  return x;
-}
-
-// Session-56 (S56-P2, N-56f): addMonths retired — it went TEST-ONLY when
-// the reports route's orphaned import (dead there since s31) narrowed
-// away; zero src consumers remained (the s55 N-55b precedent). The live
-// month-arithmetic surface is calendarFetchBounds + the startOf* family.
-// Session-74 (M-74c3): startOfQuarter RETIRED the same way — the
-// reference's "quarter" period is subMonths(now, 3) (the rolling
-// window, bundle-decoded), so both periodStart call sites moved to
-// subMonthsClamped and zero src consumers remained.
-export function startOfWeek(d: Date | string | number, firstDay: "monday" | "sunday" = "monday"): Date {
-  const x = startOfDay(d);
-  const day = x.getDay(); // 0 = Sunday
-  if (firstDay === "monday") {
-    const diff = day === 0 ? 6 : day - 1;
-    x.setDate(x.getDate() - diff);
-  } else {
-    x.setDate(x.getDate() - day);
-  }
-  return x;
-}
-
-export function startOfMonth(d: Date | string | number): Date {
-  const x = startOfDay(d);
-  x.setDate(1);
-  return x;
-}
-
-/**
- * Session-74 (M-74c3): the reference's date-fns subMonths mirror — the
- * "quarter" report period resolves to subMonthsClamped(now, 3), a
- * ROLLING 3-month window (NOT the calendar quarter). Mirrors the cK
- * algorithm exactly: the time-of-day + day-of-month are PRESERVED and
- * the target day CLAMPS to the target month's last day (May 31 →
- * Feb 28; Jul 31 → Apr 30). Zero months returns the same instant; the
- * input is never mutated.
- */
-export function subMonthsClamped(d: Date | string | number, months: number): Date {
-  const r = new Date(d);
-  if (!months) return r;
-  const day = r.getDate();
-  // Day 0 of (month - months + 1) = the LAST day of (month - months).
-  const lastOfTarget = new Date(r.getFullYear(), r.getMonth() - months + 1, 0);
-  if (day >= lastOfTarget.getDate()) {
-    return new Date(r.getFullYear(), lastOfTarget.getMonth(), lastOfTarget.getDate(), r.getHours(), r.getMinutes(), r.getSeconds(), r.getMilliseconds());
-  }
-  r.setFullYear(lastOfTarget.getFullYear(), lastOfTarget.getMonth(), day);
-  return r;
-}
-
-export function startOfYear(d: Date | string | number): Date {
-  const x = startOfMonth(d);
-  x.setMonth(0);
-  return x;
-}
-
-/** Calendar grid for a month. With `leading`, the COMPLETE-WEEKS
- * Sunday/Monday-anchored grid (previous-month days included, padded to
- * a whole number of weeks — 28/35/42 as the month demands, the
- * reference's live model, session-108); without, only the month's own
- * days. */
-export function calendarGrid(
-  year: number,
-  month: number, // 0-indexed
-  firstDay: "monday" | "sunday" = "monday",
-  leading = true,
-): Date[] {
-  const first = new Date(year, month, 1);
-  const offset = firstDay === "monday" ? (first.getDay() + 6) % 7 : first.getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const start = leading
-    ? new Date(year, month, 1 - offset)
-    : new Date(year, month, 1);
-  // Session-108 (M-108c2): the COMPLETE-WEEKS grid — the reference's
-  // live model, replacing the s76 "always-42" gloss (a misdecode of
-  // its eachDayOfInterval(Sunday-before-the-1st, Saturday-on-or-after-
-  // the-last)): LIVE-probed five months — Oct 2026 = 35 [Sep 27..Oct
-  // 31] · Nov 2026 = 35 [Nov 1..Dec 5] · Jan 2027 = 42 [Dec 27..Feb 6,
-  // the 6-week month] · Apr 2027 = 35 · Jul 2026 = 35. The count is
-  // 28/35/42 as the month demands (ceil to whole weeks); the old
-  // always-42 form padded complete weeks to a 6th row the reference
-  // never renders — invisible to the pixel gates (below the 900px
-  // sweep fold on both apps) and to the e2e (no cell-count pin).
-  const total = leading ? Math.ceil((offset + daysInMonth) / 7) * 7 : daysInMonth;
-  const days: Date[] = [];
-  for (let i = 0; i < total; i += 1) {
-    days.push(new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
-  }
-  return days;
-}
-
-/** Fetch window for a calendar month view (session-51, N-51a; the bound
- * re-anchored to the complete-weeks grid at session-108). `from`
- * deliberately over-covers a FULL previous month (the leading grid cells
- * + the today-side KPI cards when viewing ahead); `to` covers the LAST
- * day the grid can render — the complete-weeks Sunday-anchored grid's
- * final cell (the Saturday on-or-after the month's last day), so the
- * trailing next-month cells are always inside the window. The old
- * month-end bound (`endOfDay(new Date(year, month + 1, 0))`) lost the
- * trailing cells' events after a month flip: the s45 last-call-wins
- * token makes the windowed fetch authoritative, and the grid's
- * trailing cells extend up to 6 days into the next month (e.g. Nov
- * 2026 renders Dec 1-5). */
-export function calendarFetchBounds(year: number, month: number): { from: string; to: string } {
-  const grid = calendarGrid(year, month, "sunday", true);
-  return {
-    from: new Date(year, month - 1, 1).toISOString(),
-    to: endOfDay(grid[grid.length - 1]).toISOString(),
-  };
-}
-
-export function toLocalInputValue(d: Date | string | number | null | undefined): string {
-  if (!d) return "";
-  const x = asDate(d);
-  if (Number.isNaN(x.getTime())) return "";
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}`;
-}
-
-// Session-55 (S55-P2, N-55b): the analytics pair retired — avgDaysBetween
-// + percentDelta were TEST-ONLY (zero non-test consumers repo-wide). The
-// live derivations are the leads-page inline avgCycle (S29-P9) and the
-// dashboard's hardcoded KPI_STATICS deltas — no surface ever called these
-// helpers (the s48/s49/s53/s54 retirement policy extended to seam-level
-// helpers per the standing source-vocabulary operator decision).

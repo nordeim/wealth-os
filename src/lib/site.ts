@@ -10,8 +10,8 @@
 //
 // Session-19 extended the seam with the per-route metadata factory: the
 // reference ships PER-ROUTE canonical/OG/Twitter on every inner page
-// (og:title "<Page> | NEO CRM", og:url origin+route, og:description
-// "<Page> on NEO CRM. " + the root paragraph — live-verified on all 10
+// (og:title "<Page> | WealthOS", og:url origin+route, og:description
+// "<Page> on WealthOS. " + the root paragraph — live-verified on all 10
 // routes 2026-10-01), so the pages build their metadata through
 // pageMetadata() instead of hand-rolling ten copies.
 //
@@ -24,7 +24,7 @@ export const DEFAULT_SITE_URL = "http://localhost:3000";
 
 /** The reference's meta description, mirrored verbatim (405 chars). */
 export const SITE_DESCRIPTION =
-  "NEO CRM is a clean, intuitive customer relationship management platform designed to help teams manage accounts, contacts, and leads in one centralized dashboard. With powerful search, clear account tracking, activity monitoring, and built-in reporting, NEO CRM keeps your client data organized, accessible, and actionable—so you can focus on building stronger relationships and closing more opportunities.";
+  "WealthOS is a premium finance suite that brings your whole financial life into one polished dashboard. Track income and expenses, manage bank accounts, follow your investments, and set savings goals — with budgeting insights, AI-powered coaching, and rich analytics that turn raw transactions into clear decisions.";
 
 /**
  * Canonical public origin: NEXT_PUBLIC_SITE_URL when set (trailing slashes
@@ -42,12 +42,12 @@ export function siteUrl(
 /**
  * Session-19: the reference's per-route OG description prefix — every
  * inner page's og/twitter description is
- * `"<Page> on NEO CRM. " + <the 405-char root paragraph>`
+ * `"<Page> on WealthOS. " + <the 405-char root paragraph>`
  * (live-verified on /Accounts, /Contacts, /Leads, /Calendar, /Activities,
  * /Reports, /Settings, /Profile; the root and /login stay unprefixed).
  */
 export function pageOgDescription(page: string): string {
-  return `${page} on NEO CRM. ${SITE_DESCRIPTION}`;
+  return `${page} on WealthOS. ${SITE_DESCRIPTION}`;
 }
 
 /**
@@ -60,12 +60,12 @@ export function pageOgDescription(page: string): string {
 export const PWA_META: Record<string, string> = {
   "mobile-web-app-capable": "yes",
   "apple-mobile-web-app-status-bar-style": "black",
-  "apple-mobile-web-app-title": "NEO CRM",
+  "apple-mobile-web-app-title": "WealthOS",
 };
 
 /**
  * Session-19: the per-route metadata factory. The reference ships
- * PER-ROUTE canonical + OG/Twitter (og:title "<Page> | NEO CRM",
+ * PER-ROUTE canonical + OG/Twitter (og:title "<Page> | WealthOS",
  * og:url origin+route, the prefixed description, twitter:title/url —
  * live-verified on all 10 routes); Next shallow-merges page metadata over
  * the layout's, so every page re-declares the FULL openGraph/twitter/
@@ -74,10 +74,10 @@ export const PWA_META: Record<string, string> = {
  * same URL on root and inner pages — verified), so /og-image.png ships
  * everywhere.
  *
- * - `page: null` → the unprefixed root/login family ("NEO CRM" + the
+ * - `page: null` → the unprefixed root/login family ("WealthOS" + the
  *   plain paragraph). Login keeps its ABSOLUTE title (the s13
  *   anti-doubling pin); pass `title` for other absolute spellings
- *   (signup: "Sign up | NEO CRM").
+ *   (signup: "Sign up | WealthOS").
  * - The dashboard needs NO factory call — it inherits the root layout's
  *   metadata wholesale (og:url = the origin root, which is exactly the
  *   reference's unprefixed family for / and /Dashboard).
@@ -88,7 +88,7 @@ export function pageMetadata(opts: {
   title?: string;
 }): Metadata {
   const page = opts.page;
-  const fullTitle = page !== null ? `${page} | NEO CRM` : "NEO CRM";
+  const fullTitle = page !== null ? `${page} | WealthOS` : "WealthOS";
   const description = page !== null ? pageOgDescription(page) : SITE_DESCRIPTION;
   return {
     title:
@@ -96,14 +96,14 @@ export function pageMetadata(opts: {
         ? { absolute: opts.title }
         : page !== null
           ? page
-          : { absolute: "NEO CRM" },
+          : { absolute: "WealthOS" },
     alternates: { canonical: opts.route },
     openGraph: {
       title: fullTitle,
       description,
       url: opts.route,
       type: "website",
-      siteName: "NEO CRM",
+      siteName: "WealthOS",
       images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
