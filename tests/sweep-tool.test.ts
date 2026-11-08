@@ -5,11 +5,20 @@
 // CRM-measured standing baselines — dormant and documented honestly since
 // D-201b. This pin is the re-anchor's contract: the reference URL, the
 // WealthOS page set (the 9 sections + the login/reset-password public
-// faces — all 11 verified 200 on the reference live this session), the
-// RETIRED baselines (empty class tables pending the R-4.2 maiden
-// derivation), and the negative guard (the CRM reference URL may not
-// return). The PURE seams (parsePagesArg / driftVerdict) stay pinned
-// against the new reality — the CRM page names must now FAIL fast.
+// faces — all 11 verified 200 on the reference live this session), and
+// the negative guard (the CRM reference URL may not return). The PURE
+// seams (parsePagesArg / driftVerdict) stay pinned against the new
+// reality — the CRM page names must now FAIL fast.
+//
+// Session-205 pins (R-4.2, the derivation): the maiden baseline tables
+// are DERIVED — measured theme-matched (F-205a: the per-page resolved-
+// theme match) at the four widths against the WealthOS reference, with a
+// byte-identical re-run at 1440x900 as the noise calibration (every page
+// within 0.01pct — the margin's headroom is real). The three session-204
+// pending-state pins (empty tables / pending note / baseline-0 verdict)
+// are REPLACED by the derived-state pins below — the interim state they
+// pinned is legitimately over (the doctrine: update the pin in the same
+// commit as the contract change, with the why).
 //
 // Scope note: drift-probe.ts / interior-census.ts / fullpage-sweep.ts are
 // R-4.3/R-4.4 (still CRM-era by the plan's ladder) — NOT this pin's scope.
@@ -57,42 +66,80 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     expect(read("scripts/sweep-state.ts")).not.toContain("neo-crm-8ab2c17c.base44.app");
   });
 
-  it("the CRM genera/baselines are RETIRED: all four class tables empty (the R-4.2 pending state)", async () => {
+  it("the four class tables carry the R-4.2 maiden derivation — measured theme-matched at the four widths (the literal values are the contract)", async () => {
     const { STANDING_BASELINES } = await sweep();
-    for (const cls of ["desktop", "phone", "tablet", "landscape"] as const) {
-      expect(Object.keys(STANDING_BASELINES[cls])).toHaveLength(0);
-    }
+    expect({ ...STANDING_BASELINES.desktop }).toEqual({
+      dashboard: 12.4, income: 53.6, expenses: 51.8, accounts: 26.9,
+      investments: 20.0, import: 75.1, analytics: 58.0, goals: 43.2,
+      settings: 57.1, login: 7.0, "reset-password": 3.9,
+    });
+    expect({ ...STANDING_BASELINES.phone }).toEqual({
+      dashboard: 28.2, income: 68.7, expenses: 60.0, accounts: 41.4,
+      investments: 54.1, import: 92.3, analytics: 65.7, goals: 54.5,
+      settings: 74.5, login: 13.6, "reset-password": 14.0,
+    });
+    expect({ ...STANDING_BASELINES.tablet }).toEqual({
+      dashboard: 18.5, income: 61.3, expenses: 57.9, accounts: 34.0,
+      investments: 23.0, import: 93.0, analytics: 60.2, goals: 48.8,
+      settings: 77.5, login: 13.2, "reset-password": 6.4,
+    });
+    expect({ ...STANDING_BASELINES.landscape }).toEqual({
+      dashboard: 16.9, income: 54.8, expenses: 51.0, accounts: 28.1,
+      investments: 22.6, import: 76.5, analytics: 54.1, goals: 43.5,
+      settings: 60.3, login: 7.1, "reset-password": 6.4,
+    });
   });
 
-  it("standingBaseline returns the empty tables at all four bands (every page judges at baseline 0 until R-4.2)", async () => {
-    const { standingBaseline } = await sweep();
-    for (const width of [390, 768, 1024, 1440]) {
-      expect(Object.keys(standingBaseline(width))).toHaveLength(0);
-    }
+  it("standingBaseline maps each walked width to its class table (and the band boundaries hold)", async () => {
+    const { standingBaseline, STANDING_BASELINES } = await sweep();
+    expect(standingBaseline(1440)).toEqual({ ...STANDING_BASELINES.desktop });
+    expect(standingBaseline(390)).toEqual({ ...STANDING_BASELINES.phone });
+    expect(standingBaseline(768)).toEqual({ ...STANDING_BASELINES.tablet });
+    expect(standingBaseline(1024)).toEqual({ ...STANDING_BASELINES.landscape });
+    // the 4-way banding: <768 phone · <1024 tablet · <1280 landscape · else desktop
+    expect(standingBaseline(767)).toEqual({ ...STANDING_BASELINES.phone });
+    expect(standingBaseline(1023)).toEqual({ ...STANDING_BASELINES.tablet });
+    expect(standingBaseline(1279)).toEqual({ ...STANDING_BASELINES.landscape });
+    expect(standingBaseline(1280)).toEqual({ ...STANDING_BASELINES.desktop });
   });
 
-  it("standingExplained carries the R-4.2 pending-derivation note (the honest interim state, not stale CRM genera)", async () => {
+  it("standingExplained decodes the WealthOS standing genera (the R-4.2 derivation — not the pending note)", async () => {
     const { standingExplained } = await sweep();
     for (const width of [390, 768, 1024, 1440]) {
       const line = standingExplained(width);
       expect(line).toContain("R-4.2");
+      expect(line).toContain("theme-matched");
+      expect(line).toContain("data-vs-empty");
+      expect(line).not.toContain("no WealthOS baselines derived yet");
       expect(line).not.toContain("picklist-data genus");
     }
   });
 
-  it("driftVerdict with the empty tables gates tightly: any page over the margin fails, baseline 0", async () => {
+  it("driftVerdict against the derived desktop table: within baseline+margin passes, above it fails", async () => {
     const { driftVerdict, STANDING_BASELINES } = await sweep();
-    const verdict = driftVerdict(
+    // the measured standing shares sit INSIDE their baselines + margin
+    const ok = driftVerdict(
       [
-        ["dashboard", 0.4],
-        ["settings", 0.6],
+        ["dashboard", 12.39],
+        ["settings", 57.03],
       ],
       { ...STANDING_BASELINES.desktop },
       0.5,
     );
-    expect(verdict.ok).toBe(false);
-    expect(verdict.failures).toEqual([
-      { page: "settings", pct: 0.6, baseline: 0, allowed: 0.5 },
+    expect(ok.ok).toBe(true);
+    // a real drift — above the baseline + margin — fails with the evidence
+    const drift = driftVerdict(
+      [
+        ["dashboard", 12.39],
+        ["settings", 57.03],
+        ["login", 7.6],
+      ],
+      { ...STANDING_BASELINES.desktop },
+      0.5,
+    );
+    expect(drift.ok).toBe(false);
+    expect(drift.failures).toEqual([
+      { page: "login", pct: 7.6, baseline: 7.0, allowed: 7.5 },
     ]);
   });
 
@@ -103,5 +150,51 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     expect(() => parsePagesArg(["--pages", "leads,contacts"], PAGES)).toThrow(
       /unknown page name\(s\) "leads", "contacts"/,
     );
+  });
+});
+
+describe("session-205 (R-4.2): the theme-matched maiden derivation (F-205a — the ~85% section share was a THEME genus, not data)", () => {
+  // The maiden decode (this session, 1440x900 + the pixel fingerprint):
+  // every section's diff was 98.4–99.7% ONE full-frame bucket, and the
+  // region means proved why — the reference serves its app shell DARK
+  // (whole-frame ≈ rgb(28,24,21)) while ours rendered LIGHT (≈
+  // rgb(211,210,207)); the auth faces match (both light ≈ rgb(242,244,246)),
+  // exactly why login/reset sat at 6.96%/3.84%. Baking a full-frame
+  // inversion into the baselines would blind the drift gate. The cure:
+  // the sweep probes the reference's resolved `dark` class PER PAGE and
+  // writes our localStorage theme to match before each of our captures.
+  const appPages = [
+    "dashboard", "income", "expenses", "accounts", "investments",
+    "import", "analytics", "goals", "settings",
+  ];
+  const authPages = ["login", "reset-password"];
+  const refThemes: Record<string, boolean> = {
+    ...Object.fromEntries(appPages.map((n) => [n, true])),
+    ...Object.fromEntries(authPages.map((n) => [n, false])),
+  };
+
+  it("planThemeWrites: the ref's per-page resolved themes become OUR localStorage writes, only at boundaries (app-dark/auth-light = exactly two writes)", async () => {
+    const { PAGES, planThemeWrites } = await sweep();
+    expect(planThemeWrites(PAGES, refThemes)).toEqual([
+      { before: "dashboard", theme: "dark" },
+      { before: "login", theme: "light" },
+    ]);
+  });
+
+  it("planThemeWrites: an all-light reference yields ONE write — and a missing probe FAILS FAST (the --pages typo doctrine)", async () => {
+    const { PAGES, planThemeWrites } = await sweep();
+    const allLight = Object.fromEntries(PAGES.map((p) => [p.name, false]));
+    expect(planThemeWrites(PAGES, allLight)).toEqual([
+      { before: "dashboard", theme: "light" },
+    ]);
+    expect(() => planThemeWrites(PAGES, {})).toThrow(/missing the resolved theme/);
+  });
+
+  it("planThemeWrites: an all-dark reference (a future ref default) also yields ONE write", async () => {
+    const { PAGES, planThemeWrites } = await sweep();
+    const allDark = Object.fromEntries(PAGES.map((p) => [p.name, true]));
+    expect(planThemeWrites(PAGES, allDark)).toEqual([
+      { before: "dashboard", theme: "dark" },
+    ]);
   });
 });

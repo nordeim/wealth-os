@@ -7,9 +7,21 @@
 // REF_URL default, the PAGES list (the 9 finance sections + the
 // login/reset-password public faces), and sweep-state.ts's own REF_URL
 // with it (the login-chain consistency). The CRM-era measured baselines
-// are RETIRED (below). The zero-data step keeps its CRM-era shape for
-// now — the WealthOS reference carries its own demo corpus, so the
-// data-vs-empty genus is the R-4.2 maiden derivation's first question.
+// are RETIRED (below).
+//
+// Session-205 (R-4.2, the maiden derivation): the baselines are DERIVED
+// at the four widths — and the derivation's first finding (F-205a)
+// changed the tool: the maiden table's ~85% section shares were a THEME
+// genus (the reference serves its app shell dark, its auth faces light;
+// ours rendered light everywhere), so the sweep now probes the
+// reference's resolved `dark` class PER PAGE and writes our
+// `wealthos-theme` localStorage to match before each of our captures
+// (planThemeWrites — the app-dark/auth-light genus pays exactly two
+// writes). The zero-data step keeps its shape by the STABILITY call:
+// our deterministic empty states vs the reference's static demo corpus
+// (a seeded our-side would roll with the calendar and drift its own
+// baseline); the residual data-vs-empty genus is baked into the class
+// tables per the s91-s99 doctrine.
 //
 // What it does (bun run sweep):
 //   1. boots (or reuses) the dev server on :3000
@@ -36,9 +48,14 @@
 //   mobile-nav topbar floor, and the s146-retired contacts/dashboard
 //   entries — are RETIRED with the re-anchor: they described the
 //   NEO-CRM reference pairing, dead since the session-199
-//   transformation. No WealthOS baselines exist yet; the class tables
-//   sit EMPTY and every page judges at baseline 0 + margin (R-4.2
-//   derives them from the maiden runs at the four widths).
+//   transformation.
+// Session-205 (R-4.2): the WealthOS standing baselines are DERIVED —
+//   the four class tables filled from the theme-matched maiden runs at
+//   390x844 / 768x1024 / 1024x768 / 1440x900, every page at its
+//   measured standing share rounded up to the next 0.1pct (the noise
+//   calibration: a byte-identical 1440x900 re-run). The standing genera
+//   are decoded in the STANDING_BASELINES docblock and printed per run
+//   by standingExplained().
 //
 // The tool is a drift REPORT (exit 0 with the table); pass
 // --max-diff <pct> (the space-separated form — the one the parser
@@ -208,25 +225,139 @@ export function parseNumberArg(
 /** The per-channel anti-aliasing tolerance (the s91 value). */
 export const TOLERANCE = 12;
 
-/** Session-204 (R-4.1, the remediation-plan-v2 F-203e program's first
- * slice): the CRM-era standing baselines RETIRED. The four class tables
- * (the session-99 4-way md/lg/xl banding: phone < 768 · tablet < 1024
- * · landscape < 1280 · else desktop) sit EMPTY pending the R-4.2 maiden
- * derivation against the WealthOS reference — every page is judged at
- * baseline 0 + margin (the driftVerdict default), the fail-fast
- * pending state: nothing passes unmeasured. R-4.2 fills each class
- * table from its maiden run's measured standing share, the values
- * sitting just above the measured table (the s91-s99 doctrine) so the
- * default 0.5pct margin absorbs run-to-run noise while any NEW drift
- * fails. PURE by design: pinned in tests/sweep-tool.test.ts. */
+/** Session-205 (R-4.2, the maiden derivation): the WealthOS standing
+ * baselines — measured THEME-MATCHED (the F-205a per-page resolved-theme
+ * match) at the four walked widths against the WealthOS reference, our
+ * side in the zero-data state (the stability call: our deterministic
+ * empty states vs the reference's static demo corpus — a seeded our-side
+ * would roll with the calendar and drift its own baseline). The values
+ * sit just above the measured tables (round-up to the next 0.1pct) so
+ * the default 0.5pct drift margin absorbs run-to-run noise — which the
+ * noise calibration measured at ~0: a byte-identical 1440x900 re-run
+ * (every page within 0.01pct). The standing genera, decoded per the
+ * maiden clusters + the pixel fingerprints + the VLM page reads:
+ *   (1) the data-vs-empty genus — our zero-data empty-state rows vs the
+ *       reference's demo-corpus rows/charts (the dominant share on
+ *       income/expenses/analytics/goals at every width);
+ *   (2) the import+settings navy genus — the reference's own blue
+ *       treatment on exactly those two pages (a navy bg wash on import;
+ *       navy cards + the blue Export button/GDPR box on settings) while
+ *       every other page keeps the app-wide amber/warm genus our clone
+ *       mirrors — a documented parity item (F-205b), baked in until a
+ *       parity round re-skins those pages and re-derives;
+ *   (3) the smaller styling deltas (F-205c): the ref's solid stat-icon
+ *       fills vs our tinted badges, its line-segment chart legend vs our
+ *       dots, its gauge health score vs our blobs, our sidebar active
+ *       pill, the mobile auth-face layouts (login/reset run higher at
+ *       phone/tablet widths).
+ * A cross-month shift of the reference's current-month KPIs is the one
+ * documented re-derivation trigger: the drift gate trips, the operator
+ * decodes with --clusters, re-derives the affected page. PURE by design:
+ * pinned in tests/sweep-tool.test.ts. */
 export const STANDING_BASELINES = {
-  desktop: {},
-  phone: {},
-  tablet: {},
-  landscape: {},
+  // 1440x900 — the desktop class (>= 1280)
+  desktop: {
+    dashboard: 12.4,
+    income: 53.6,
+    expenses: 51.8,
+    accounts: 26.9,
+    investments: 20.0,
+    import: 75.1,
+    analytics: 58.0,
+    goals: 43.2,
+    settings: 57.1,
+    login: 7.0,
+    "reset-password": 3.9,
+  },
+  // 390x844 — the phone class (< 768; both walked widths 390x844 + 375x812)
+  phone: {
+    dashboard: 28.2,
+    income: 68.7,
+    expenses: 60.0,
+    accounts: 41.4,
+    investments: 54.1,
+    import: 92.3,
+    analytics: 65.7,
+    goals: 54.5,
+    settings: 74.5,
+    login: 13.6,
+    "reset-password": 14.0,
+  },
+  // 768x1024 — the tablet class (< 1024)
+  tablet: {
+    dashboard: 18.5,
+    income: 61.3,
+    expenses: 57.9,
+    accounts: 34.0,
+    investments: 23.0,
+    import: 93.0,
+    analytics: 60.2,
+    goals: 48.8,
+    settings: 77.5,
+    login: 13.2,
+    "reset-password": 6.4,
+  },
+  // 1024x768 — the landscape class (< 1280)
+  landscape: {
+    dashboard: 16.9,
+    income: 54.8,
+    expenses: 51.0,
+    accounts: 28.1,
+    investments: 22.6,
+    import: 76.5,
+    analytics: 54.1,
+    goals: 43.5,
+    settings: 60.3,
+    login: 7.1,
+    "reset-password": 6.4,
+  },
 } as const;
 
 export type BaselineTable = Record<string, number>;
+
+/** Session-205 (R-4.2, the F-205a cure): the reference's resolved theme
+ *  per page, probed live during its capture (page name -> whether its
+ *  <html> carried the `dark` class at screenshot time). */
+export type ResolvedThemes = Record<string, boolean>;
+
+/** Session-205 (R-4.2, the F-205a cure): the per-page resolved-theme
+ *  match. The maiden decode proved the ~85% section share was a THEME
+ *  genus — the reference serves its app shell DARK (its demo seat's
+ *  standing choice) while its auth faces render light, and ours
+ *  rendered light everywhere ("system" + headless light). A full-frame
+ *  inversion baked into the baselines would blind the drift gate, so
+ *  the sweep instead probes the reference's resolved `dark` class PER
+ *  PAGE and writes OUR `wealthos-theme` localStorage to match before
+ *  each of our captures (the no-FOUC inline script applies it at the
+ *  next navigation's document start — theme-correct with zero FOUC).
+ *  PURE by design: pinned in tests/sweep-tool.test.ts.
+ *
+ *  The write plan emits a write ONLY at theme boundaries (a run of
+ *  same-theme pages pays ONE write), and a page MISSING from the probe
+ *  map FAILS FAST — a half-probed capture must never silently compare
+ *  mismatched themes (the --pages typo doctrine). */
+export function planThemeWrites(
+  pages: readonly PageEntry[],
+  refThemes: ResolvedThemes,
+): Array<{ before: string; theme: "light" | "dark" }> {
+  const writes: Array<{ before: string; theme: "light" | "dark" }> = [];
+  let current: "light" | "dark" | null = null;
+  for (const p of pages) {
+    const probed = refThemes[p.name];
+    if (typeof probed !== "boolean") {
+      throw new Error(
+        `planThemeWrites: page ${JSON.stringify(p.name)} is missing the resolved theme probe — ` +
+          `the reference capture must probe every page it captures`,
+      );
+    }
+    const want: "light" | "dark" = probed ? "dark" : "light";
+    if (want !== current) {
+      writes.push({ before: p.name, theme: want });
+      current = want;
+    }
+  }
+  return writes;
+}
 
 /** The baseline table for a viewport width — the 4-way md/lg/xl banding
  * (Session-99): < 768 the phone class (BOTH walked widths 390x844 +
@@ -240,18 +371,22 @@ export function standingBaseline(width: number): BaselineTable {
   return { ...STANDING_BASELINES.desktop };
 }
 
-/** PURE (Session-98, N-98a1; Session-204 R-4.1): the per-run
- * "standing explained" line. The CRM-era genus decodes (the four
- * class-specific branches) retired with the re-anchor — they described
- * the NEO-CRM pairing's measured genera, none of which transfer. Until
- * R-4.2 derives the WealthOS baselines, the line states the pending
- * state honestly: there is no genus knowledge to print. */
+/** PURE (Session-98, N-98a1; Session-204 R-4.1; Session-205 R-4.2): the
+ * per-run "standing explained" line — the drift table's decode key. The
+ * R-4.2 derivation replaced the pending note with the WealthOS standing
+ * genera: what the baselines BAKE IN (the data-vs-empty genus, the
+ * import+settings navy genus, the smaller styling deltas) and how the
+ * comparison is held genus-consistent (the per-page theme match). */
 export function standingExplained(width: number): string {
   return (
-    `[sweep] standing explained (R-4.1 re-anchor, width ${width}): the CRM-era genera retired — ` +
-    `no WealthOS baselines derived yet (R-4.2 measures the four widths and fills the class ` +
-    `tables); every page currently judges at baseline 0 + margin, so treat any trip as ` +
-    `unmeasured drift pending the maiden derivation`
+    `[sweep] standing explained (R-4.2 derivation, width ${width}): the tables bake in the ` +
+    `standing genera — the data-vs-empty genus (our zero-data empty-state rows vs the ` +
+    `reference's demo corpus), the import+settings navy genus (the reference's own blue ` +
+    `treatment on those two pages), and the smaller styling deltas (stat-icon fills, ` +
+    `legend markers, the mobile auth-face layouts). The comparison is theme-matched ` +
+    `per page (F-205a); a trip is drift ABOVE these genera — decode with --clusters, ` +
+    `and re-derive the affected page if the reference's own corpus shifted (the ` +
+    `cross-month KPI trigger)`
   );
 }
 
@@ -523,44 +658,69 @@ async function closeBadge(page: import("@playwright/test").Page) {
     .catch(() => undefined);
 }
 
+/** Session-205 (R-4.2): the per-page capture, extracted from captureAll so
+ *  the our-side loop can interleave the theme writes between a page's
+ *  localStorage write and its navigation (the no-FOUC contract: the write
+ *  must land BEFORE the goto, and the goto is inside this function's
+ *  caller). Identical body to the captureAll loop it came from. */
+async function captureOne(
+  page: import("@playwright/test").Page,
+  base: string,
+  dir: string,
+  p: PageEntry,
+  recordThemes?: ResolvedThemes,
+) {
+  mkdirSync(dir, { recursive: true });
+  await page.goto(`${base}${p.path}`, { waitUntil: "domcontentloaded" });
+  // content-wait: the shell's main column must paint before the
+  // capture. Width-AGNOSTIC by design (session-94): the nav links
+  // are display:none below md on BOTH apps, so a nav-a visible-wait
+  // burns its full 15s timeout on every page at phone width. main
+  // paints at every width; the 2500ms settle below covers the
+  // shell's data fetch.
+  // Session-197 (D-197a1): the not-found override — the bare root
+  // 404 carries NO main (the sweep's shell-wait soft-falls its full
+  // 15s burn per capture); the h1 "404" heading is the content-wait
+  // anchor instead (the walk67 decode's own face, present on BOTH
+  // apps' designed 404s).
+  if (p.waitFor === "heading-404") {
+    await page
+      .getByRole("heading", { name: "404", exact: true })
+      .first()
+      .waitFor({ state: "visible", timeout: 15000 })
+      .catch(() => undefined);
+  } else {
+    await page
+      .locator("main")
+      .first()
+      .waitFor({ state: "visible", timeout: 15000 })
+      .catch(() => undefined);
+  }
+  await page.waitForTimeout(2500);
+  await closeBadge(page);
+  await page.waitForTimeout(300);
+  // Session-205 (R-4.2, F-205a): the per-page resolved-theme probe —
+  // rides the reference capture's existing settle (zero extra
+  // navigation). Read AFTER the settle so any client-side theme boot
+  // has applied; the screenshot and the probe see the same state.
+  if (recordThemes) {
+    recordThemes[p.name] = await page.evaluate(() =>
+      document.documentElement.classList.contains("dark"),
+    );
+  }
+  await page.screenshot({ path: path.join(dir, `${p.name}.png`) });
+  log(`captured ${dir}/${p.name}.png`);
+}
+
 async function captureAll(
   page: import("@playwright/test").Page,
   base: string,
   dir: string,
   pages: readonly PageEntry[],
+  recordThemes?: ResolvedThemes,
 ) {
-  mkdirSync(dir, { recursive: true });
   for (const p of pages) {
-    await page.goto(`${base}${p.path}`, { waitUntil: "domcontentloaded" });
-    // content-wait: the shell's main column must paint before the
-    // capture. Width-AGNOSTIC by design (session-94): the nav links
-    // are display:none below md on BOTH apps, so a nav-a visible-wait
-    // burns its full 15s timeout on every page at phone width. main
-    // paints at every width; the 2500ms settle below covers the
-    // shell's data fetch.
-    // Session-197 (D-197a1): the not-found override — the bare root
-    // 404 carries NO main (the sweep's shell-wait soft-falls its full
-    // 15s burn per capture); the h1 "404" heading is the content-wait
-    // anchor instead (the walk67 decode's own face, present on BOTH
-    // apps' designed 404s).
-    if (p.waitFor === "heading-404") {
-      await page
-        .getByRole("heading", { name: "404", exact: true })
-        .first()
-        .waitFor({ state: "visible", timeout: 15000 })
-        .catch(() => undefined);
-    } else {
-      await page
-        .locator("main")
-        .first()
-        .waitFor({ state: "visible", timeout: 15000 })
-        .catch(() => undefined);
-    }
-    await page.waitForTimeout(2500);
-    await closeBadge(page);
-    await page.waitForTimeout(300);
-    await page.screenshot({ path: path.join(dir, `${p.name}.png`) });
-    log(`captured ${dir}/${p.name}.png`);
+    await captureOne(page, base, dir, p, recordThemes);
   }
 }
 
@@ -823,11 +983,36 @@ async function main() {
     // drops 4 -> 1; the app's own limiter is never touched.
     const pairState = await preflightPairState(browser);
     const ctx = await browser.newContext({ viewport: { width: WIDTH, height: HEIGHT }, storageState: pairState });
-    const refPage = await ctx.newPage();
-    await captureAll(refPage, REF_URL, path.join(shots, "ref"), pages);
 
+    // Session-205 (R-4.2, the F-205a cure): the per-page resolved-theme
+    // match. The reference is captured FIRST with the probe riding its
+    // capture; our side then writes `wealthos-theme` per the plan before
+    // each of our captures (boundaries only — the app-dark/auth-light
+    // genus pays exactly two writes). The pre-seed navigation lands our
+    // page on OUR origin so the first write has a localStorage to hit
+    // (an about:blank evaluate cannot touch an origin's storage).
+    const refThemes: ResolvedThemes = {};
+    const refPage = await ctx.newPage();
+    await captureAll(refPage, REF_URL, path.join(shots, "ref"), pages, refThemes);
+    log(`ref resolved themes: ${JSON.stringify(refThemes)}`);
+
+    const themeWrites = planThemeWrites(pages, refThemes);
+    const writeByPage = new Map(themeWrites.map((w) => [w.before, w.theme]));
     const ourPage = await ctx.newPage();
-    await captureAll(ourPage, OUR_URL, path.join(shots, "ours"), pages);
+    if (writeByPage.size > 0) {
+      await ourPage.goto(`${OUR_URL}/login`, { waitUntil: "domcontentloaded" });
+    }
+    for (const p of pages) {
+      const theme = writeByPage.get(p.name);
+      if (theme) {
+        await ourPage.evaluate(
+          (v) => window.localStorage.setItem("wealthos-theme", v),
+          theme,
+        );
+        log(`our theme -> ${theme} (before ${p.name})`);
+      }
+      await captureOne(ourPage, OUR_URL, path.join(shots, "ours"), p);
+    }
 
     const diffPage = await ctx.newPage();
     await diffPage.goto("about:blank");
