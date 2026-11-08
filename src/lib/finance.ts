@@ -175,6 +175,25 @@ export function cashFlowSeries(txs: TxLike[], months: number, ref: Date): CashFl
   return points;
 }
 
+/** Session-209 (F-209b): the Analytics stat row's averages — the mean of
+ *  the monthly series over the walked window (the reference's "Avg Monthly
+ *  Income / Expenses / Savings" cards). Savings averages the net series.
+ *  An empty series (no months walked) returns zeros, never NaN. */
+export function monthlyAverages(points: CashFlowPoint[]): {
+  income: number;
+  expenses: number;
+  savings: number;
+} {
+  if (points.length === 0) return { income: 0, expenses: 0, savings: 0 };
+  const mean = (pick: (p: CashFlowPoint) => number) =>
+    round2(points.reduce((acc, p) => acc + pick(p), 0) / points.length);
+  return {
+    income: mean((p) => p.income),
+    expenses: mean((p) => p.expenses),
+    savings: mean((p) => p.net),
+  };
+}
+
 // ---- financial health score ---------------------------------------------------------
 
 export interface HealthMetric {

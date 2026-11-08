@@ -22,7 +22,7 @@ import { EmptyState, PageHeader } from "@/components/shared/page-parts";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { ACCOUNT_TYPES, CURRENCIES } from "@/lib/constants";
 import { formatMoney } from "@/lib/finance";
-import { CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, PAGE_ROOT, STOCK_CARD } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { BankAccount } from "@/types";
@@ -60,7 +60,7 @@ export default function AccountsPage() {
         />
 
         {accounts.length === 0 ? (
-          <div className={cn(CARD.base, CARD.padding)}>
+          <div className={cn(STOCK_CARD, CARD.padding)}>
             <EmptyState
               icon={Landmark}
               title="No accounts yet"
@@ -75,7 +75,7 @@ export default function AccountsPage() {
           </div>
         ) : (
           <>
-            <div className={cn(CARD.base, CARD.padding, "flex items-center gap-4")}>
+            <div className={cn(STOCK_CARD, CARD.padding, "flex items-center gap-4")}>
               <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-500/10">
                 <Landmark className="h-6 w-6 text-amber-500" />
               </span>
@@ -130,7 +130,7 @@ function AccountCard({
   const typeLabel = ACCOUNT_TYPES.find((t) => t.value === account.type)?.label ?? account.type;
   const color = account.color ?? "#f59e0b";
   return (
-    <div className={cn(CARD.base, CARD.padding)}>
+    <div className={cn(STOCK_CARD, CARD.padding)}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span

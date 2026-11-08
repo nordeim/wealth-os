@@ -63,7 +63,7 @@ export function KpiCard({
         ? "text-red-500 dark:text-red-400"
         : "text-stone-500 dark:text-stone-500";
   return (
-    <div className={cn(CARD.base, CARD.padding, "relative overflow-hidden")}>
+    <div className={cn(CARD.kpi)}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-medium text-stone-500 dark:text-stone-500">{label}</p>

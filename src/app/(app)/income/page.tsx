@@ -27,7 +27,7 @@ import {
 } from "@/lib/constants";
 import { formatMoney, relativeDays, totalMonthlyIncome } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { IncomeSource } from "@/types";
@@ -83,7 +83,7 @@ export default function IncomePage() {
           }
         />
 
-        <div className={cn(CARD.base, CARD.padding, "flex items-center gap-4")}>
+        <div className={cn(GLASS_CARD.base, CARD.padding, "flex items-center gap-4")}>
           <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-500/10">
             <TrendingUp className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
           </span>
@@ -99,7 +99,7 @@ export default function IncomePage() {
         </div>
 
         {sources.length === 0 ? (
-          <div className={cn(CARD.base, CARD.padding)}>
+          <div className={cn(GLASS_CARD.base, CARD.padding)}>
             <EmptyState
               icon={Briefcase}
               title="No Income Sources Yet"
@@ -118,7 +118,7 @@ export default function IncomePage() {
               const style = TYPE_STYLES[source.type] ?? TYPE_STYLES.other;
               const monthly = source.amount * (FREQUENCY_TO_MONTHLY[source.frequency] ?? 1);
               return (
-                <div key={source.id} className={cn(CARD.base, CARD.padding, "group")}>
+                <div key={source.id} className={cn(GLASS_CARD.base, CARD.padding, "group")}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <span

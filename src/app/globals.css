@@ -48,6 +48,15 @@
   --color-muted: #78716c;
   --color-subtle: #a8a29e;
 
+  /* Session-209 (F-209a, the A-209 cure): the shadcn card tokens the
+     reference's card families read (`text-card-foreground` / `bg-card`).
+     Live-decoded from its :root (hsl 0 0% 3.9% / 0 0% 100%); the .dark
+     block below flips both at runtime — the reference's own mechanism.
+     Before this pin the classes were INERT here (v4 drops unknown
+     tokens without warning — the F-207a lesson, token edition). */
+  --color-card-foreground: #0a0a0a;
+  --color-card: #ffffff;
+
   --color-line: #e7e5e4;
   --color-line-strong: #d6d3d1;
   --color-line-soft: #f5f5f4;
@@ -261,9 +270,34 @@
   }
 }
 
+/* Session-209 (F-209a): the card tokens' dark flip — the reference's own
+   `.dark { --card-foreground: 0 0% 98%; --card: 0 0% 3.9% }` mechanism.
+   Source order places this AFTER the @theme :root emission, so under
+   .dark every `text-card-foreground` / `bg-card` resolves flipped. */
+.dark {
+  --color-card-foreground: #fafafa;
+  --color-card: #0a0a0a;
+}
+
 /* ---------------------------------------------------------------------------
    Custom utilities (v4 native @utility — NOT @layer utilities)
 --------------------------------------------------------------------------- */
+
+/* Session-209 (F-209a): the reference's custom .card-hover — CSSOM-extracted
+   verbatim (its compiled stylesheet): a 300ms standard-ease transition and,
+   on hover, the -2px lift + the xl shadow pair. Applied by the reference on
+   its Dashboard KPI cards (the CARD.kpi genus) and its Expenses summary
+   cards (GLASS_CARD.hover). */
+@utility card-hover {
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}
 
 /* The reference's sidebar face (CSSOM-extracted, live):
    a near-black vertical wash with a faint amber/emerald diagonal sheen. */

@@ -62,7 +62,7 @@ import {
   upcomingAlerts,
 } from "@/lib/finance";
 import { getAiProvider } from "@/lib/ai";
-import { BUTTONS, CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { BUTTONS, CARD, GLASS_CARD, PAGE_ROOT, QUICK_ACTIONS_CARD } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
@@ -177,8 +177,9 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Cash flow overview */}
-        <section className={cn(CARD.base, CARD.padding)} aria-label="Cash Flow Overview">
+        {/* Cash flow overview — the reference's mid-card genus, its cash-flow
+            card alone carries backdrop-blur-md (the F-209a census) */}
+        <section className={cn(CARD.base, "backdrop-blur-md", CARD.padding)} aria-label="Cash Flow Overview">
           <CardTitleRow
             icon={LineChartIcon}
             title="Cash Flow Overview"
@@ -414,7 +415,7 @@ export default function DashboardPage() {
 
         {/* Recent activity + AI insights row */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <section className={cn(CARD.base, CARD.padding)} aria-label="Recent Activity">
+          <section className={cn(GLASS_CARD.base, CARD.padding)} aria-label="Recent Activity">
             <h2 className="mb-4 text-lg font-bold text-stone-900 dark:text-stone-100">Recent Activity</h2>
             {recent.length === 0 ? (
               <EmptyState
@@ -467,7 +468,7 @@ export default function DashboardPage() {
             )}
           </section>
 
-          <section className={cn(CARD.base, CARD.padding)} aria-label="AI Insights">
+          <section className={cn(GLASS_CARD.base, CARD.padding)} aria-label="AI Insights">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <Brain className="h-5 w-5 text-stone-700 dark:text-stone-200" />
@@ -517,14 +518,15 @@ export default function DashboardPage() {
           </section>
         </div>
 
-        {/* Quick actions */}
-        <section className={cn(CARD.base, CARD.padding)} aria-label="Quick Actions">
+        {/* Quick actions — the reference's one-off warm variant (via-30,
+            rounded-2xl, amber-200 border; p-6 in the literal) */}
+        <section className={QUICK_ACTIONS_CARD} aria-label="Quick Actions">
           <h2 className="mb-4 text-xl font-bold text-amber-500">Quick Actions</h2>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <QuickAction href="/Income" label="Add Income" icon={TrendingUp} className="border-emerald-300 text-emerald-600 dark:border-emerald-500/40 dark:text-emerald-400" />
-            <QuickAction href="/Expenses" label="Add Expense" icon={TrendingDown} className="border-rose-300 text-rose-500 dark:border-rose-500/40 dark:text-rose-400" />
-            <QuickAction href="/Goals" label="Set Goal" icon={Target} className="border-amber-300 text-amber-500 dark:border-amber-500/40 dark:text-amber-400" />
-            <QuickAction href="/Analytics" label="View Reports" icon={BarChart3} className="border-blue-300 text-blue-500 dark:border-blue-500/40 dark:text-blue-400" />
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <QuickAction href="/Income" label="Add Income" icon={TrendingUp} className="border-emerald-200 dark:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-300" iconClassName="text-emerald-600 dark:text-emerald-400" />
+            <QuickAction href="/Expenses" label="Add Expense" icon={TrendingDown} className="border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:border-rose-300" iconClassName="text-rose-600 dark:text-rose-400" />
+            <QuickAction href="/Goals" label="Set Goal" icon={Target} className="border-amber-200 dark:border-amber-900/50 hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-300" iconClassName="text-amber-600 dark:text-amber-400" />
+            <QuickAction href="/Analytics" label="View Reports" icon={TrendingUp} className="border-blue-200 dark:border-blue-900/50 hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-300" iconClassName="text-blue-600 dark:text-blue-400" />
           </div>
         </section>
 
@@ -539,22 +541,35 @@ function QuickAction({
   label,
   icon: Icon,
   className,
+  iconClassName,
 }: {
   href: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   className?: string;
+  iconClassName?: string;
 }) {
+  // Session-209 (F-209a): the reference's construction — a shadcn outline
+  // button inside a bare anchor, the per-tone border + soft hover fill +
+  // border deepen riding the appended variant classes. Two token notes:
+  // the reference's `bg-background` (white/#0a0a0a, theme-flipped) reads
+  // our `bg-card` (the F-209a token pins exactly those two values); its
+  // `hover:text-accent-foreground` (#171717/#fafafa) is expressed with
+  // the neutral literals (the F-129c3 house precedent). The icon's
+  // effective size is 16px — the button's [&_svg]:size-4 outranks the
+  // icon's own w-5 h-5 (measured live on the reference).
   return (
-    <Link
-      href={href}
-      className={cn(
-        "flex flex-col items-center gap-2 rounded-lg border bg-white px-4 py-5 text-sm font-semibold text-stone-800 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:bg-stone-900 dark:text-stone-100",
-        className,
-      )}
-    >
-      <Icon className="h-6 w-6" />
-      {label}
+    <Link href={href}>
+      <button
+        type="button"
+        className={cn(
+          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-card shadow-sm hover:text-neutral-900 dark:hover:text-neutral-50 px-4 py-2 w-full h-16 flex-col gap-2",
+          className,
+        )}
+      >
+        <Icon className={cn("w-5 h-5", iconClassName)} aria-hidden="true" />
+        {label}
+      </button>
     </Link>
   );
 }

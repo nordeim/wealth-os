@@ -23,7 +23,7 @@ import { useWealthOs } from "@/stores/wealthos-store";
 import { GOAL_CATEGORIES } from "@/lib/constants";
 import { formatMoney, goalProgress } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Goal } from "@/types";
@@ -57,7 +57,7 @@ export default function GoalsPage() {
         />
 
         {goals.length === 0 ? (
-          <div className={cn(CARD.base, CARD.padding)}>
+          <div className={cn(GLASS_CARD.base, CARD.padding)}>
             <EmptyState
               icon={Target}
               title="No Goals Set Yet"
@@ -77,7 +77,7 @@ export default function GoalsPage() {
               const category = GOAL_CATEGORIES.find((c) => c.value === goal.category);
               const done = goal.status === "completed" || progress.pct >= 100;
               return (
-                <div key={goal.id} className={cn(CARD.base, CARD.padding)}>
+                <div key={goal.id} className={cn(GLASS_CARD.base, CARD.padding)}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <span

@@ -37,7 +37,7 @@ import {
 } from "@/lib/constants";
 import { budgetCategorySplit, formatMoney } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/types";
@@ -97,16 +97,18 @@ export default function ExpensesPage() {
           }
         />
 
-        {/* Summary trio */}
+        {/* Summary trio — session-209 (F-209a): the reference's glass genus
+            (its needs/wants/savings tiles carry card-hover; our Total tile is
+            the documented superset, plain glass) */}
         <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-          <div className={cn(CARD.base, CARD.padding)}>
+          <div className={cn(GLASS_CARD.base, CARD.padding)}>
             <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Total Expenses</p>
             <p className="mt-1 text-2xl font-bold text-stone-900 dark:text-stone-50">
               {formatMoney(split.needs + split.wants + split.savings)}
             </p>
           </div>
           {(["needs", "wants", "savings"] as const).map((key) => (
-            <div key={key} className={cn(CARD.base, CARD.padding)}>
+            <div key={key} className={cn(GLASS_CARD.hover, CARD.padding)}>
               <span className="flex items-center gap-1.5 text-sm font-medium text-stone-500 dark:text-stone-500">
                 <span
                   className="h-2.5 w-2.5 rounded-full"
@@ -181,8 +183,8 @@ export default function ExpensesPage() {
           </div>
         </div>
 
-        {/* History */}
-        <section className={cn(CARD.base, CARD.padding)}>
+        {/* History — the page's glass genus (F-209a) */}
+        <section className={cn(GLASS_CARD.base, CARD.padding)}>
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className={CARD.title}>Expense History ({visible.length})</h2>
             <Tabs

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/page-parts";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { EXPENSE_CATEGORIES } from "@/lib/constants";
-import { CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, PAGE_ROOT, STOCK_CARD } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
@@ -177,7 +177,7 @@ export default function ImportPage() {
         />
 
         {/* Step 1: upload */}
-        <section className={cn(CARD.base, CARD.padding)} aria-label="Step 1: Upload File">
+        <section className={cn(STOCK_CARD, CARD.padding)} aria-label="Step 1: Upload File">
           <h2 className={cn(CARD.title, "mb-1")}>Step 1: Upload File</h2>
           {/* A LABEL (not role=button): the click forwards to the input
               natively and no interactive element nests inside another. */}
@@ -219,7 +219,7 @@ export default function ImportPage() {
 
         {/* Step 2: preview */}
         {rows ? (
-          <section className={cn(CARD.base, CARD.padding)} aria-label="Step 2: Review">
+          <section className={cn(STOCK_CARD, CARD.padding)} aria-label="Step 2: Review">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h2 className={CARD.title}>Step 2: Review & Import</h2>

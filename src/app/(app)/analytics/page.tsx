@@ -18,7 +18,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Download, RefreshCw } from "lucide-react";
+import { Download, RefreshCw, TrendingUp, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsPanel } from "@/components/ui/tabs";
 import {
@@ -40,11 +40,12 @@ import {
   expenseBreakdown,
   formatAxisMoney,
   formatMoney,
+  monthlyAverages,
   portfolioStats,
   spendingByDayOfWeek,
 } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT, STAT_GRADIENTS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 const PERIODS = [
@@ -80,6 +81,7 @@ export default function AnalyticsPage() {
   );
 
   const trend = React.useMemo(() => cashFlowSeries(inRange, n, new Date(to)), [inRange, n, to]);
+  const avg = React.useMemo(() => monthlyAverages(trend), [trend]);
   const breakdown = React.useMemo(() => expenseBreakdown(inRange, new Date(to)), [inRange, to]);
   const split = React.useMemo(() => budgetCategorySplit(inRange, new Date(to)), [inRange, to]);
   const byDay = React.useMemo(() => spendingByDayOfWeek(inRange, new Date(to)), [inRange, to]);
@@ -152,6 +154,34 @@ export default function AnalyticsPage() {
           }
         />
 
+        {/* Session-209 (F-209b): the reference's stat row — three saturated
+            to-r gradient tiles directly under the page header (its icons:
+            TrendingUp · TrendingUp flipped · Calendar; the flipped icon is
+            the reference's own "down" expression). */}
+        <div className="grid md:grid-cols-3 gap-6">
+          <StatCard
+            label="Avg Monthly Income"
+            value={formatMoney(avg.income)}
+            gradient={STAT_GRADIENTS.emerald}
+            labelClass="text-emerald-100"
+            icon={<TrendingUp className="w-8 h-8 text-emerald-200" aria-hidden="true" />}
+          />
+          <StatCard
+            label="Avg Monthly Expenses"
+            value={formatMoney(avg.expenses)}
+            gradient={STAT_GRADIENTS.red}
+            labelClass="text-red-100"
+            icon={<TrendingUp className="w-8 h-8 text-red-200 rotate-180" aria-hidden="true" />}
+          />
+          <StatCard
+            label="Avg Monthly Savings"
+            value={formatMoney(avg.savings)}
+            gradient={STAT_GRADIENTS.blue}
+            labelClass="text-blue-100"
+            icon={<Calendar className="w-8 h-8 text-blue-200" aria-hidden="true" />}
+          />
+        </div>
+
         <Tabs
           value={tab}
           onValueChange={setTab}
@@ -164,7 +194,7 @@ export default function AnalyticsPage() {
           ]}
         >
           <TabsPanel tab="overview" className="mt-4 space-y-4">
-            <section className={cn(CARD.base, CARD.padding)}>
+            <section className={cn(GLASS_CARD.base, CARD.padding)}>
               <CardTitleRow title="Income vs Expenses Trend" />
               {inRange.length === 0 ? (
                 <EmptyState icon={RefreshCw} title="No data in the selected range" />
@@ -193,7 +223,7 @@ export default function AnalyticsPage() {
             </section>
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <section className={cn(CARD.base, CARD.padding)}>
+              <section className={cn(GLASS_CARD.base, CARD.padding)}>
                 <CardTitleRow title="Spending by Day of Week" caption="This month" />
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
@@ -207,7 +237,7 @@ export default function AnalyticsPage() {
                   </ResponsiveContainer>
                 </div>
               </section>
-              <section className={cn(CARD.base, CARD.padding)}>
+              <section className={cn(GLASS_CARD.base, CARD.padding)}>
                 <CardTitleRow title="Needs vs Wants vs Savings" />
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
@@ -235,7 +265,7 @@ export default function AnalyticsPage() {
           </TabsPanel>
 
           <TabsPanel tab="expenses" className="mt-4 space-y-4">
-            <section className={cn(CARD.base, CARD.padding)}>
+            <section className={cn(GLASS_CARD.base, CARD.padding)}>
               <CardTitleRow title="Expenses by Category" />
               {breakdown.length === 0 ? (
                 <EmptyState icon={RefreshCw} title="No expenses in range" />
@@ -272,7 +302,7 @@ export default function AnalyticsPage() {
           </TabsPanel>
 
           <TabsPanel tab="income" className="mt-4 space-y-4">
-            <section className={cn(CARD.base, CARD.padding)}>
+            <section className={cn(GLASS_CARD.base, CARD.padding)}>
               <CardTitleRow title="Income Trend" />
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
@@ -296,7 +326,7 @@ export default function AnalyticsPage() {
 
           <TabsPanel tab="investments" className="mt-4 space-y-4">
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <section className={cn(CARD.base, CARD.padding)}>
+              <section className={cn(GLASS_CARD.base, CARD.padding)}>
                 <CardTitleRow title="Portfolio Composition" />
                 <div className="h-60">
                   <ResponsiveContainer width="100%" height="100%">
@@ -312,7 +342,7 @@ export default function AnalyticsPage() {
                   </ResponsiveContainer>
                 </div>
               </section>
-              <section className={cn(CARD.base, CARD.padding)}>
+              <section className={cn(GLASS_CARD.base, CARD.padding)}>
                 <CardTitleRow title="Holdings Performance" />
                 <div className="h-60">
                   <ResponsiveContainer width="100%" height="100%">
@@ -333,6 +363,38 @@ export default function AnalyticsPage() {
             </div>
           </TabsPanel>
         </Tabs>
+      </div>
+    </div>
+  );
+}
+
+/** Session-209 (F-209b): the reference's Analytics stat tile — a saturated
+ *  to-r gradient card (`rounded-xl <gradient> text-white border-0
+ *  shadow-lg` > p-6 > label `text-X-100 text-sm font-medium mb-1` +
+ *  `text-2xl font-bold` value + the w-8 h-8 tone icon right). */
+function StatCard({
+  label,
+  value,
+  gradient,
+  labelClass,
+  icon,
+}: {
+  label: string;
+  value: string;
+  gradient: string;
+  labelClass: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div className={cn("rounded-xl text-white border-0 shadow-lg", gradient)}>
+      <div className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className={cn("text-sm font-medium mb-1", labelClass)}>{label}</p>
+            <p className="text-2xl font-bold">{value}</p>
+          </div>
+          {icon}
+        </div>
       </div>
     </div>
   );

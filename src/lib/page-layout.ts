@@ -127,11 +127,50 @@ export const PAGE_ROOT = {
   bare: "",
 } as const;
 
+/** The in-page card genera — session-209 (F-209a, R-7.10): the reference
+ *  deploys FOUR card families by surface (live census, every page walked).
+ *  CARD.base is the WARM-SIMPLE genus (Dashboard's mid cards + Investments'
+ *  charts/tables); CARD.kpi is the WARM-HOVER genus (Dashboard's KPI row —
+ *  p-6 in-base, the custom .card-hover utility, backdrop-blur-md, the
+ *  via-amber-50/20 layer). Padding is a flat p-6 — the reference's
+ *  shadcn CardHeader/CardContent anatomy resolves to 24px on every face
+ *  (the `p-4 md:p-6` upsize was added chrome). The glass + stock families
+ *  live in GLASS_CARD/STOCK_CARD below; Settings keeps its own converged
+ *  SETTINGS_CARD. */
 export const CARD = {
-  base: "rounded-xl border border-stone-200/70 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900/60",
-  padding: "p-4 md:p-6",
+  base: "rounded-xl text-card-foreground bg-gradient-to-br from-white/90 to-stone-50/90 dark:from-stone-900/90 dark:to-stone-950/90 border border-amber-100/50 dark:border-amber-900/30 shadow-xl",
+  kpi: "rounded-xl text-card-foreground p-6 card-hover bg-gradient-to-br from-white/90 via-amber-50/20 to-white/90 dark:from-stone-900/90 dark:via-amber-950/10 dark:to-stone-900/90 backdrop-blur-md border border-amber-100/50 dark:border-amber-900/30 shadow-xl",
+  padding: "p-6",
   title: "text-base font-semibold leading-none tracking-tight text-stone-900 dark:text-stone-100",
   subtitle: "text-xs text-stone-500 dark:text-stone-400",
+} as const;
+
+// Session-209 (F-209a): the GLASS genus — the reference's card family for
+// the list pages (Expenses summary ×3 WITH card-hover + content, Analytics
+// chart cards, Dashboard's Recent Activity + AI Insights bottom row,
+// Income, Goals). The base is SETTINGS_CARD's own genus (F-208d) — the
+// reference reuses the same glass construction everywhere it wants the
+// border-less frosted look.
+export const GLASS_CARD = {
+  base: "rounded-xl text-card-foreground bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg",
+  hover: "rounded-xl text-card-foreground bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg card-hover",
+} as const;
+
+// Session-209 (F-209a): the STOCK shadcn card — the reference's family for
+// Accounts + Import (`bg-card` on the --color-card token; the empty-state
+// variant appends `text-center p-12 border-dashed`).
+export const STOCK_CARD = "rounded-xl border bg-card text-card-foreground shadow";
+
+// Session-209 (F-209a): the Quick Actions one-off — the reference's own
+// variant (via-amber-50/30, rounded-2xl, the amber-200 border, no hover).
+export const QUICK_ACTIONS_CARD =
+  "bg-gradient-to-br from-white/90 via-amber-50/30 to-white/90 dark:from-stone-900/90 dark:via-amber-950/10 dark:to-stone-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-amber-200/50 dark:border-amber-900/30 p-6";
+
+// Session-209 (F-209b): the Analytics stat row's saturated to-r gradients.
+export const STAT_GRADIENTS = {
+  emerald: "bg-gradient-to-r from-emerald-500 to-emerald-600",
+  red: "bg-gradient-to-r from-red-500 to-red-600",
+  blue: "bg-gradient-to-r from-blue-500 to-blue-600",
 } as const;
 
 // Session-208 (F-208a): the reference's saturated KPI tile gradients —
