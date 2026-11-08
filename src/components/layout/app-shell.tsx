@@ -2,34 +2,28 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
-import { SidebarNav, BrandMark } from "./sidebar";
+import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
-import { Topbar } from "./topbar";
-import { Dialog } from "@/components/ui/dialog";
-import { useCrmStore } from "@/stores/crm-store";
+import { MobileHeader } from "./mobile-header";
+import { useWealthOs } from "@/stores/wealthos-store";
 import { APP_FOOTER, SHELL_LAYOUT } from "@/lib/page-layout";
 import type { User as AppUser } from "@/types";
 
 /**
- * App chrome — session-7 reference model (SHELL_LAYOUT contracts):
- * a `flex h-screen` row holds the sidebar as an IN-FLOW flex child
- * (visible from `md`) and a `flex-1 … overflow-hidden` main column whose
- * `main` is the ONLY scroller (the window never scrolls). The mobile
- * sheet covers `< md` — since session-147 it is the reference's OWN
- * mobile-nav fix mirrored (the Radix Sheet it shipped in its
- * parity-event bundle), with our kept behavioral supersets (the
- * resize-past-md auto-close, the main-scroller lock, the route-change
- * close).
+ * App chrome — the WealthOS shell: an `flex h-screen` row holds the
+ * dark sidebar as an in-flow flex child (visible from lg) and a
+ * `flex-1 … overflow-hidden` main column whose `main` is the ONLY
+ * scroller. Below lg the sticky mobile header + the full-screen
+ * gradient drawer own navigation. Kept supersets: resize-past-lg
+ * auto-close, the main-scroller lock, the route-change close.
  */
 export function AppShell({ user, children }: { user: AppUser; children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
-  const hydrate = useCrmStore((s) => s.hydrate);
+  const hydrate = useWealthOs((s) => s.hydrate);
 
-  // Close the sheet on navigation — adjust-during-render for this
-  // component's OWN state (the sanctioned React pattern). Session-35:
-  // moved here from MobileNav — adjusting the parent's state from the
-  // child's render body tripped React's cross-component render warning
-  // on non-link navigations (browser back/forward with the sheet open).
+  // Close the drawer on navigation — adjust-during-render for this
+  // component's OWN state (the sanctioned React pattern; non-link
+  // navigations like browser back also land here).
   const pathname = usePathname();
   const [prevPathname, setPrevPathname] = React.useState(pathname);
   if (prevPathname !== pathname) {
@@ -43,52 +37,27 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
   }, [hydrate]);
 
   return (
-    // The Radix Dialog Root (no DOM) wraps the whole shell so the
-    // Topbar's DialogTrigger and the portal'd sheet share the
-    // AppShell-owned controlled open state (session-147).
-    <Dialog open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
-      <div className={SHELL_LAYOUT.root}>
-        {/* Desktop sidebar — in-flow flex child, visible from md (768px). */}
-        <aside className={SHELL_LAYOUT.sidebar}>
-          <BrandMark />
-          <div className="min-h-0 flex-1">
-            <SidebarNav />
-          </div>
-        </aside>
+    <div className={SHELL_LAYOUT.root}>
+        {/* Desktop sidebar — in-flow flex child, visible from lg. */}
+        <Sidebar user={user} />
 
-        {/* Mobile sheet (< md) — the reference's own drawer, mirrored
-            (session-147). */}
+        {/* Mobile drawer (< lg) — the reference's full-screen gradient. */}
         <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
 
-        {/* Main column: topbar + main scroller. The column is
-            overflow-hidden so `main` owns all scrolling. Session-16
-            (S16-P1/P2): NO shell-level padding wrapper — the reference's
-            PAGES own their padding (PAGE_ROOT.standard/bare; contacts
-            ships the full-height layout as its root), and a blanket
-            wrapper here double-padded the contacts h-calc box (16px extra
-            per side at 390, main scrolling 37px instead of the 5px
-            mirrored quirk). Sticky bars (reports) still stick to main's
-            top. */}
+        {/* Main column: mobile header (below lg) + main scroller. Pages
+            own their padding — no blanket wrapper. */}
         <div className={SHELL_LAYOUT.mainColumn}>
-          <Topbar user={user} />
-          {/* Session-143 (D-143a0/F-143c1): the footer follows the page
-              children INSIDE main — the reference's placement on all 11 app
-              pages (walk33-censused; the contract rides APP_FOOTER in
-              page-layout.ts, pinned by tests/page-layout.test.ts). */}
+          <MobileHeader
+            drawerOpen={mobileNavOpen}
+            onDrawerOpenChange={setMobileNavOpen}
+          />
           <main className={SHELL_LAYOUT.main}>
             {children}
             <footer className={APP_FOOTER.footer}>
               <span>{APP_FOOTER.copyright}</span>
-              <a className={APP_FOOTER.link} href={APP_FOOTER.about.href}>
-                {APP_FOOTER.about.label}
-              </a>
-              <a className={APP_FOOTER.link} href={APP_FOOTER.contact.href}>
-                {APP_FOOTER.contact.label}
-              </a>
             </footer>
           </main>
         </div>
       </div>
-    </Dialog>
   );
 }

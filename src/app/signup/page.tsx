@@ -10,7 +10,7 @@ import { pageMetadata } from "@/lib/site";
 // the reference has no signup to mirror, so this is our superset's own
 // self-consistent expression (the factory's unprefixed family + the
 // absolute suffixed title the s13 pin freezes).
-export const metadata = pageMetadata({ page: null, route: "/signup", title: "Sign up | NEO CRM" });
+export const metadata = pageMetadata({ page: null, route: "/signup", title: "Sign up | WealthOS" });
 
 export const dynamic = "force-dynamic";
 

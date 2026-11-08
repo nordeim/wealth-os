@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Toaster } from "@/components/ui/toast";
+import { ThemeProvider } from "@/components/layout/theme";
 import { PWA_META, SITE_DESCRIPTION, siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -30,10 +31,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   manifest: `${siteUrl()}/manifest.json`,
   title: {
-    default: "NEO CRM",
+    default: "WealthOS",
     // Session-10 (S10-10): the reference's separator is a pipe
-    // ("Accounts | NEO CRM" — document.title probes on all 10 routes).
-    template: "%s | NEO CRM",
+    // ("Accounts | WealthOS" — document.title probes on all 10 routes).
+    template: "%s | WealthOS",
   },
   description: SITE_DESCRIPTION,
   // The reference's canonical link: origin + route (the dashboard's is
@@ -43,11 +44,11 @@ export const metadata: Metadata = {
   // pages override this through pageMetadata().
   alternates: { canonical: "/" },
   openGraph: {
-    title: "NEO CRM",
+    title: "WealthOS",
     description: SITE_DESCRIPTION,
     url: siteUrl(),
     type: "website",
-    siteName: "NEO CRM",
+    siteName: "WealthOS",
     images: [
       {
         url: "/og-image.png",
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "NEO CRM",
+    title: "WealthOS",
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
@@ -85,14 +86,21 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       {/* Session-22 (S22-P2): the antialiased utility is RETIRED — the
           reference ships no font-smoothing (computed auto) and no
           text-rendering override; the scaffold-era shadcn double-smoothing
           (this class + the retired html rule in globals.css) rendered
           thinner text than the reference on macOS. */}
       <body className="min-h-screen bg-background font-sans text-foreground">
-        {children}
+        {/* The no-FOUC theme bootstrap: applies the persisted dark class
+            BEFORE first paint (the reference toggles .dark on <html>). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("wealthos-theme")||"system";var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);if(d)document.documentElement.classList.add("dark");}catch(e){}`,
+          }}
+        />
+        <ThemeProvider>{children}</ThemeProvider>
         <Toaster />
       </body>
     </html>

@@ -46,7 +46,7 @@ import { NOT_FOUND_LAYOUT } from "@/lib/page-layout";
 export function NotFoundBody() {
   const pathname = usePathname();
   return (
-    <div className={NOT_FOUND_LAYOUT.page}>
+    <main className={NOT_FOUND_LAYOUT.page}>
       <div className={NOT_FOUND_LAYOUT.card}>
         <div className={NOT_FOUND_LAYOUT.center}>
           <div className={NOT_FOUND_LAYOUT.headingGroup}>
@@ -77,6 +77,6 @@ export function NotFoundBody() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -349,7 +349,7 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                           Back to sign in
                         </button>
                         <div className="text-center space-y-2">
-                          <h2 className={LOGIN_RESET_LAYOUT.title}>Reset your password</h2>
+                          <h1 className={LOGIN_RESET_LAYOUT.title}>Reset your password</h1>
                           <p className={LOGIN_RESET_LAYOUT.description}>
                             Enter your email and we'll send you a link to reset your password
                           </p>
@@ -399,7 +399,7 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                             [BUTTON, H2, FORM] — no titleStack wrapper);
                             the s21-era wrapper was an inert single-child
                             text-center space-y-2 div. */}
-                        <h2 className={LOGIN_SIGNUP_LAYOUT.title}>Create your account</h2>
+                        <h1 className={LOGIN_SIGNUP_LAYOUT.title}>Create your account</h1>
                         <form className={LOGIN_SIGNUP_LAYOUT.form} onSubmit={onSignupSubmit} noValidate>
                           <div className={LOGIN_SIGNUP_LAYOUT.fields}>
                             <div className={LOGIN_SIGNUP_LAYOUT.field}>
@@ -490,7 +490,7 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                             <ShieldCheck className={LOGIN_VERIFY_LAYOUT.icon} />
                           </div>
                           <div className={LOGIN_VERIFY_LAYOUT.titleStack}>
-                            <h2 className={LOGIN_VERIFY_LAYOUT.title}>Verify your email</h2>
+                            <h1 className={LOGIN_VERIFY_LAYOUT.title}>Verify your email</h1>
                             <p className={LOGIN_VERIFY_LAYOUT.emailLine}>
                               We've sent a 6-digit code to
                               <br />
@@ -577,7 +577,7 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                             <Mail className={LOGIN_RESET_LAYOUT.sentIcon} />
                           </div>
                           <div className={LOGIN_RESET_LAYOUT.sentTitleStack}>
-                            <h2 className={LOGIN_RESET_LAYOUT.title}>Check your email</h2>
+                            <h1 className={LOGIN_RESET_LAYOUT.title}>Check your email</h1>
                             <p className={LOGIN_RESET_LAYOUT.sentEmailLine}>
                               We've sent password reset instructions to
                               <br />
@@ -619,17 +619,18 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
               </>
             ) : (
               <>
-            {/* Logo — CSS brand mark (white circle + blue dot) with a soft
-                slate glow, ringed and shadowed like the reference avatar. */}
+            {/* Logo — the WealthOS brand badge: the navy circle holding
+                the bar-chart mark (green/amber/blue bars + the gold coin),
+                the reference's own login face. */}
             <div className={LOGIN_LAYOUT.logoWrap}>
               <div className={LOGIN_LAYOUT.logoGlow} aria-hidden="true" />
               <span className={LOGIN_LAYOUT.logo} aria-hidden="true">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sidebar sm:h-12 sm:w-12" />
+                <WealthOsMark />
               </span>
             </div>
 
-            <div className="space-y-2 sm:space-y-3">
-              <h1 className={LOGIN_LAYOUT.title}>Welcome to NEO CRM</h1>
+            <div className="space-y-2">
+              <h1 className={LOGIN_LAYOUT.title}>Welcome to WealthOS</h1>
               <p className={LOGIN_LAYOUT.subtitle}>Sign in to continue</p>
             </div>
 
@@ -648,21 +649,27 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                 reference's inert space-y-3 class. */}
             <div className="w-full">
               <div className="space-y-3">
-              <button
-                type="button"
-                className={LOGIN_LAYOUT.google}
-                onClick={() =>
-                  toast.info(
-                    "Google sign-in not configured",
-                    "This self-hosted clone uses email and password sign-in (demo credentials in the README).",
-                  )
-                }
-              >
-                <div className={LOGIN_LAYOUT.googleIcon}>
-                  <GoogleIcon />
-                </div>
-                <span>Continue with Google</span>
-              </button>
+              {([
+                { label: "Continue with Google", icon: <GoogleIcon /> },
+                { label: "Continue with Microsoft", icon: <MicrosoftIcon /> },
+                { label: "Continue with Facebook", icon: <FacebookIcon /> },
+                { label: "Continue with Apple", icon: <AppleIcon /> },
+              ] as const).map((provider) => (
+                <button
+                  key={provider.label}
+                  type="button"
+                  className={LOGIN_LAYOUT.google}
+                  onClick={() =>
+                    toast.info(
+                      "Social sign-in not configured",
+                      "This self-hosted clone uses email and password sign-in (demo credentials in the README).",
+                    )
+                  }
+                >
+                  <div className={LOGIN_LAYOUT.googleIcon}>{provider.icon}</div>
+                  <span>{provider.label}</span>
+                </button>
+              ))}
               </div>
 
             <div className={LOGIN_LAYOUT.divider} aria-hidden="true">
@@ -802,5 +809,60 @@ function GoogleIcon() {
         d="M12 4.7c2.2 0 3.7.9 4.5 1.7l3.3-3.2C17.9 1.2 15.2 0 12 0 7.4 0 3.5 2.7 1.3 6.7l3.9 3c1-2.9 3.7-5 6.8-5z"
       />
     </svg>
+  );
+}
+
+/** The Microsoft four-square mark. */
+function MicrosoftIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+      <rect x="1" y="1" width="10.5" height="10.5" fill="#F25022" />
+      <rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00" />
+      <rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF" />
+      <rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900" />
+    </svg>
+  );
+}
+
+/** The Facebook f-in-circle mark. */
+function FacebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+      <circle cx="12" cy="12" r="12" fill="#1877F2" />
+      <path
+        fill="#fff"
+        d="M13.4 21v-7.9h2.7l.4-3.1h-3.1V8c0-.9.25-1.5 1.55-1.5h1.65V3.7c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.45-4 4.1v2.3H7.5v3.1h2.7V21h3.2z"
+      />
+    </svg>
+  );
+}
+
+/** The Apple glyph. */
+function AppleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+      <path
+        fill="#000"
+        d="M17.05 12.54c-.03-2.89 2.36-4.27 2.47-4.34-1.35-1.97-3.44-2.24-4.18-2.27-1.78-.18-3.47 1.05-4.37 1.05-.9 0-2.29-1.02-3.77-1-1.94.03-3.72 1.13-4.72 2.86-2.01 3.49-.51 8.66 1.45 11.5.96 1.38 2.1 2.93 3.6 2.87 1.45-.06 2-.93 3.75-.93s2.25.93 3.78.9c1.56-.03 2.55-1.41 3.5-2.8 1.1-1.6 1.56-3.16 1.58-3.24-.04-.02-3.04-1.17-3.09-4.6zM14.14 4.06c.8-.97 1.34-2.31 1.19-3.66-1.15.05-2.56.77-3.39 1.73-.74.86-1.39 2.23-1.22 3.54 1.29.1 2.6-.65 3.42-1.61z"
+      />
+    </svg>
+  );
+}
+
+/** The WealthOS login badge: the navy circle holding the rising bar
+ *  chart (green/amber/blue bars + the gold coin) — the reference's own
+ *  login-face mark, rebuilt in CSS/SVG with no external asset. */
+function WealthOsMark() {
+  return (
+    <span className="relative flex h-20 w-20 flex-col items-center justify-center gap-1">
+      <svg viewBox="0 0 48 40" className="h-12 w-12" aria-hidden="true">
+        <rect x="2" y="24" width="8" height="14" rx="2" fill="#10b981" />
+        <rect x="14" y="16" width="8" height="22" rx="2" fill="#fbbf24" />
+        <rect x="26" y="8" width="8" height="30" rx="2" fill="#3b82f6" />
+        <circle cx="40" cy="9" r="5" fill="#f5c518" />
+        <path d="M40 6.2a2.8 2.8 0 0 1 2.8 2.8" stroke="#0f1e3d" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+      </svg>
+      <span className="text-[9px] font-bold tracking-widest text-cyan-300">WealthOS</span>
+    </span>
   );
 }

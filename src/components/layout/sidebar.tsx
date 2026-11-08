@@ -1,69 +1,142 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { NAV_ITEMS, NAV_FOOTER_ITEMS, isNavActive } from "./nav-config";
+import { usePathname, useRouter } from "next/navigation";
+import { DollarSign, Check, LogOut, Moon } from "lucide-react";
+import {
+  Menu,
+  MenuContent,
+  MenuItem,
+  MenuTrigger,
+} from "@/components/ui/dropdown";
+import { NAV_ITEMS, isNavActive } from "./nav-config";
 import { NAV_LAYOUT } from "@/lib/page-layout";
+import { useTheme } from "./theme";
+import { useWealthOs } from "@/stores/wealthos-store";
 import { cn } from "@/lib/utils";
+import type { User } from "@/types";
 
 /**
- * Shared navigation list — rendered inside BOTH the desktop sidebar and the
- * mobile drawer so the two stay in lockstep.
- *
- * Session-7 re-pin (NAV_LAYOUT contracts): links are `px-4 py-3` with
- * `hover:bg-white/5` and a flat `bg-white/10` active state (no bold bump),
- * icons are uniform `h-5 w-5` stroke-2, and the footer group (Settings)
- * is pinned to the sidebar bottom via `mt-auto` with a `border-t`
- * divider. Our focus-visible ring is a deliberate a11y superset.
+ * The desktop sidebar — the reference's construction (live-extracted
+ * class strings ride NAV_LAYOUT): the amber-bordered brand block, the
+ * gradient nav with the amber→emerald active chip, and the footer's
+ * ✓ Synced pill + user row. The user row opens the dropdown whose two
+ * items are the reference's own: Dark Mode and Sign Out.
  */
-export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
-  const pathname = usePathname();
-
-  // Session-147 (D-147a1): the s24 rules moved to the shared
-  // isNavActive (nav-config) — the desktop sidebar and the mobile
-  // Sheet drawer resolve the same active state.
-  const isActive = (href: string) => isNavActive(pathname, href);
-
-  const renderLink = (item: (typeof NAV_ITEMS)[number], active: boolean) => (
-    <Link
-      key={item.href}
-      href={item.href}
-      onClick={onNavigate}
-      aria-current={active ? "page" : undefined}
-      className={cn(
-        active ? NAV_LAYOUT.linkActive : NAV_LAYOUT.link,
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50",
-      )}
-    >
-      <item.icon className={cn(NAV_LAYOUT.icon, "shrink-0")} strokeWidth={2} />
-      <span className={cn(NAV_LAYOUT.label, "truncate")}>{item.label}</span>
-    </Link>
-  );
-
+export function Sidebar({ user }: { user: User }) {
   return (
-    <nav aria-label="Main navigation" className={NAV_LAYOUT.container}>
-      <div className={NAV_LAYOUT.group}>
-        {NAV_ITEMS.map((item) => renderLink(item, isActive(item.href)))}
+    <aside className="hidden lg:flex lg:w-64 lg:flex-col">
+      <div className={NAV_LAYOUT.container}>
+        <BrandMark />
+        <SidebarNav />
+        <SidebarFooter user={user} />
       </div>
-      {/* Reference layout (session-7 re-pin): the Settings group is pinned
-          to the sidebar bottom (mt-auto) behind a border-t divider. */}
-      <div className={NAV_LAYOUT.footerGroup}>
-        {NAV_FOOTER_ITEMS.map((item) => renderLink(item, isActive(item.href)))}
+    </aside>
+  );
+}
+
+export function BrandMark({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={NAV_LAYOUT.brand}>
+      <div className="flex items-center gap-3">
+        <div className={NAV_LAYOUT.brandLogo} aria-hidden="true">
+          <DollarSign className="h-5 w-5 text-stone-900" strokeWidth={2.5} />
+        </div>
+        {!compact && (
+          <div>
+            <h2 className={NAV_LAYOUT.brandWordmark}>WealthOS</h2>
+            <p className={NAV_LAYOUT.brandTagline}>Premium Finance Suite</p>
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
+
+function SidebarNav() {
+  const pathname = usePathname();
+  return (
+    <nav aria-label="Main navigation" className={NAV_LAYOUT.nav}>
+      {NAV_ITEMS.map((item) => {
+        const active = isNavActive(pathname, item.href);
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              active ? NAV_LAYOUT.linkActive : NAV_LAYOUT.link,
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
+            )}
+          >
+            <item.icon className="h-5 w-5 shrink-0" strokeWidth={2} />
+            <span className="truncate">{item.label}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }
 
-/** Brand mark — 40px white circle holding a 24px blue dot + the CRM
- *  wordmark at text-2xl (session-7 live pins: `p-6 flex items-center
- *  gap-3`). */
-export function BrandMark({ compact = false }: { compact?: boolean }) {
+function SidebarFooter({ user }: { user: User }) {
+  const logout = useWealthOs((s) => s.logout);
+  const router = useRouter();
+  const { toggle } = useTheme();
+  const initial = (user.name || user.email).charAt(0).toUpperCase();
+
+  const signOut = async () => {
+    await logout();
+    router.push("/login");
+    router.refresh();
+  };
+
   return (
-    <div className={NAV_LAYOUT.brand}>
-      <div className={NAV_LAYOUT.brandLogoOuter} aria-hidden="true">
-        <div className={NAV_LAYOUT.brandLogoInner} />
+    <div className={NAV_LAYOUT.footer}>
+      {/* The ✓ Synced status pill (live-observed in the reference's
+          sidebar footer). */}
+      <div className="flex">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
+          <Check className="h-3 w-3" strokeWidth={3} />
+          Synced
+        </span>
       </div>
-      {!compact && <span className={NAV_LAYOUT.brandWordmark}>CRM</span>}
+
+      <Menu>
+        <MenuTrigger
+          className={cn(
+            "flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-colors",
+            "hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
+          )}
+        >
+          <span
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-stone-900"
+            style={{ backgroundColor: user.avatarColor || "#fbbf24" }}
+            aria-hidden="true"
+          >
+            {initial}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-sm font-semibold text-stone-100">
+              {user.name}
+            </span>
+            <span className="block truncate text-xs text-stone-400">{user.email}</span>
+          </span>
+        </MenuTrigger>
+        <MenuContent align="start" side="top" className="w-52">
+          <MenuItem onSelect={() => toggle()} className="gap-2">
+            <Moon className="h-4 w-4" />
+            Dark Mode
+          </MenuItem>
+          <MenuItem
+            onSelect={() => void logout()}
+            className="gap-2 text-red-600 focus:text-red-600 dark:text-red-400"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </MenuItem>
+        </MenuContent>
+      </Menu>
     </div>
   );
 }

@@ -1,681 +1,619 @@
 "use client";
 
-import { downloadBlob } from "@/lib/download";
-import { csvFilename } from "@/lib/csv";
-import { entityDumpCsv, entityExportFilename, toQuotedCsv, unquotedHeaderCsv } from "@/lib/entity-export";
-// Session-86 (M-86c2): the computed-tier seam (the reference derives
-// tier from revenue — its export carries the derived fe.tier).
-import { accountTierFromRevenue } from "@/lib/account-tier";
-import { toDateInputValue } from "@/lib/lead-filters";
-import {
-  DASHBOARD_CARD,
-  DASHBOARD_HEADER,
-  PAGE_KPI_GRIDS,
-  PAGE_ROOT,
-  FILTER_BAR,
-  TOP_REPS,
-  CARD_TITLE_OVERRIDE,
-  KPI_SPARK,
-  KPI_STATICS,
-  PIPELINE_LEGEND,
-} from "@/lib/page-layout";
-// Session-56 (S56-P1, N-56a): EMPTY_STATE narrowed out of the
-// page-layout block above — its only in-file reference was the import
-// itself (the N-53c/N-55a class; this page renders KPI_STATICS literal
-// zeros, not the shared empty-state token). The export stays alive
-// (reports + calendar consume it live).
 import * as React from "react";
+import Link from "next/link";
 import {
-  Download,
-  MoreHorizontal,
-  Phone,
-  Search,
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  Activity,
+  BarChart3,
+  Bell,
+  Brain,
+  BrainCircuit,
+  LineChart as LineChartIcon,
+  MessageCircle,
+  PieChart as PieIcon,
+  PlusCircle,
+  RefreshCw,
   Target,
+  TrendingDown,
   TrendingUp,
-  Users,
-  Zap,
+  Wallet,
 } from "lucide-react";
-import { FilterPolygon } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from "@/components/ui/dropdown";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/label";
-import { KpiCard, PageHeader, Sparkline } from "@/components/shared/page-parts";
-import { RevenueLineChart, SingleBarChart, dollarFormatter } from "@/components/charts/charts";
-import { useCrmStore } from "@/stores/crm-store";
-import { OPP_STAGE_META, CHART_COLORS, LEAD_SOURCE_OPTIONS, PIPELINE_STAGES, PIPELINE_LABELS } from "@/lib/constants";
-import { formatCompactCurrency } from "@/lib/format";
-
-// Session-142 (D-142b0): the header trio's retirement narrowed the
-// Session-151 (F-151c1, walk41): the quick-create vocabulary is EMPTY
-// on the dashboard — the two card-level ghost Adds (the Lead Sources +
-// Upcoming Activities S7-18 extraction) retired against the CURRENT
-// reference bundle, which renders title-only headers there (rowH 24
-// @390 · 28 @1440, live-decoded on both apps at both widths). The
-// dialogs stay reachable on the Leads/Activities pages.
+import {
+  CardTitleRow,
+  EmptyState,
+  KpiCard,
+  PageHeader,
+  PeriodSegment,
+} from "@/components/shared/page-parts";
+import { AiCoachDialog } from "@/components/shared/ai-coach";
+import { useWealthOs } from "@/stores/wealthos-store";
+import { useIsDark } from "@/components/layout/theme";
+import { CHART_COLORS, PERIOD_OPTIONS, PERIOD_MONTHS } from "@/lib/constants";
+import {
+  budgetVsActual,
+  cashFlowSeries,
+  deltaPct,
+  expenseBreakdown,
+  financialHealthScore,
+  formatAxisMoney,
+  formatMoney,
+  healthAdvice,
+  longDate,
+  monthlyExpenses,
+  monthlyIncomeFromTx,
+  netBalance,
+  previousMonth,
+  recentActivity,
+  relativeDays,
+  savingsRate,
+  upcomingAlerts,
+} from "@/lib/finance";
+import { getAiProvider } from "@/lib/ai";
+import { BUTTONS, CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
-  const { dashboard, hydrated, fetchDashboard, leads, contacts, accounts, activities, opportunities } = useCrmStore();
-  const [stage, setStage] = React.useState("all");
-  const [source, setSource] = React.useState("all");
-  const [search, setSearch] = React.useState("");
-  // S8-2: the reference's middle filter-bar select is a dead Table/Cards
-  // view-switcher rendered with an EMPTY label. Ours keeps the empty default
-  // (mirror) and actually switches the Recent Deals section (functional
-  // superset). "" behaves as Table until the user picks one.
+  const store = useWealthOs();
+  const [period, setPeriod] = React.useState<string>("6M");
+  const [coachOpen, setCoachOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    if (hydrated) fetchDashboard();
-  }, [hydrated, fetchDashboard]);
+  // Render-stable timestamp (the memo derivations depend on it).
+  const [now] = React.useState(() => new Date());
+  const txs = store.transactions;
+  const investments = store.investments;
+  const budgets = store.budgets;
 
-  // Session-78 (M-78c2, bundle-decoded from the reference's Eke `p` memo):
-  // the filter bar re-derives HALF the dashboard from the STAGE/SOURCE-
-  // FILTERED opps — Deals Closed + Revenue This Month (the KPI cards), the
-  // pipeline chart + its legend chips, the Top Reps list, and the Recent
-  // Deals rows (the full list sorted updatedAt desc, slice 5). The
-  // reference's owner filter state is DEAD (no control ever sets it) —
-  // stage + source are the live axes. Total Leads / Conversion / Avg
-  // Cycle + the revenue chart + Lead Sources + Upcoming stay UNFILTERED
-  // (the g/b/x/A memos read the raw lists — the route's kpis).
-  const filteredOpps = React.useMemo(() => {
-    let rows = opportunities;
-    if (stage !== "all") rows = rows.filter((o) => o.stage === stage);
-    if (source !== "all") rows = rows.filter((o) => o.source === source);
-    return rows;
-  }, [opportunities, stage, source]);
+  // KPI derivations (pure seams).
+  const income = monthlyIncomeFromTx(txs, now);
+  const prevIncome = monthlyIncomeFromTx(txs, previousMonth(now));
+  const expenses = monthlyExpenses(txs, now);
+  const prevExpenses = monthlyExpenses(txs, previousMonth(now));
+  const net = netBalance(txs, now);
+  const prevNet = netBalance(txs, previousMonth(now));
+  const rate = savingsRate(txs, now);
 
-  // The g memo's p-reading members (the reference's exact formulas):
-  // dealsClosedValue = the filtered WON opps' amount sum; revenueThisMonth
-  // = the filtered won opps whose UPDATED month is the current one (the
-  // reference groups by updated_date, not close_date).
-  const filteredWon = React.useMemo(
-    () => filteredOpps.filter((o) => o.stage === "closed_won"),
-    [filteredOpps],
+  const incomeDelta = deltaPct(income, prevIncome);
+  const expenseDelta = deltaPct(expenses, prevExpenses);
+  const netDelta = deltaPct(net, prevNet);
+
+  const series = React.useMemo(
+    () => cashFlowSeries(txs, PERIOD_MONTHS[period as keyof typeof PERIOD_MONTHS] ?? 6, now),
+    [txs, period, now],
   );
-  const dealsClosedValue = React.useMemo(
-    () => filteredWon.reduce((s, o) => s + (o.amount || 0), 0),
-    [filteredWon],
+  const breakdown = React.useMemo(() => expenseBreakdown(txs, now), [txs, now]);
+  const budgetRows = React.useMemo(() => budgetVsActual(txs, budgets, now), [txs, budgets, now]);
+  const upcoming = React.useMemo(() => upcomingAlerts(txs, now), [txs, now]);
+  const recent = React.useMemo(() => recentActivity(txs, 6), [txs]);
+  const health = React.useMemo(
+    () => financialHealthScore(txs, investments, now),
+    [txs, investments, now],
   );
-  const revenueThisMonth = React.useMemo(() => {
-    const curMonth = new Date().getMonth();
-    return filteredWon
-      .filter((o) => new Date(o.updatedAt).getMonth() === curMonth)
-      .reduce((s, o) => s + (o.amount || 0), 0);
-  }, [filteredWon]);
-
-  // The m memo: the 5 OPP stages with VALUE sums + counts over the
-  // FILTERED set (the route's unfiltered copy retired with the slim).
-  const filteredPipeline = React.useMemo(
+  const insights = React.useMemo(
     () =>
-      PIPELINE_STAGES.map((s) => {
-        const rows = filteredOpps.filter((o) => o.stage === s);
-        return {
-          stage: s,
-          label: PIPELINE_LABELS[s],
-          count: rows.length,
-          value: rows.reduce((sum, o) => sum + (o.amount || 0), 0),
-        };
+      getAiProvider().insights({
+        transactions: txs,
+        incomeSources: store.incomeSources,
+        investments,
+        goals: store.goals,
+        budgets,
       }),
-    [filteredOpps],
+    [txs, store.incomeSources, investments, store.goals, budgets],
   );
 
-  // The y memo: WON opps of the FILTERED set by the owner STRING,
-  // value-desc, slice(0,3).
-  const topReps = React.useMemo(() => {
-    const map = new Map<string, { name: string; deals: number; value: number }>();
-    for (const o of filteredWon) {
-      if (!o.owner) continue;
-      const entry = map.get(o.owner) ?? { name: o.owner, deals: 0, value: 0 };
-      entry.deals += 1;
-      entry.value += o.amount || 0;
-      map.set(o.owner, entry);
-    }
-    return [...map.values()].sort((a, b) => b.value - a.value).slice(0, 3);
-  }, [filteredWon]);
+  const isDark = useIsDark();
+  const axisColor = isDark ? "#a8a29e" : "#78716c";
+  const gridColor = isDark ? "#292524" : "#e7e5e4";
 
-  // Client-side filtered deal rows (Recent Deals respects the filter bar) —
-  // session-78 (M-78c2): the reference's `_` memo — the FULL filtered list
-  // sorted updatedAt desc, slice(0,5) (NOT a filtered pre-sliced top-5);
-  // the search stays our functional superset (the reference's search input
-  // is dead — S33-P1), narrowing the shown rows.
-  const filteredDeals = React.useMemo(() => {
-    let rows = filteredOpps
-      .slice()
-      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-      .slice(0, 5);
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      rows = rows.filter(
-        (o) => o.name.toLowerCase().includes(q) || (o.accountName ?? "").toLowerCase().includes(q),
-      );
-    }
-    return rows;
-  }, [filteredOpps, search]);
-
-  const k = dashboard?.kpis;
-
-  // Session-47 (S47-P1, F-47a): the dashboard export rewire — the five
-  // affordances rode downloadFile("/api/export?type=…&download=1"), dead
-  // since the s29 re-scope (the route answers type=report only; every
-  // entity click NAVIGATED the browser to the raw 400 JSON body). The
-  // reference's own header trio is dead (no onClick — bundle-verified);
-  // ours is the documented functional superset, now wired to the
-  // CLIENT-SIDE entity-export family — the pages' own s26/s29
-  // conventions verbatim: the builders, the filenames, the zero-guards.
-  // All four slices are hydrated by the shell bootstrap.
-  function exportLeadsCsv() {
-    const header = ["Name", "Email", "Phone", "Company", "Value", "Status", "Source", "Next Follow-up"];
-    const rows = leads.map((l) => [
-      l.name,
-      l.email || "",
-      l.phone || "",
-      l.company || "",
-      String(l.value || 0),
-      l.stage,
-      l.source || "",
-      toDateInputValue(l.nextFollowUp),
-    ]);
-    downloadBlob(unquotedHeaderCsv(header, rows), entityExportFilename("Leads"), "text/csv");
-  }
+  const onRefresh = () => void store.refresh();
 
   return (
-    // Session-16 (S16-P2): the page owns its padding (the shell-level
-    // wrapper retired) — the reference's dashboard root is
-    // `p-4 sm:p-8 bg-gray-50 min-h-screen` (bg-background = #f9fafb
-    // computes equal).
     <div className={PAGE_ROOT.standard}>
       <PageHeader
-        title="Dashboard"
+        title="Financial Dashboard"
+        subtitle={longDate(now)}
         actions={
           <>
-            {/* Session-142 (D-142b0): the s33 header TRIO is a DUO no
-                more — the reference's index-Dc6wvGtA.js bundle RETIRED
-                the Add + outline-Export pair (live-censused: its header
-                row `flex gap-2 w-full sm:w-auto` carries exactly ONE
-                button — the blue primary Export at x 1313; no Add
-                button anywhere on the page). Ours re-mirrors: the
-                quick-create dropdown + the export-menu dropdown retired
-                with the pair (the functional-superset jobs went with
-                the reference's own buttons — the s33 dead-trio decode
-                is historical). The one-click leads export stays. */}
-            <Button
-              variant="default"
-              size="sm"
-              onClick={exportLeadsCsv}
-              // Session-142 (D-142b0): the reference's Export is DISABLED
-              // at zero data (live-censused: disabled=true + the stock
-              // opacity-50 arm rendering the half-blue (142,173,242) face
-              // on its white card — the sweep's phone cluster decoded).
-              disabled={leads.length === 0}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              {DASHBOARD_HEADER.primaryExportLabel}
+            <Button variant="outline" onClick={() => setCoachOpen(true)}>
+              <BrainCircuit className="h-4 w-4" />
+              AI Coach
             </Button>
+            <Button variant="outline" onClick={onRefresh} aria-label="Refresh data">
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </Button>
+            <Link href="/Expenses" className={BUTTONS.primary}>
+              <PlusCircle className="h-4 w-4" />
+              Add Transaction
+            </Link>
           </>
         }
       />
 
-      {/* KPI row — session-25 (S25-P1): the reference renders its KPI
-          cards IMMEDIATELY with zeros while data is still loading (its
-          empty state IS its loading state — live-verified with the
-          entity-fetch-abort probe). The `!k` skeleton branch is retired;
-          the cards read `k?.x ?? 0` exactly like the reports page. */}
-      <div className={PAGE_KPI_GRIDS.dashboard}>
-        {/* Session-27 (S27-P7): the reference HARDCODES its KPI deltas
-            ("+5.3%" / "+15%") and sparkline arrays — its KPI memo computes
-            the real totals but feeds the sparks/deltas fixed literals. The
-            sparks below mirror those arrays verbatim (KPI_STATICS); the
-            Sales Target progress text is NEUTRAL text-gray-600. */}
-        {/* Session-32 (S32-P2): the reference's currency KPIs are LITERAL
-            /1e3 formulas (the Eke bundle decode) — Deals Closed + Revenue
-            This Month `$${(v/1e3).toFixed(1)}k`, Sales Target
-            `$${(v/1e3).toFixed(0)}k` (the "$0k" hardcoded-target quirk) —
-            expressed via the format seam's fixed k scale; NEVER the
-            magnitude-branching compact default. */}
-        <KpiCard label="Total Leads" value={k?.totalLeads ?? 0}>
-          <Sparkline values={[...KPI_STATICS.sparks.totalLeads]} color={CHART_COLORS.emerald} variant="line" />
-        </KpiCard>
-        <KpiCard label="Deals Closed" value={formatCompactCurrency(dealsClosedValue, { scale: "k" })} sparkClassName={KPI_SPARK.dashboardBarsContainer}>
-          {/* Session-87 (L-87c2): the reference's static bars carry Tailwind
-              bg-CLASSES (its `flex-1 bg-cyan-400 rounded-sm`) — the inline
-              hex retired with the span bars. */}
-          <Sparkline values={[...KPI_STATICS.sparks.dealsClosed]} barClassName="bg-cyan-400" />
-        </KpiCard>
-        <KpiCard label="Revenue This Month" value={formatCompactCurrency(revenueThisMonth, { scale: "k" })} sparkClassName={KPI_SPARK.dashboardBarsContainer}>
-          <Sparkline values={[...KPI_STATICS.sparks.revenueThisMonth]} barClassName="bg-green-400" />
-        </KpiCard>
+      {/* KPI row */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
-          label="Sales Target"
-          value={formatCompactCurrency(k?.salesTarget ?? 0, { scale: "k", decimals: 0 })}
-          valueNote={`${k?.salesTargetProgress ?? 0}%`}
-          sparkClassName={KPI_SPARK.dashboardBarsContainer}
-        >
-          <Sparkline
-            values={[...KPI_STATICS.sparks.salesTarget]}
-            colorFor={(_, i) => (i < 4 ? "#fbbf24" : "#3b82f6")}
-          />
-        </KpiCard>
-        <KpiCard label="Conversion Rate" value={`${k?.conversionRate ?? 0}%`}>
-          <Sparkline values={[...KPI_STATICS.sparks.conversionRate]} color={CHART_COLORS.violet} variant="area" />
-        </KpiCard>
-          {/* Session-13 (S13-P10): the reference's Avg. Sales Cycle card
-              carries NO delta — value + "days" unit only. */}
-          <KpiCard
-            label="Avg. Sales Cycle"
-            value={k?.avgSalesCycleDays ?? 0}
-            suffix="days"
-          >
-            <Sparkline values={[...KPI_STATICS.sparks.avgSalesCycle]} color={CHART_COLORS.emerald} variant="line" />
-          </KpiCard>
+          label="Monthly Income"
+          value={formatMoney(income)}
+          delta={incomeDelta != null ? `${incomeDelta > 0 ? "+" : ""}${incomeDelta}%` : null}
+          deltaDirection={incomeDelta == null ? "flat" : incomeDelta >= 0 ? "up" : "down"}
+          icon={TrendingUp}
+          iconColor="#10b981"
+          iconSoft="#ecfdf5"
+        />
+        <KpiCard
+          label="Monthly Expenses"
+          value={formatMoney(expenses)}
+          delta={expenseDelta != null ? `${expenseDelta > 0 ? "+" : ""}${expenseDelta}%` : null}
+          deltaDirection={expenseDelta == null ? "flat" : expenseDelta <= 0 ? "up" : "down"}
+          icon={TrendingDown}
+          iconColor="#f43f5e"
+          iconSoft="#fff1f2"
+        />
+        <KpiCard
+          label="Net Balance"
+          value={formatMoney(net)}
+          delta={netDelta != null ? `${netDelta > 0 ? "+" : ""}${netDelta}%` : null}
+          deltaDirection={netDelta == null ? "flat" : netDelta >= 0 ? "up" : "down"}
+          icon={Wallet}
+          iconColor="#f59e0b"
+          iconSoft="#fffbeb"
+        />
+        <KpiCard
+          label="Savings Rate"
+          value={`${rate}%`}
+          icon={Target}
+          iconColor="#a855f7"
+          iconSoft="#faf5ff"
+        />
       </div>
 
-      {/* Filter bar — session-6: the reference wraps these controls in a
-          white card (bg-white rounded-lg shadow mb-6 p-4) whose contents
-          stack on phones (flex flex-col sm:flex-row gap-3); Filter = outline
-          h-8 with a hidden-sm label. */}
-      <div className={FILTER_BAR.card}>
-        <div className={FILTER_BAR.row}>
-          <Button variant="outline" size="sm" className="sm:w-auto" aria-label="Filter">
-            {/* Session-83 (M-83c2, bundle-decoded): the reference's Filter
-              button ships its svg at w-4 h-4 mr-2 (OC at the Eke filter
-              bar) — ours carried the scaffold-era h-3.5 w-3.5 with no
-              margin, a 2-fold divergence (14px vs 16px AND the gap:
-              this svg+span construction's 16px gap regressed to 8px
-              when the s82 base cascade retired).
-              Session-87 (N-87c5): the reference carries the BARE
-              sm:w-auto — the flex-col bar's default stretch full-widths
-              it at mobile (our w-full was the explicit spelling of the
-              same computed result). */}
-          <FilterPolygon className="w-4 h-4 mr-2" /> <span className="hidden sm:inline">Filter</span>
-        </Button>
-        {/* Session-5: the reference's All Stages filter offers the PIPELINE
-            stages (Prospecting/Qualification/Proposal/Negotiation/Won) — the
-            same labels the pipeline chart above it renders. */}
-        <Select value={stage} onValueChange={setStage}>
-          <SelectTrigger aria-label="Filter by stage" className="w-full sm:w-32"><SelectValue placeholder="Stage" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Stages</SelectItem>
-            {PIPELINE_STAGES.map((s) => (
-              // Session-63 (N-63b): the `?? s` arm retired — every
-              // PIPELINE_STAGES key is present in PIPELINE_LABELS (the
-              // server sibling's record comment carries the evidence).
-              <SelectItem key={s} value={s}>{PIPELINE_LABELS[s]}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={source} onValueChange={setSource}>
-          <SelectTrigger aria-label="Filter by source" className="w-full sm:w-32"><SelectValue placeholder="Source" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Sources</SelectItem>
-            {/* Session-29 (S29-P4): the RAW values with capitalized labels. */}
-            {LEAD_SOURCE_OPTIONS.map((o) => (
-              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className={FILTER_BAR.searchWrap}>
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-          {/* Session-33 (S33-P1): the reference's search input is DEAD
-              (bundle: no value/onChange — the s32 topbar-search family).
-              Ours stays functional — the documented superset.
-              Session-87 (N-87c6): the reference's explicit `pl-9 h-9`
-              mirrored (the N-86c6 accounts-search precedent). */}
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={FILTER_BAR.searchPlaceholder} className="pl-9 h-9" aria-label="Filter deals" />
+      {/* Cash flow overview */}
+      <section className={cn(CARD.base, CARD.padding)} aria-label="Cash Flow Overview">
+        <CardTitleRow
+          icon={LineChartIcon}
+          title="Cash Flow Overview"
+          trailing={<PeriodSegment value={period} onChange={setPeriod} options={PERIOD_OPTIONS} />}
+        />
+        <div className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="incomeFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={CHART_COLORS.income} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={CHART_COLORS.income} stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="expenseFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={CHART_COLORS.expenses} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={CHART_COLORS.expenses} stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="netFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={CHART_COLORS.net} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={CHART_COLORS.net} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+              <XAxis
+                dataKey="label"
+                tick={{ fontSize: 12, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                tickFormatter={formatAxisMoney}
+                tick={{ fontSize: 12, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+                width={56}
+              />
+              <Tooltip
+                formatter={(value, name) => [formatMoney(Number(value)), name]}
+                labelStyle={{ color: "#1c1917", fontWeight: 600 }}
+                contentStyle={{
+                  borderRadius: 12,
+                  border: "1px solid #e7e5e4",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="income"
+                name="Income"
+                stroke={CHART_COLORS.income}
+                strokeWidth={2.5}
+                fill="url(#incomeFill)"
+              />
+              <Area
+                type="monotone"
+                dataKey="expenses"
+                name="Expenses"
+                stroke={CHART_COLORS.expenses}
+                strokeWidth={2.5}
+                fill="url(#expenseFill)"
+              />
+              <Area
+                type="monotone"
+                dataKey="net"
+                name="Net Savings"
+                stroke={CHART_COLORS.net}
+                strokeWidth={2.5}
+                fill="url(#netFill)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
-        {/* Session-148 (F-147c3): the More... ghost RETIRED — the
-            reference's bar is now [Filter][All Stages][All Sources]
-            [search] (walk38k; the S24-P3 dead-affordance decode is a
-            historical record — the button is gone upstream). */}
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-6">
+          {[
+            { name: "Income", color: CHART_COLORS.income },
+            { name: "Expenses", color: CHART_COLORS.expenses },
+            { name: "Net Savings", color: CHART_COLORS.net },
+          ].map((item) => (
+            <span key={item.name} className="flex items-center gap-1.5 text-xs font-medium text-stone-500 dark:text-stone-500">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+              {item.name}
+            </span>
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* Charts — session-6: plain lg:grid-cols-2 gap-6 (the reference has
-          no 3/2 col-span split). Session-27 (S27-P6/P7): the chart
-          internals are bundle-pinned — the pipeline bars are SINGLE
-          #3b82f6 with radius [8,8,0,0] on the VALUE dataKey ($ tooltip,
-          tick 12), with the per-stage colors living in the LEGEND CHIPS
-          below; the revenue areas carry fillOpacity .6 (won) / .3 (target)
-          with STOCK strokeWidth + the $ tooltip + tick 12. */}
-      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
-        <Card>
-          {/* Session-87 (N-87c7, bundle-decoded Ht): the Sales Pipeline
-              card ships the BARE stock CardHeader — the only dashboard
-              chart card with no trailing element (title only). */}
-          <CardHeader>
-            <CardTitle className={CARD_TITLE_OVERRIDE.dashboard}>Sales Pipeline by Stage</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <SingleBarChart
-              data={filteredPipeline.map((p) => ({ stage: p.label, value: p.value }))}
-              xKey="stage"
-              dataKey="value"
-              fill="#3b82f6"
-              radius={[8, 8, 0, 0]}
-              formatter={dollarFormatter}
-              tickFontSize={12}
-            />
-            {/* The O-map legend chips — the per-stage colors live HERE
-                (w-3 h-3 rounded squares on Tailwind bg-* classes), with
-                the reference's own lookup-miss quirk: the "Won" label
-                misses the snake_case map and falls back to bg-gray-400. */}
-            <div className={PIPELINE_LEGEND.row}>
-              {filteredPipeline.map((p) => (
-                <div key={p.stage} className={PIPELINE_LEGEND.chip}>
-                  {/* The reference looks the class up by the LABEL slug
-                      (stage.toLowerCase().replace(" ","_")) — so its "Won"
-                      label misses the closed_won key and falls back to
-                      gray-400. Our internal stage ids differ (new vs
-                      prospecting), so the label-based lookup is the
-                      faithful expression of the same mechanism. */}
-                  <div
-                    className={`${PIPELINE_LEGEND.swatch} ${PIPELINE_LEGEND.stageClass[p.label.toLowerCase().replace(" ", "_")] ?? PIPELINE_LEGEND.fallbackClass}`}
-                  />
-                  <span className={PIPELINE_LEGEND.label}>
-                    {p.label}: ${(p.value / 1e3).toFixed(1)}k
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          {/* Session-87 (N-87c7): the five cards with trailing elements
-              nest the reference's `flex justify-between items-center`
-              row INSIDE the stock CardHeader (the FILTER_RAIL mechanism
-              — cn would keep flex-col without flex-row, and the
-              reference's own construction is the nested row). */}
-          <CardHeader>
-            <div className={DASHBOARD_CARD.headerRow}>
-              <CardTitle className={CARD_TITLE_OVERRIDE.dashboard}>Revenue Over Time</CardTitle>
-              {/* Session-87 (N-87c7): the reference's literal
-                  text-gray-500 (our text-muted token computed the same
-                  #6b7280 — mirrored for source parity). */}
-              <span className="text-xs text-gray-500">Last 6 months</span>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <RevenueLineChart
-              data={dashboard?.revenueOverTime ?? []}
-              tickFontSize={12}
-              series={[
-                // Session-142 (D-142b0): the ONE won series — the reference's
-                // new bundle retired the target series AND the legend (the
-                // emerald filled Area, fillOpacity .6, STOCK strokeWidth —
-                // the s87 re-pin minus its target arm).
-                { key: "won", label: "Won", color: CHART_COLORS.emerald, fillOpacity: 0.6 },
-              ]}
-            />
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Lists row — reference ships exactly three cards here (session-6:
-          lg:grid-cols-3 gap-6 mb-6). */}
-      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <div className={DASHBOARD_CARD.headerRow}>
-              <CardTitle className={CARD_TITLE_OVERRIDE.dashboard}>Top Performing Sales Reps</CardTitle>
-              {/* Session-7 (S7-18): ellipsis actions are ghost h-8 w-8.
-                  Session-154 (F-154c1, walk44): the px-less icon face —
-                  size="sm" carries the CVA's px-3 text-xs, which at a
-                  tight title row (1024: the 217px cards) floors our
-                  min-content past w-8 and BLOCKS the flex-yield the
-                  reference's bare h-8 w-8 performs — the title zone
-                  squeezed 137 vs 150, wrapping 3 lines vs 2 (+28px
-                  header, +1px mainH). The per-row site's own size="icon"
-                  construction is the px-less precedent. */}
-              <Button variant="ghost" size="icon" className={DASHBOARD_CARD.ellipsisBtn} aria-label="More actions">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {/* Session-9 (S9-17): the reference renders this card as a DIV
-                list, not a table — a bordered header row (Sales Rep left,
-                Deals/Owner right in a flex gap-8) inside space-y-4. At zero
-                data it renders the header row alone (no empty state). */}
-            <div className="space-y-4">
-              <div className={TOP_REPS.headerRow}>
-                <span>Sales Rep</span>
-                <div className={TOP_REPS.colRight}>
-                  <span>Deals</span>
-                  <span>Owner</span>
-                </div>
-              </div>
-              {/* Session-31 (S31-P2): the row contract, bundle-decoded (it
-                  was unverifiable at the reference's zero data — the card
-                  renders its header row alone there). Each row: the
-                  blue-100 INITIALS box + name + the static "Top Admin"
-                  subtitle; right: $Xk + the Won/Active badge. */}
-              {topReps.map((r) => (
-                <div key={r.name} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xs font-semibold">
-                      {r.name.split(" ").map((p) => p[0]).join("")}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{r.name}</p>
-                      <p className="text-xs text-gray-500">Top Admin</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm font-semibold">
-                      ${(r.value / 1e3).toFixed(0)}k
-                    </span>
-                    <Badge className={r.deals > 0 ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>
-                      {r.deals > 0 ? "Won" : "Active"}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <div className={DASHBOARD_CARD.headerRow}>
-              <CardTitle className={CARD_TITLE_OVERRIDE.dashboard}>Lead Sources</CardTitle>
-              {/* Session-151 (F-151c1, walk41): the s7-era ghost Add retired —
-                  the current reference bundle renders this header TITLE-ONLY
-                  (live-decoded at 390 + 1440 + 768 on both apps; the walk44
-                  tablet mutation-proof replanted it and RED the gate). */}
-            </div>
-          </CardHeader>
-          <CardContent>
-            {/* Session-27 (S27-P8, bundle-extracted): the rows are the
-                checkbox family — [inert Checkbox] "Follow up with {source}"
-                … count — p-2 hover:bg-gray-50 rounded rows in a space-y-3,
-                FOUR max (slice(0,4)). At zero data the container renders
-                EMPTY (S9-10). Our old progress-bar list was an invention. */}
-            <div className="space-y-3">
-              {(dashboard?.leadSources ?? []).slice(0, 4).map((s) => (
-                <div key={s.source} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-                  <div className="flex items-center gap-3">
-                    <Checkbox aria-label={`Follow up with ${s.source}`} />
-                    <span className="text-sm">Follow up with {s.source}</span>
-                  </div>
-                  <span className="text-xs text-gray-500">{s.count}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <div className={DASHBOARD_CARD.headerRow}>
-              <CardTitle className={CARD_TITLE_OVERRIDE.dashboard}>Upcoming Activities</CardTitle>
-              {/* Session-151 (F-151c1, walk41): the s7-era ghost Add retired
-                  here too — the title-only mirror. */}
-            </div>
-          </CardHeader>
-          <CardContent>
-            {/* Session-27 (S27-P8, bundle-extracted): the rows are the
-                checkbox family — [inert Checkbox] description +
-                related-name subtext … toLocaleDateString — the same
-                p-2 hover:bg-gray-50 rounded rows; empty = the centered
-                py-4 gray paragraph. Our old colored-dot rows were an
-                invention. */}
-            {(dashboard?.upcomingActivities ?? []).length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-4">No upcoming activities</p>
-            ) : (
-              <div className="space-y-3">
-                {(dashboard?.upcomingActivities ?? []).map((a) => (
-                  <div key={a.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-                    <div className="flex items-center gap-3">
-                      <Checkbox aria-label={`Mark ${a.subject} done`} />
-                      <div>
-                        <p className="text-sm">{a.subject}</p>
-                        <p className="text-xs text-gray-500">{a.relatedName}</p>
-                      </div>
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      {a.dueAt ? new Date(a.dueAt).toLocaleDateString() : ""}
+      {/* Health + breakdown row */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section className={cn(CARD.base, CARD.padding)} aria-label="Financial Health Score">
+          <CardTitleRow icon={Activity} title="Financial Health Score" />
+          <div className="flex flex-col items-center gap-6 sm:flex-row">
+            <HealthGauge score={health.total} band={health.band} />
+            <div className="w-full flex-1 space-y-4">
+              {health.metrics.map((metric) => (
+                <div key={metric.key}>
+                  <div className="mb-1 flex items-center justify-between text-sm">
+                    <span className="font-medium text-stone-700 dark:text-stone-300">{metric.label}</span>
+                    <span className="text-stone-500 dark:text-stone-500">
+                      {metric.score}/{metric.max}
                     </span>
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent deals — session-5: the reference renders this as a COMPACT
-          custom table (tr text-xs text-gray-500, th py-2 font-medium, no
-          horizontal cell padding — the card's p-6 provides the gutters) plus
-          a trailing w-8 action column. Session-9 (S9-9): the reference's
-          DUPLICATE "Status" column is now MIRRORED (visible quirk —
-          strict-mirror precedent: the "Add new industrie" typo, dead
-          controls, empty-label selects); the cells render the same badge
-          twice. */}
-      <Card>
-        <CardHeader>
-          <div className={DASHBOARD_CARD.headerRow}>
-            <CardTitle className={CARD_TITLE_OVERRIDE.dashboard}>Recent Deals</CardTitle>
-            {/* F-154c1: the px-less icon face (see the Top Reps site's
-                decode) — size="icon" + the h-8 w-8 className override. */}
-            <Button variant="ghost" size="icon" className={DASHBOARD_CARD.ellipsisBtn} aria-label="More actions">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-amber-400 to-emerald-500 transition-all"
+                      style={{ width: `${(metric.score / metric.max) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          {/* Session-9 (S9-9): at zero rows the reference renders the
-              compact table with an EMPTY tbody — the old empty-state
-              paragraph is removed; the Cards superset keeps its grid. */}
-          {filteredDeals.length === 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-line text-xs text-muted">
-                    <th className="py-2 text-left font-medium">Lead</th>
-                    <th className="py-2 text-left font-medium">Company</th>
-                    <th className="py-2 text-left font-medium">Deal Value</th>
-                    <th className="py-2 text-left font-medium">Status</th>
-                    <th className="py-2 text-left font-medium">Owner</th>
-                    <th className="py-2 text-left font-medium">Close Date</th>
-                    <th className="py-2 text-left font-medium">Status</th>
-                    <th className="w-8" />
-                  </tr>
-                </thead>
-                <tbody />
-              </table>
-            </div>
+          <div className="mt-5 flex items-start gap-2.5 rounded-lg bg-amber-50 p-4 dark:bg-amber-500/10">
+            <span aria-hidden="true">💡</span>
+            <p className="text-sm text-amber-800 dark:text-amber-200">{healthAdvice(health)}</p>
+          </div>
+        </section>
+
+        <section className={cn(CARD.base, CARD.padding)} aria-label="Expense Breakdown">
+          <CardTitleRow icon={PieIcon} title="Expense Breakdown" caption="This month" />
+          {breakdown.length === 0 ? (
+            <EmptyState
+              icon={PieIcon}
+              title="No expenses this month"
+              subtitle="Add expenses to see your category breakdown"
+            />
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-line text-xs text-muted">
-                    {/* Session-9 (S9-9): the reference renders EIGHT columns —
-                        "Status" appears TWICE after Close Date (a visible
-                        copy-paste quirk, mirrored per the strict-mirror
-                        precedent — see the quirk register). */}
-                    <th className="py-2 text-left font-medium">Lead</th>
-                    <th className="py-2 text-left font-medium">Company</th>
-                    <th className="py-2 text-left font-medium">Deal Value</th>
-                    <th className="py-2 text-left font-medium">Status</th>
-                    <th className="py-2 text-left font-medium">Owner</th>
-                    <th className="py-2 text-left font-medium">Close Date</th>
-                    <th className="py-2 text-left font-medium">Status</th>
-                    <th className="w-8" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* At zero rows the reference renders the headers with an
-                      EMPTY tbody — no empty-state paragraph.
-                      Session-31 (S31-P2): the ROW contract bundle-decoded —
-                      the Lead cell is the gray-200 icon box + name/account
-                      stack; Deal Value is $ toLocaleString; the FIRST Status
-                      badge carries the OPP P-map with the RAW slug (Won for
-                      closed_won); the Owner cell is the blue-100 box + the
-                      owner STRING; the SECOND Status badge is the
-                      Contacted/Proposal copy-paste quirk. */}
-                  {filteredDeals.map((o) => (
-                    <tr key={o.id} className="border-b hover:bg-background">
-                      <td className="py-3">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-gray-200 rounded-full" />
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{o.name}</p>
-                            <p className="text-xs text-gray-500">{o.accountName}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="text-sm">{o.accountName}</td>
-                      <td className="text-sm font-semibold text-foreground">
-                        ${(o.amount || 0).toLocaleString()}
-                      </td>
-                      <td>
-                        <Badge className={OPP_STAGE_META[o.stage]?.badge ?? "bg-gray-100 text-gray-800"}>
-                          {o.stage === "closed_won" ? "Won" : o.stage}
-                        </Badge>
-                      </td>
-                      <td>
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 bg-blue-100 rounded-full" />
-                          <span className="text-sm">{o.owner}</span>
-                        </div>
-                      </td>
-                      <td className="text-sm text-gray-600">
-                        {o.closeDate ? new Date(o.closeDate).toLocaleDateString() : ""}
-                      </td>
-                      <td>
-                        {/* The reference's copy-paste quirk: the second
-                            Status badge shows "Contacted" (or "Proposal"
-                            for negotiation) — mirrored verbatim. */}
-                        <Badge variant="outline" className="text-xs">
-                          {o.stage === "closed_won" ? "Contacted" : o.stage === "negotiation" ? "Proposal" : "Contacted"}
-                        </Badge>
-                      </td>
-                      <td>
-                        {/* Session-78 (L-78c3, bundle-decoded): the
-                            reference ships a ghost MoreHorizontal h-8 w-8
-                            affordance in every row's trailing cell
-                            (invisible at its zero data — the bundle-only
-                            evidence class); ours carries the aria-label
-                            accessible-superset convention. */}
-                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="More actions">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="flex flex-col items-center gap-6 sm:flex-row">
+              <div className="h-52 w-52 shrink-0">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={breakdown}
+                      dataKey="value"
+                      nameKey="category"
+                      innerRadius={56}
+                      outerRadius={88}
+                      paddingAngle={2}
+                      strokeWidth={0}
+                    >
+                      {breakdown.map((slice) => (
+                        <Cell key={slice.category} fill={slice.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value, name) => [formatMoney(Number(value)), name]} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <ul className="w-full flex-1 space-y-2">
+                {breakdown.slice(0, 6).map((slice) => (
+                  <li key={slice.category} className="flex items-center justify-between gap-2 text-sm">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: slice.color }} />
+                      <span className="truncate text-stone-700 dark:text-stone-300">{slice.category}</span>
+                    </span>
+                    <span className="shrink-0 font-medium text-stone-900 dark:text-stone-100">
+                      {formatMoney(slice.value)}
+                      <span className="ml-1.5 text-xs text-stone-500">{slice.pct}%</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </section>
+      </div>
 
-      {/* Session-151 (F-151c1, walk41): the dashboard's create-dialog
-          mounts retired with their last two entry points (the card-header
-          ghost Adds); the components stay mounted on the Leads/Activities
-          pages, their live edit surfaces unchanged. */}
+      {/* Budget vs actual + upcoming row */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section className={cn(CARD.base, CARD.padding)} aria-label="Budget vs Actual">
+          <CardTitleRow icon={BarChart3} title="Budget vs Actual" caption="This month" />
+          {budgetRows.length === 0 ? (
+            <EmptyState
+              icon={BarChart3}
+              title="Add budgets to compare against spending"
+              subtitle="Set category budgets on the Settings page"
+            />
+          ) : (
+            <ul className="space-y-4">
+              {budgetRows.slice(0, 5).map((row) => (
+                <li key={row.category}>
+                  <div className="mb-1 flex items-center justify-between text-sm">
+                    <span className="font-medium text-stone-700 dark:text-stone-300">{row.category}</span>
+                    <span
+                      className={cn(
+                        "text-xs font-semibold",
+                        row.over
+                          ? "text-red-500 dark:text-red-400"
+                          : "text-stone-500 dark:text-stone-500",
+                      )}
+                    >
+                      {formatMoney(row.actual)} / {formatMoney(row.budget)}
+                    </span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all",
+                        row.over ? "bg-red-500" : "bg-gradient-to-r from-amber-400 to-amber-500",
+                      )}
+                      style={{ width: `${Math.min(100, row.pct)}%` }}
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className={cn(CARD.base, CARD.padding)} aria-label="Upcoming and Alerts">
+          <CardTitleRow icon={Bell} title="Upcoming & Alerts" />
+          {upcoming.length === 0 ? (
+            <EmptyState
+              icon={Bell}
+              title="No upcoming payments"
+              subtitle="Add recurring transactions to track bills"
+            />
+          ) : (
+            <ul className="space-y-3">
+              {upcoming.slice(0, 5).map((item, i) => (
+                <li
+                  key={`${item.description}-${i}`}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-stone-200/70 bg-stone-50/60 p-3 dark:border-stone-800 dark:bg-stone-800/40"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
+                      {item.description}
+                    </p>
+                    <p className="text-xs text-stone-500 dark:text-stone-500">
+                      Due {relativeDays(item.nextDate, now)} · {item.category}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-sm font-bold text-stone-900 dark:text-stone-100">
+                    {formatMoney(item.amount)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+
+      {/* Recent activity + AI insights row */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section className={cn(CARD.base, CARD.padding)} aria-label="Recent Activity">
+          <h2 className="mb-4 text-lg font-bold text-stone-900 dark:text-stone-100">Recent Activity</h2>
+          {recent.length === 0 ? (
+            <EmptyState
+              icon={Activity}
+              title="No recent transactions"
+              subtitle="Add income or expenses to see activity"
+            />
+          ) : (
+            <ul className="divide-y divide-stone-200/70 dark:divide-stone-800">
+              {recent.map((row) => (
+                <li key={row.id} className="flex items-center justify-between gap-3 py-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span
+                      className={cn(
+                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                        row.type === "income"
+                          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10"
+                          : "bg-rose-50 text-rose-500 dark:bg-rose-500/10",
+                      )}
+                    >
+                      {row.type === "income" ? (
+                        <TrendingUp className="h-4 w-4" />
+                      ) : (
+                        <TrendingDown className="h-4 w-4" />
+                      )}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
+                        {row.description}
+                      </p>
+                      <p className="text-xs text-stone-500 dark:text-stone-500">
+                        {row.category} · {relativeDays(row.date, now)}
+                      </p>
+                    </div>
+                  </div>
+                  <span
+                    className={cn(
+                      "shrink-0 text-sm font-bold",
+                      row.type === "income"
+                        ? "text-emerald-700 dark:text-emerald-400"
+                        : "text-stone-900 dark:text-stone-100",
+                    )}
+                  >
+                    {row.type === "income" ? "+" : "−"}
+                    {formatMoney(row.amount)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className={cn(CARD.base, CARD.padding)} aria-label="AI Insights">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Brain className="h-5 w-5 text-stone-700 dark:text-stone-200" />
+              <h2 className={CARD.title}>AI Insights</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" className="h-8 rounded-full px-3 text-xs" onClick={() => setCoachOpen(true)}>
+                <MessageCircle className="h-3.5 w-3.5" />
+                Ask AI
+              </Button>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 rounded-full p-0"
+                aria-label="Regenerate insights"
+                onClick={onRefresh}
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </div>
+          {insights.length === 0 ? (
+            <EmptyState
+              icon={Brain}
+              title="No insights available yet"
+              subtitle="Add more transactions to see AI-powered insights"
+            />
+          ) : (
+            <ul className="space-y-3">
+              {insights.map((insight) => (
+                <li
+                  key={insight.id}
+                  className={cn(
+                    "rounded-lg border p-3.5",
+                    insight.tone === "positive"
+                      ? "border-emerald-200 bg-emerald-50/60 dark:border-emerald-500/20 dark:bg-emerald-500/10"
+                      : insight.tone === "warning"
+                        ? "border-amber-200 bg-amber-50/60 dark:border-amber-500/20 dark:bg-amber-500/10"
+                        : "border-stone-200 bg-stone-50/60 dark:border-stone-700 dark:bg-stone-800/40",
+                  )}
+                >
+                  <p className="text-sm font-semibold text-stone-900 dark:text-stone-100">{insight.title}</p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-stone-600 dark:text-stone-500">{insight.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+
+      {/* Quick actions */}
+      <section className={cn(CARD.base, CARD.padding)} aria-label="Quick Actions">
+        <h2 className="mb-4 text-xl font-bold text-amber-500">Quick Actions</h2>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <QuickAction href="/Income" label="Add Income" icon={TrendingUp} className="border-emerald-300 text-emerald-600 dark:border-emerald-500/40 dark:text-emerald-400" />
+          <QuickAction href="/Expenses" label="Add Expense" icon={TrendingDown} className="border-rose-300 text-rose-500 dark:border-rose-500/40 dark:text-rose-400" />
+          <QuickAction href="/Goals" label="Set Goal" icon={Target} className="border-amber-300 text-amber-500 dark:border-amber-500/40 dark:text-amber-400" />
+          <QuickAction href="/Analytics" label="View Reports" icon={BarChart3} className="border-blue-300 text-blue-500 dark:border-blue-500/40 dark:text-blue-400" />
+        </div>
+      </section>
+
+      <AiCoachDialog open={coachOpen} onOpenChange={setCoachOpen} />
+    </div>
+  );
+}
+
+function QuickAction({
+  href,
+  label,
+  icon: Icon,
+  className,
+}: {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "flex flex-col items-center gap-2 rounded-lg border bg-white px-4 py-5 text-sm font-semibold text-stone-800 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:bg-stone-900 dark:text-stone-100",
+        className,
+      )}
+    >
+      <Icon className="h-6 w-6" />
+      {label}
+    </Link>
+  );
+}
+
+/** The semicircle gauge (the reference's genus: gray track, colored
+ *  arc by band, big number + band label centered). */
+function HealthGauge({ score, band }: { score: number; band: string }) {
+  const pct = Math.max(0, Math.min(100, score));
+  const angle = (pct / 100) * 180;
+  const color =
+    band === "Excellent"
+      ? "#10b981"
+      : band === "Good"
+        ? "#14b8a6"
+        : band === "Fair"
+          ? "#f59e0b"
+          : "#f43f5e";
+  const radius = 70;
+  const cx = 80;
+  const cy = 80;
+  const rad = (deg: number) => (deg * Math.PI) / 180;
+  const arc = (fromDeg: number, toDeg: number) => {
+    const x1 = cx + radius * Math.cos(rad(fromDeg));
+    const y1 = cy + radius * Math.sin(rad(fromDeg));
+    const x2 = cx + radius * Math.cos(rad(toDeg));
+    const y2 = cy + radius * Math.sin(rad(toDeg));
+    return `M ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2}`;
+  };
+  return (
+    <div className="relative flex flex-col items-center" aria-label={`Financial health score ${score} out of 100, ${band}`}>
+      <svg width="160" height="96" viewBox="0 0 160 96" role="presentation">
+        <path d={arc(0, 180)} fill="none" stroke="#e7e5e4" strokeWidth="12" strokeLinecap="round" className="dark:opacity-20" />
+        <path
+          d={arc(0, angle)}
+          fill="none"
+          stroke={color}
+          strokeWidth="12"
+          strokeLinecap="round"
+          style={{ transition: "stroke-dasharray 0.5s ease" }}
+        />
+      </svg>
+      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center">
+        <span className="text-3xl font-extrabold" style={{ color }}>
+          {score}
+        </span>
+        <span className="text-xs font-bold" style={{ color }}>
+          {band}
+        </span>
+      </div>
     </div>
   );
 }
