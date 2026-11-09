@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 630 / Playwright 84 / smoke 14). Covers the design system,
+  layer (Vitest 657 / Playwright 84 / smoke 14). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -122,7 +122,7 @@ Locked versions from `package.json` (verified at distillation):
 | State | `zustand` | 5.1.0 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` + `@prisma/adapter-libsql` | 7.10.1 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3); R-9: the prisma 7 major — generated client in `src/generated/prisma` (postinstall), PrismaLibSql driver adapter (bun hard-blocks better-sqlite3 — oven-sh/bun#4290), `prisma.config.ts` on the db-path seam |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses |
-| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 630 checks / 45 files |
+| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 657 checks / 47 files |
 | E2E tests | `@playwright/test` + `axe-core` | 1.65.0 / 4.14.0 | Chromium; 84 checks / 5 specs; own db + port 3100 |
 | PDF export | `jspdf` + `html2canvas-pro` | 4.2.1 / 2.6.3 | Client-side statements (`src/lib/pdf-export.ts`); `dompurify` override-pinned at 3.4.17 (session 198's critical cure, inherited) |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
@@ -199,7 +199,7 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (630 checks) |
+| Unit tests | `bun run test` (657 checks) |
 | E2E (boots own server) | `CI=1 bun run test:e2e` (84 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (14 assertions; needs build) |
@@ -649,7 +649,7 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 630 passed / 45 files
+- [ ] `bun run test` — 657 passed / 47 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 14/14 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)

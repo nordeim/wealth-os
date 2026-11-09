@@ -7,9 +7,12 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.10.0** (session 213 — the R-9 prisma 6→7 major
-> migration: the last HIGH advisory cured across the ORM major + the
-> driver-adapter seam; §5 carries the execution history).
+> **Current version: v2.11.0** (session 214 — the owner-scoping round
+> R-10 + the palette-completion round R-11: the fresh-eyes audit's
+> tenancy cluster cured — Budget/Setting gain ownerId, /api/reset and
+> the budgets/settings/users families go owner-scoped — plus the 23
+> unpinned (family, step) pairs + 7 inert semantic tokens pinned under a
+> complete-enumeration guard; §5 carries the execution history).
 
 ---
 
@@ -88,6 +91,19 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-212a | Low | **The lockfile still carries a SECOND scaffold-era identity.** `bun.lock`'s workspaces mirror reads `"name": "activity-map"` — an identity older than the neo-crm scaffold F-211a cured (bun rewrites the workspaces mirror only when resolutions change; the manifest renames never re-keyed it). Session 211's F-211a verification grepped for `neo-crm` (0 hits — true) but this older name sat in the tree all along; `bun update` alone leaves it stale. | bun.lock workspaces block (read this session); the post-update lockfile still carrying it (empirical) | **R-8** (cured in-commit) |
 | F-212b | Medium | **8 of the 10 ledger advisories were curable within existing semver ranges all along.** The standing deferral treated the census as fixed, but the lockfile's transitive resolutions had never been re-resolved since the scaffold era: vite 8.3.0 (the six-advisory window 8.3.0–8.3.2 incl. the launch-editor trio — fixed 8.3.3; vitest's peer range `^6.4.0 \|\| ^7.0.0 \|\| ^8.0.0` admits 8.3.6), source-map-js 1.2.1 (GHSA-68fv-2mgg-jv7q — fixed 1.2.2; postcss's `^1.2.1` admits it), and the nested eslint-plugin-react-hooks zod 4.6.5 (GHSA-mrhx-c7xc-m3w5 — floor 4.6.6; the parent range `^3.25.0 \|\| ^4.0.0` admits 4.6.7, and a fresh resolution dedupes onto the runtime copy). `bun update` moves direct deps but does NOT re-resolve transitives — a fresh lockfile generation does. | `bun audit` + the bun.lock resolutions (this session); registry checks confirming 8.3.6 / 1.2.2 / 4.6.7 in-range | **R-8** |
 | F-212c | Info (documented deferral) | **The 2 remaining advisories are range-unreachable.** minimatch 10.2.6 (GHSA-g3hv-75wg-m249, fix 11.0.1 — typescript-estree pins `^10.2.2`) and deepmerge-ts 7.1.5 (GHSA-ggr8-5vv4-36mx, fix 8.0.0 — `@prisma/config` exact-pins `7.1.5`). Both cure automatically when their parents' ranges move; the PAD §10 row carries the decode and the re-triage clause. | bun.lock parent ranges (this session) | **R-8** (documented) |
+| F-214a | High | **`/api/reset` wipes the WHOLE install's finance data — the only unscoped writes in the tree.** The six `deleteMany` calls carry no `ownerId` filter while signup is open: any visitor can sign up, then POST `{"confirm":"RESET"}` and destroy every account's rows (users and the Setting row survive). Every other CRUD family is owner-scoped; the reference-family's own "404-not-403" discipline makes this the outlier. | `src/app/api/reset/route.ts:30-37` (no `where` on any of the six deletes) | **R-10** |
+| F-214b | Medium | **`Budget` is ownerless and read/written globally — the PAD's ER (§4.1) and the "all owner-scoped" claim (§4.2) are false for it.** The shipped model has no `ownerId` (`@@unique([category, period])`), so the budgets CRUD, the dashboard aggregate, the AI coach context, and the GDPR-style export all read/write EVERY user's budget rows; user A's category edit mutates user B's budget-vs-actual analytics. | `prisma/schema.prisma:172-182`; `src/app/api/budgets/route.ts:11,32,51`; `src/app/api/dashboard/route.ts:25`; `src/app/api/ai/coach/route.ts:29`; `src/app/api/export/route.ts:24`; PAD §4.1 ER + §4.2 | **R-10** |
+| F-214c | Medium | **`GET /api/users` enumerates every account's email/name to any session (CRM residue), and `Setting` is a global singleton.** The "Owners list (for filter dropdowns + rep leaderboards)" comment describes CRM functionality that died with the session-199 transformation — zero UI consumers remain (verified) — yet the endpoint still answers the full user table (id/email/name/avatar/photo/role). The Setting singleton is the same tenancy genus: any user's settings write mutates the install-wide row. | `src/app/api/users/route.ts:9-21` (comment + findMany, no scope); consumer grep (src/stores, pages — none); `prisma/schema.prisma:184-194`; `src/app/api/settings/route.ts:8-46` | **R-10** |
+| F-214d | Medium | **23 (family, step) color pairs used in src/ are NOT pinned in `@theme` — the documented v3 re-pin contract is false.** globals.css:24-26 + :104-106 claim "every literal (family, step) pair used in src/ is re-pinned to the v3 palette", but amber-950, blue-300/800/900/950, emerald-900/950, green-200/300/800/900, indigo-100/300/800/900, purple-300/800/900, red-800, rose-300/900/950, and violet-500 compute through v4's oklch defaults instead. Not inert (v4's default palette still generates them) — silently the WRONG values, the F-207a lesson's next edition, invisible to the sweep baselines (derived from our own renders — the genus is baked in). | enumeration script (this session): 103 pairs used, 80 pinned, 23 missing; `src/lib/page-layout.ts:142,167`; `src/app/(app)/dashboard/page.tsx:526-529`; `src/app/(app)/settings/page.tsx:338-347` | **R-11** |
+| F-214e | Low | **7 shadcn semantic tokens used in src/ exist in NO theme — the classes are INERT (the A-209 cure's missed tail).** `border-input` (login-card verify input, ui/select), `hover:bg-secondary/80` (the Settings badge family), `accent`/`accent-foreground` (ui/dropdown, ui/select, ui/button, dashboard), `muted-foreground` (ui/dialog, ui/table, ui/tabs), `popover`/`popover-foreground` (ui/dropdown, ui/select) generate NO CSS — v4 drops unknown tokens without warning. | same enumeration: `--color-input/secondary/accent/accent-foreground/muted-foreground/popover/popover-foreground` absent from globals.css; `src/components/layout/login-card.tsx:529`; `src/app/(app)/settings/page.tsx:338-347` | **R-11** |
+| F-214f | Medium | **In-app OTP/reset-link delivery is ON by default in production with zero boot-time visibility.** The ADR-014 kill-switches (`NEO_DISABLE_IN_APP_OTP/RESET`) document the demo posture, but a production deployment that forgets the knobs serves single-use reset links and signup codes in HTTP responses — the no-enumeration login can't help when the response itself is the takeover vector. The boot gate (boot-env.ts) warns on the site-URL family and knob typos but is SILENT on this, the larger risk. | `src/app/api/auth/forgot-password/route.ts:68,107-109`; `src/app/api/auth/signup/route.ts:98-104`; `src/lib/boot-env.ts:48-96` (no delivery-mode warning) | **in-commit** |
+| F-214g | Low | **`upcomingAlerts`' window contradicts its docblock and is unpinned at the edges.** The filter lower-bounds at `startOfMonth(ref)` (month-to-date overdue rows IN — rendered "Due N days ago" under "Upcoming & Alerts"), while the docblock says "within the horizon (default 14 days)"; previous-month overdue rows vanish. Defensible as the "Alerts" half of the section, but the deliberate window is documented nowhere and no test pins the overdue edge. | `src/lib/finance.ts:370-384`; `tests/finance.test.ts:207-211` (future-only fixture) | **in-commit** |
+| F-214h | Low | **`parseCsv` treats a mid-field quote in an unquoted field as an opening quote.** RFC 4180: a quote inside an unquoted field is a literal character; the parser flips into quote mode instead, swallowing the following comma (and potentially the rest of the row) into one cell — malformed bank CSVs mis-parse. | `src/lib/csv.ts:96-97` | **in-commit** |
+| F-214i | Low | **Doc/code drift, four sites.** README:198 + PAD:581 claim a "10 MB" upload cap (code: 5 MB — `MAX_UPLOAD_BYTES`); README:194 lists `/api/analytics` GET — no such route exists (the Analytics page aggregates client-side from /api/dashboard); README:195 says `/api/ai` — the route is `/api/ai/coach`; schema.prisma:32's role comment says "user \| admin" while signup writes `"admin" \| "rep"` (CRM residue; the seed writes "user"). | README.md:194,195,198; Project_Architecture_Document.md:581; `prisma/schema.prisma:32`; `src/app/api/auth/signup/route.ts:84`; `src/lib/uploads.ts:25`; `ls src/app/api/` (no analytics dir) | **in-commit** |
+| F-214j | Low | **The AI coach is silent on spend-with-zero-income.** The savings-rate verdict's `else if (monthlyIncomeFromTx(...) > 0)` requires income, so a month with $0 income and real expenses produces neither the savings-rate card nor the overspending warning — the most alarming financial state gets no insight. | `src/lib/ai.ts:94-111` | **in-commit** |
+| F-214k | Low | **eslint.config.mjs disables four rules the tree is clean under.** `react-hooks/exhaustive-deps`, `no-unreachable`, `no-fallthrough`, `no-useless-escape` are all "off" (scaffold posture); this session re-ran all four LIVE over src+scripts+prisma — zero issues. The safety net is switched off for nothing. | `eslint.config.mjs:23,36,38,39`; live `eslint --rule` run (this session, 0 issues) | **in-commit** |
+| F-214l | Info | **Whole-store `useWealthOs()` subscriptions (all 12 pages).** No `useShallow` misuse exists (no object-literal selectors — verified), so this is coarse-but-correct at the app's scale; recorded as the standing performance note, no cure scheduled. | all `src/app/(app)/*/page.tsx` | none (recorded) |
+| F-214m | Medium (cured in-commit) | **The scratch-db schema-drift refusal — discovered live during the R-10 verification.** Prisma 7's `db push --accept-data-loss` REFUSES to add a REQUIRED column to a populated table ("Added the required column `ownerId` … There are N rows in this table, it is not possible to execute this step") — the flag covers data-losing steps it can execute, not unexecutable ones. The stale-schema `db/e2e.db`/`db/smoke.db` therefore killed the e2e global-setup and (silently — the push is `>/dev/null`'d) the whole smoke ladder on any machine that had run the pre-R-10 gate. Cures: the smoke scratch db is RECREATED each run (`rm -f db/smoke.db` — the ladder boots its own server after the push, so the deleted-inode hazard never applies) and the e2e setup pushes with `--force-reset` (schema recreated IN PLACE — same file inode, the reuse-server hazard documented in the setup's own header stays respected, the push idempotent against any schema drift). | `scripts/smoke-test.sh` (the db leg); `tests/e2e/global-setup.ts` (the refusal reproduced live against the stale e2e.db this session) | **in-commit** |
 
 ## 3. The remediation program (R-items)
 
@@ -535,6 +551,102 @@ across a major ORM migration.
   704→714, the §7.1 pins family 17→19, the AGENTS gotcha, the README
   quickstart note, the PAD revision block).
 
+### R-10 — The owner-scoping round (session 214) — Status: Done(v2.11.0)
+
+The session-214 fresh-eyes audit's tenancy cluster (F-214a/b/c): the
+"single-user-per-install" posture the PAD describes was never ENFORCED,
+while signup is open — `/api/reset` wipes the whole install, `Budget`
+and `Setting` are global, and `GET /api/users` enumerates every account.
+The cure brings the two stragglers onto the same `ownerId` contract the
+other five finance models already carry (the PAD's own ER, finally
+true), scopes every read/write to the session user, and retires the
+dead CRM "owners list".
+
+- **R-10.1 The pin (TDD)** — `tests/owner-scoping.test.ts` born RED:
+  the schema carries `ownerId` on Budget + Setting (with the relation
+  and the `@@unique([ownerId, category, period])` key); `/api/reset`
+  scopes every delete through `where: { ownerId }`; the budgets family
+  (GET/POST/DELETE), the dashboard/ai-coach/export budget reads, the
+  settings GET/PUT, and the users GET all reference the session owner.
+- **R-10.2 The cure** — the schema migration (Budget.ownerId + the
+  compound unique; Setting.ownerId unique, the row becomes per-user
+  with the demo seed writing it); the seed's budget/setting writes go
+  owner-bound; the five route families re-scoped; `GET /api/users`
+  answers the session user's own record only (the PATCH half is
+  unchanged); `db:push` + reseed; PAD §4 ER + §4.2 + README API rows
+  lockstep.
+- **R-10.3 The verification** — the full gate + the census (statics
+  unchanged: 7 budgets / 1 setting row, now owner-bound) + the drift
+  legs (the UI is unchanged for the demo user — the parity surfaces
+  must not move).
+
+### R-11 — The palette-completion round (session 214) — Status: Done(v2.11.0)
+
+The session-214 audit's Tailwind v4 cluster (F-214d/e): the F-207a
+phantom-variant lesson has a THIRD edition — 23 (family, step) pairs
+used in src/ compute through v4's oklch defaults (silently the wrong
+values), and 7 shadcn semantic tokens are fully INERT (v4 drops
+unknown tokens without warning). The F-209a card-token cure fixed two
+tokens; the complete enumeration finds the rest of the tail.
+
+- **R-11.1 The pin (TDD)** — `tests/palette-pins.test.ts` born RED:
+  a complete enumeration — every (family, step) pair (including
+  `/opacity` forms) and every semantic token used in any class string
+  under src/ MUST be pinned in globals.css's `@theme`. The audit's
+  enumeration script promoted into the unit gate, so the class of bug
+  (F-207a token edition, F-209a, F-214d/e) cannot resurface.
+- **R-11.2 The cure** — the 23 missing pairs pinned to their v3
+  palette values (amber-950 #451a03 · blue-300 #93c5fd / 800 #1e40af /
+  900 #1e3a8a / 950 #172554 · emerald-900 #064e3b / 950 #022c22 ·
+  green-200 #bbf7d0 / 300 #86efac / 800 #166534 / 900 #14532d ·
+  indigo-100 #e0e7ff / 300 #a5b4fc / 800 #3730a3 / 900 #312e81 ·
+  purple-300 #d8b4fe / 800 #6b21a8 / 900 #581c87 · red-800 #991b1b ·
+  rose-300 #fda4af / 900 #881337 / 950 #4c0519 · violet-500 #8b5cf6);
+  the 7 shadcn semantic tokens pinned in the reference's own neutral
+  family (input #e5e5e5 · secondary #f5f5f5 · secondary-foreground
+  #171717 · accent #f5f5f5 · accent-foreground #171717 ·
+  muted-foreground #737373 · popover #ffffff · popover-foreground
+  #0a0a0a) with the `.dark` runtime flips (the F-209a mechanism:
+  #262626 · #fafafa · #a3a3a3 · #0a0a0a per the shadcn neutral dark
+  set).
+- **R-11.3 The verification** — the full gate + the four sweep class
+  drift legs + the interior census at margin 0: the pins change
+  computed colors ONLY where v4-oklch ≠ v3-hex (the 23 pairs) and turn
+  INERT classes on (the 7 tokens — e.g. the login verify-input border,
+  the Settings badge hovers, the dropdown/select hover states); any
+  standing-baseline trip is decoded with `--clusters` and the affected
+  page's baseline re-derived per the R-7.5 doctrine.
+
+### The in-commit cures (session 214)
+
+- **F-214f** — the boot-gate delivery warning: `bootEnvCheck` warns
+  (never fatals — the warn-throw discipline) when `NODE_ENV=production`
+  and the in-app OTP/RESET knobs are unset, naming both knobs; pinned
+  in `tests/boot-env.test.ts`.
+- **F-214g** — `upcomingAlerts`' window made deliberate: the docblock
+  documents the month-to-date-overdue + horizon window (the "Alerts"
+  half of the section), the overdue edge pinned in
+  `tests/finance.test.ts`.
+- **F-214h** — `parseCsv` treats an unquoted-field quote as a literal
+  (RFC 4180), pinned with a mid-field-quote fixture in
+  `tests/csv.test.ts`.
+- **F-214i** — the doc drift: README upload row 10 MB → 5 MB, the
+  phantom `/api/analytics` row corrected (client-side aggregation),
+  `/api/ai` → `/api/ai/coach`, the schema role comment aligned to the
+  signup truth, PAD §10's cap row.
+- **F-214j** — the AI coach's zero-income overspend warning: the
+  else-if fires on `income === 0 && expenses > 0` with its own copy;
+  pinned in `tests/ai.test.ts`.
+- **F-214k** — eslint.config.mjs re-enables
+  `react-hooks/exhaustive-deps`, `no-unreachable`, `no-fallthrough`,
+  `no-useless-escape` (all verified 0-issue live this session — the
+  gate strengthens, nothing weakens).
+- **F-214m** — the scratch-db schema-drift cure (discovered live during
+  the R-10 verification): the smoke scratch db is recreated each run,
+  and the e2e global-setup pushes with `--force-reset` (in-place schema
+  recreation — idempotent against any schema drift; see the findings
+  row for the prisma-7 refusal decode).
+
 ## 4. Plan validation (the re-check, session 203)
 
 After this plan text was drafted, every §2 claim was re-verified against the
@@ -567,16 +679,21 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | v2.8.0 | 211 | **R-4.5** (the gate:full reactivation — the plan's default pointer from docs/session_13.md; the R-4 ladder's closing slice) + **F-211a cured in-commit** (the package-identity cure). The audit round first: the cold baseline gates green at the documented v2.7.0 ship state (614/614 · smoke 14/14 · e2e 84/84 · census MATCH); the live reference-stability probe STABLE on every layer (bundle fingerprint · the empty-state demo census · the 256/9 sidebar · the TRUE-390 functional mobile-menu census opens/9 — plus a fresh side-by-side 390×844 mobile-nav census both apps: 9/9 destinations, pill visible in the right cluster, drawer navigation + Escape + close-face all live — ours the labeled superset); the security ledger re-triaged (10 advisories = 4H/5M/1L, all dev-toolchain — no NEW runtime-chain advisory); the standing deliverables verified (.env `file:../db/custom.db` + db/ at root · .env.example parity 6/6 · sitemap/robots/manifest live + the per-route OG family · no phantom `xs:` variants · the card/card-foreground @theme pins standing). The one open structural item = R-4.5 itself; the one new finding = F-211a. Shipped: **F-211a** — the package-identity pin (tests/gate-script.test.ts extended: name === "wealth-os" + the finance description, born RED against "neo-crm") → package.json re-identified (name/description) → `bun install` re-keyed bun.lock → GREEN; **R-4.5** — the cold end-to-end gate:full chain executed as the ship evidence (every leg green: lint 0/0 · tsc 0 · the unit suite with the new pin · build · smoke 14/14 · e2e 84/84 · the four sweep class drift gates CLEAN · the fullpage drift gate 22 legs CLEAN · the interior-census drift gate CLEAN at margin 0 · census MATCH after the chain) and the five docs un-dormanted (README:174 · AGENTS:31 · PAD:167/685 · SKILL:206 · CLAUDE.md's gate rows joined the count lockstep) with the pre-push doctrine re-wired | (the execution gate legs recorded in the session-211 worklog row) · census MATCH | (this session's execution commit) |
 | v2.9.0 | 212 | **R-8** (the dependency round — the trailing pointer's default for the no-open-R-item state) + **F-212a cured in-commit** (the lockfile-identity cure). The audit round first: the cold baseline gates green at the documented v2.8.0 ship state (lint 0/0 · tsc 0 · 616/616 · census MATCH); the ledger re-triaged (the standing 10, no new runtime-chain advisory) — and this round's decode found F-212b (8 of the 10 curable in-range, never re-resolved) + F-212a (the lockfile's `activity-map` workspaces mirror) + F-212c (the 2 range-unreachable: minimatch ←typescript-estree `^10.2.2`, deepmerge-ts ←`@prisma/config` exact `7.1.5`). Shipped: **R-8.1** the floors pin born RED 4/4 (every zod ≥ 4.6.6 / every vite ≥ 8.3.3 / every source-map-js ≥ 1.2.2 / the workspaces identity — bun.lock parsed directly, nested keys included) → **R-8.2** the cure: `bun update` (direct deps in-range: next 16.4.5 · eslint-config-next 16.4.5 · tailwind 4.3.5 · vitest 5.1.0 · playwright 1.65.0 · axe 4.14.0 · zustand 5.1.0 · html2canvas-pro 2.6.3) then the fresh lockfile generation (`rm bun.lock` + `bun install`) re-resolving the transitives — vite 8.3.6 · source-map-js 1.2.2 · the nested zod deduped onto the runtime 4.6.7 · the mirror re-keyed to wealth-os; **census 10 → 2**; the dompurify override (3.4.17) verified intact; prisma census MATCH post-regeneration → **R-8.3** the lockstep: PAD §10 re-anchored (2: 1H/1M range-unreachable, the cured-eight decode), the security-ledger pin re-anchored in-commit, the version columns re-anchored (README badge + stack · PAD §1.2 · SKILL §2), the counts 616→620 / 42→43 (pins family 16→17 with dependency-floors-212; the §7.1 infra sub-row corrected to 23), the full gate + the drift legs re-run cold at the new resolutions (parity surfaces changed with the next/tailwind bumps) | lint 0/0 · tsc 0 · **620 unit** (43 files; +4: the dependency-floors pin) · build · smoke 14/14 · e2e 84/84 · census MATCH · the drift legs re-run clean | (this session's execution commit) |
 | v2.10.0 | 213 | **R-9** (the prisma 6→7 major migration — the round's audit finding, F-213a, pre-empting the trailing pointer's standing-residuals default). The audit round first: the cold baseline gates green at the documented v2.9.0 ship state (lint 0/0 · tsc 0 · 620/620 · census MATCH); the reference probe STABLE on every layer; the ledger re-triage decoded the deepmerge-ts deferral as STALE — @prisma/config 7.x carries the fixed deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5 (the line ended at 6.19.3) — so the HIGH is curable, but only across the ORM major. Shipped: **R-9.1** the floors pin born RED 3/3 (every deepmerge-ts ≥ 8.0.0 · every prisma/@prisma/client on 7.x · the adapter chain resolved, better-sqlite3 barred) + **R-9.2** the migration-contract pin born RED 7/7 (the generator + output · the adapter constructors + no removed option + generated imports · prisma.config.ts on the seam · the e2e absolute-url re-pin + no removed flag · the git/eslint ignores · the package.json wiring · the externals) → **R-9.3** the cure: the generator swap + postinstall generate; both constructors through PrismaLibSql; the two namespace imports moved; prisma.config.ts (dotenv + resolveDatabaseUrl); the e2e setup re-pinned; the schema's datasource url removed (P1012); **F-213b discovered live**: bun HARD-BLOCKS better-sqlite3 (oven-sh/bun#4290) — the upgrade guide's named SQLite adapter — so the chain is @prisma/adapter-libsql + @libsql/client 0.17.4 (verified live under bun end-to-end); the lockfile regenerated (bun remove left the stale better-sqlite3 resolution — the F-212b lesson again; dompurify override intact) → **R-9.4** the verification + lockstep: **census 2 → 1** (0H/1M minimatch, range-unreachable), the security-ledger pin + PAD §10 re-anchored in-commit, the counts 620→630 / 43→45 / badge 704→714 (pins family 17→19), the version columns re-anchored everywhere, the AGENTS bun/better-sqlite3 gotcha, the PAD revision block | lint 0/0 · tsc 0 · **630 unit** (45 files; +10: the two new pins) · build · smoke 14/14 · e2e 84/84 · two sweep legs CLEAN (1440 + 390) · census MATCH | (this session's execution commit) |
+| v2.11.0 | 214 | **R-10** (the owner-scoping round) + **R-11** (the palette-completion round) + six in-commit cures (F-214f/g/h/i/j/k). The audit round first: the cold baseline gates green at the documented v2.10.0 ship state (lint 0/0 · tsc 0 · 630/630 · smoke 14/14 · e2e 84/84 · census MATCH); the reference probe STABLE on every layer; **all six drift gates CLEAN cold** (the four sweep classes + the fullpage + the interior census at margin 0 — the full parity evidence set); the ledger re-triaged (the standing 1 moderate minimatch, range-unreachable — no new advisory); the skills-guided fresh-eyes audit (Mode C, `skills/web-application` §14–§20 + `skills/tdd`) found the session's material: the tenancy cluster (F-214a High — `/api/reset` unscoped; F-214b/c — Budget/Setting ownerless, `/api/users` enumerating), the Tailwind v4 tail (F-214d — 23 unpinned pairs; F-214e — 7 inert semantic tokens), and the in-commit family (the boot delivery warning, the CSV quote edge, the AI zero-income gap, the doc drift, the disabled-but-clean eslint rules). Shipped: **R-10.1** `tests/owner-scoping.test.ts` born RED → **R-10.2** the Budget/Setting ownerId migration + the five route families scoped + the users GET retired to the session record + the seed re-bound → **R-10.3** the gate + census + drift legs; **R-11.1** `tests/palette-pins.test.ts` born RED (the complete enumeration) → **R-11.2** the 23 v3 pins + the 7 shadcn neutral tokens + the `.dark` flips → **R-11.3** the gate + the four sweep classes + the interior census; the in-commit cures as programmed | (the gate legs recorded in the session-214 worklog row) · census MATCH | (this session's execution commit) |
 
-> The next iteration session (214) has **no open R-item by default** — the
+> The next iteration session (215) has **no open R-item by default** — the
 > R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8
-> dependency round at v2.9.0, and the R-9 prisma major at v2.10.0 (the
-> advisory census now 1 — minimatch alone, range-unreachable until
-> typescript-estree moves; the re-triage duty stays). A fresh audit's
-> findings always pre-empt (Critical/High first); the natural next rounds
-> are the standing residuals' watch (the F-210a scroll-model genus — cure
-> only if a future round re-architects the shell) or R-5 (the LLM provider
-> wiring) on the owner's explicit ask. The standing residuals stay the
+> dependency round at v2.9.0, the R-9 prisma major at v2.10.0, and the
+> session-214 rounds (R-10 owner-scoping + R-11 palette-completion) at
+> v2.11.0 (the advisory census still 1 — minimatch alone,
+> range-unreachable until typescript-estree moves; the re-triage duty
+> stays). A fresh audit's findings always pre-empt (Critical/High
+> first); the natural next rounds are the standing residuals' watch (the
+> F-210a scroll-model genus — cure only if a future round re-architects
+> the shell), F-214l's whole-store subscription note (a `useShallow`
+> sweep, only if a page ever proves render-bound), or R-5 (the LLM
+> provider wiring) on the owner's explicit ask. The standing residuals
+> stay the
 > documented content supersets (the populated tables/charts our corpus
 > renders where the reference's empty workspace shows placeholders) + the
 > F-210a scroll-model genus (absorbed into the fullpage tables by the

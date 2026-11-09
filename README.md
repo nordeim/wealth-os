@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-714%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-741%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -37,7 +37,7 @@ alive from the first login.
 | 🏦 Accounts | Connected bank accounts with balances, institutions, and account types |
 | 📈 Investments | Holdings table with cost basis, current value, and gain/loss per position |
 | 📥 CSV Import | 3-step wizard (upload → smart column detection → review & commit), 10 MB cap, CSV/XLS/XLSX |
-| 🧮 Analytics | Overview / Expenses / Income / Investments tabs with real aggregations |
+| 📊 Analytics | Overview / Expenses / Income / Investments tabs with client-side aggregations over the dashboard payload |
 | 🎯 Savings Goals | Named targets with progress bars and contribution round-trips |
 | 🏷️ Budgets | Budget-vs-actual by category with the 50/30/20 framework |
 | 🤖 AI Coach | Deterministic local financial-intelligence engine (optional LLM provider via env) — no API key needed |
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 630 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 657 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 84 checks; chromium; seeded `db/e2e.db` |
 | PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.6.3 | Client-side statements |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
@@ -100,7 +100,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 45 unit suites + 📂 e2e/ 5 specs
+├── 📂 tests/                  # 47 unit suites + 📂 e2e/ 5 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -167,7 +167,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 630 checks / 45 files |
+| Unit (Vitest) | `bun run test` | 657 checks / 47 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 84 checks / 5 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -191,13 +191,13 @@ and require the session cookie unless marked public.
 | `/api/transactions` · `/api/transactions/[id]` | GET/POST/PATCH/DELETE | Full CRUD; type + month filters |
 | `/api/income-sources` · `/api/accounts` · `/api/investments` · `/api/goals` · `/api/budgets` | GET/POST/PATCH/DELETE | Resource CRUD (goals carry contribution round-trips) |
 | `/api/dashboard` | GET | The dashboard's aggregate payload (KPIs, series, budgets, upcoming) |
-| `/api/analytics` | GET | Tab-ready aggregations |
-| `/api/ai` | POST | The coach: question → insights + answer |
-| `/api/import` | POST | CSV smart-parse → preview; commit inserts transactions |
-| `/api/export` · `/api/reset` · `/api/search` · `/api/settings` · `/api/users` | GET/POST | Data export, demo reset, global search, settings, profile |
-| `/api/upload` · `/api/uploads/[name]` | POST/GET | Bounded file store (10 MB; path-traversal guarded) |
+| `/api/ai/coach` | POST | The coach: question → insights + answer |
+| `/api/import` | POST | CSV commit (rows validated client-side through the 3-step wizard; GET returns the column-hint vocabulary) |
+| `/api/export` · `/api/reset` · `/api/search` · `/api/settings` · `/api/users` | GET/POST | Data export, per-user demo reset, global search, per-user settings, own profile (session-scoped since session 214) |
+| `/api/upload` · `/api/uploads/[name]` | POST/GET | Bounded file store (5 MB — the reference's own cap; path-traversal guarded) |
 
-⚠️ `/api/reset` wipes the demo user's finance data — destructive.
+⚠️ `/api/reset` wipes the **calling user's** finance data — destructive
+(session 214: every delete is owner-scoped; other accounts' rows survive).
 
 ## Design System
 
@@ -221,7 +221,7 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 630 unit · 84 e2e · 14 smoke · full gate green |
+| Verification layer | ✅ Complete | 657 unit · 84 e2e · 14 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
 | Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 213: **R-9 shipped — the prisma 6→7 major migration**: the deepmerge-ts HIGH advisory cured by taking the ORM major — @prisma/config 7.x carries the fixed deepmerge-ts 8.0.2 — with the Rust-free generated client (`src/generated/prisma`), the PrismaLibSql driver adapter (bun hard-blocks better-sqlite3 — oven-sh/bun#4290), `prisma.config.ts` on the db-path seam, and the migration contract pinned in `tests/prisma-7-contract.test.ts` + `tests/dependency-floors-213.test.ts`; census 2 → 1); next: findings-led iterations (no open R-item by default) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |

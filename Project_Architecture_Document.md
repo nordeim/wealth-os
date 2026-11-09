@@ -21,6 +21,18 @@ Every change is tagged with its source: `[RES]` = validated by web research,
   section re-derived from the live tree (schema, API family, shell, tests).
   The v1.x CRM-era PAD is superseded; the infrastructure chapters (auth,
   db-path, gate, Tailwind v4 pins) carried forward where the code kept them.
+- `[SR]` v2.11.0 (session 214, R-10 + R-11): the tenancy gap CLOSED —
+  `Budget` and `Setting` gained `ownerId` (the §4 ER finally true),
+  `/api/reset` wipes only the caller's data, and `GET /api/users` answers
+  the session record (the CRM-era owners list retired); the Tailwind v4
+  palette completed — 23 (family, step) pairs re-pinned to v3 values and
+  the 7 shadcn neutral semantic tokens + `.dark` flips pinned (the
+  A-209 inert-class tail), both under the complete-enumeration guard
+  (`tests/palette-pins.test.ts`); the boot gate warns on in-app
+  OTP/reset delivery enabled in production (F-214f); eslint re-enabled
+  `react-hooks/exhaustive-deps` + the three dead-branch rules (F-214k,
+  tree verified clean); the unit-count lockstep moved 630 → 657 / 45 →
+  47 files with the owner-scoping + palette-pins pins (family 19 → 21).
 - `[SR]` The census contract re-derived: transactions are BOUNDS-pinned
   (54..108) — the generator never seeds future-dated rows, so the total is
   legitimately date-dependent.
@@ -202,7 +214,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (630) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (657) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -490,8 +502,9 @@ erDiagram
 
 ### 4.2 Data Models
 
-Eight models, all owner-scoped (`ownerId` on every finance row; handlers
-filter by it). `User.tokenVersion` is the session-revocation dimension
+Eight models, all owner-scoped (`ownerId` on every finance row — Budget
+and Setting included since session-214's R-10; handlers filter by it).
+`User.tokenVersion` is the session-revocation dimension
 (ADR-003). Amounts are floats at the SQLite layer — money entering through
 API boundaries is Zod-normalized (2-dp coercion) before persistence, and
 all display math goes through `src/lib/finance.ts` (rounded, deterministic).
@@ -578,7 +591,7 @@ by the utility layer.
 | Password reset revokes sessions | `tokenVersion` bump; cookie comparison fails |
 | Login/signup/reset rate-limited | per-IP buckets (10/15min login+signup; 5 resend), `Retry-After` header, keyed on trusted-proxy-derived IP |
 | Production boots without `AUTH_SECRET` refuse to serve | `src/instrumentation.ts` → boot-env fail-fast |
-| Uploads bounded + path-guarded | 10 MB cap; `[name]` route validates against traversal |
+| Uploads bounded + path-guarded | 5 MB cap (the reference's own ceiling); `[name]` route validates against traversal |
 | No secrets in the tree | `.gitignore` (`.env`, `db/*.db`, keys); smoke artifact-hygiene leg asserts the standalone output carries none of `.env/.git/db/skills/docs/uploads` |
 
 ### 6.2 Security Utilities
@@ -594,8 +607,12 @@ by the utility layer.
 Single-role model: the session user. `/` and `(app)/*` pages make the
 session decision **server-side** (the (app) layout redirects; the root
 renders `GuestLoginRedirect` — a client shim that mirrors the reference's
-`/login?from_url=` mechanism). API handlers re-verify per call. No RBAC —
-the product is single-user-per-install by design.
+`/login?from_url=` mechanism). API handlers re-verify per call. No RBAC
+by design. **Session-214 (R-10) closed the tenancy gap**: the product is
+multi-account-capable — every finance row (Budget and Setting included
+since session 214) carries `ownerId`, every handler filters by it,
+`/api/reset` wipes only the caller's data, and `GET /api/users` answers
+the session user's own record (the CRM-era owners list is retired).
 
 ### 6.4 Threat Model
 
@@ -618,9 +635,9 @@ the product is single-user-per-install by design.
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 45 | 630 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 47 | 657 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 19 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract) | `tests/` | source-scanning contracts |
+| — architecture pins | 21 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins) | `tests/` | source-scanning contracts |
 | — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -653,7 +670,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 630/630 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 657/657 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 84/84
@@ -723,7 +740,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 630 unit / 84 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 657 unit / 84 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -757,7 +774,7 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 630 unit · build · smoke 14/14 ·
+the time of writing (lint 0/0 · tsc 0 · 657 unit · build · smoke 14/14 ·
 84 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
