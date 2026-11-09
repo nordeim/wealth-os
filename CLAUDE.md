@@ -45,7 +45,7 @@ Follow this six-phase workflow for all implementation tasks:
   functionality.
 - **Determinism everywhere**: the seed, the AI coach, and the test data
   are all deterministic — no `Math.random()` in seeded paths.
-- **The gate is the contract**: lint 0/0 · tsc 0 · 620 unit · build ·
+- **The gate is the contract**: lint 0/0 · tsc 0 · 630 unit · build ·
   smoke 14/14 · 84 e2e. A green gate achieved by weakening a guardrail is
   not a fix.
 - **Offline-capable by default**: no runtime third-party calls (fonts,
@@ -82,9 +82,11 @@ Follow this six-phase workflow for all implementation tasks:
   fetch from the API family; keep derived UI state out of the store.
 - Domain math lives in `src/lib/finance.ts` (pure, tested functions) —
   never inline rollups in components.
-- Prisma access ONLY through `src/lib/db` (the path-anchored singleton).
-  `DATABASE_URL="file:../db/custom.db"` resolves against
-  `prisma/schema.prisma` — keep `db/` at the repo root, git-ignored.
+- Prisma access ONLY through `src/lib/db` (the path-anchored singleton;
+  prisma 7: the PrismaLibSql driver adapter + the generated client in
+  `src/generated/prisma`, postinstall-regenerated). `DATABASE_URL=`
+  `"file:../db/custom.db"` resolves through the db-path seam — keep `db/`
+  at the repo root, git-ignored.
 
 ## Development Workflow
 
@@ -106,7 +108,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 | `bun run dev` | Dev server (:3000) |
 | `bun run build` | Production standalone build |
 | `bun run start` | Serve the standalone artifact (needs build) |
-| `bun run test` | Unit suite (Vitest, 620 checks) |
+| `bun run test` | Unit suite (Vitest, 630 checks) |
 | `CI=1 bun run test:e2e` | E2E suite (Playwright, 84 checks, own db + :3100) |
 | `bun run lint` | ESLint, fails on warnings |
 | `bun run typecheck` | `tsc --noEmit` |
@@ -119,7 +121,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 
 - **Unit (Vitest)**: domain math, schemas, AI engine, auth contract,
   architecture pins (`gate-script`, `db-census`, `route-case`…), property
-  tests via fast-check. 620 checks / 43 files.
+  tests via fast-check. 630 checks / 45 files.
 - **E2E (Playwright, chromium)**: journeys per section, mobile drawer at
   390×844, dialogs, route-alias equivalence, the 401 auth-wall probe.
   84 checks / 5 specs. `playwright.config.ts` pins `db/e2e.db`, global

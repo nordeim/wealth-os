@@ -44,6 +44,26 @@ Every change is tagged with its source: `[RES]` = validated by web research,
   moved 616 → 620 with the dependency-floors pin
   (`tests/dependency-floors-212.test.ts`); the two range-unreachable
   advisories (minimatch, deepmerge-ts) stay §10's documented deferral.
+- `[SR]` v2.10.0 (session 213, R-9 — the prisma 6→7 major migration): the
+  ORM taken across the major — prisma / @prisma/client 6.19.3 → 7.10.1
+  (the Rust-free `prisma-client` generator emitting into
+  `src/generated/prisma`, postinstall-regenerated, git+eslint-ignored),
+  the PrismaLibSql driver adapter replacing the removed `datasources`
+  constructor option in both constructor sites (`src/lib/db.ts` +
+  `prisma/seed.ts` — the db-path seam unchanged), `prisma.config.ts` (the
+  CLI's config home, the URL routed through `resolveDatabaseUrl` so a
+  relative `file:` reference can never ride the v7 CWD rule out of the
+  repo), the e2e global-setup re-pinned (the removed generate-skip flag
+  gone; the e2e db pinned by absolute url), and the serverExternalPackages
+  chain for the native/wasm runtime. The decode worth recording: bun
+  HARD-BLOCKS better-sqlite3 (oven-sh/bun#4290) — the upgrade guide's
+  named SQLite adapter — so the runtime chain is @prisma/adapter-libsql +
+  @libsql/client (the bun-compatible NAPI driver, verified live under
+  bun, the standalone artifact, and the full gate). The advisory census
+  moved 2 → 1 (the deepmerge-ts HIGH cured — @prisma/config 7.x carries
+  8.0.2; every 6.x stable exact-pins the vulnerable 7.1.5); the
+  unit-count lockstep moved 620 → 630 / 43 → 45 files with the
+  dependency-floors-213 + prisma-7-contract pins.
 
 ### Table of Contents
 
@@ -90,7 +110,7 @@ rejected alternatives live there.
 | Icons | lucide-react | 0.525.0 | Consistent stroke family |
 | Charts | recharts | 3.10.1 | Declarative SVG charts (area, donut, bars) |
 | State | Zustand | 5.1.0 | Minimal client store without Context ceremony |
-| ORM | Prisma | 6.19.3 | Typed queries + SQLite default; PostgreSQL-ready |
+| ORM | Prisma (@prisma/client + adapter-libsql) | 7.10.1 | Typed queries + SQLite default; PostgreSQL-ready. R-9 (session 213): the prisma 7 major — Rust-free generated client (`src/generated/prisma`, postinstall-regenerated) + the PrismaLibSql driver adapter (bun hard-blocks better-sqlite3 — oven-sh/bun#4290) |
 | Validation | Zod | 4.6.7 | Boundary parsing; message-carrying failures |
 | Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | Fast, ESM-native; property tests for money math |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | Real-browser journeys + a11y assertions |
@@ -182,7 +202,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (620) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (630) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -314,7 +334,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 41 unit suites (incl. architecture pins) + e2e/ 5 specs
+├── tests/                       # 45 unit suites (incl. architecture pins) + e2e/ 5 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -598,9 +618,9 @@ the product is single-user-per-install by design.
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 43 | 620 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 45 | 630 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 17 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212) | `tests/` | source-scanning contracts |
+| — architecture pins | 19 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract) | `tests/` | source-scanning contracts |
 | — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -633,7 +653,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 620/620 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 630/630 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 84/84
@@ -703,7 +723,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 620 unit / 84 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 630 unit / 84 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -729,7 +749,7 @@ comments explain why.
 
 | Priority | Issue | Impact | Status |
 |----------|-------|--------|--------|
-| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 212): 2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains | Chains (the R-8 residue — both fixes UNREACHABLE within their parents' ranges): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1 · deepmerge-ts←`@prisma/config` exact-pins `7.1.5` while the GHSA-ggr8-5vv4-36mx fix is 8.0.0. The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 212; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks either fix is cured same-session) |
+| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 213): 1 advisory: 0 high / 1 moderate — all dev-toolchain, zero runtime chains | Chain (the lone residue — fix UNREACHABLE within its parent's range): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1. CURED at R-9 (session 213, the prisma 6→7 major): the deepmerge-ts HIGH (GHSA-ggr8-5vv4-36mx) — @prisma/config 7.x carries deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5; the migration contract is pinned (`tests/prisma-7-contract.test.ts` + `tests/dependency-floors-213.test.ts`). The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 213; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts` + `tests/dependency-floors-213.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks the fix is cured same-session) |
 | LOW | Session cookie name is `neo_session` (scaffold legacy) | Cosmetic; smoke + specs grep it — a rename is a coordinated change | Accepted |
 | LOW | No migration journal (db:push workflow) | Schema history lives in git, not SQL files — acceptable for the single-user product | Accepted |
 | LOW | AI coach is rule-based (honest labeling) | No LLM answers offline; the provider seam exists for a future engine | By design (ADR-005) |
@@ -737,7 +757,7 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 620 unit · build · smoke 14/14 ·
+the time of writing (lint 0/0 · tsc 0 · 630 unit · build · smoke 14/14 ·
 84 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

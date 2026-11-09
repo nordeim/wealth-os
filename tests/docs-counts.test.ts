@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 620;
+const UNIT_TOTAL = 630;
 const E2E_TOTAL = 84;
 const SMOKE_TOTAL = 14;
-const TEST_FILES = 43;
+const TEST_FILES = 45;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -55,11 +55,11 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
       `| Unit | ${TEST_FILES} | ${UNIT_TOTAL} |`,
     );
-    // Session-212 (R-8): the dependency-floors-212 pin joined the family
-    // (17) and the infra sub-row was corrected to its real count (23 —
-    // the arithmetic 3 + 17 + 23 = 43 now closes).
+    // Session-213 (R-9): the dependency-floors-213 + prisma-7-contract
+    // pins joined the family (19) and the two files took the suite to 45
+    // (the arithmetic 3 + 19 + 23 = 45 now closes).
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 17 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212) |",
+      "| — architecture pins | 19 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract) |",
     );
   });
 

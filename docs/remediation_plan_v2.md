@@ -7,10 +7,9 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.9.0** (session 212 — the R-8 dependency round:
-> 8 of the 10 standing dev-toolchain advisories cured within existing
-> semver ranges + the F-212a lockfile-identity cure; §5 carries
-> the execution history).
+> **Current version: v2.10.0** (session 213 — the R-9 prisma 6→7 major
+> migration: the last HIGH advisory cured across the ORM major + the
+> driver-adapter seam; §5 carries the execution history).
 
 ---
 
@@ -450,6 +449,92 @@ parents' own semver ranges.
   gate re-run cold at the new resolutions, the drift legs included
   (parity surfaces changed with the next + tailwind bumps).
 
+### R-9 — The prisma 6→7 major migration (session 213) — Status: Done(v2.10.0)
+
+The trailing pointer's default for the no-open-R-item state was the
+standing residuals' watch — but the round's ledger re-triage went one
+level deeper and found the material: **the F-212c "range-unreachable"
+decode for deepmerge-ts is STALE**. `@prisma/config` 7.x (the new major
+line — 16 stable releases deep, prisma 8 already in RC) moved its
+dependency to deepmerge-ts **8.0.2**, the GHSA-ggr8-5vv4-36mx fixed
+version, while every 6.x stable (the line ends at 6.19.3) exact-pins the
+vulnerable 7.1.5 forever. The HIGH advisory is now curable — but only
+across a major ORM migration.
+
+- **F-213a — the deferred HIGH is now curable, but only across a major**.
+  The migration surface was walked file-by-file before planning (the
+  plan-validation pass): `prisma/schema.prisma`'s generator
+  (`prisma-client-js` → `prisma-client`, `output` now required — the
+  client no longer lands in node_modules); `src/lib/db.ts` +
+  `prisma/seed.ts` (the only two PrismaClient constructors — the
+  driver adapter replaces the `datasources` URL option); the two auth
+  routes importing the `Prisma` namespace (forgot/reset-password — the
+  namespace moves to the generated path); `tests/e2e/global-setup.ts`
+  (`--skip-generate` removed in v7; the relative-URL resolution moves
+  from the schema rule to `prisma.config.ts`, so the e2e db push pins
+  its target by ABSOLUTE url); the bun `allowScripts` keys; and the
+  generated-client dir (gitignore + eslint ignore + the standalone
+  wasm-trace question the smoke ladder answers empirically). The
+  db-path seam itself (`runtimeDatabaseUrl`) is UNTOUCHED — the adapter
+  consumes the same resolved URL the engine did.
+- **R-9.1 The floors pin (TDD)** — `tests/dependency-floors-213.test.ts`
+  born RED: every deepmerge-ts resolution ≥ 8.0.0 (the advisory floor);
+  every prisma / @prisma/client resolution on the 7.x line (the major
+  itself is the contract — a 6.x regression re-opens the advisory);
+  the `@prisma/adapter-better-sqlite3` + `better-sqlite3` resolutions
+  present (the runtime adapter chain the client now requires).
+- **R-9.2 The migration-contract pin (TDD)** —
+  `tests/prisma-7-contract.test.ts` born RED: the schema's generator is
+  `prisma-client` with an output path; both constructor sites build
+  through the adapter and pass NO `datasources` option;
+  `prisma.config.ts` exists with the schema + datasource env seam; the
+  e2e global-setup carries no removed `--skip-generate` flag and pins
+  the e2e db by absolute url; the generated dir is gitignored +
+  eslint-ignored; package.json wires the postinstall generate (the
+  fresh-clone DX contract: `bun install` yields a typecheckable tree).
+- **R-9.3 The cure** — the dependency moves (`@prisma/client@^7.10.1` +
+  `@prisma/adapter-libsql@^7.10.1` + `@libsql/client@^0.17.4` into
+  dependencies; `prisma@^7.10.1` into devDependencies per the upgrade
+  guide — the CLI is not runtime; dotenv for `prisma.config.ts`); the
+  generator swap (`prisma-client` + `output = "../src/generated/prisma"`)
+  + the postinstall generate; the two constructor rewrites through the
+  adapter seam; the namespace import moves in the two auth routes;
+  `prisma.config.ts` (dotenv + `resolveDatabaseUrl` — a relative URL can
+  never ride the v7 CWD rule out of the repo, and the prisma-env
+  wrapper's absolute URL flows through unchanged); the e2e setup
+  re-pin (the removed generate-skip flag gone, the e2e db pinned by
+  validated-root ABSOLUTE url); the eslint/gitignore excludes; the
+  `serverExternalPackages` chain. **The round's own discovery (F-213b):
+  bun HARD-BLOCKS better-sqlite3** — `require` loads but the
+  constructor throws `not yet supported in Bun` (oven-sh/bun#4290), and
+  the prisma 7 upgrade guide names exactly that adapter for SQLite. The
+  first install proved it live (seed/census ERR_DLOPEN_FAILED under the
+  guide's adapter); the bun-compatible runtime chain is
+  `@prisma/adapter-libsql` + `@libsql/client` (the NAPI libsql driver,
+  verified live under bun: read queries against the real db, the full
+  seed/reseed cycle, the standalone artifact boot, and the whole gate).
+  The schema's datasource `url` property was also removed (v7 rejects it
+  — P1012); the lockfile regenerated (`rm bun.lock` + `bun install` —
+  the F-212b lesson again: `bun remove` left the stale better-sqlite3
+  resolution behind; the regeneration cleared it, dompurify override
+  intact).
+- **R-9.4 The verification** — lint 0/0 · tsc 0 · **630 unit (45 files,
+  +10: the two new pins)** · build (all routes + capital twins + the SEO
+  family; the standalone artifact carries the full native+wasm chain —
+  94MB) · smoke 14/14 (the standalone boots under bun with the adapter —
+  the login/session/rate-limit/artifact-hygiene ladder green) · **e2e
+  84/84** (the v7 global-setup rewire + the adapter under the production
+  server, mobile-drawer battery included) · **two sweep legs CLEAN**
+  (1440×900 + 390×844 at margin 0.5pct — the tools zero/reseed through
+  the adapter; parity surfaces unchanged, as expected for a
+  backend-only migration) · census MATCH after every leg · **the audit
+  census 2 → 1** (0 high / 1 moderate — minimatch stays the lone
+  range-unreachable deferral until typescript-estree moves; the
+  security-ledger pin + PAD §10 re-anchored in-commit) · the docs
+  lockstep (stack versions everywhere, counts 620→630 / 43→45 / badge
+  704→714, the §7.1 pins family 17→19, the AGENTS gotcha, the README
+  quickstart note, the PAD revision block).
+
 ## 4. Plan validation (the re-check, session 203)
 
 After this plan text was drafted, every §2 claim was re-verified against the
@@ -481,17 +566,18 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | v2.7.0 | 210 | **R-4.4** (the fullpage re-anchor, the plan's default pointer — the fifth gate re-anchored to the WealthOS reference following the R-4.1/R-4.2/R-4.3 pattern): **the pin** — tests/fullpage-sweep-tool.test.ts rewritten, born RED 11/19 against the CRM-era config (the NEO-CRM REF, the single-page guest landing, the 1920×1080 class, the 0.14/0.49 pill baselines) → GREEN 22/22 at ship · **the re-anchor** — REF → the WealthOS reference; PAGES imported from ./sweep (the 11-entry lockstep); the GUEST doctrine RETIRED (preflightPairState — the shared login pair); planThemeWrites + the per-page probe (the F-205a theme match); zero-data + the seed restore in a FINALLY; the classes → the sweep's own 1440×900 + 390×844 (the five gates' axes coincide); driftVerdict reused (one implementation) · **the maiden's own findings, cured in-commit**: F-210b the ZERO-DATA SENTINEL (assertZeroData — the six-array /api/dashboard probe after the zero + after each class's our-side loop; born from the first maiden's corrupted captures — analytics/goals/settings rendered the seeded corpus mid-run — and PROVEN live: it tripped the second run, the third ran clean) · F-210c the EXACT-BASENAME GUARD CURE (the root cause: `"fullpage-sweep.ts".endsWith("sweep.ts")` is TRUE, so importing ./sweep fired THE SWEEP inside the fullpage process — its reseed was the "external actor"; all four tool guards now `path.basename(argv[1]) === "<name>.ts"`) · F-210a the scroll-model genus DECODED + ABSORBED (the reference scrolls the document — dashboard 2054/3311; ours locks at the viewport — the padTo white rows are the dominant standing genus, not a cure target) · **the derivation** — the clean maiden's 22 measurements + the byte-identical noise calibration (0.000pct worst delta) → the per-class tables (desktop: dashboard 60.1 · investments 49.5 · settings 50.7 · import 26.6 (the horizontal-overflow genus — the reference pokes to 1778px wide) · income 30.0 · expenses 13.5 · accounts 10.9 · analytics 40.4 · goals 7.2 · login 7.9 · reset 3.9; phone: dashboard 78.5 · investments 80.9 · settings 61.0 · expenses 61.1 · analytics 67.3 · income 45.4 · import 31.3 · login 16.5 · reset 16.5 · goals 17.9 · accounts 23.3 — where both documents are viewport-height the values track the sweep's own tables, the shared-viewport cross-check) · **the live proofs** — all 22 legs CLEAN at both classes under --fail-on-drift; the teeth check (--pages login --fail-on-drift --drift-margin -3 → exit 1, the allowed values named); census MATCH after every run. Pins: tests/fullpage-sweep-tool.test.ts 12 → 22 (the sentinel seam + the collision guard + the derived literals + the genera decode) | lint 0/0 · tsc 0 · **614 unit** (42 files; +10 net: the fullpage pin 12→22) · build · smoke 14/14 · e2e 84/84 · census MATCH · the fullpage drift gate clean at both classes + live-proven teeth · docs lockstep (604/42/688 → 614/42/698 everywhere; the pins row 15→16 with fullpage-sweep-tool) | (this session's execution commit) |
 | v2.8.0 | 211 | **R-4.5** (the gate:full reactivation — the plan's default pointer from docs/session_13.md; the R-4 ladder's closing slice) + **F-211a cured in-commit** (the package-identity cure). The audit round first: the cold baseline gates green at the documented v2.7.0 ship state (614/614 · smoke 14/14 · e2e 84/84 · census MATCH); the live reference-stability probe STABLE on every layer (bundle fingerprint · the empty-state demo census · the 256/9 sidebar · the TRUE-390 functional mobile-menu census opens/9 — plus a fresh side-by-side 390×844 mobile-nav census both apps: 9/9 destinations, pill visible in the right cluster, drawer navigation + Escape + close-face all live — ours the labeled superset); the security ledger re-triaged (10 advisories = 4H/5M/1L, all dev-toolchain — no NEW runtime-chain advisory); the standing deliverables verified (.env `file:../db/custom.db` + db/ at root · .env.example parity 6/6 · sitemap/robots/manifest live + the per-route OG family · no phantom `xs:` variants · the card/card-foreground @theme pins standing). The one open structural item = R-4.5 itself; the one new finding = F-211a. Shipped: **F-211a** — the package-identity pin (tests/gate-script.test.ts extended: name === "wealth-os" + the finance description, born RED against "neo-crm") → package.json re-identified (name/description) → `bun install` re-keyed bun.lock → GREEN; **R-4.5** — the cold end-to-end gate:full chain executed as the ship evidence (every leg green: lint 0/0 · tsc 0 · the unit suite with the new pin · build · smoke 14/14 · e2e 84/84 · the four sweep class drift gates CLEAN · the fullpage drift gate 22 legs CLEAN · the interior-census drift gate CLEAN at margin 0 · census MATCH after the chain) and the five docs un-dormanted (README:174 · AGENTS:31 · PAD:167/685 · SKILL:206 · CLAUDE.md's gate rows joined the count lockstep) with the pre-push doctrine re-wired | (the execution gate legs recorded in the session-211 worklog row) · census MATCH | (this session's execution commit) |
 | v2.9.0 | 212 | **R-8** (the dependency round — the trailing pointer's default for the no-open-R-item state) + **F-212a cured in-commit** (the lockfile-identity cure). The audit round first: the cold baseline gates green at the documented v2.8.0 ship state (lint 0/0 · tsc 0 · 616/616 · census MATCH); the ledger re-triaged (the standing 10, no new runtime-chain advisory) — and this round's decode found F-212b (8 of the 10 curable in-range, never re-resolved) + F-212a (the lockfile's `activity-map` workspaces mirror) + F-212c (the 2 range-unreachable: minimatch ←typescript-estree `^10.2.2`, deepmerge-ts ←`@prisma/config` exact `7.1.5`). Shipped: **R-8.1** the floors pin born RED 4/4 (every zod ≥ 4.6.6 / every vite ≥ 8.3.3 / every source-map-js ≥ 1.2.2 / the workspaces identity — bun.lock parsed directly, nested keys included) → **R-8.2** the cure: `bun update` (direct deps in-range: next 16.4.5 · eslint-config-next 16.4.5 · tailwind 4.3.5 · vitest 5.1.0 · playwright 1.65.0 · axe 4.14.0 · zustand 5.1.0 · html2canvas-pro 2.6.3) then the fresh lockfile generation (`rm bun.lock` + `bun install`) re-resolving the transitives — vite 8.3.6 · source-map-js 1.2.2 · the nested zod deduped onto the runtime 4.6.7 · the mirror re-keyed to wealth-os; **census 10 → 2**; the dompurify override (3.4.17) verified intact; prisma census MATCH post-regeneration → **R-8.3** the lockstep: PAD §10 re-anchored (2: 1H/1M range-unreachable, the cured-eight decode), the security-ledger pin re-anchored in-commit, the version columns re-anchored (README badge + stack · PAD §1.2 · SKILL §2), the counts 616→620 / 42→43 (pins family 16→17 with dependency-floors-212; the §7.1 infra sub-row corrected to 23), the full gate + the drift legs re-run cold at the new resolutions (parity surfaces changed with the next/tailwind bumps) | lint 0/0 · tsc 0 · **620 unit** (43 files; +4: the dependency-floors pin) · build · smoke 14/14 · e2e 84/84 · census MATCH · the drift legs re-run clean | (this session's execution commit) |
+| v2.10.0 | 213 | **R-9** (the prisma 6→7 major migration — the round's audit finding, F-213a, pre-empting the trailing pointer's standing-residuals default). The audit round first: the cold baseline gates green at the documented v2.9.0 ship state (lint 0/0 · tsc 0 · 620/620 · census MATCH); the reference probe STABLE on every layer; the ledger re-triage decoded the deepmerge-ts deferral as STALE — @prisma/config 7.x carries the fixed deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5 (the line ended at 6.19.3) — so the HIGH is curable, but only across the ORM major. Shipped: **R-9.1** the floors pin born RED 3/3 (every deepmerge-ts ≥ 8.0.0 · every prisma/@prisma/client on 7.x · the adapter chain resolved, better-sqlite3 barred) + **R-9.2** the migration-contract pin born RED 7/7 (the generator + output · the adapter constructors + no removed option + generated imports · prisma.config.ts on the seam · the e2e absolute-url re-pin + no removed flag · the git/eslint ignores · the package.json wiring · the externals) → **R-9.3** the cure: the generator swap + postinstall generate; both constructors through PrismaLibSql; the two namespace imports moved; prisma.config.ts (dotenv + resolveDatabaseUrl); the e2e setup re-pinned; the schema's datasource url removed (P1012); **F-213b discovered live**: bun HARD-BLOCKS better-sqlite3 (oven-sh/bun#4290) — the upgrade guide's named SQLite adapter — so the chain is @prisma/adapter-libsql + @libsql/client 0.17.4 (verified live under bun end-to-end); the lockfile regenerated (bun remove left the stale better-sqlite3 resolution — the F-212b lesson again; dompurify override intact) → **R-9.4** the verification + lockstep: **census 2 → 1** (0H/1M minimatch, range-unreachable), the security-ledger pin + PAD §10 re-anchored in-commit, the counts 620→630 / 43→45 / badge 704→714 (pins family 17→19), the version columns re-anchored everywhere, the AGENTS bun/better-sqlite3 gotcha, the PAD revision block | lint 0/0 · tsc 0 · **630 unit** (45 files; +10: the two new pins) · build · smoke 14/14 · e2e 84/84 · two sweep legs CLEAN (1440 + 390) · census MATCH | (this session's execution commit) |
 
-> The next iteration session (213) has **no open R-item by default** — the
-> R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, and the R-8
-> dependency round at v2.9.0 (the advisory census now 2, both fixes
-> range-unreachable — they cure automatically when typescript-estree or
-> @prisma/config move their ranges; the re-triage duty stays). A fresh
-> audit's findings always pre-empt (Critical/High first); the natural next
-> rounds are the standing residuals' watch (the F-210a scroll-model genus —
-> cure only if a future round re-architects the shell) or R-5 (the LLM
-> provider wiring) on the owner's explicit ask. The standing residuals stay
-> the documented content supersets (the populated tables/charts our corpus
+> The next iteration session (214) has **no open R-item by default** — the
+> R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8
+> dependency round at v2.9.0, and the R-9 prisma major at v2.10.0 (the
+> advisory census now 1 — minimatch alone, range-unreachable until
+> typescript-estree moves; the re-triage duty stays). A fresh audit's
+> findings always pre-empt (Critical/High first); the natural next rounds
+> are the standing residuals' watch (the F-210a scroll-model genus — cure
+> only if a future round re-architects the shell) or R-5 (the LLM provider
+> wiring) on the owner's explicit ask. The standing residuals stay the
+> documented content supersets (the populated tables/charts our corpus
 > renders where the reference's empty workspace shows placeholders) + the
 > F-210a scroll-model genus (absorbed into the fullpage tables by the
 > stability call — cure only if a future round re-architects the shell).

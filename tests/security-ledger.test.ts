@@ -24,14 +24,15 @@ import { describe, expect, it } from "vitest";
 // runtime-chain advisory is cured same-session, never deferred) lives in
 // AGENTS.md's gate discipline — operators read it there.
 //
-// Session-212 (R-8, the dependency round): the census moved 10 → 2 — eight
-// advisories cured by the lockfile re-resolution (vite 8.3.6 out of the
-// 8.3.0–8.3.2 window · source-map-js 1.2.2 · the nested eslint-plugin-react-hooks
-// zod deduped onto the root's 4.6.7), with the floors pinned in
-// tests/dependency-floors-212.test.ts. The two that remain are UNREACHABLE
-// within their parents' ranges: minimatch (typescript-estree pins ^10.2.2;
-// the fix is 11.0.1) and deepmerge-ts (@prisma/config exact-pins 7.1.5) —
-// the PAD §10 row below carries the live census and their decode.
+// Session-213 (R-9, the prisma 6→7 major): the census moved 2 → 1 —
+// the deepmerge-ts HIGH cured by taking the ORM major (@prisma/config
+// 7.x carries deepmerge-ts 8.0.2; every 6.x stable exact-pins the
+// vulnerable 7.1.5), with the bun-compatibility decode recorded in the
+// PAD §10 row (prisma 7's better-sqlite3 adapter is hard-blocked under
+// bun — oven-sh/bun#4290 — so the runtime chain is PrismaLibSql). The
+// one that remains is UNREACHABLE within its parent's range: minimatch
+// (typescript-estree pins ^10.2.2; the fix is 11.0.1) — the PAD §10 row
+// below carries the live census and its decode.
 
 // The GHSA-mrhx-c7xc-m3w5 vulnerable range is zod < 4.6.6 — the floor the
 // runtime resolution must clear.
@@ -95,12 +96,12 @@ describe("session-203: the security ledger (R-1 — the bun audit doctrine has t
     const pad = norm(
       readFileSync(path.resolve(import.meta.dirname, "..", "Project_Architecture_Document.md"), "utf-8"),
     );
-    // Session-212 (R-8): the census re-anchored 10 → 2 after the dependency
-    // round cured the eight reachable advisories (floors pinned in
-    // dependency-floors-212). The remaining two are range-unreachable —
+    // Session-213 (R-9): the census re-anchored 2 → 1 after the prisma
+    // 6→7 major cured the deepmerge-ts HIGH (the ORM major carried
+    // @prisma/config's own fix). The remaining one is range-unreachable —
     // the row must keep saying so.
-    expect(pad).toContain("2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains");
-    expect(pad).toContain("GHSA-ggr8-5vv4-36mx");
+    expect(pad).toContain("1 advisory: 0 high / 1 moderate — all dev-toolchain, zero runtime chains");
+    expect(pad).toContain("GHSA-g3hv-75wg-m249");
     expect(pad).toContain("Re-triage: re-run `bun audit` before every push");
   });
 });
