@@ -38,6 +38,31 @@ describe("the local AI provider: insights", () => {
     expect(trend).toBeUndefined();
   });
 
+  it("warns when spending with ZERO income (the F-214j gap)", () => {
+    // The pre-214 engine required income > 0 for the overspend warning,
+    // so the most alarming state — real expenses, no income at all —
+    // produced no insight. The warning must fire with its own copy.
+    const insights = getAiProvider().insights(
+      ctx({
+        transactions: [
+          {
+            description: "Rent",
+            amount: 1200,
+            type: "expense",
+            category: "Rent/Mortgage",
+            budgetCategory: "needs",
+            date: new Date(2026, 10, 1),
+          },
+        ],
+        incomeSources: [],
+      }),
+    );
+    const warning = insights.find((i) => i.id === "savings-rate");
+    expect(warning).toBeDefined();
+    expect(warning!.tone).toBe("warning");
+    expect(warning!.title.toLowerCase()).toContain("no income");
+  });
+
   it("derives the budget-breach insight when a category goes over", () => {
     const insights = getAiProvider().insights(ctx());
     const breach = insights.find((i) => i.id === "budget-breach");

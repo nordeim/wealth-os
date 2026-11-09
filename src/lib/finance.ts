@@ -365,8 +365,15 @@ export interface UpcomingItem {
   category: string;
 }
 
-/** Recurring rows whose nextDate lands within the horizon (default 14
- *  days), soonest first. */
+/**
+ * Recurring rows for the dashboard's "Upcoming & Alerts" section
+ * (session-214, F-214g — the window made deliberate and pinned):
+ * month-to-date OVERDUE rows stay visible (the "Alerts" half — they
+ * render "Due N days ago" with a negative daysAway), everything from
+ * today through the horizon (default 14 days) is upcoming, and rows
+ * whose nextDate fell in a PREVIOUS month are stale and drop out.
+ * Soonest first.
+ */
 export function upcomingAlerts(
   txs: TxLike[],
   ref: Date,

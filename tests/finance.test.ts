@@ -209,6 +209,33 @@ describe("upcoming & alerts", () => {
     expect(out[0].description).toBe("Rent");
     expect(out[0].daysAway).toBe(4);
   });
+
+  it("includes month-to-date OVERDUE rows but drops previous-month ones (the deliberate window, F-214g)", () => {
+    // The section is "Upcoming & Alerts": a bill that came due earlier
+    // THIS month stays visible as an overdue alert (negative daysAway,
+    // rendered "Due N days ago"), while a nextDate from a PREVIOUS
+    // month is stale and drops out. Pinned so the window cannot drift
+    // silently — the docblock in finance.ts is the contract.
+    const overdue = tx({
+      description: "Phone bill",
+      amount: 45,
+      type: "expense",
+      date: new Date(2026, 10, 1),
+      recurring: true,
+      nextDate: new Date(2026, 10, 5), // 3 days before REF (Nov 8)
+    });
+    const stale = tx({
+      description: "Old gym",
+      amount: 30,
+      type: "expense",
+      date: new Date(2026, 8, 1),
+      recurring: true,
+      nextDate: new Date(2026, 9, 28), // October — previous month
+    });
+    const out = upcomingAlerts([overdue, stale], REF);
+    expect(out.map((o) => o.description)).toEqual(["Phone bill"]);
+    expect(out[0].daysAway).toBe(-3);
+  });
 });
 
 describe("portfolio", () => {

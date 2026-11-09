@@ -40,13 +40,19 @@ const root = join(import.meta.dirname, "..");
 const read = (p: string) => readFileSync(join(root, p), "utf8");
 
 // An env-record builder (the pure seam takes env-shaped records — no
-// process access anywhere in the seam).
+// process access anywhere in the seam). Session-214 (F-214f): the
+// builder defaults to the REAL-DEPLOYMENT delivery posture (both
+// kill-switches on — no in-app code/reset-link responses), so the
+// pre-214 warning-count pins stay honest; the delivery-warning block
+// below unsets the knobs to pin the demo posture instead.
 type Env = Record<string, string | undefined>;
 const env = (over: Env = {}): Env => ({
   NODE_ENV: "production",
   AUTH_SECRET: "a".repeat(32),
   NEXT_PUBLIC_SITE_URL: "https://crm.example.com",
   DATABASE_URL: "file:../db/custom.db",
+  NEO_DISABLE_IN_APP_OTP: "1",
+  NEO_DISABLE_IN_APP_RESET: "1",
   ...over,
 });
 
@@ -136,9 +142,12 @@ describe("session-170 (WP-3): the NEO_* flag-typo guard (the scandihaven port, w
 
   it("NEO_DISABLE_IN_APP_OTP with an off-vocabulary value warns (only ''/'1' are meaningful)", () => {
     const report = bootEnvCheck(env({ NEO_DISABLE_IN_APP_OTP: "true" }));
-    expect(report.warnings).toHaveLength(1);
+    // Two warnings: the typo guard for "true" AND the F-214f delivery
+    // warning ("true" is not "1" — the OTP channel is still in-app).
+    expect(report.warnings).toHaveLength(2);
     expect(report.warnings[0]).toContain("NEO_DISABLE_IN_APP_OTP");
     expect(report.warnings[0]).toContain("true");
+    expect(report.warnings[1]).toContain("In-app delivery");
   });
 
   it("NEO_PROXY_HOPS unparsable warns (the seam fails closed onto 1 — the boot warning adds visibility)", () => {
@@ -181,5 +190,41 @@ describe("session-170 (WP-3): the instrumentation hook (the Next form, source-pi
   it("dynamically imports the seam (the standalone bundle traces it)", () => {
     expect(hook).toContain('import("./lib/boot-env")');
     expect(hook).toContain("applyBootEnvReport");
+  });
+});
+
+describe("session-214 (F-214f): the in-app delivery warning (warn form — never fatal)", () => {
+  it("production + both knobs unset: ONE warning naming BOTH knobs", () => {
+    const report = bootEnvCheck(
+      env({ NEO_DISABLE_IN_APP_OTP: undefined, NEO_DISABLE_IN_APP_RESET: undefined }),
+    );
+    expect(report.fatal).toBeNull();
+    expect(report.warnings).toHaveLength(1);
+    expect(report.warnings[0]).toContain("NEO_DISABLE_IN_APP_OTP");
+    expect(report.warnings[0]).toContain("NEO_DISABLE_IN_APP_RESET");
+  });
+
+  it("production + both knobs at 1 (real mail transport): no warning", () => {
+    const report = bootEnvCheck(env());
+    expect(report.fatal).toBeNull();
+    expect(report.warnings).toHaveLength(0);
+  });
+
+  it("production + one knob set, one unset: the warning still fires (half-disabled is half-exposed)", () => {
+    const report = bootEnvCheck(env({ NEO_DISABLE_IN_APP_RESET: undefined }));
+    expect(report.warnings).toHaveLength(1);
+    expect(report.warnings[0]).toContain("In-app delivery");
+  });
+
+  it("development + knobs unset: NO warning (the demo DX posture unchanged)", () => {
+    const report = bootEnvCheck(
+      env({
+        NODE_ENV: "development",
+        NEO_DISABLE_IN_APP_OTP: undefined,
+        NEO_DISABLE_IN_APP_RESET: undefined,
+      }),
+    );
+    expect(report.warnings).toHaveLength(0);
+    expect(report.fatal).toBeNull();
   });
 });

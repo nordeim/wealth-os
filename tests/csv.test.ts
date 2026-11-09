@@ -56,6 +56,16 @@ describe("parseCsv", () => {
   it("treats CRLF and CR as line breaks", () => {
     expect(parseCsv("a,b\r\n1,2\r3,4")).toHaveLength(3);
   });
+
+  it("treats a quote inside an UNQUOTED field as a literal (RFC 4180, F-214h)", () => {
+    // A bank CSV like `Grocer"y,24.50` must split on the comma; the
+    // pre-214 parser flipped into quote mode at the quote and swallowed
+    // the rest of the row into one cell.
+    expect(parseCsv('Grocer"y,24.50\n"Quo""ted",10')).toEqual([
+      ['Grocer"y', "24.50"],
+      ['Quo"ted', "10"],
+    ]);
+  });
 });
 
 describe("csvFilename", () => {

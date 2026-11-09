@@ -86,6 +86,26 @@ export function bootEnvCheck(env: Record<string, string | undefined>): BootEnvRe
       );
     }
   }
+
+  // ---- Session-214 (F-214f): the in-app delivery posture warning --------
+  // The ADR-014 demo posture serves signup codes and single-use reset
+  // links IN the HTTP response — a production deployment that forgets
+  // the knobs hands a known email a working takeover vector. The two
+  // knobs guard DIFFERENT channels (OTP: signup codes; RESET: reset
+  // links), so the warning fires while EITHER is unset — half-disabled
+  // is still half-exposed. WARN, never fatal (the warn-throw
+  // discipline: a bad toggle must not take a working deployment down —
+  // the self-hosted no-mail flow stays functional); the warning makes
+  // the posture visible at boot instead of living only in the docs.
+  if (
+    isProduction &&
+    (env.NEO_DISABLE_IN_APP_OTP !== "1" || env.NEO_DISABLE_IN_APP_RESET !== "1")
+  ) {
+    warnings.push(
+      "[boot] In-app delivery of the signup code and the reset link is ENABLED in production — the responses carry them (the self-hosted demo posture; ADR-014). Anyone who knows a user's email can read a single-use reset link from the forgot-password response. For real deployments set NEO_DISABLE_IN_APP_OTP=1 and NEO_DISABLE_IN_APP_RESET=1 and let a mail transport own the delivery.",
+    );
+  }
+
   const hops = env.NEO_PROXY_HOPS;
   if (hops !== undefined && hops !== "" && !/^\d+$/.test(hops)) {
     warnings.push(

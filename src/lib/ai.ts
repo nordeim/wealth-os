@@ -101,12 +101,20 @@ const localProvider: AiProvider = {
             ? "That's above the 20% benchmark — excellent discipline."
             : "Aim for 20%: every point closer compounds your goals faster.",
       });
-    } else if (monthlyIncomeFromTx(ctx.transactions, now) > 0) {
+    } else if (monthlyExpenses(ctx.transactions, now) > 0) {
+      // Session-214 (F-214j): the overspend verdict keys on EXPENSES, not
+      // income — the pre-214 `else if (income > 0)` left the most alarming
+      // state (real spending, zero income) with no insight at all.
+      const zeroIncome = monthlyIncomeFromTx(ctx.transactions, now) === 0;
       out.push({
         id: "savings-rate",
         tone: "warning",
-        title: "You're spending more than you earn",
-        body: "This month's expenses exceed income. Trim the largest discretionary category first.",
+        title: zeroIncome
+          ? "You have no income this month"
+          : "You're spending more than you earn",
+        body: zeroIncome
+          ? "This month shows expenses with no income recorded. Log your income sources so the savings math can guide you."
+          : "This month's expenses exceed income. Trim the largest discretionary category first.",
       });
     }
 

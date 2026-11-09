@@ -93,11 +93,21 @@ export function parseCsv(text: string): string[][] {
       } else {
         cell += ch;
       }
-    } else if (ch === '"') {
-      inQuotes = true;
     } else if (ch === ",") {
       row.push(cell);
       cell = "";
+    } else if (ch === '"') {
+      // Session-214 (F-214h): a quote inside an UNQUOTED field is a
+      // LITERAL character (RFC 4180 §2.7 — fields containing quotes
+      // must be quoted; a bare quote is just data). The pre-214 parser
+      // flipped into quote mode here, swallowing the next comma (and
+      // potentially the rest of the row) into one cell. Only a quote at
+      // a FIELD BOUNDARY (the cell still empty) opens a quoted field.
+      if (cell === "") {
+        inQuotes = true;
+      } else {
+        cell += '"';
+      }
     } else if (ch === "\n") {
       breakRow();
     } else if (ch === "\r") {

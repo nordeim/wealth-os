@@ -17,7 +17,13 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "@typescript-eslint/no-unused-disable-directive": "off",
     
     // React rules
-    "react-hooks/exhaustive-deps": "off",
+    // Session-214 (F-214k): the four rules below were scaffold-era "off"
+    // though the tree is clean under them (verified live, 0 issues) —
+    // re-enabled so the effect-dependency and dead-branch nets are live.
+    "react-hooks/exhaustive-deps": "warn",
+    "no-unreachable": "warn",
+    "no-fallthrough": "warn",
+    "no-useless-escape": "warn",
     "react-hooks/purity": "off",
     "react/no-unescaped-entities": "off",
     "react/display-name": "off",
@@ -36,12 +42,9 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-empty": "off",
     "no-irregular-whitespace": "off",
     "no-case-declarations": "off",
-    "no-fallthrough": "off",
     "no-mixed-spaces-and-tabs": "off",
     "no-redeclare": "off",
     "no-undef": "off",
-    "no-unreachable": "off",
-    "no-useless-escape": "off",
   },
 }, {
   ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills", "delivery/**", "research/**", "tool-results/**", "mini-services/**", ".zscripts/**", "src/generated/**"]
