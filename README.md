@@ -1,11 +1,11 @@
 # WealthOS
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.4.2-000000?logo=nextdotjs)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.4.5-000000?logo=nextdotjs)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.3.1-61DAFB?logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.3-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.19.3-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-700%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-704%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -50,18 +50,18 @@ alive from the first login.
 
 | Layer | Technology | Version | Purpose |
 |---|---|---|---|
-| Web framework | Next.js (App Router) | 16.4.2 | Server components, route handlers, standalone output |
+| Web framework | Next.js (App Router) | 16.4.5 | Server components, route handlers, standalone output |
 | UI runtime | React | 19.3.1 | No `forwardRef`, function components everywhere |
 | Language | TypeScript (strict) | 5.9.3 | `tsc --noEmit` gate; no `any` |
-| Styling | Tailwind CSS (CSS-first `@theme`) | 4.3.3 | v3-re-pinned palette; no `tailwind.config.js` |
+| Styling | Tailwind CSS (CSS-first `@theme`) | 4.3.5 | v3-re-pinned palette; no `tailwind.config.js` |
 | UI primitives | Radix UI + lucide-react | 1.3–2.4 / 0.525 | Dialog, Select, Tabs, Dropdown, Popover, Label |
 | Charts | recharts | 3.10.1 | Cashflow area, category donut, budget bars |
-| State | Zustand | 5.0.15 | `src/stores/wealthos-store.ts` (UI state) |
+| State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma + SQLite | 6.19.3 | 8 models; `db/` at repo root, git-ignored |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.0.5 / 4.10.2 | 616 checks incl. property tests |
-| E2E tests | Playwright + axe-core | 1.64.1 / 4.13.0 | 84 checks; chromium; seeded `db/e2e.db` |
-| PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.5.2 | Client-side statements |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 620 checks incl. property tests |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 84 checks; chromium; seeded `db/e2e.db` |
+| PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.6.3 | Client-side statements |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
 ```mermaid
@@ -100,7 +100,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 42 unit suites + 📂 e2e/ 5 specs
+├── 📂 tests/                  # 43 unit suites + 📂 e2e/ 5 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -167,7 +167,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 616 checks / 42 files |
+| Unit (Vitest) | `bun run test` | 620 checks / 43 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 84 checks / 5 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -221,9 +221,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 616 unit · 84 e2e · 14 smoke · full gate green |
+| Verification layer | ✅ Complete | 620 unit · 84 e2e · 14 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 211: **R-4.5 shipped — the gate:full reactivation**; the R-4 ladder CLOSED with gate:full green end-to-end from cold; the F-211a package-identity cure rode along — `package.json` re-identified as wealth-os, pinned in `tests/gate-script.test.ts`); next: findings-led iterations (no open R-item by default) |
+| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 212: **R-8 shipped — the dependency round**: 8 of the 10 standing dev-toolchain advisories cured by the lockfile re-resolution within existing semver ranges — vite 8.3.6 out of the 8.3.0–8.3.2 window, source-map-js 1.2.2, the nested eslint-plugin-react-hooks zod deduped onto 4.6.7 — with the F-212a lockfile-identity cure riding along; floors pinned in `tests/dependency-floors-212.test.ts`; the 2 range-unreachable advisories stay the PAD §10 ledger's documented deferral); next: findings-led iterations (no open R-item by default) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

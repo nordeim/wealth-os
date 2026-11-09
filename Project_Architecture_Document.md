@@ -32,6 +32,18 @@ Every change is tagged with its source: `[RES]` = validated by web research,
   doctrine: `bun run gate` before every push, `gate:full` when parity
   surfaces changed or per the standing cadence (the sweep legs need the
   live reference — the offline bar stays `gate`).
+- `[SR]` v2.9.0 (session 212, R-8 — the dependency round): the advisory
+  census moved 10 → 2 — eight dev-toolchain advisories cured by the
+  lockfile re-resolution within existing semver ranges (vite 8.3.6 out of
+  the 8.3.0–8.3.2 window · source-map-js 1.2.2 · the nested
+  eslint-plugin-react-hooks zod deduped onto 4.6.7), the F-212a
+  lockfile-identity residue cured (the workspaces mirror re-keyed to
+  wealth-os), the resolved-version columns of §2 re-anchored (next 16.4.5 ·
+  tailwind 4.3.5 · vitest 5.1.0 · playwright 1.65.0 · axe 4.14.0 ·
+  zustand 5.1.0 · html2canvas-pro 2.6.3), and the unit-count lockstep
+  moved 616 → 620 with the dependency-floors pin
+  (`tests/dependency-floors-212.test.ts`); the two range-unreachable
+  advisories (minimatch, deepmerge-ts) stay §10's documented deferral.
 
 ### Table of Contents
 
@@ -70,19 +82,19 @@ rejected alternatives live there.
 
 | Layer | Technology | Version | Key Rationale |
 |-------|-----------|---------|---------------|
-| Web framework | Next.js (App Router) | 16.4.2 | Server components + route handlers in one artifact; standalone output for a single-node, no-Vercel deploy |
+| Web framework | Next.js (App Router) | 16.4.5 | Server components + route handlers in one artifact; standalone output for a single-node, no-Vercel deploy |
 | UI runtime | React | 19.3.1 | Current React; no forwardRef ceremony |
 | Language | TypeScript (strict) | 5.9.3 | Compile-time contract; `tsc --noEmit` is a gate |
-| Styling | Tailwind CSS | 4.3.3 | CSS-first `@theme` (no config file); v3-re-pinned palette because v4's oklch re-derivation renders visibly different colors |
+| Styling | Tailwind CSS | 4.3.5 | CSS-first `@theme` (no config file); v3-re-pinned palette because v4's oklch re-derivation renders visibly different colors |
 | UI primitives | Radix UI | dialog 1.3.1 · select 2.4.1 · dropdown 2.2.1 · popover 1.3.1 · label 2.1.17 · slot 1.5.0 | Accessible primitives the design wraps, not rebuilds |
 | Icons | lucide-react | 0.525.0 | Consistent stroke family |
 | Charts | recharts | 3.10.1 | Declarative SVG charts (area, donut, bars) |
-| State | Zustand | 5.0.15 | Minimal client store without Context ceremony |
+| State | Zustand | 5.1.0 | Minimal client store without Context ceremony |
 | ORM | Prisma | 6.19.3 | Typed queries + SQLite default; PostgreSQL-ready |
 | Validation | Zod | 4.6.7 | Boundary parsing; message-carrying failures |
-| Unit tests | Vitest + fast-check | 5.0.5 / 4.10.2 | Fast, ESM-native; property tests for money math |
-| E2E tests | Playwright + axe-core | 1.64.1 / 4.13.0 | Real-browser journeys + a11y assertions |
-| PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.5.2 | Client-side statement export; no server render farm |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | Fast, ESM-native; property tests for money math |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | Real-browser journeys + a11y assertions |
+| PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.6.3 | Client-side statement export; no server render farm |
 | Toolchain | Bun | ≥1.3.14 | Fast installs/scripts; node-compatible build |
 
 ### 1.3 Architecture Decision Records (ADRs)
@@ -170,7 +182,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (616) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (620) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -586,10 +598,10 @@ the product is single-user-per-install by design.
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 42 | 616 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 43 | 620 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 16 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool) | `tests/` | source-scanning contracts |
-| — infrastructure | 24 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
+| — architecture pins | 17 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212) | `tests/` | source-scanning contracts |
+| — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
@@ -621,7 +633,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 616/616 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 620/620 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 84/84
@@ -691,7 +703,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 616 unit / 84 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 620 unit / 84 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -717,7 +729,7 @@ comments explain why.
 
 | Priority | Issue | Impact | Status |
 |----------|-------|--------|--------|
-| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 203): 10 advisories: 4 high / 5 moderate / 1 low — all dev-toolchain, zero runtime chains | Chains: minimatch←eslint · deepmerge-ts←prisma CLI · vite/launch-editor←vitest · zod←the nested eslint-plugin-react-hooks copy (the RUNTIME `zod@^4.6.7` is safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) · source-map-js←postcss | Accepted (re-triaged session 203; pins: `tests/security-ledger.test.ts`) |
+| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 212): 2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains | Chains (the R-8 residue — both fixes UNREACHABLE within their parents' ranges): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1 · deepmerge-ts←`@prisma/config` exact-pins `7.1.5` while the GHSA-ggr8-5vv4-36mx fix is 8.0.0. The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 212; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks either fix is cured same-session) |
 | LOW | Session cookie name is `neo_session` (scaffold legacy) | Cosmetic; smoke + specs grep it — a rename is a coordinated change | Accepted |
 | LOW | No migration journal (db:push workflow) | Schema history lives in git, not SQL files — acceptable for the single-user product | Accepted |
 | LOW | AI coach is rule-based (honest labeling) | No LLM answers offline; the provider seam exists for a future engine | By design (ADR-005) |
@@ -725,7 +737,7 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 616 unit · build · smoke 14/14 ·
+the time of writing (lint 0/0 · tsc 0 · 620 unit · build · smoke 14/14 ·
 84 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

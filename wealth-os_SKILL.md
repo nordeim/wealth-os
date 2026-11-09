@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 616 / Playwright 84 / smoke 14). Covers the design system,
+  layer (Vitest 620 / Playwright 84 / smoke 14). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -112,19 +112,19 @@ Locked versions from `package.json` (verified at distillation):
 
 | Layer | Technology | Version | Critical Note |
 |---|---|---|---|
-| Web framework | `next` (App Router) | 16.4.2 | Standalone output; `outputFileTracingRoot` pinned at repo root; `proxy.ts`-era conventions (no `middleware.ts`) |
+| Web framework | `next` (App Router) | 16.4.5 | Standalone output; `outputFileTracingRoot` pinned at repo root; `proxy.ts`-era conventions (no `middleware.ts`) |
 | UI runtime | `react` / `react-dom` | 19.3.1 | No `forwardRef` anywhere — `ref` as a plain prop |
 | Language | `typescript` | 5.9.3 | `tsc --noEmit` gate; strict; zero `any` in `src/` |
-| Styling | `tailwindcss` | 4.3.3 | CSS-first `@theme` in `src/app/globals.css`; NO `tailwind.config.js`; v3-re-pinned palette (§4) |
+| Styling | `tailwindcss` | 4.3.5 | CSS-first `@theme` in `src/app/globals.css`; NO `tailwind.config.js`; v3-re-pinned palette (§4) |
 | UI primitives | Radix UI (`@radix-ui/react-dialog`, `-select`, `-tabs`, `-dropdown-menu`, `-popover`, `-label`) | 1.3–2.4 | Wrapped in `src/components/ui/*`; the mobile drawer deliberately does NOT use Dialog (§9 A-1) |
 | Icons | `lucide-react` | 0.525 | Parity pin — the reference's own bundle-decoded version |
 | Charts | `recharts` | 3.10.1 | Cashflow area, category donut, budget bars, portfolio allocation |
-| State | `zustand` | 5.0.15 | ONE store: `src/stores/wealthos-store.ts` |
+| State | `zustand` | 5.1.0 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` | 6.19.3 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3) |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses |
-| Unit tests | `vitest` + `fast-check` | 5.0.5 / 4.10.2 | Node env, jsdom-free; 616 checks / 42 files |
-| E2E tests | `@playwright/test` + `axe-core` | 1.64.1 / 4.13.0 | Chromium; 84 checks / 5 specs; own db + port 3100 |
-| PDF export | `jspdf` + `html2canvas-pro` | 4.2.1 / 2.5.2 | Client-side statements (`src/lib/pdf-export.ts`); `dompurify` override-pinned at 3.4.17 (session 198's critical cure, inherited) |
+| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 620 checks / 43 files |
+| E2E tests | `@playwright/test` + `axe-core` | 1.65.0 / 4.14.0 | Chromium; 84 checks / 5 specs; own db + port 3100 |
+| PDF export | `jspdf` + `html2canvas-pro` | 4.2.1 / 2.6.3 | Client-side statements (`src/lib/pdf-export.ts`); `dompurify` override-pinned at 3.4.17 (session 198's critical cure, inherited) |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
 | Runtime tooling | `bun` | ≥ 1.3 | `bun run` scripts; Node-compatible build/start |
 
@@ -197,7 +197,7 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (616 checks) |
+| Unit tests | `bun run test` (620 checks) |
 | E2E (boots own server) | `CI=1 bun run test:e2e` (84 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (14 assertions; needs build) |
@@ -647,7 +647,7 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 616 passed / 42 files
+- [ ] `bun run test` — 620 passed / 43 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 14/14 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)

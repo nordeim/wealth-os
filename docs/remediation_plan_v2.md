@@ -7,8 +7,9 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.8.0** (session 211 — the R-4.5 gate:full
-> reactivation round + the F-211a package-identity cure; §5 carries
+> **Current version: v2.9.0** (session 212 — the R-8 dependency round:
+> 8 of the 10 standing dev-toolchain advisories cured within existing
+> semver ranges + the F-212a lockfile-identity cure; §5 carries
 > the execution history).
 
 ---
@@ -85,6 +86,9 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-210b | High (cured in-commit) | **The first R-4.4 maiden's our-side captures were corrupted mid-run** — analytics/goals/settings rendered the SEEDED demo corpus while dashboard..import rendered the empty states (the zero-data state was undone between captures). Root-caused to F-210c; the cure is the ZERO-DATA SENTINEL: `assertZeroData` probes `/api/dashboard` (all six domain arrays) after the zero and after EACH class's our-side loop, and throws naming the violated tables — a corrupted state fails LOUDLY, never silently bakes into the baselines (the login-wall doctrine's state edition). The sentinel PROVED itself: the second maiden run tripped it, the third (post-F-210c-fix) ran clean end-to-end. Pinned in `tests/fullpage-sweep-tool.test.ts` (the `zeroDataIntact` PURE seam + the wiring pins). | The session-210 maiden diff (band decode + VLM read: the "corrupted" goals capture showed 5 seeded goal cards; the controlled probes reproduced the sweep's captures byte-identically, isolating the anomaly to the maiden's own process) | **R-4.4** (cured) |
 | F-210c | High (cured in-commit) | **The direct-execution guards' suffix collision** — `"fullpage-sweep.ts".endsWith("sweep.ts")` is TRUE, so the moment the re-anchored fullpage tool imported `./sweep` (the reuse doctrine), sweep.ts's guard fired THE SWEEP inside the fullpage's own process: its zero → its 22 captures → ITS RESEED landed mid-fullpage-run — the F-210b corruption's root cause, masquerading as "an external actor" until the process-list + log evidence settled it. The class cure: all four tool guards (sweep, fullpage-sweep, interior-census, drift-probe) are now `path.basename(process.argv[1]) === "<name>.ts"` — EXACT basename, immune to sibling filename suffixes. A guard a sibling's filename can satisfy is not a guard. Pinned in `tests/fullpage-sweep-tool.test.ts`. | The session-210 forensic chain (the background-maiden + db polling caught the reseed landing; the log's `[sweep] captured` lines inside the fullpage's output named the actor) | **R-4.4** (cured) |
 | F-211a | Low | **The package manifest still carries the scaffold-era identity.** `package.json` reads `"name": "neo-crm"` + `"description": "NEO CRM — Next.js 16 + React 19 + Prisma/SQLite CRM application"` — the CRM scaffold's name in the WealthOS repo's most load-bearing manifest (the file every quickstart, gate, and tooling run keys on). The scaffold-heritage strings that ARE documented as intentional (`neo_session` cookie, `NEO_PROXY_HOPS`, the `neo-crm-dev-only-insecure-secret` dev constant, `neo-crm:chunk-reload-at`) survive by the AGENTS doctrine; the package NAME is not in that family — it is the product identity, and no doc pins it as intentional. No test pins the name (verified: `tests/gate-script.test.ts` reads package.json for the scripts only; `tests/uploads-path.test.ts` uses the string only as a tempdir disjunct). | package.json:2–3 (read this session); grep over tests/ (no name pin) | **R-4.5** (cured in-commit) |
+| F-212a | Low | **The lockfile still carries a SECOND scaffold-era identity.** `bun.lock`'s workspaces mirror reads `"name": "activity-map"` — an identity older than the neo-crm scaffold F-211a cured (bun rewrites the workspaces mirror only when resolutions change; the manifest renames never re-keyed it). Session 211's F-211a verification grepped for `neo-crm` (0 hits — true) but this older name sat in the tree all along; `bun update` alone leaves it stale. | bun.lock workspaces block (read this session); the post-update lockfile still carrying it (empirical) | **R-8** (cured in-commit) |
+| F-212b | Medium | **8 of the 10 ledger advisories were curable within existing semver ranges all along.** The standing deferral treated the census as fixed, but the lockfile's transitive resolutions had never been re-resolved since the scaffold era: vite 8.3.0 (the six-advisory window 8.3.0–8.3.2 incl. the launch-editor trio — fixed 8.3.3; vitest's peer range `^6.4.0 \|\| ^7.0.0 \|\| ^8.0.0` admits 8.3.6), source-map-js 1.2.1 (GHSA-68fv-2mgg-jv7q — fixed 1.2.2; postcss's `^1.2.1` admits it), and the nested eslint-plugin-react-hooks zod 4.6.5 (GHSA-mrhx-c7xc-m3w5 — floor 4.6.6; the parent range `^3.25.0 \|\| ^4.0.0` admits 4.6.7, and a fresh resolution dedupes onto the runtime copy). `bun update` moves direct deps but does NOT re-resolve transitives — a fresh lockfile generation does. | `bun audit` + the bun.lock resolutions (this session); registry checks confirming 8.3.6 / 1.2.2 / 4.6.7 in-range | **R-8** |
+| F-212c | Info (documented deferral) | **The 2 remaining advisories are range-unreachable.** minimatch 10.2.6 (GHSA-g3hv-75wg-m249, fix 11.0.1 — typescript-estree pins `^10.2.2`) and deepmerge-ts 7.1.5 (GHSA-ggr8-5vv4-36mx, fix 8.0.0 — `@prisma/config` exact-pins `7.1.5`). Both cure automatically when their parents' ranges move; the PAD §10 row carries the decode and the re-triage clause. | bun.lock parent ranges (this session) | **R-8** (documented) |
 
 ## 3. The remediation program (R-items)
 
@@ -400,6 +404,52 @@ routing rule sends the parity slice first; R-4.4 stays next):
   R-7.7). Then the R-7.9-style four-width sweep + interior-census
   re-derivation. After it: R-4.4 (the fullpage-sweep re-anchor).
 
+### R-8 — The dependency round (session 212) — Status: Done(v2.9.0)
+
+The ledger's standing deferral, taken per the trailing pointer's default
+for the no-open-R-item state. The audit's finding (F-212b): the lockfile's
+transitive resolutions had never been re-resolved since the scaffold era,
+so 8 of the 10 advisories the ledger deferred were curable within the
+parents' own semver ranges.
+
+- **R-8.1 The floors pin (TDD)** — `tests/dependency-floors-212.test.ts`
+  born RED 4/4, each failure naming its evidence: every zod resolution
+  ≥ 4.6.6 (GHSA-mrhx-c7xc-m3w5 — the nested eslint-plugin-react-hooks
+  copy sat at 4.6.5), every vite resolution ≥ 8.3.3 (outside the
+  8.3.0–8.3.2 six-advisory window), every source-map-js resolution
+  ≥ 1.2.2 (GHSA-68fv-2mgg-jv7q), and the lockfile identity (the
+  workspaces mirror = `wealth-os`; no `activity-map`/`neo-crm` anywhere
+  — F-212a). The pin parses bun.lock directly (trailing-comma strip +
+  JSON.parse — the resolution record `bun audit` itself walks), including
+  nested keys, and requires a non-empty packages section so an empty
+  parse can never pass silently.
+- **R-8.2 The cure** — `bun update` moved the direct deps within ranges
+  (next 16.4.2→16.4.5 · eslint-config-next 16.4.2→16.4.5 · tailwind +
+  @tailwindcss/postcss 4.3.3→4.3.5 · vitest 5.0.5→5.1.0 · playwright
+  1.64.1→1.65.0 · axe-core 4.13.0→4.14.0 · zustand 5.0.15→5.1.0 ·
+  html2canvas-pro 2.5.2→2.6.3 · @types/node 26.6.5→26.6.6) but KEPT the
+  stale transitive resolutions; the fresh lockfile generation (`rm
+  bun.lock` + `bun install` — the package manager's own regeneration, the
+  fresh-clone-equivalent state) re-resolved everything: vite 8.3.6 ·
+  source-map-js 1.2.2 · the nested zod GONE (deduped onto the runtime
+  4.6.7) · the workspaces mirror re-keyed to wealth-os. The census:
+  **10 → 2** (deepmerge-ts high + minimatch moderate — F-212c's
+  range-unreachable pair). The dompurify override-pin (3.4.17) verified
+  intact through the regeneration; the prisma census verified MATCH
+  post-regeneration (the blocked `@prisma/client` postinstall was the
+  auto-generate convenience only — the generated client + engine
+  persisted and serve queries).
+- **R-8.3 The lockstep** — the PAD §10 advisories row re-anchored to the
+  live census (2: 1 high / 1 moderate, both range-unreachable, the
+  cured-eight decode recorded); the security-ledger PAD-census pin
+  re-anchored in-commit; the resolved-version columns re-anchored across
+  README/PAD/SKILL (the badge row included); the unit-count lockstep
+  616 → 620 / 42 → 43 files (the architecture-pins family 16 → 17 with
+  dependency-floors-212; the §7.1 infra sub-row corrected to its real
+  23 — the sub-row arithmetic 3 + 17 + 23 = 43 now closes); the full
+  gate re-run cold at the new resolutions, the drift legs included
+  (parity surfaces changed with the next + tailwind bumps).
+
 ## 4. Plan validation (the re-check, session 203)
 
 After this plan text was drafted, every §2 claim was re-verified against the
@@ -430,17 +480,18 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | v2.6.0 | 209 | **R-7.10** (the F-209a per-surface card convergence + F-209b, executed per the plan's default pointer — a fresh every-page DOM census refined F-208g's single-genus belief into FOUR families deployed by surface): **the constants seam** — CARD.base re-pinned to the WARM-SIMPLE genus (`from-white/90 to-stone-50/90` gradient + amber-100/50 border + shadow-xl; Dashboard mid + Investments), CARD.kpi born as the WARM-HOVER genus (the F-208g class verbatim: via-amber-50/20 + card-hover + p-6 in-base + backdrop-blur-md; the Dashboard KPI row), GLASS_CARD born (base + hover variants — Expenses' summary trio carries card-hover like the reference's own; Expenses content, Analytics charts, Dashboard's Recent Activity + AI Insights bottom row, Income, Goals), STOCK_CARD born (the shadcn `border bg-card` stock card; Accounts + Import), QUICK_ACTIONS_CARD born (the reference's one-off: via-30, rounded-2xl, amber-200 border), STAT_GRADIENTS born (the Analytics saturated to-r trio) · **the two primitives**: the `.card-hover` @utility (CSSOM-verbatim: 0.3s cubic-bezier + hover translateY(-2px) + the xl shadow pair) and the `--color-card-foreground`/`--color-card` @theme tokens + the `.dark` runtime flip (the A-209 inert-class cure — the session-208 usages were generating NO CSS) · **CARD.padding → p-6 flat** (the reference's effective 24px; the p-4 md:p-6 upsize retired) · **F-209b**: the Analytics stat row born (Avg Monthly Income/Expenses/Savings — TrendingUp · TrendingUp rotate-180 · Calendar, over the new tested `monthlyAverages()` in finance.ts) · **the Quick Action tiles** re-pinned to the reference's shadcn-outline tone buttons (h-16 flex-col, the per-tone border/hover classes, View Reports = TrendingUp; the icon's effective 16px measured live) · **the baseline re-derivation**: the four sweep tables re-derived (the biggest drops of the program — goals 33.4→7.2 desktop / 41.2→11.7 phone / 34.4→6.6 tablet / 36.1→9.9 landscape; import 31.2→9.4 desktop; income 48.2→30.0 desktop; expenses 47.3→13.5 desktop; analytics 53.8→40.4 desktop / 49.0→31.5 landscape; investments honest phone rise 27.7→27.9; the untouched settings/login/reset flat — the sanity signature) + the STANDING_CENSUS allowances re-derived (44 entries; analytics unexplained 66/74/73/60→76/78/78/90 + mainH rose with the stat row; dashboard 257/317/262/258→248/264/253/245) + both drift gates proven clean at all four widths. Pins: tests/parity-209.test.ts born RED 20/20 → GREEN 22/22; tests/sweep-tool.test.ts + tests/interior-census-tool.test.ts + tests/docs-counts.test.ts literals re-pinned in-commit | lint 0/0 · tsc 0 · **604 unit** (42 files; +22: the parity-209 pin) · build · smoke 14/14 · e2e 84/84 · census MATCH · 4× sweep drift-gate clean + the 4-axis interior-census gate clean at margin 0 · docs lockstep (582/41/666 → 604/42/688 everywhere; the pins row 14→15 with parity-209) | (this session's execution commit) |
 | v2.7.0 | 210 | **R-4.4** (the fullpage re-anchor, the plan's default pointer — the fifth gate re-anchored to the WealthOS reference following the R-4.1/R-4.2/R-4.3 pattern): **the pin** — tests/fullpage-sweep-tool.test.ts rewritten, born RED 11/19 against the CRM-era config (the NEO-CRM REF, the single-page guest landing, the 1920×1080 class, the 0.14/0.49 pill baselines) → GREEN 22/22 at ship · **the re-anchor** — REF → the WealthOS reference; PAGES imported from ./sweep (the 11-entry lockstep); the GUEST doctrine RETIRED (preflightPairState — the shared login pair); planThemeWrites + the per-page probe (the F-205a theme match); zero-data + the seed restore in a FINALLY; the classes → the sweep's own 1440×900 + 390×844 (the five gates' axes coincide); driftVerdict reused (one implementation) · **the maiden's own findings, cured in-commit**: F-210b the ZERO-DATA SENTINEL (assertZeroData — the six-array /api/dashboard probe after the zero + after each class's our-side loop; born from the first maiden's corrupted captures — analytics/goals/settings rendered the seeded corpus mid-run — and PROVEN live: it tripped the second run, the third ran clean) · F-210c the EXACT-BASENAME GUARD CURE (the root cause: `"fullpage-sweep.ts".endsWith("sweep.ts")` is TRUE, so importing ./sweep fired THE SWEEP inside the fullpage process — its reseed was the "external actor"; all four tool guards now `path.basename(argv[1]) === "<name>.ts"`) · F-210a the scroll-model genus DECODED + ABSORBED (the reference scrolls the document — dashboard 2054/3311; ours locks at the viewport — the padTo white rows are the dominant standing genus, not a cure target) · **the derivation** — the clean maiden's 22 measurements + the byte-identical noise calibration (0.000pct worst delta) → the per-class tables (desktop: dashboard 60.1 · investments 49.5 · settings 50.7 · import 26.6 (the horizontal-overflow genus — the reference pokes to 1778px wide) · income 30.0 · expenses 13.5 · accounts 10.9 · analytics 40.4 · goals 7.2 · login 7.9 · reset 3.9; phone: dashboard 78.5 · investments 80.9 · settings 61.0 · expenses 61.1 · analytics 67.3 · income 45.4 · import 31.3 · login 16.5 · reset 16.5 · goals 17.9 · accounts 23.3 — where both documents are viewport-height the values track the sweep's own tables, the shared-viewport cross-check) · **the live proofs** — all 22 legs CLEAN at both classes under --fail-on-drift; the teeth check (--pages login --fail-on-drift --drift-margin -3 → exit 1, the allowed values named); census MATCH after every run. Pins: tests/fullpage-sweep-tool.test.ts 12 → 22 (the sentinel seam + the collision guard + the derived literals + the genera decode) | lint 0/0 · tsc 0 · **614 unit** (42 files; +10 net: the fullpage pin 12→22) · build · smoke 14/14 · e2e 84/84 · census MATCH · the fullpage drift gate clean at both classes + live-proven teeth · docs lockstep (604/42/688 → 614/42/698 everywhere; the pins row 15→16 with fullpage-sweep-tool) | (this session's execution commit) |
 | v2.8.0 | 211 | **R-4.5** (the gate:full reactivation — the plan's default pointer from docs/session_13.md; the R-4 ladder's closing slice) + **F-211a cured in-commit** (the package-identity cure). The audit round first: the cold baseline gates green at the documented v2.7.0 ship state (614/614 · smoke 14/14 · e2e 84/84 · census MATCH); the live reference-stability probe STABLE on every layer (bundle fingerprint · the empty-state demo census · the 256/9 sidebar · the TRUE-390 functional mobile-menu census opens/9 — plus a fresh side-by-side 390×844 mobile-nav census both apps: 9/9 destinations, pill visible in the right cluster, drawer navigation + Escape + close-face all live — ours the labeled superset); the security ledger re-triaged (10 advisories = 4H/5M/1L, all dev-toolchain — no NEW runtime-chain advisory); the standing deliverables verified (.env `file:../db/custom.db` + db/ at root · .env.example parity 6/6 · sitemap/robots/manifest live + the per-route OG family · no phantom `xs:` variants · the card/card-foreground @theme pins standing). The one open structural item = R-4.5 itself; the one new finding = F-211a. Shipped: **F-211a** — the package-identity pin (tests/gate-script.test.ts extended: name === "wealth-os" + the finance description, born RED against "neo-crm") → package.json re-identified (name/description) → `bun install` re-keyed bun.lock → GREEN; **R-4.5** — the cold end-to-end gate:full chain executed as the ship evidence (every leg green: lint 0/0 · tsc 0 · the unit suite with the new pin · build · smoke 14/14 · e2e 84/84 · the four sweep class drift gates CLEAN · the fullpage drift gate 22 legs CLEAN · the interior-census drift gate CLEAN at margin 0 · census MATCH after the chain) and the five docs un-dormanted (README:174 · AGENTS:31 · PAD:167/685 · SKILL:206 · CLAUDE.md's gate rows joined the count lockstep) with the pre-push doctrine re-wired | (the execution gate legs recorded in the session-211 worklog row) · census MATCH | (this session's execution commit) |
+| v2.9.0 | 212 | **R-8** (the dependency round — the trailing pointer's default for the no-open-R-item state) + **F-212a cured in-commit** (the lockfile-identity cure). The audit round first: the cold baseline gates green at the documented v2.8.0 ship state (lint 0/0 · tsc 0 · 616/616 · census MATCH); the ledger re-triaged (the standing 10, no new runtime-chain advisory) — and this round's decode found F-212b (8 of the 10 curable in-range, never re-resolved) + F-212a (the lockfile's `activity-map` workspaces mirror) + F-212c (the 2 range-unreachable: minimatch ←typescript-estree `^10.2.2`, deepmerge-ts ←`@prisma/config` exact `7.1.5`). Shipped: **R-8.1** the floors pin born RED 4/4 (every zod ≥ 4.6.6 / every vite ≥ 8.3.3 / every source-map-js ≥ 1.2.2 / the workspaces identity — bun.lock parsed directly, nested keys included) → **R-8.2** the cure: `bun update` (direct deps in-range: next 16.4.5 · eslint-config-next 16.4.5 · tailwind 4.3.5 · vitest 5.1.0 · playwright 1.65.0 · axe 4.14.0 · zustand 5.1.0 · html2canvas-pro 2.6.3) then the fresh lockfile generation (`rm bun.lock` + `bun install`) re-resolving the transitives — vite 8.3.6 · source-map-js 1.2.2 · the nested zod deduped onto the runtime 4.6.7 · the mirror re-keyed to wealth-os; **census 10 → 2**; the dompurify override (3.4.17) verified intact; prisma census MATCH post-regeneration → **R-8.3** the lockstep: PAD §10 re-anchored (2: 1H/1M range-unreachable, the cured-eight decode), the security-ledger pin re-anchored in-commit, the version columns re-anchored (README badge + stack · PAD §1.2 · SKILL §2), the counts 616→620 / 42→43 (pins family 16→17 with dependency-floors-212; the §7.1 infra sub-row corrected to 23), the full gate + the drift legs re-run cold at the new resolutions (parity surfaces changed with the next/tailwind bumps) | lint 0/0 · tsc 0 · **620 unit** (43 files; +4: the dependency-floors pin) · build · smoke 14/14 · e2e 84/84 · census MATCH · the drift legs re-run clean | (this session's execution commit) |
 
-> The next iteration session (212) has **no open R-item by default** — the
-> R-4 ladder is CLOSED (gate:full green end-to-end from cold at v2.8.0)
-> and the R-7 card arc closed at v2.6.0. A fresh audit's findings always
-> pre-empt (Critical/High first); the natural next rounds are the standing
-> residuals' watch (the F-210a scroll-model genus — cure only if a future
-> round re-architects the shell), a dependency round for the 10
-> dev-toolchain advisories (the ledger's standing deferral), or R-5 on
-> the owner's explicit ask. The standing residuals stay the documented
-> content supersets (the populated tables/charts our corpus renders where the
-> reference's empty workspace shows placeholders) + the F-210a
-> scroll-model genus (absorbed into the fullpage tables by the
-> stability call — cure only if a future round re-architects the
-> shell).
+> The next iteration session (213) has **no open R-item by default** — the
+> R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, and the R-8
+> dependency round at v2.9.0 (the advisory census now 2, both fixes
+> range-unreachable — they cure automatically when typescript-estree or
+> @prisma/config move their ranges; the re-triage duty stays). A fresh
+> audit's findings always pre-empt (Critical/High first); the natural next
+> rounds are the standing residuals' watch (the F-210a scroll-model genus —
+> cure only if a future round re-architects the shell) or R-5 (the LLM
+> provider wiring) on the owner's explicit ask. The standing residuals stay
+> the documented content supersets (the populated tables/charts our corpus
+> renders where the reference's empty workspace shows placeholders) + the
+> F-210a scroll-model genus (absorbed into the fullpage tables by the
+> stability call — cure only if a future round re-architects the shell).
