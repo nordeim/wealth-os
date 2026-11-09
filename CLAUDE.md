@@ -45,7 +45,7 @@ Follow this six-phase workflow for all implementation tasks:
   functionality.
 - **Determinism everywhere**: the seed, the AI coach, and the test data
   are all deterministic — no `Math.random()` in seeded paths.
-- **The gate is the contract**: lint 0/0 · tsc 0 · 614 unit · build ·
+- **The gate is the contract**: lint 0/0 · tsc 0 · 616 unit · build ·
   smoke 14/14 · 84 e2e. A green gate achieved by weakening a guardrail is
   not a fix.
 - **Offline-capable by default**: no runtime third-party calls (fonts,
@@ -106,11 +106,12 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 | `bun run dev` | Dev server (:3000) |
 | `bun run build` | Production standalone build |
 | `bun run start` | Serve the standalone artifact (needs build) |
-| `bun run test` | Unit suite (Vitest, 614 checks) |
+| `bun run test` | Unit suite (Vitest, 616 checks) |
 | `CI=1 bun run test:e2e` | E2E suite (Playwright, 84 checks, own db + :3100) |
 | `bun run lint` | ESLint, fails on warnings |
 | `bun run typecheck` | `tsc --noEmit` |
 | `bun run gate` | The full chain: lint → typecheck → test → build → smoke → e2e |
+| `bun run gate:full` | The chain + the six parity drift gates (active since v2.8.0/R-4.5 — run when parity surfaces changed; needs the live reference) |
 
 ## Testing Strategy
 
@@ -118,7 +119,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 
 - **Unit (Vitest)**: domain math, schemas, AI engine, auth contract,
   architecture pins (`gate-script`, `db-census`, `route-case`…), property
-  tests via fast-check. 614 checks / 42 files.
+  tests via fast-check. 616 checks / 42 files.
 - **E2E (Playwright, chromium)**: journeys per section, mobile drawer at
   390×844, dialogs, route-alias equivalence, the 401 auth-wall probe.
   84 checks / 5 specs. `playwright.config.ts` pins `db/e2e.db`, global
@@ -159,7 +160,9 @@ bun run typecheck   # tsc --noEmit
   --remote git@github.com:nordeim/wealth-os.git` — it verifies the remote
   ref equals local HEAD after the push. Runbook (incl. the paramiko ssh
   shim for ssh-less sandboxes): `docs/how-to-git-push-using-ssh-wrapper_SKILL.md`.
-- Run `bun run gate` before every push. Commit before push (the wrapper
+- Run `bun run gate` before every push; run `bun run gate:full` (the
+  parity chain — active since v2.8.0/R-4.5) when parity surfaces
+  changed or per the standing cadence. Commit before push (the wrapper
   pushes commits, not the working tree).
 
 ## Error Handling & Debugging

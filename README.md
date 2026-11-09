@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.3-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.19.3-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-698%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-700%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.0.15 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma + SQLite | 6.19.3 | 8 models; `db/` at repo root, git-ignored |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.0.5 / 4.10.2 | 614 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.0.5 / 4.10.2 | 616 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.64.1 / 4.13.0 | 84 checks; chromium; seeded `db/e2e.db` |
 | PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.5.2 | Client-side statements |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
@@ -167,11 +167,11 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 614 checks / 42 files |
+| Unit (Vitest) | `bun run test` | 616 checks / 42 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 84 checks / 5 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
-| Parity sweeps | `bun run gate:full` | dormant — the sweep, drift-probe, interior-census, and fullpage legs are WealthOS-native (R-4.1/R-4.2/R-4.3/R-4.4 + the session-207/208/209 R-7 parity convergences and baseline re-derivations: the theme-matched baselines; the reference-stability probe — bundle fingerprint + sentinel demo census + the functional mobile-menu check; the interior census — four-axis standing allowances at zero margin, mutation-proof teeth; the fullpage sweep — the 11-page below-the-fold axis at the sweep's own desktop/phone classes, per-page baselines derived from the zero-data maiden with the zero-data sentinel guard, the drift gate clean at both classes with live-proven teeth); only the reactivation (R-4.5) remains; the pre-push bar is `bun run gate` |
+| Parity sweeps | `bun run gate:full` | **active** (re-activated v2.8.0 / R-4.5): the standing gate + six WealthOS-native drift gates — the four sweep classes (1440×900 · 390×844 · 768×1024 · 1024×768, theme-matched zero-data baselines), the fullpage sweep (the 11-page below-the-fold axis with the zero-data sentinel), and the interior census (four-axis standing allowances at margin 0) — green end-to-end from cold at v2.8.0; run it when parity surfaces changed or per the standing cadence (the pre-push bar stays `bun run gate`; the sweep legs need the live reference, so `gate` remains the offline gate) |
 
 Special prerequisites: none — the e2e suite pins its own `DATABASE_URL`
 (`db/e2e.db`) and reseeds in global setup; the smoke ladder boots the
@@ -221,9 +221,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 614 unit · 84 e2e · 14 smoke · full gate green |
+| Verification layer | ✅ Complete | 616 unit · 84 e2e · 14 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 210: the R-4.4 fullpage re-anchor shipped — the fifth gate re-anchored to the WealthOS reference: the 11-page set, the login pair, the theme match, the zero-data sentinel guard (F-210b), the exact-basename guard cure (F-210c — the suffix collision that let the sweep fire inside the fullpage process), the per-class baselines derived from the clean maiden + the byte-identical noise calibration); next: R-4.5 the gate:full reactivation) |
+| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 211: **R-4.5 shipped — the gate:full reactivation**; the R-4 ladder CLOSED with gate:full green end-to-end from cold; the F-211a package-identity cure rode along — `package.json` re-identified as wealth-os, pinned in `tests/gate-script.test.ts`); next: findings-led iterations (no open R-item by default) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 614 / Playwright 84 / smoke 14). Covers the design system,
+  layer (Vitest 616 / Playwright 84 / smoke 14). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -122,7 +122,7 @@ Locked versions from `package.json` (verified at distillation):
 | State | `zustand` | 5.0.15 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` | 6.19.3 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3) |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses |
-| Unit tests | `vitest` + `fast-check` | 5.0.5 / 4.10.2 | Node env, jsdom-free; 614 checks / 42 files |
+| Unit tests | `vitest` + `fast-check` | 5.0.5 / 4.10.2 | Node env, jsdom-free; 616 checks / 42 files |
 | E2E tests | `@playwright/test` + `axe-core` | 1.64.1 / 4.13.0 | Chromium; 84 checks / 5 specs; own db + port 3100 |
 | PDF export | `jspdf` + `html2canvas-pro` | 4.2.1 / 2.5.2 | Client-side statements (`src/lib/pdf-export.ts`); `dompurify` override-pinned at 3.4.17 (session 198's critical cure, inherited) |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
@@ -197,13 +197,13 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (614 checks) |
+| Unit tests | `bun run test` (616 checks) |
 | E2E (boots own server) | `CI=1 bun run test:e2e` (84 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (14 assertions; needs build) |
 | DB push / seed / census | `bun run db:push` / `db:seed` / `db:census` |
 | Full gate | `bun run gate` = lint → typecheck → test → build → smoke → e2e |
-| Parity gate | `bun run gate:full` — dormant (the sweep + drift-probe + interior-census + fullpage legs WealthOS-native through R-4.4, baselines re-derived at R-7.5/R-7.9/R-7.10 + the session-210 fullpage maiden: re-anchor + theme-matched baselines + the reference-stability probe + the interior census's four-axis standing allowances + the fullpage below-the-fold axis with the zero-data sentinel; only the reactivation R-4.5 pending; see §11) |
+| Parity gate | `bun run gate:full` — **active** (re-activated v2.8.0 / R-4.5, green end-to-end from cold): the standing gate + the six WealthOS-native drift gates — the sweep classes (theme-matched baselines re-derived R-7.5/R-7.9/R-7.10), the reference-stability probe's family, the interior census's four-axis standing allowances, the fullpage below-the-fold axis with the zero-data sentinel; run it when parity surfaces changed (the sweep legs need the live reference; the pre-push bar stays `bun run gate`; see §11) |
 
 ## 4. The Design System (Code-First)
 
@@ -647,13 +647,16 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 614 passed / 42 files
+- [ ] `bun run test` — 616 passed / 42 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 14/14 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)
 - [ ] `CI=1 bun run test:e2e` — 84/84 (5 specs)
 - [ ] `bun run db:census` — `census: MATCH`
-- [ ] Visual parity (when UI changed): the e2e battery + VLM-verified
+- [ ] Parity chain when parity surfaces changed (active since
+      v2.8.0/R-4.5): `bun run gate:full` — the four sweep class drift
+      gates + the fullpage drift gate + the interior-census drift gate,
+      green end-to-end from cold; the e2e battery + VLM-verified
       captures under `docs/screenshots/` (the sweep, drift-probe, and
       interior-census legs are WealthOS-native through R-4.3 —
       theme-matched baselines, the reference-stability probe, the

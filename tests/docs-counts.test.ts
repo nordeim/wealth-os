@@ -17,7 +17,7 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 614;
+const UNIT_TOTAL = 616;
 const E2E_TOTAL = 84;
 const SMOKE_TOTAL = 14;
 const TEST_FILES = 42;
