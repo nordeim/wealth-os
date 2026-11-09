@@ -4,16 +4,21 @@
 //
 // Demo login (mirrors the reference app): sepnetflix2023@outlook.com / $Abcd1234
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaClient } from "../src/generated/prisma/client";
 import { runtimeDatabaseUrl } from "../src/lib/db-path";
 // The PURE crypto seam — node:crypto-only, shared with src/lib/auth.ts.
 import { hashPassword } from "../src/lib/password";
 
-// Explicit datasource URL: never let the Prisma engine (or bun's .env
-// absolutization) pick the database location — the shared resolver pins
-// every consumer to <repo>/db/<name> (see src/lib/db-path.ts).
+// R-9 (session 213): the prisma 7 constructor — the driver adapter carries
+// the URL (the v6 datasource-URL option is gone). PrismaLibSql because
+// bun hard-blocks better-sqlite3 (oven-sh/bun#4290) and this seed runs
+// under bun. The URL itself still comes from the shared resolver, which
+// pins every consumer to <repo>/db/<name> (see src/lib/db-path.ts) —
+// never let the adapter (or bun's .env absolutization) pick the database
+// location.
 const db = new PrismaClient({
-  datasources: { db: { url: runtimeDatabaseUrl() } },
+  adapter: new PrismaLibSql({ url: runtimeDatabaseUrl() }),
 });
 
 function dayOffset(offsetDays: number): Date {

@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 
 import { db } from "@/lib/db";
 import { ok, fail, ERR, parseBody } from "@/lib/api";

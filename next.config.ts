@@ -10,6 +10,20 @@ import path from "node:path";
 const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: path.resolve(import.meta.dirname),
+  // R-9 (session 213, the prisma 7 migration): the native/wasm-loading
+  // prisma runtime chain must stay OUT of the webpack server bundle —
+  // @libsql/client is a native NAPI module (the bun-compatible SQLite
+  // driver; bun hard-blocks better-sqlite3 — oven-sh/bun#4290) and the
+  // @prisma/client runtime embeds the WASM query compiler in
+  // dynamically-selected JS files. Externalized, Next's output-file
+  // tracing copies them (and the native binding) into .next/standalone
+  // intact — the smoke ladder proves the artifact boots under bun.
+  serverExternalPackages: [
+    "@prisma/client",
+    "@prisma/client-runtime-utils",
+    "@prisma/adapter-libsql",
+    "@libsql/client",
+  ],
   // Session-170 (F-170a — THE ARTIFACT HYGIENE): the upload family's
   // runtime-computed fs paths (uploads.ts's validated-anchor
   // existsSync/resolve chains) make @vercel/nft fall back to tracing the
