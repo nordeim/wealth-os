@@ -1509,11 +1509,26 @@ export interface StandingAllowance {
  *  deliberate, pinned re-derivation (a parity round converging a genus
  *  re-derives DOWNWARD — the R-7 doctrine). Settings' mainH stays
  *  REPORT-ONLY (the L-150c2 skip in the verdict below). */
+/**
+ * Session-216 (R-13, F-216e): the dashboard allowances re-derived
+ * (+6/+6/+6/+9 across the four axes — 254/270/259/254). The decode: the
+ * QuickAction nested-interactive cure (an a11y fix — the reference ships
+ * <a><button/></a>, axe-core structurally cannot see it, we render the
+ * single-anchor form) deliberately diverges from the reference's DOM on
+ * exactly the dashboard's four Quick Action tiles; the tag-swap genus
+ * grew accordingly while EVERY other page's unexplained count matched
+ * its standing value exactly (the proof the shell's loading gate + error
+ * banner add nothing at the settled state) and all four pixel sweep
+ * classes + the fullpage axis stayed CLEAN (the visual genus intact —
+ * the same classes, now on the anchor). The R-7.5 re-derivation
+ * doctrine: a legitimate cure that changes the DOM genus re-derives the
+ * affected page's allowance in the same commit, decode documented.
+ */
 export const STANDING_CENSUS: Readonly<
   Record<string, Readonly<Record<string, StandingAllowance>>>
 > = {
   desktop: {
-    dashboard: { unexplained: 248, mainH: -167 },
+    dashboard: { unexplained: 254, mainH: -167 },
     income: { unexplained: 40, mainH: 49 },
     expenses: { unexplained: 115, mainH: 49 },
     accounts: { unexplained: 22, mainH: 49 },
@@ -1526,7 +1541,7 @@ export const STANDING_CENSUS: Readonly<
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   phone: {
-    dashboard: { unexplained: 264, mainH: 217 },
+    dashboard: { unexplained: 270, mainH: 217 },
     income: { unexplained: 38, mainH: -15 },
     expenses: { unexplained: 112, mainH: -261 },
     accounts: { unexplained: 20, mainH: -15 },
@@ -1539,7 +1554,7 @@ export const STANDING_CENSUS: Readonly<
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   tablet: {
-    dashboard: { unexplained: 253, mainH: -151 },
+    dashboard: { unexplained: 259, mainH: -151 },
     income: { unexplained: 38, mainH: -15 },
     expenses: { unexplained: 111, mainH: -15 },
     accounts: { unexplained: 20, mainH: -15 },
@@ -1552,7 +1567,7 @@ export const STANDING_CENSUS: Readonly<
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   landscape: {
-    dashboard: { unexplained: 245, mainH: 35 },
+    dashboard: { unexplained: 254, mainH: 35 },
     income: { unexplained: 40, mainH: 49 },
     expenses: { unexplained: 115, mainH: 103 },
     accounts: { unexplained: 22, mainH: 49 },

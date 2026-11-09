@@ -75,12 +75,24 @@ export function isGuarded(x: { user: SessionUser } | { response: NextResponse })
  * comment's "12" enumeration was the s72 record's unlanded half). */
 export const MAX_AUTH_BODY_BYTES = 16 * 1024;
 
-/** True when the request DECLARES a body larger than the auth ceiling —
+/** True when the request DECLARES a body larger than the ceiling —
  * call before `req.json()` so an oversized body is rejected without ever
- * being read into memory. */
-export function isBodyTooLarge(req: Request): boolean {
-  return Number(req.headers.get("content-length") ?? 0) > MAX_AUTH_BODY_BYTES;
+ * being read into memory. The `maxBytes` parameter lets a route with a
+ * larger honest payload (the import commit) raise its own bar. */
+export function isBodyTooLarge(req: Request, maxBytes: number = MAX_AUTH_BODY_BYTES): boolean {
+  return Number(req.headers.get("content-length") ?? 0) > maxBytes;
 }
+
+/** Session-216 (R-13, F-216a): the Import commit's OWN body ceiling.
+ * csvImportSchema contracts 5000 rows and the Import page posts them
+ * in ONE request — the global 16KB auth-family ceiling (whose honest
+ * bodies are tiny single-record CRUD) rejected any real import of
+ * ≳140 minimal rows against the UI's own promise. 5000 rows × the
+ * worst-case ~250-byte row (a 200-char description + the capped
+ * fields) ≈ 1.25MB — 4MB keeps generous headroom while still bounding
+ * the read (the seam's whole point). Every other route keeps the
+ * 16KB default. */
+export const MAX_IMPORT_BODY_BYTES = 4 * 1024 * 1024;
 
 // ---- the bounded body reader (session-165 — the digma S148-A/S75-B -----
 // port): the ONE seam every JSON body parse site consumes.
@@ -122,10 +134,16 @@ export type BoundedJson =
  *  Transfer-Encoding: chunked request carries NO Content-Length, so
  *  the gate passed and the parse buffered the whole body before any
  *  per-field cap ran. The counter: request.body read chunk-by-chunk,
- *  rejecting + cancelling the read past MAX_AUTH_BODY_BYTES. The
- *  declared fast path (isBodyTooLarge — the N-67d lineage, unchanged)
- *  stays ahead of it so an over-declared body rejects before ANY read. */
-export async function readBoundedJson(req: Request): Promise<BoundedJson> {
+ *  rejecting + cancelling the read past the ceiling. The declared
+ *  fast path (isBodyTooLarge — the N-67d lineage, unchanged) stays
+ *  ahead of it so an over-declared body rejects before ANY read.
+ *  Session-216 (R-13, F-216a): the ceiling is PARAMETERIZED — the
+ *  default stays MAX_AUTH_BODY_BYTES for every existing consumer;
+ *  the import route passes its own MAX_IMPORT_BODY_BYTES. */
+export async function readBoundedJson(
+  req: Request,
+  maxBytes: number = MAX_AUTH_BODY_BYTES,
+): Promise<BoundedJson> {
   // Layer 1 — the content-type CSRF gate, ahead of every byte read.
   const contentType = req.headers.get("content-type") ?? "";
   if (!contentType.toLowerCase().includes("application/json")) {
@@ -135,7 +153,7 @@ export async function readBoundedJson(req: Request): Promise<BoundedJson> {
   // Layer 2 — the declared-length fast path (an over-declared body
   // rejects before any byte is read; the unconsumed stream is
   // cancelled — the symmetric twin of the counter's own cancel below).
-  if (isBodyTooLarge(req)) {
+  if (isBodyTooLarge(req, maxBytes)) {
     await req.body?.cancel().catch(() => {});
     return { tooLarge: true };
   }
@@ -158,7 +176,7 @@ export async function readBoundedJson(req: Request): Promise<BoundedJson> {
     if (done) break;
     if (value) {
       total += value.byteLength;
-      if (total > MAX_AUTH_BODY_BYTES) {
+      if (total > maxBytes) {
         // Stop the producer before returning — a kept-open stream
         // would hold the connection and buffer the remaining chunks
         // server-side.
@@ -191,12 +209,15 @@ export async function readBoundedJson(req: Request): Promise<BoundedJson> {
  *  counter) ahead of safeParse, and maps the first schema issue onto
  *  the BAD_REQUEST envelope as a ready-made response — the route
  *  returns it verbatim. The schemas live in src/lib/schemas.ts (the
- *  seam). */
+ *  seam). Session-216 (R-13, F-216a): the optional `maxBytes` threads
+ *  to the reader — the import route passes its own ceiling, every
+ *  other consumer keeps the default. */
 export async function parseBody<S extends z.ZodTypeAny>(
   req: Request,
   schema: S,
+  maxBytes?: number,
 ): Promise<{ ok: true; data: z.output<S> } | { ok: false; response: NextResponse }> {
-  const read = await readBoundedJson(req);
+  const read = await readBoundedJson(req, maxBytes);
   if (read.tooLarge) return { ok: false, response: ERR.BAD_REQUEST("Request body too large") };
   const raw: unknown = read.value;
   if (raw === null) return { ok: false, response: ERR.BAD_REQUEST("Invalid request body") };

@@ -140,6 +140,19 @@ test.describe("a11y two-gate (WealthOS)", () => {
     assertTwoGate(await runAxe(page));
   });
 
+  test("desktop /reset-password (anon, no token) — structural zero + sanctioned citations", async ({
+    page,
+  }) => {
+    // Session-216 (R-13, F-216f tail): the reset landing was the one
+    // auth surface absent from the axe census (login/signup/404 and
+    // all nine sections were covered) — its token-less "invalid link"
+    // state had never been asserted clean.
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/reset-password");
+    await page.waitForLoadState("networkidle");
+    assertTwoGate(await runAxe(page));
+  });
+
   test("phone /login (anon) — structural zero + sanctioned citations", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/login");

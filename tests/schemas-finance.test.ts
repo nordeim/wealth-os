@@ -51,6 +51,44 @@ describe("transactionCreateSchema", () => {
   });
 });
 
+describe("dateField — calendar-true dates (F-216h, session 216)", () => {
+  // The pre-216 refine was Date.parse-based: V8 ROLLS invalid calendar
+  // dates ("2026-02-30" → 2026-03-02) and accepts free-form strings
+  // ("March 5, 2026") — silently storing the wrong day. The in-app
+  // surfaces always send yyyy-mm-dd (type="date" inputs) or full ISO
+  // (the Import page's toISOString) — everything else is rejected.
+  const valid = {
+    description: "Whole Foods run",
+    amount: 142.67,
+    type: "expense",
+  };
+
+  it.each(["2026-02-30", "2026-04-31", "02/30/2026", "March 5, 2026", "5/3/2026", "2026-2-3"])(
+    "rejects the non-calendar or non-ISO form %j",
+    (date) => {
+      expect(transactionCreateSchema.safeParse({ ...valid, date }).success).toBe(false);
+    },
+  );
+
+  it("accepts the two payload forms the app itself sends", () => {
+    expect(transactionCreateSchema.safeParse({ ...valid, date: "2026-11-08" }).success).toBe(
+      true,
+    );
+    expect(
+      transactionCreateSchema.safeParse({
+        ...valid,
+        date: "2026-11-08T00:00:00.000Z",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("still rejects the classic unparsable date", () => {
+    expect(transactionCreateSchema.safeParse({ ...valid, date: "not-a-date" }).success).toBe(
+      false,
+    );
+  });
+});
+
 describe("transactionUpdateSchema (three-state PUT)", () => {
   it("absent fields stay undefined; null notes/nextDate mean the explicit clear", () => {
     const parsed = transactionUpdateSchema.parse({ amount: 10 });

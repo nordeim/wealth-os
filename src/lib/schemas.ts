@@ -110,12 +110,24 @@ const signedMoneyField = (message: string) =>
     .min(-1_000_000_000, "Amount is too large")
     .max(1_000_000_000, "Amount is too large");
 
+// Session-216 (R-13, F-216h): calendar-true dates. The pre-216 refine
+// was Date.parse-based — V8 ROLLS invalid calendar dates ("2026-02-30"
+// → 2026-03-02) and accepts free-form strings ("March 5, 2026"),
+// silently storing the wrong day. The app's own surfaces send exactly
+// two forms — `yyyy-mm-dd` (the type="date" inputs) and a full ISO
+// datetime (the Import page's toISOString) — so the field now accepts
+// ONLY those shapes, with a calendar round-trip (the parsed UTC date
+// must equal the date the user wrote) killing the rollovers.
 const dateField = (message: string) =>
   z
     .string({ message })
     .trim()
     .min(1, message)
-    .refine((v) => !Number.isNaN(Date.parse(v)), "Enter a valid date");
+    .refine((v) => {
+      if (!/^\d{4}-\d{2}-\d{2}(T.*)?$/.test(v)) return false;
+      const d = new Date(v);
+      return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v.slice(0, 10);
+    }, "Enter a valid date");
 
 const enumField = <T extends readonly string[]>(
   values: T,

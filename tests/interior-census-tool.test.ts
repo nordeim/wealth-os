@@ -168,7 +168,7 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
   it("STANDING_CENSUS: the R-7.10 re-derivation — the F-209a card-genus convergence re-measured the touched pages (the literal values are the contract; drift above them is the event)", async () => {
     const { STANDING_CENSUS } = await census();
     expect({ ...STANDING_CENSUS.desktop }).toEqual({
-      dashboard: { unexplained: 248, mainH: -167 },
+      dashboard: { unexplained: 254, mainH: -167 },
       income: { unexplained: 40, mainH: 49 },
       expenses: { unexplained: 115, mainH: 49 },
       accounts: { unexplained: 22, mainH: 49 },
@@ -181,7 +181,7 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
       "reset-password": { unexplained: 19, mainH: 0 },
     });
     expect({ ...STANDING_CENSUS.phone }).toEqual({
-      dashboard: { unexplained: 264, mainH: 217 },
+      dashboard: { unexplained: 270, mainH: 217 },
       income: { unexplained: 38, mainH: -15 },
       expenses: { unexplained: 112, mainH: -261 },
       accounts: { unexplained: 20, mainH: -15 },
@@ -194,7 +194,7 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
       "reset-password": { unexplained: 19, mainH: 0 },
     });
     expect({ ...STANDING_CENSUS.tablet }).toEqual({
-      dashboard: { unexplained: 253, mainH: -151 },
+      dashboard: { unexplained: 259, mainH: -151 },
       income: { unexplained: 38, mainH: -15 },
       expenses: { unexplained: 111, mainH: -15 },
       accounts: { unexplained: 20, mainH: -15 },
@@ -207,7 +207,7 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
       "reset-password": { unexplained: 19, mainH: 0 },
     });
     expect({ ...STANDING_CENSUS.landscape }).toEqual({
-      dashboard: { unexplained: 245, mainH: 35 },
+      dashboard: { unexplained: 254, mainH: 35 },
       income: { unexplained: 40, mainH: 49 },
       expenses: { unexplained: 115, mainH: 103 },
       accounts: { unexplained: 22, mainH: 49 },

@@ -31,6 +31,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import {
   CardTitleRow,
   EmptyState,
@@ -117,7 +118,14 @@ export default function DashboardPage() {
   const axisColor = isDark ? "#a8a29e" : "#78716c";
   const gridColor = isDark ? "#292524" : "#e7e5e4";
 
-  const onRefresh = () => void store.refresh();
+  // Session-216 (R-13, F-216d): a failed refresh is no longer a silent
+  // no-op — the Result rides back (refreshAll returns it) and the
+  // button toasts the failure (the house mutation-feedback pattern).
+  const onRefresh = () => {
+    void store.refresh().then((res) => {
+      if (!res.ok) toast.error("Refresh failed", res.error);
+    });
+  };
 
   return (
     <div className={PAGE_ROOT.standard}>
@@ -549,27 +557,28 @@ function QuickAction({
   className?: string;
   iconClassName?: string;
 }) {
-  // Session-209 (F-209a): the reference's construction — a shadcn outline
-  // button inside a bare anchor, the per-tone border + soft hover fill +
-  // border deepen riding the appended variant classes. Two token notes:
-  // the reference's `bg-background` (white/#0a0a0a, theme-flipped) reads
-  // our `bg-card` (the F-209a token pins exactly those two values); its
-  // `hover:text-accent-foreground` (#171717/#fafafa) is expressed with
-  // the neutral literals (the F-129c3 house precedent). The icon's
-  // effective size is 16px — the button's [&_svg]:size-4 outranks the
-  // icon's own w-5 h-5 (measured live on the reference).
+  // Session-209 (F-209a) + session-216 (F-216e): the reference renders a
+  // shadcn outline button inside a bare anchor — an interactive INSIDE
+  // an interactive (two tab stops, ambiguous SR announcement), the one
+  // a11y defect class axe-core structurally cannot see (its
+  // nested-interactive rule matches childrenPresentational roles —
+  // button yes, link no). Our cure keeps the visual genus byte-for-byte
+  // (the exact class string, now carried by the anchor itself) while
+  // fixing the nesting: ONE focusable element per destination. Token
+  // notes (F-209a): the reference's `bg-background` reads our `bg-card`;
+  // its `hover:text-accent-foreground` is the neutral literals (the
+  // F-129c3 house precedent). The icon's effective size stays 16px —
+  // the [&_svg]:size-4 arm outranks the icon's own w-5 h-5.
   return (
-    <Link href={href}>
-      <button
-        type="button"
-        className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-card shadow-sm hover:text-neutral-900 dark:hover:text-neutral-50 px-4 py-2 w-full h-16 flex-col gap-2",
-          className,
-        )}
-      >
-        <Icon className={cn("w-5 h-5", iconClassName)} aria-hidden="true" />
-        {label}
-      </button>
+    <Link
+      href={href}
+      className={cn(
+        "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-card shadow-sm hover:text-neutral-900 dark:hover:text-neutral-50 px-4 py-2 w-full h-16 flex-col gap-2",
+        className,
+      )}
+    >
+      <Icon className={cn("w-5 h-5", iconClassName)} aria-hidden="true" />
+      {label}
     </Link>
   );
 }

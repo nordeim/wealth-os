@@ -191,10 +191,18 @@ async function main() {
     const jspdf = lock.match(/"jspdf": \["jspdf@([^"]+)"/);
     console.log(`  [leg-4] the lockfile's jspdf (the DIRECT runtime dep behind src/lib/pdf-export.ts): ${jspdf ? jspdf[1] : "NOT FOUND"}`);
 
-    // the code-path dormancy check (the security-and-hardening triage ladder)
-    const pdfSrc = readFileSync(join(REPO, "src", "lib", "pdf-export.ts"), "utf8");
-    const htmlCalls = (pdfSrc.match(/\.html\(/g) ?? []).length;
-    console.log(`  [leg-4] the dormancy check: pdf-export.ts .html( call sites = ${htmlCalls} (dompurify's only jsPDF activation site) — the vulnerable function ${htmlCalls === 0 ? "NEVER called in our code path (DORMANT, shipped)" : "CALLED (LIVE exposure)"}`);
+    // the code-path dormancy check — Session-216 (R-13, F-216f):
+    // src/lib/pdf-export.ts was DELETED at b78a8a6 (the F-215h dead-dep
+    // retirement); this session-198 audit leg now reports its absence
+    // instead of ENOENT-ing on a re-run.
+    const pdfPath = join(REPO, "src", "lib", "pdf-export.ts");
+    const pdfSrc = existsSync(pdfPath) ? readFileSync(pdfPath, "utf8") : null;
+    if (pdfSrc === null) {
+      console.log("  [leg-4] the dormancy check: pdf-export.ts no longer exists (deleted at b78a8a6 — the F-215h retirement)");
+    } else {
+      const htmlCalls = (pdfSrc.match(/\.html\(/g) ?? []).length;
+      console.log(`  [leg-4] the dormancy check: pdf-export.ts .html( call sites = ${htmlCalls} (dompurify's only jsPDF activation site) — the vulnerable function ${htmlCalls === 0 ? "NEVER called in our code path (DORMANT, shipped)" : "CALLED (LIVE exposure)"}`);
+    }
 
     // the registry fix
     try {

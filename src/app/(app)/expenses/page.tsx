@@ -58,6 +58,29 @@ export default function ExpensesPage() {
   const split = budgetCategorySplit(store.transactions, now);
 
   const activeFilters = [categoryFilter !== "all", tab !== "all"].filter(Boolean).length;
+  // Session-216 (R-13, F-216i): the filters popover closes on Escape +
+  // outside pointerdown — every other transient surface (the drawer,
+  // the dialogs, the dropdowns) already did; keyboard users had to tab
+  // back to the ✕ button.
+  React.useEffect(() => {
+    if (!filtersOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFiltersOpen(false);
+    };
+    const onPointer = (e: PointerEvent) => {
+      if (!(e.target instanceof HTMLElement)) return;
+      if (e.target.closest('[aria-label="Expense filters"]')) return;
+      if (e.target.closest('button[aria-expanded]')) return;
+      setFiltersOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onPointer);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onPointer);
+    };
+  }, [filtersOpen]);
+
 
   const visible = React.useMemo(() => {
     const q = search.trim().toLowerCase();

@@ -1,4 +1,5 @@
-// CSV serialization for the export endpoints (unit-tested seam).
+// CSV serialization for the export surface (the analytics export, through
+// toCsv — unit-tested seam; the guard's contract in tests/csv-formula-guard.test.ts).
 
 export interface CsvColumn<T> {
   header: string;
@@ -26,7 +27,8 @@ export interface CsvColumn<T> {
  * Excel renders `+971…` MORE faithfully as text than the current
  * formula-evaluated `971…`; raw-text/re-import consumers see the `'`
  * (parseCsv strips no markers — tests/csv-formula-guard.test.ts pins the
- * whole contract, including the round-trip trade-off).
+ * whole contract, including the round-trip trade-off; recreated session
+ * 216 after the session-199 suite rewrite deleted the original).
  *
  * Static example/template content authored by THIS app (none today —
  * the Import wizard's own UI copy) stays OUTSIDE the guard — our own
@@ -66,7 +68,8 @@ export function csvFilename(prefix: string): string {
   return `${prefix}_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}.csv`;
 }
 
-/** Minimal RFC-4180-ish parser used by the Import feature (contacts CSV).
+/** Minimal RFC-4180-ish parser used by the Import feature (bank-transaction
+ *  CSV).
  *  Session-172 (F-172e): line-ending normalization runs INSIDE the state
  *  machine, OUTSIDE quotes only — a quoted CRLF/CR is FIELD DATA
  *  (RFC 4180 §2.6); the pre-172 global replace mutated quoted cells

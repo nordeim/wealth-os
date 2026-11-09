@@ -7,6 +7,7 @@ import { MobileNav } from "./mobile-nav";
 import { MobileHeader } from "./mobile-header";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { APP_FOOTER, SHELL_LAYOUT } from "@/lib/page-layout";
+import { LoadingBlock } from "@/components/shared/page-parts";
 import type { User as AppUser } from "@/types";
 
 /**
@@ -20,6 +21,11 @@ import type { User as AppUser } from "@/types";
 export function AppShell({ user, children }: { user: AppUser; children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
   const hydrate = useWealthOs((s) => s.hydrate);
+  // Session-216 (R-13, F-216c/d): the loading gate + the error face —
+  // the store tracked both since birth; no page ever rendered them.
+  const loading = useWealthOs((s) => s.loading);
+  const hydrated = useWealthOs((s) => s.hydrated);
+  const storeError = useWealthOs((s) => s.error);
 
   // Close the drawer on navigation — adjust-during-render for this
   // component's OWN state (the sanctioned React pattern; non-link
@@ -52,7 +58,28 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
             onDrawerOpenChange={setMobileNavOpen}
           />
           <main className={SHELL_LAYOUT.main}>
-            {children}
+            {storeError ? (
+              <div
+                role="alert"
+                className="mx-auto mt-4 flex max-w-2xl flex-col gap-2 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/40"
+              >
+                <p className="text-sm font-medium text-red-800 dark:text-red-200">
+                  Couldn't load your data — {storeError}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void hydrate()}
+                  className="self-start rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-800 transition-colors hover:bg-red-100 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-900/40"
+                >
+                  Try again
+                </button>
+              </div>
+            ) : null}
+            {!hydrated || loading ? (
+              <LoadingBlock label="Loading your workspace…" />
+            ) : (
+              children
+            )}
             <footer className={APP_FOOTER.footer}>
               <span>{APP_FOOTER.copyright}</span>
             </footer>

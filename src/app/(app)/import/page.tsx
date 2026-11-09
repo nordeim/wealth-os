@@ -105,9 +105,7 @@ export default function ImportPage() {
         const category =
           catCol >= 0 && (line[catCol] ?? "").trim()
             ? (line[catCol] ?? "").trim()
-            : type === "income"
-              ? "Other"
-              : "Other";
+            : "Other";
         parsed.push({
           description: description.slice(0, 200),
           amount: Math.abs(rawAmount),

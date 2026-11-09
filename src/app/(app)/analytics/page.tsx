@@ -19,6 +19,7 @@ import {
   YAxis,
 } from "recharts";
 import { Download, RefreshCw, TrendingUp, Calendar } from "lucide-react";
+import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsPanel } from "@/components/ui/tabs";
 import {
@@ -152,7 +153,14 @@ export default function AnalyticsPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button variant="outline" onClick={() => void store.refresh()}>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  void store.refresh().then((res) => {
+                    if (!res.ok) toast.error("Refresh failed", res.error);
+                  })
+                }
+              >
                 <RefreshCw className="h-4 w-4" />
                 Refresh
               </Button>

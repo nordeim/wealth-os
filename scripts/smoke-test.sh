@@ -45,6 +45,9 @@ SERVER_PID=""
 ok()   { echo "  ok $1 — $2"; }
 fail() { echo "  FAIL $1 — $2" >&2; }
 cleanup() {
+  # Session-216 (R-13): GATE_PID joins the trap — an interrupt during
+  # the leg-13 window used to leak the :3211 boot-gate server.
+  [ -n "$GATE_PID" ] && kill "$GATE_PID" 2>/dev/null || true
   [ -n "$SERVER_PID" ] && kill "$SERVER_PID" 2>/dev/null || true
   rm -f "$COOKIE_JAR" "$SERVER_LOG" "$GATE_LOG" "$SMOKE_DB_LOG"
 }

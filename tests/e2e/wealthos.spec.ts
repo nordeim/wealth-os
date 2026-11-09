@@ -232,6 +232,18 @@ test.describe("the Expenses tabs + search", () => {
     await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
     await expect(page.getByText("Apartment Rent")).toHaveCount(0);
   });
+
+  test("the filters popover closes on Escape (F-216i)", async ({ page }) => {
+    // Session-216 (R-13): every other transient surface (the drawer,
+    // the dialogs, the dropdowns) closes on Escape — the filters
+    // popover was the one that did not; keyboard users had to tab
+    // back to the ✕. The cure: Escape + pointerdown-outside.
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    await expect(page.getByRole("group", { name: "Expense filters" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("group", { name: "Expense filters" })).toHaveCount(0);
+  });
 });
 
 test.describe("the API auth wall (N-69g probe — the 401 seam)", () => {

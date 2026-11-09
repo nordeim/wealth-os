@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { ok, ERR, parseBody, isGuarded, requireSession, MAX_IMPORT_BODY_BYTES } from "@/lib/api";
 import { csvImportSchema } from "@/lib/schemas";
 import { BUDGET_CATEGORIES, EXPENSE_CATEGORIES } from "@/lib/constants";
 
@@ -8,12 +8,15 @@ export const dynamic = "force-dynamic";
 /** The Import page's commit step — validated rows (parsed + mapped
  *  client-side through the preview table) land here. Every row rides the
  *  csvImportSchema (Zod at the boundary); the response reports the
- *  created count. */
+ *  created count. Session-216 (R-13, F-216a): the commit rides the
+ *  import-specific body ceiling (MAX_IMPORT_BODY_BYTES, 4MB) — the
+ *  16KB auth-family default rejected any real ≳140-row import against
+ *  the page's own 5000-row contract. */
 export async function POST(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
 
-  const parsed = await parseBody(req, csvImportSchema);
+  const parsed = await parseBody(req, csvImportSchema, MAX_IMPORT_BODY_BYTES);
   if (!parsed.ok) return parsed.response;
   const rows = parsed.data.rows;
 

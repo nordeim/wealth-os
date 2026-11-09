@@ -24,8 +24,6 @@ export const NAV_LAYOUT = {
   link: "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-stone-300 hover:bg-gradient-to-r hover:from-white/5 hover:to-amber-500/5 hover:text-amber-100 hover:border hover:border-amber-500/10",
   linkActive:
     "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 bg-gradient-to-r from-amber-500/20 to-emerald-600/20 text-amber-200 shadow-lg border border-amber-400/30 backdrop-blur-sm",
-  icon: "h-5 w-5",
-  label: "",
   footer: "p-4 space-y-3 border-t border-amber-500/20 relative z-10",
   // Session-207 (F-207h): the Synced badge genus, live-extracted from
   // the reference's sidebar footer — the SAME badge the mobile topbar
@@ -46,7 +44,6 @@ export const MOBILE_NAV_LAYOUT = {
 } as const;
 
 export const MOBILE_NAV_SHEET = {
-  overlay: "fixed inset-0 z-40 bg-black/50 lg:hidden",
   // Session-207 (F-207d): the sheet carries the reference's sheen — its
   // own inline-style overlay (a 3%-alpha gold→emerald tint, extracted
   // verbatim) layered over the stone gradient. We keep the OPAQUE base
@@ -229,16 +226,6 @@ export const APP_FOOTER = {
   copyright: "© 2026 WealthOS — Premium Finance Suite",
 } as const;
 
-/** The reference's segmented period control (1M 3M 6M 1Y). */
-export const PERIOD_SEGMENT = {
-  container:
-    "inline-flex items-center rounded-lg bg-stone-100 p-1 dark:bg-stone-800",
-  button:
-    "rounded-md px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100",
-  buttonActive:
-    "rounded-md bg-amber-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm",
-} as const;
-
 // ---------------------------------------------------------------------------
 // UI primitive contracts (the shadcn-style components' class seams)
 // ---------------------------------------------------------------------------
@@ -318,12 +305,6 @@ export const TABS_PILL = {
     "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
 } as const;
 
-export const GRID_COLS: Record<number, string> = {
-  2: "grid grid-cols-2",
-  3: "grid grid-cols-3",
-  4: "grid grid-cols-4",
-  5: "grid grid-cols-5",
-};
 
 // ---------------------------------------------------------------------------
 // The login card (WealthOS) — the reference's single centered card on a

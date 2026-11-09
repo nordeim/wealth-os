@@ -16,7 +16,6 @@ import type {
   IncomeSource,
   Investment,
   Result,
-  SearchResults,
   Settings,
   Transaction,
   User,
@@ -73,7 +72,7 @@ export interface WealthOsState {
   // actions
   hydrate: () => Promise<void>;
   logout: () => Promise<void>;
-  refresh: () => Promise<void>;
+  refresh: () => Promise<Result<DashboardData, string>>;
 
   createTransaction: (body: Record<string, unknown>) => Promise<Result<Transaction, string>>;
   updateTransaction: (id: string, body: Record<string, unknown>) => Promise<Result<Transaction, string>>;
@@ -104,18 +103,21 @@ export interface WealthOsState {
   updateSettings: (body: Partial<Settings>) => Promise<Result<Settings, string>>;
 
   askCoach: (question: string) => Promise<Result<{ answer: string }, string>>;
-  search: (q: string) => Promise<SearchResults>;
 }
 
 /** Shared post-mutation refresh: refetch the dashboard aggregate and
- *  swap every slice (the replace contract — full-list replacement, no
- *  partial PATCH merging). */
+ * swap every slice (the replace contract — full-list replacement, no
+ * partial PATCH merging). Session-216 (R-13, F-216d): the failure
+ * branch — a failed refresh used to die silently (no else); the
+ * error now lands in the store (behind the write-token guard) for
+ * the shell's alert banner, and the Result rides back to the caller
+ * so the Refresh buttons can toast. */
 async function refreshAll(
   token: number,
   set: (partial: Partial<WealthOsState>) => void,
-): Promise<void> {
+): Promise<Result<DashboardData, string>> {
   const res = await call<DashboardData>("/api/dashboard");
-  if (token !== sessionWriteToken) return;
+  if (token !== sessionWriteToken) return res;
   if (res.ok) {
     set({
       transactions: res.data.transactions,
@@ -128,7 +130,10 @@ async function refreshAll(
       loading: false,
       error: null,
     });
+  } else {
+    set({ loading: false, error: res.error });
   }
+  return res;
 }
 
 function createStore() {
@@ -194,7 +199,7 @@ function createStore() {
     },
 
     refresh: async () => {
-      await refreshAll(sessionWriteToken, set);
+      return refreshAll(sessionWriteToken, set);
     },
 
     createTransaction: async (body) => {
@@ -358,16 +363,6 @@ function createStore() {
       });
     },
 
-    search: async (q) => {
-      if (q.length < 2) {
-        return { transactions: [], accounts: [], investments: [], goals: [] };
-      }
-      const res = await call<SearchResults>(
-        `/api/search?q=${encodeURIComponent(q)}`,
-      );
-      if (res.ok) return res.data;
-      return { transactions: [], accounts: [], investments: [], goals: [] };
-    },
   }));
 }
 

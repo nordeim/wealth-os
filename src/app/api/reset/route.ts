@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     return ERR.BAD_REQUEST('Type "RESET" to confirm');
   }
 
-  // Session-36 (S36-P2): the seven deleteMany calls run INSIDE one
+  // Session-36 (S36-P2): the deleteMany calls run INSIDE one
   // $transaction — a mid-chain failure used to leave a PARTIAL wipe plus a
   // raw non-envelope 500; now the wipe is atomic and the failure path is
   // envelope-held.

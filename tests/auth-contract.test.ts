@@ -82,7 +82,10 @@ describe("session-67: the auth-seam contract (the N-67 family)", () => {
       expect(src, `${name}: parses through the seam`).toMatch(/await parseBody\(req, \w+Schema\)/);
     }
     const apiSrc = apiLib();
-    const gate = apiSrc.indexOf("isBodyTooLarge(req)");
+    // Session-216 (R-13, F-216a): the gate call is parameterized now
+    // (isBodyTooLarge(req, maxBytes)) — the contract is unchanged: the
+    // declared-length gate still runs ahead of every req.json() parse.
+    const gate = apiSrc.search(/isBodyTooLarge\(req/);
     const parse = apiSrc.indexOf("req.json()");
     expect(gate).toBeGreaterThanOrEqual(0);
     expect(parse).toBeGreaterThan(0);

@@ -52,12 +52,21 @@ export async function POST(req: Request) {
       },
     });
 
-    console.info(`[verification] code for ${email}: ${code} (expires in 15 minutes)`);
+    // Session-216 (R-13, F-216g): the OTP log rides the in-app branch —
+    // the code prints ONLY when the response also carries it (the demo
+    // dev posture). With NEO_DISABLE_IN_APP_OTP=1 (the production
+    // posture: codes hashed at rest, a mail transport owns the delivery)
+    // a code-less audit line is all that lands in the logs.
+    const inAppOtpEnabled = process.env.NEO_DISABLE_IN_APP_OTP !== "1";
+    if (inAppOtpEnabled) {
+      console.info(`[verification] code for ${email}: ${code} (expires in 15 minutes)`);
+    } else {
+      console.info(`[verification] verification code issued for ${email} (delivery delegated to the mail transport)`);
+    }
 
     // Session-163 (the digma ADR-014 port): the in-app OTP delivery —
     // the fresh code rides the response for the demo workflow (and the
     // e2e resend funnel), NEO_DISABLE_IN_APP_OTP=1 gated.
-    const inAppOtpEnabled = process.env.NEO_DISABLE_IN_APP_OTP !== "1";
     return ok({
       resent: true,
       message: verificationResentMessage(),

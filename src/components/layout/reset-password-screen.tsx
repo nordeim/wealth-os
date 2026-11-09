@@ -134,6 +134,7 @@ export function ResetPasswordScreen() {
                         type="password"
                         autoComplete="new-password"
                         required
+                        minLength={8}
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -154,6 +155,7 @@ export function ResetPasswordScreen() {
                         type="password"
                         autoComplete="new-password"
                         required
+                        minLength={8}
                         placeholder="••••••••"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
