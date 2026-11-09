@@ -171,9 +171,11 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   re-anchor), sweep.ts's suffix-form guard fired THE SWEEP inside the
   fullpage process: zero → capture → RESEED mid-run, corrupting the
   maiden's measurements until the zero-data sentinel caught it (F-210b).
-  All four tool guards are now `path.basename(process.argv[1]) ===
-  "<name>.ts"` — a guard a sibling's filename can satisfy is not a
-  guard. Pinned in `tests/fullpage-sweep-tool.test.ts`; long-running
+  All five direct-execution guards (the four capture tools +
+  prisma-env, session-215 R-12/F-215l) are now `path.basename(
+  process.argv[1]) === "<name>.ts"` — a guard a sibling's filename can
+  satisfy is not a guard. Pinned in `tests/fullpage-sweep-tool.test.ts`
+  + `tests/script-guards.test.ts`; long-running
   capture tools must also verify their workspace state mid-run (the
   zero-data sentinel pattern) instead of trusting a one-time setup.
 - **bun HARD-BLOCKS better-sqlite3** (session-213, R-9): `require`

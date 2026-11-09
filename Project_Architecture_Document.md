@@ -3,7 +3,7 @@
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** `docs/implementation-plan-session-199-wealthos.md` (the transformation plan)
-**Last Updated:** 2026-11-09
+**Last Updated:** 2026-11-10
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
 Nothing is here "because it's popular."
@@ -21,6 +21,28 @@ Every change is tagged with its source: `[RES]` = validated by web research,
   section re-derived from the live tree (schema, API family, shell, tests).
   The v1.x CRM-era PAD is superseded; the infrastructure chapters (auth,
   db-path, gate, Tailwind v4 pins) carried forward where the code kept them.
+- `[SR]` v2.12.0 (session 215, R-12 — the live-seam convergence round):
+  the Import page's live parser converged onto the shared `csv.ts` seam
+  (F-215a High: the F-214h cure had landed in a production-dead module
+  while the live parser kept the bare-quote bug + no BOM strip); the
+  analytics export rebuilt through `toCsv` + `csvFilename` (F-215b:
+  the S48-P1 formula-injection guard live on the only export surface);
+  the seed scoped to the demo owner — demo upsert first, then seven
+  `ownerId`-scoped wipes (F-215e); the settings lazy-create race
+  cured (P2002 catch + re-read, F-215i); the AI break-even verdict its
+  own neutral line (F-215j); the users PATCH docblock corrected to the
+  name-only truth (F-215g); the dead PDF tail retired (`jspdf` +
+  `html2canvas-pro` removed — zero consumers; the honest data-export
+  story in the doc set); the F-215d upgrade procedure documented
+  (DEPLOYMENT.md §5.1); `prisma-env.ts` took the exact-basename guard
+  (F-215l); the smoke db legs made loud-on-fail (F-215o); the PAD
+  diagram's uploads node corrected to 5MB (F-215k). The R-10 pins
+  strengthened (`ownerId: guard.user.id` exact) + the behavioral
+  two-user e2e isolation spec (`tests/e2e/multi-user.spec.ts`,
+  F-215c). The unit-count lockstep moved 657 → 676 / 47 → 51 files
+  with the live-seam pin family (21 → 25: import-seam,
+  analytics-export-seam, seed-scoping, script-guards); e2e 84 → 85
+  (5 → 6 specs).
 - `[SR]` v2.11.0 (session 214, R-10 + R-11): the tenancy gap CLOSED —
   `Budget` and `Setting` gained `ownerId` (the §4 ER finally true),
   `/api/reset` wipes only the caller's data, and `GET /api/users` answers
@@ -126,7 +148,6 @@ rejected alternatives live there.
 | Validation | Zod | 4.6.7 | Boundary parsing; message-carrying failures |
 | Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | Fast, ESM-native; property tests for money math |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | Real-browser journeys + a11y assertions |
-| PDF export | jspdf + html2canvas-pro | 4.2.1 / 2.6.3 | Client-side statement export; no server render farm |
 | Toolchain | Bun | ≥1.3.14 | Fast installs/scripts; node-compatible build |
 
 ### 1.3 Architecture Decision Records (ADRs)
@@ -214,7 +235,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (657) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (676) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -263,7 +284,7 @@ flowchart TB
   end
   subgraph Data
     DB[(SQLite db/custom.db<br/>8 Prisma models)]
-    FS[Uploads store<br/>uploads/ 10MB bounded]
+    FS[Uploads store<br/>uploads/ 5MB bounded]
   end
   D --> LB --> NEXT
   M --> LB
@@ -346,7 +367,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 45 unit suites (incl. architecture pins) + e2e/ 5 specs
+├── tests/                       # 51 unit suites (incl. architecture pins) + e2e/ 6 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -635,9 +656,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 47 | 657 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 51 | 676 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 21 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins) | `tests/` | source-scanning contracts |
+| — architecture pins | 25 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards) | `tests/` | source-scanning contracts |
 | — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -670,10 +691,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 657/657 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 676/676 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 84/84
+- [ ] `CI=1 bun run test:e2e` → 85/85
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -740,7 +761,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 657 unit / 84 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 676 unit / 85 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -774,8 +795,8 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 657 unit · build · smoke 14/14 ·
-84 e2e).
+the time of writing (lint 0/0 · tsc 0 · 676 unit · build · smoke 14/14 ·
+85 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
 advisory is cured same-session, never deferred; dev-toolchain bumps stay

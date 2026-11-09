@@ -90,6 +90,47 @@ bun run build
 # restart the server process
 ```
 
+### 5.1 Upgrading across schema changes that add REQUIRED columns
+
+Session-215 (R-12, F-215d): prisma 7 REFUSES to add a required column to
+a POPULATED table even under `db push --accept-data-loss` ("Added the
+required column … There are N rows in this table, it is not possible to
+execute this step") — the flag covers data-losing steps it can execute,
+not unexecutable ones. This bit for real across the session-214 owner-
+scoping migration (Budget/Setting gained required `ownerId`). If your
+database predates such a change, pick one:
+
+**Option A — export, rebuild, re-import (simple, safe):**
+
+```bash
+# 1. Back up, then export YOUR data while the OLD build still runs
+cp db/custom.db db/custom.db.bak
+#    (log in, click Settings → Export All Data — the JSON download)
+
+# 2. Rebuild the database at the NEW schema, then reimport
+bun run db:push -- --force-reset    # recreates the schema in place
+bun run build && bun run start      # re-import via Settings → Import
+```
+
+**Option B — hand-migrate (no downtime, SQL):** add the column nullable,
+backfill from the joinable parent, then tighten. For the session-214
+ownerId columns:
+
+```sql
+-- sqlite3 db/custom.db
+ALTER TABLE "Budget" ADD COLUMN "ownerId" TEXT;
+UPDATE "Budget" SET "ownerId" = (SELECT id FROM "User"
+  WHERE email = 'your-login@example.com');
+ALTER TABLE "Setting" ADD COLUMN "ownerId" TEXT NOT NULL DEFAULT '';
+UPDATE "Setting" SET "ownerId" = (SELECT id FROM "User"
+  WHERE email = 'your-login@example.com');
+-- (single-user installs: one UPDATE covers every row)
+```
+
+Multi-user installs upgrading across R-10 must attribute each row to its
+true owner before the tightening step — run the per-row UPDATE from your
+own provenance records.
+
 ## 6. Verification checklist
 
 ```bash

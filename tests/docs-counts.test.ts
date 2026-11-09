@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 657;
-const E2E_TOTAL = 84;
+const UNIT_TOTAL = 676;
+const E2E_TOTAL = 85;
 const SMOKE_TOTAL = 14;
-const TEST_FILES = 47;
+const TEST_FILES = 51;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -55,11 +55,12 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
       `| Unit | ${TEST_FILES} | ${UNIT_TOTAL} |`,
     );
-    // Session-214 (R-10/R-11): the owner-scoping + palette-pins pins
-    // joined the family (21) and the two files took the suite to 47
-    // (the arithmetic 3 + 21 + 23 = 47 now closes).
+    // Session-215 (R-12): the live-seam pins joined the family (25:
+    // +import-seam, analytics-export-seam, seed-scoping, script-guards)
+    // and the four files took the suite to 51 (the arithmetic
+    // 3 + 25 + 23 = 51 now closes).
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 21 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins) |",
+      "| — architecture pins | 25 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards) |",
     );
   });
 
@@ -105,16 +106,16 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     expect(c).toContain(`Unit suite (Vitest, ${UNIT_TOTAL} checks)`);
     expect(c).toContain(`E2E suite (Playwright, ${E2E_TOTAL} checks, own db + :3100)`);
     expect(c).toContain(`property tests via fast-check. ${UNIT_TOTAL} checks / ${TEST_FILES} files.`);
-    expect(c).toContain(`${E2E_TOTAL} checks / 5 specs.`);
+    expect(c).toContain(`${E2E_TOTAL} checks / 6 specs.`);
   });
 
   it("README's stack table + file hierarchy + testing table carry the live counts (the F-204a sites)", () => {
     const r = norm(doc("README.md"));
     expect(r).toContain(`${UNIT_TOTAL} checks incl. property tests`);
     expect(r).toContain(`${E2E_TOTAL} checks; chromium; seeded`);
-    expect(r).toContain(`# ${TEST_FILES} unit suites + 📂 e2e/ 5 specs`);
+    expect(r).toContain(`# ${TEST_FILES} unit suites + 📂 e2e/ 6 specs`);
     expect(r).toContain(`| Unit (Vitest) | \`bun run test\` | ${UNIT_TOTAL} checks / ${TEST_FILES} files |`);
-    expect(r).toContain(`${E2E_TOTAL} checks / 5 specs — boots its own server`);
+    expect(r).toContain(`${E2E_TOTAL} checks / 6 specs — boots its own server`);
     expect(r).toContain(`${SMOKE_TOTAL} assertions incl. boot-gate + artifact hygiene`);
   });
 
@@ -129,12 +130,12 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   it("wealth-os_SKILL.md's stack table + commands + pre-ship checklist carry the live counts (the F-204a sites)", () => {
     const s = norm(doc("wealth-os_SKILL.md"));
     expect(s).toContain(`Node env, jsdom-free; ${UNIT_TOTAL} checks / ${TEST_FILES} files`);
-    expect(s).toContain(`${E2E_TOTAL} checks / 5 specs; own db + port 3100`);
+    expect(s).toContain(`${E2E_TOTAL} checks / 6 specs; own db + port 3100`);
     expect(s).toContain(`\`bun run test\` (${UNIT_TOTAL} checks)`);
     expect(s).toContain(`\`CI=1 bun run test:e2e\` (${E2E_TOTAL} checks)`);
     expect(s).toContain(`\`bun run smoke\` (${SMOKE_TOTAL} assertions; needs build)`);
     expect(s).toContain(`\`bun run test\` — ${UNIT_TOTAL} passed / ${TEST_FILES} files`);
-    expect(s).toContain(`\`CI=1 bun run test:e2e\` — ${E2E_TOTAL}/${E2E_TOTAL} (5 specs)`);
+    expect(s).toContain(`\`CI=1 bun run test:e2e\` — ${E2E_TOTAL}/${E2E_TOTAL} (6 specs)`);
     expect(s).toContain(`\`bun run smoke\` — ${SMOKE_TOTAL}/${SMOKE_TOTAL} (boot-gate`);
   });
 });

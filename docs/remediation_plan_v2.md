@@ -7,12 +7,15 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.11.0** (session 214 — the owner-scoping round
-> R-10 + the palette-completion round R-11: the fresh-eyes audit's
-> tenancy cluster cured — Budget/Setting gain ownerId, /api/reset and
-> the budgets/settings/users families go owner-scoped — plus the 23
-> unpinned (family, step) pairs + 7 inert semantic tokens pinned under a
-> complete-enumeration guard; §5 carries the execution history).
+> **Current version: v2.12.0** (session 215 — the live-seam convergence
+> round R-12: the fresh-eyes audit's completeness cluster cured — the
+> Import page's live parser converged onto the shared csv.ts seam
+> (the F-214h cure had landed in a production-dead module), the
+> analytics CSV export routed through the guarded toCsv seam, the
+> seed's install-wide wipe scoped to the demo owner, the R-10 pins
+> strengthened to the exact `ownerId: guard.user.id` form + a
+> behavioral two-user e2e isolation spec, and the dead PDF dependency
+> tail retired; §5 carries the execution history).
 
 ---
 
@@ -104,6 +107,21 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-214k | Low | **eslint.config.mjs disables four rules the tree is clean under.** `react-hooks/exhaustive-deps`, `no-unreachable`, `no-fallthrough`, `no-useless-escape` are all "off" (scaffold posture); this session re-ran all four LIVE over src+scripts+prisma — zero issues. The safety net is switched off for nothing. | `eslint.config.mjs:23,36,38,39`; live `eslint --rule` run (this session, 0 issues) | **in-commit** |
 | F-214l | Info | **Whole-store `useWealthOs()` subscriptions (all 12 pages).** No `useShallow` misuse exists (no object-literal selectors — verified), so this is coarse-but-correct at the app's scale; recorded as the standing performance note, no cure scheduled. | all `src/app/(app)/*/page.tsx` | none (recorded) |
 | F-214m | Medium (cured in-commit) | **The scratch-db schema-drift refusal — discovered live during the R-10 verification.** Prisma 7's `db push --accept-data-loss` REFUSES to add a REQUIRED column to a populated table ("Added the required column `ownerId` … There are N rows in this table, it is not possible to execute this step") — the flag covers data-losing steps it can execute, not unexecutable ones. The stale-schema `db/e2e.db`/`db/smoke.db` therefore killed the e2e global-setup and (silently — the push is `>/dev/null`'d) the whole smoke ladder on any machine that had run the pre-R-10 gate. Cures: the smoke scratch db is RECREATED each run (`rm -f db/smoke.db` — the ladder boots its own server after the push, so the deleted-inode hazard never applies) and the e2e setup pushes with `--force-reset` (schema recreated IN PLACE — same file inode, the reuse-server hazard documented in the setup's own header stays respected, the push idempotent against any schema drift). | `scripts/smoke-test.sh` (the db leg); `tests/e2e/global-setup.ts` (the refusal reproduced live against the stale e2e.db this session) | **in-commit** |
+| F-215a | High | **The F-214h cure landed in a production-DEAD module — the live Import parser still carries the bug, plus no BOM strip.** `src/lib/csv.ts`'s `parseCsv` (the F-214h bare-quote fix, line 99-110, + the BOM strip, line 76) is imported ONLY by `tests/csv.test.ts` — zero production consumers. The Import page ships its OWN inline copy (`src/app/(app)/import/page.tsx:24-60`) with the PRE-214 quote-flip defect (line 42-43: any bare quote mid-field flips into quote mode and swallows the next comma — `O"Brien,12.50` shifts columns and silently drops rows) and no BOM strip (Excel "CSV UTF-8" exports — the common bank-export format — fail header detection with "Could not detect the required columns": the header cell reads `\uFEFFDescription`). The shipped regression pin (`tests/csv.test.ts:60`) exercises the dead seam, so it can never catch this. | `src/app/(app)/import/page.tsx:42-43` (byte-verified); `src/lib/csv.ts:76,99-110`; `rg parseCsv src/` (zero production importers of the lib form) | **R-12** |
+| F-215b | Medium | **The only LIVE CSV export bypasses the documented formula-injection guard.** The analytics `exportCsv` (`src/app/(app)/analytics/page.tsx:95-108`) hand-rolls quote-doubling (`t.description.replace(/"/g,'""')`) with NO `guardFormulaPrefix` — a description/category beginning with `=`, `+`, `@`, tab or CR exports unguarded (the OWASP CSV-injection class the repo adopted posture-(b) against at S48-P1). The guarded seam's own docblock (`src/lib/csv.ts:8-30`) claims coverage of "entity-export.ts's qq()" — a file that does not exist; `toCsv`/`guardFormulaPrefix`/`csvFilename` have ZERO production consumers. (Note: an initial audit pass mis-read the export line as a syntax error — byte-level verification (`od`) showed valid code; the display pipeline had eaten a `[[h` sequence. The guard bypass is the real, verified defect.) | `src/app/(app)/analytics/page.tsx:99` (the unguarded escape); `src/lib/csv.ts:10-11` (the false docblock); `rg "guardFormulaPrefix\|toCsv" src/` (zero production hits) | **R-12** |
+| F-215c | Medium | **R-10's pins are string-contains only; no behavioral multi-user test exists anywhere.** `tests/owner-scoping.test.ts:71-77` asserts each reset `deleteMany` CONTAINS the substring `ownerId` — a future regression scoping to any other variable (a body-supplied id, a wrong guard field) passes the pin. The settings pin (line 122-133) asserts only that `ownerId` appears somewhere in the file. Repo-wide: zero cross-user/second-user tests; the e2e suite runs single-user. The ROUTES are correct today (`guard.user.id` verified on every delete) — the pins just cannot catch semantic regressions. | `tests/owner-scoping.test.ts:71-77,122-133`; `rg "second user\|cross-user\|other user" tests/` (zero hits) | **R-12** |
+| F-215d | Medium | **No upgrade path for a populated pre-R-10 database across the required-column change.** No `prisma/migrations` exists (the documented workflow is `db:push`); prisma 7 REFUSES to add a required column to a populated table even under `--accept-data-loss` (the F-214m live proof). A real self-hosted install upgrading across R-10 must either `--force-reset` (loses ALL data) or hand-migrate SQL. DEPLOYMENT.md §5 documents neither. | `prisma/` (no migrations dir); `docs/DEPLOYMENT.md:82-91` (§5 "Updating" — no schema-change note); F-214m's live refusal | **R-12** (documented procedure) |
+| F-215e | Medium | **The seed wipes EVERY account's domain data.** `prisma/seed.ts` main() opens with SEVEN unscoped `deleteMany()` calls (transaction/incomeSource/bankAccount/investment/goal/budget/setting — install-wide) before the demo upsert. R-10's own premise (open signup, multiple accounts) makes the documented `bun run db:seed` an operator-triggered install-wide wipe on any multi-user deployment — the same class F-214a cured in the API, alive in the seed. | `prisma/seed.ts` (main()'s seven unscoped deletes, verified by direct read); the demo upsert that follows them | **R-12** |
+| F-215f | Medium | **Import advertises XLS/XLSX but parses CSV text only.** `accept=".csv,.xls,.xlsx,text/csv"` + the hint "CSV, XLS, XLSX up to 10MB" (`src/app/(app)/import/page.tsx:195,201`) + README:39 — but `extract()` is `f.text()` + `parseCsv`: a binary .xlsx decodes to garbage and dies with the misleading "Could not detect the required columns". The reference probe (session 215, live): the reference's accept attr + hint are BYTE-IDENTICAL to ours — and its bundle carries NO xlsx parsing library (the only "xlsx" occurrence IS the accept string) — the false advertising is the reference's own, inherited. The accept + hint are therefore PARITY SURFACES (kept byte-identical); the cure is the honest error branch on the non-CSV path (a functional superset, no happy-path DOM change). | `src/app/(app)/import/page.tsx:104-105,195,201`; the live reference probe (`scripts/ref-import-probe.ts`, this session); `grep -c xlsx` on the reference bundle = 1 (the accept string) | **R-12** |
+| F-215g | Low | **The users PATCH docblock describes behavior that does not exist; the photo/upload surface is dead.** The docblock claims "an explicit null clears it, an absent key leaves it untouched" and "the photoUrl prefix contract + the 500 cap live in profileUpdateSchema" — the schema (`src/lib/schemas.ts:449-455`) is name-only (min 1, max 80); PATCH updates `name` alone; `photoUrl` is read-only everywhere; `/api/upload` + `/api/uploads/[name]` have zero UI consumers; `next.config.ts:36-37` claims "the photo-upload e2e pair ran GREEN" — no such spec exists. | `src/app/api/users/route.ts` (PATCH docblock + handler); `src/lib/schemas.ts:449-455`; `rg "api/upload" src/` (zero UI consumers) | **R-12** (docblock + comment cures; the upload ROUTES stay — bounded, guarded, and the PAD documents them) |
+| F-215h | Low | **Two runtime dependencies serve only dead modules.** `jspdf` + `html2canvas-pro` are imported solely by `src/lib/pdf-export.ts` (zero consumers); `src/lib/download.ts` is also consumer-free; README:46,64 + PAD:129 + SKILL:127 advertise "PDF export / client-side statements" — a feature that does not exist in the UI (the Settings export button is a real anchor to `/api/export`, the JSON GDPR export). Dead runtime weight on the lockfile + `bun audit` surface. | `rg "pdf-export\|@/lib/download\|jspdf\|html2canvas" src/` (zero non-self hits); `src/app/(app)/settings/page.tsx` (the real `/api/export` anchor) | **R-12** |
+| F-215i | Low | **The settings lazy-create race can 500.** `readSettings` (`src/app/api/settings/route.ts:13-23`): findUnique → null → create, with no P2002 catch — two concurrent first-touch GETs (a user's first visit opening parallel tabs) both create; the loser hits the `Setting.ownerId @unique` constraint and surfaces `ERR.INTERNAL()`. | `src/app/api/settings/route.ts:13-23`; the R-10 schema (`Setting.ownerId @unique`) | **R-12** |
+| F-215j | Low | **The break-even month gets the "spending more than you earn" verdict.** Insight #2 gates on `rate > 0` (`src/lib/ai.ts`); `savingsRate` returns 0 for zero income AND for exact break-even (and rounds sub-0.05% to 0) — a month with income ≈ expenses (>0) renders the warning "You're spending more than you earn" — false at equality. The F-214j cure fixed the zero-income half; the equal half remains. | `src/lib/ai.ts` (the `if (rate > 0)` gate + the else-if branch); `src/lib/finance.ts` savingsRate (0 at break-even) | **R-12** |
+| F-215k | Low | **PAD architecture-diagram drift: "uploads/ 10MB bounded"** vs `MAX_UPLOAD_BYTES = 5MB` (`src/lib/uploads.ts:25`). The F-214i doc-drift cure fixed PAD:594 but missed the diagram node (PAD:266). | `Project_Architecture_Document.md:266`; `src/lib/uploads.ts:25` | **R-12** (in-commit) |
+| F-215l | Low | **`scripts/prisma-env.ts:40` ships the suffix-form direct-execution guard** (`process.argv[1]?.endsWith("prisma-env.ts")`) — the exact anti-pattern the F-210c lesson banned and cured for the four capture tools (exact `path.basename` match). No sibling currently collides; the doctrine's own wording ("a guard a sibling's filename can satisfy is not a guard") makes this a standing inconsistency. | `scripts/prisma-env.ts:40`; the F-210c cure (`tests/fullpage-sweep-tool.test.ts:302-324` pins the exact form for the four tools) | **R-12** (in-commit) |
+| F-215m | Informational | **The role dimension is inert.** Signup's first user becomes `"admin"` (`src/app/api/auth/signup/route.ts:84`, `schema.prisma:32`) but no admin surface exists (the users list died with R-10); role is display-only metadata. Documented here; no cure programmed (removing it would be a schema change for zero behavior gain). | `src/app/api/auth/signup/route.ts:84`; `prisma/schema.prisma:32` | none |
+| F-215n | Informational | **The lowercase route twins carry no per-page metadata** (documented-by-design at `src/lib/site.ts:44-49` — the capital `.jsx` bridges own the `pageMetadata()` calls; `/settings` inherits the root layout title). Noted for the record; the design is deliberate. | `src/lib/site.ts:44-49` | none |
+| F-215o | Informational | **The smoke ladder's silenced `db:push`/`db:seed` (`>/dev/null 2>&1`) can die with zero output** — the "dead script" failure mode F-214m itself named. The `rm -f db/smoke.db` cure makes failure unlikely; a loud on-fail path would make it observable. | `scripts/smoke-test.sh:63-64` | **R-12** (in-commit) |
 
 ## 3. The remediation program (R-items)
 
@@ -647,6 +665,72 @@ tokens; the complete enumeration finds the rest of the tail.
   recreation — idempotent against any schema drift; see the findings
   row for the prisma-7 refusal decode).
 
+### R-12 — The live-seam convergence round (session 215) — Status: Done(v2.12.0)
+
+The session-215 fresh-eyes audit's completeness cluster: the F-214h
+cure landed in a module no production code imports while the live
+Import parser still carries the bug (F-215a High), the only live CSV
+export bypasses the formula-injection guard the docs claim (F-215b),
+the R-10 security round's pins can't catch semantic regressions and no
+behavioral multi-user test exists (F-215c), the seed still wipes the
+whole install (F-215e), and a tail of smaller cures (F-215d/f/g/h/i/j/
+k/l/o). The round's spine: converge the live surfaces onto the guarded,
+tested seams — then pin the convergence so the "cure lands in a dead
+module" class cannot resurface.
+
+- **R-12.1 The pins (TDD)** —
+  `tests/import-seam.test.ts` born RED: the Import page imports
+  `parseCsv` from `@/lib/csv`, carries NO local parser definition, and
+  the non-CSV extension branch (the F-215f honest error) exists with
+  its message; `tests/analytics-export-seam.test.ts` born RED: the
+  analytics page imports `toCsv` from `@/lib/csv` and carries no
+  hand-rolled quote-doubling escape; `tests/owner-scoping.test.ts`
+  extended RED: every reset `deleteMany` carries the EXACT
+  `ownerId: guard.user.id` form (not the substring); the seed pin born
+  RED (`tests/seed-scoping.test.ts`): every seed `deleteMany` is
+  owner-scoped and the demo upsert precedes the deletes; the AI
+  break-even pin born RED (`tests/ai.test.ts` extended: income equal
+  to expenses renders the neutral break-even line, NOT the overspend
+  warning); the settings P2002 pin born RED (source form: readSettings
+  carries the unique-constraint catch + re-read); the prisma-env guard
+  pin born RED (the exact-basename form, F-210c doctrine);
+  `tests/e2e/multi-user.spec.ts` born GREEN BY DESIGN (the behavioral
+  contract pin — the routes are correct today; F-215c's point is that
+  nothing would catch the semantic-regression class, not that it is
+  broken now): the two-user isolation ladder (signup B → B's rows
+  visible to B only → B resets → B's rows gone → the demo user's rows
+  SURVIVE B's reset).
+- **R-12.2 The cures** — the Import parser swap (the page's inline
+  copy deleted; `import { parseCsv } from "@/lib/csv"` — the BOM strip
+  and the F-214h bare-quote fix go live); the non-CSV extension branch
+  (accept + hint stay byte-identical to the reference — parity
+  surfaces; a `.xls`/`.xlsx` pick gets "export as CSV" guidance);
+  the analytics `exportCsv` rebuilt through `toCsv` + `csvFilename`
+  (the S48-P1 guard goes live on the only export surface); the
+  `csv.ts` docblock corrected (the phantom entity-export.ts claim
+  retired); the seed re-ordered (demo upsert FIRST, then
+  `deleteMany({ where: { ownerId: demo.id } })` × 7 — `bun run
+  db:seed` refreshes the demo corpus without touching any other
+  account); `readSettings` catches the unique-constraint error and
+  re-reads (the concurrent first-touch 500 cured); the AI verdict's
+  break-even half (its own neutral line); the users PATCH docblock
+  corrected to the name-only truth; the dead PDF tail retired
+  (`src/lib/pdf-export.ts` + `src/lib/download.ts` deleted;
+  `jspdf` + `html2canvas-pro` removed from package.json; the
+  README/PAD/SKILL rows corrected to the real data-export story);
+  `next.config.ts`'s phantom photo-upload comment corrected;
+  DEPLOYMENT.md §5's upgrade note (the F-215d procedure: backup →
+  `--force-reset` → reimport, or the ALTER+backfill SQL path); the
+  PAD:266 diagram node (10MB → 5MB); the smoke db legs made
+  loud-on-fail; the prisma-env exact-basename guard.
+- **R-12.3 The verification** — the full gate (lint → tsc → unit →
+  build → smoke → e2e incl. the new multi-user spec) + the census
+  (statics unchanged) + the import/analytics sweep legs (the parity
+  surfaces are untouched by design — accept + hint byte-identical,
+  the export change is behavior-only; any trip is decoded with
+  `--clusters` per the standing doctrine) + `bun audit` re-triage
+  (the two removed runtime deps shrink the surface).
+
 ## 4. Plan validation (the re-check, session 203)
 
 After this plan text was drafted, every §2 claim was re-verified against the
@@ -681,20 +765,24 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | v2.10.0 | 213 | **R-9** (the prisma 6→7 major migration — the round's audit finding, F-213a, pre-empting the trailing pointer's standing-residuals default). The audit round first: the cold baseline gates green at the documented v2.9.0 ship state (lint 0/0 · tsc 0 · 620/620 · census MATCH); the reference probe STABLE on every layer; the ledger re-triage decoded the deepmerge-ts deferral as STALE — @prisma/config 7.x carries the fixed deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5 (the line ended at 6.19.3) — so the HIGH is curable, but only across the ORM major. Shipped: **R-9.1** the floors pin born RED 3/3 (every deepmerge-ts ≥ 8.0.0 · every prisma/@prisma/client on 7.x · the adapter chain resolved, better-sqlite3 barred) + **R-9.2** the migration-contract pin born RED 7/7 (the generator + output · the adapter constructors + no removed option + generated imports · prisma.config.ts on the seam · the e2e absolute-url re-pin + no removed flag · the git/eslint ignores · the package.json wiring · the externals) → **R-9.3** the cure: the generator swap + postinstall generate; both constructors through PrismaLibSql; the two namespace imports moved; prisma.config.ts (dotenv + resolveDatabaseUrl); the e2e setup re-pinned; the schema's datasource url removed (P1012); **F-213b discovered live**: bun HARD-BLOCKS better-sqlite3 (oven-sh/bun#4290) — the upgrade guide's named SQLite adapter — so the chain is @prisma/adapter-libsql + @libsql/client 0.17.4 (verified live under bun end-to-end); the lockfile regenerated (bun remove left the stale better-sqlite3 resolution — the F-212b lesson again; dompurify override intact) → **R-9.4** the verification + lockstep: **census 2 → 1** (0H/1M minimatch, range-unreachable), the security-ledger pin + PAD §10 re-anchored in-commit, the counts 620→630 / 43→45 / badge 704→714 (pins family 17→19), the version columns re-anchored everywhere, the AGENTS bun/better-sqlite3 gotcha, the PAD revision block | lint 0/0 · tsc 0 · **630 unit** (45 files; +10: the two new pins) · build · smoke 14/14 · e2e 84/84 · two sweep legs CLEAN (1440 + 390) · census MATCH | (this session's execution commit) |
 | v2.11.0 | 214 | **R-10** (the owner-scoping round) + **R-11** (the palette-completion round) + six in-commit cures (F-214f/g/h/i/j/k). The audit round first: the cold baseline gates green at the documented v2.10.0 ship state (lint 0/0 · tsc 0 · 630/630 · smoke 14/14 · e2e 84/84 · census MATCH); the reference probe STABLE on every layer; **all six drift gates CLEAN cold** (the four sweep classes + the fullpage + the interior census at margin 0 — the full parity evidence set); the ledger re-triaged (the standing 1 moderate minimatch, range-unreachable — no new advisory); the skills-guided fresh-eyes audit (Mode C, `skills/web-application` §14–§20 + `skills/tdd`) found the session's material: the tenancy cluster (F-214a High — `/api/reset` unscoped; F-214b/c — Budget/Setting ownerless, `/api/users` enumerating), the Tailwind v4 tail (F-214d — 23 unpinned pairs; F-214e — 7 inert semantic tokens), and the in-commit family (the boot delivery warning, the CSV quote edge, the AI zero-income gap, the doc drift, the disabled-but-clean eslint rules). Shipped: **R-10.1** `tests/owner-scoping.test.ts` born RED → **R-10.2** the Budget/Setting ownerId migration + the five route families scoped + the users GET retired to the session record + the seed re-bound → **R-10.3** the gate + census + drift legs; **R-11.1** `tests/palette-pins.test.ts` born RED (the complete enumeration) → **R-11.2** the 23 v3 pins + the 7 shadcn neutral tokens + the `.dark` flips → **R-11.3** the gate + the four sweep classes + the interior census; the in-commit cures as programmed | (the gate legs recorded in the session-214 worklog row) · census MATCH | (this session's execution commit) |
 
-> The next iteration session (215) has **no open R-item by default** — the
-> R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8
-> dependency round at v2.9.0, the R-9 prisma major at v2.10.0, and the
+| v2.12.0 | 215 | **R-12** (the live-seam convergence round) + the in-commit tail. The audit round first: the cold baseline gates green at the documented v2.11.0 ship state (lint 0/0 · tsc 0 · 657/657 · build · smoke 14/14 · e2e 84/84 · census MATCH); the reference probe STABLE on every layer; **all six drift gates CLEAN cold**; the ledger re-triaged (the standing 1 moderate minimatch, range-unreachable — no new advisory); the skills-guided fresh-eyes audit (Mode C, `skills/web-application` + `skills/tdd`) found the session's material: the completeness cluster — **F-215a High** (the F-214h cure landed in a production-DEAD module while the live Import parser kept the bare-quote bug + no BOM strip), **F-215b** (the only live CSV export bypassed the formula-injection guard; the seam's docblock claimed a phantom entity-export.ts), **F-215c** (the R-10 pins were string-contains only; zero behavioral multi-user tests), **F-215e** (the seed's seven unscoped deleteMany — the install-wide wipe alive in the seed under R-10's own open-signup premise), **F-215f** (XLS/XLSX advertised, CSV-only parsed — the reference probe proved its bundle carries no spreadsheet library either, so the accept+hint are parity surfaces and the cure is the honest error branch), and the tail (F-215d upgrade path, F-215g users docblock, F-215h dead PDF deps, F-215i settings race, F-215j break-even verdict, F-215k PAD node, F-215l suffix guard, F-215o smoke loudness). A live method lesson recorded: an audit pass mis-read a valid export line as a syntax error — the DISPLAY pipeline ate a `[[h` sequence; byte-level verification (`od`) is now the rule for impossible-looking syntax findings. Shipped: **R-12.1** the pins born RED 14 (import-seam 5 · analytics-export-seam 3 · seed-scoping 3 · script-guards 1 · the ai break-even 1 · the settings-race 1) + the owner-scoping exact-form and the four standing-guard pins green-at-birth + `tests/e2e/multi-user.spec.ts` born GREEN by design (the behavioral contract pin — B's rows invisible to demo, B's reset wipes only B, the demo corpus SURVIVES) → **R-12.2** the cures (the parser swap + the XLS branch; the toCsv rebuild + the docblock corrections; the seed re-order + scoping; the P2002 catch; the break-even line; the name-only docblock; the dead deps retired; DEPLOYMENT §5.1; the smoke loud-on-fail legs; the exact-basename guard) → **R-12.3** the verification: lint 0/0 · tsc 0 · **676 unit** (51 files; +19) · build · smoke 14/14 · **e2e 85/85** (6 specs; +1) · **all six drift gates CLEAN** (the four sweep classes + the fullpage + the interior census — the accept-attr convergence is invisible to pixels, the XLS branch is an error path, the export is behavior-only) · census MATCH · the ledger unchanged (1 moderate, range-unreachable) | lint 0/0 · tsc 0 · **676 unit** (51 files) · build · smoke 14/14 · **e2e 85/85** · census MATCH · six drift gates CLEAN | (this session's execution commit) |
+
+> The next iteration session (216) has **no open R-item by default** —
+> the R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8
+> dependency round at v2.9.0, the R-9 prisma major at v2.10.0, the
 > session-214 rounds (R-10 owner-scoping + R-11 palette-completion) at
-> v2.11.0 (the advisory census still 1 — minimatch alone,
-> range-unreachable until typescript-estree moves; the re-triage duty
-> stays). A fresh audit's findings always pre-empt (Critical/High
-> first); the natural next rounds are the standing residuals' watch (the
-> F-210a scroll-model genus — cure only if a future round re-architects
-> the shell), F-214l's whole-store subscription note (a `useShallow`
-> sweep, only if a page ever proves render-bound), or R-5 (the LLM
+> v2.11.0, and the session-215 live-seam convergence (R-12) at v2.12.0
+> (the advisory census still 1 — minimatch alone, range-unreachable
+> until typescript-estree moves; the re-triage duty stays). A fresh
+> audit's findings always pre-empt (Critical/High first); the natural
+> next rounds are the standing residuals' watch (the F-210a scroll-model
+> genus — cure only if a future round re-architects the shell),
+> F-214l's whole-store subscription note (a `useShallow` sweep, only if
+> a page ever proves render-bound), F-215m's inert role dimension (a
+> schema cleanup, only if tenancy ever needs roles), or R-5 (the LLM
 > provider wiring) on the owner's explicit ask. The standing residuals
-> stay the
-> documented content supersets (the populated tables/charts our corpus
-> renders where the reference's empty workspace shows placeholders) + the
-> F-210a scroll-model genus (absorbed into the fullpage tables by the
-> stability call — cure only if a future round re-architects the shell).
+> stay the documented content supersets (the populated tables/charts our
+> corpus renders where the reference's empty workspace shows
+> placeholders) + the F-210a scroll-model genus (absorbed into the
+> fullpage tables by the stability call — cure only if a future round
+> re-architects the shell).
