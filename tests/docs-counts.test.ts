@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 676;
-const E2E_TOTAL = 85;
+const UNIT_TOTAL = 719;
+const E2E_TOTAL = 88;
 const SMOKE_TOTAL = 14;
-const TEST_FILES = 51;
+const TEST_FILES = 55;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -60,7 +60,7 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // and the four files took the suite to 51 (the arithmetic
     // 3 + 25 + 23 = 51 now closes).
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 25 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards) |",
+      "| — architecture pins | 29 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216) |",
     );
   });
 
@@ -106,16 +106,16 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     expect(c).toContain(`Unit suite (Vitest, ${UNIT_TOTAL} checks)`);
     expect(c).toContain(`E2E suite (Playwright, ${E2E_TOTAL} checks, own db + :3100)`);
     expect(c).toContain(`property tests via fast-check. ${UNIT_TOTAL} checks / ${TEST_FILES} files.`);
-    expect(c).toContain(`${E2E_TOTAL} checks / 6 specs.`);
+    expect(c).toContain(`${E2E_TOTAL} checks / 7 specs.`);
   });
 
   it("README's stack table + file hierarchy + testing table carry the live counts (the F-204a sites)", () => {
     const r = norm(doc("README.md"));
     expect(r).toContain(`${UNIT_TOTAL} checks incl. property tests`);
     expect(r).toContain(`${E2E_TOTAL} checks; chromium; seeded`);
-    expect(r).toContain(`# ${TEST_FILES} unit suites + 📂 e2e/ 6 specs`);
+    expect(r).toContain(`# ${TEST_FILES} unit suites + 📂 e2e/ 7 specs`);
     expect(r).toContain(`| Unit (Vitest) | \`bun run test\` | ${UNIT_TOTAL} checks / ${TEST_FILES} files |`);
-    expect(r).toContain(`${E2E_TOTAL} checks / 6 specs — boots its own server`);
+    expect(r).toContain(`${E2E_TOTAL} checks / 7 specs — boots its own server`);
     expect(r).toContain(`${SMOKE_TOTAL} assertions incl. boot-gate + artifact hygiene`);
   });
 
@@ -130,12 +130,25 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   it("wealth-os_SKILL.md's stack table + commands + pre-ship checklist carry the live counts (the F-204a sites)", () => {
     const s = norm(doc("wealth-os_SKILL.md"));
     expect(s).toContain(`Node env, jsdom-free; ${UNIT_TOTAL} checks / ${TEST_FILES} files`);
-    expect(s).toContain(`${E2E_TOTAL} checks / 6 specs; own db + port 3100`);
+    expect(s).toContain(`${E2E_TOTAL} checks / 7 specs; own db + port 3100`);
     expect(s).toContain(`\`bun run test\` (${UNIT_TOTAL} checks)`);
     expect(s).toContain(`\`CI=1 bun run test:e2e\` (${E2E_TOTAL} checks)`);
     expect(s).toContain(`\`bun run smoke\` (${SMOKE_TOTAL} assertions; needs build)`);
     expect(s).toContain(`\`bun run test\` — ${UNIT_TOTAL} passed / ${TEST_FILES} files`);
-    expect(s).toContain(`\`CI=1 bun run test:e2e\` — ${E2E_TOTAL}/${E2E_TOTAL} (6 specs)`);
+    expect(s).toContain(`\`CI=1 bun run test:e2e\` — ${E2E_TOTAL}/${E2E_TOTAL} (7 specs)`);
     expect(s).toContain(`\`bun run smoke\` — ${SMOKE_TOTAL}/${SMOKE_TOTAL} (boot-gate`);
+  });
+
+  it("the SKILL's stack table carries NO deleted-dependency rows (F-216f, the retired-forms negative ladder)", () => {
+    // Session-216 (R-13): the F-215h lockstep claimed "the dead PDF
+    // rows retired across README/PAD/SKILL" but left SKILL:127
+    // advertising jspdf + html2canvas-pro + src/lib/pdf-export.ts —
+    // deps deleted at b78a8a6. A claims-vs-reality negative pin: the
+    // living stack table may not name what the tree does not carry.
+    const s = norm(doc("wealth-os_SKILL.md"));
+    expect(s).not.toContain("PDF export |");
+    expect(s).not.toContain("jspdf");
+    expect(s).not.toContain("html2canvas");
+    expect(s).not.toContain("pdf-export");
   });
 });

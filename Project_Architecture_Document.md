@@ -16,6 +16,28 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.13.0 (session 216, R-13 — the verification-gap convergence
+  round): the bounded reader PARAMETERIZED (readBoundedJson/parseBody/
+  isBodyTooLarge take maxBytes; the import route rides its own
+  MAX_IMPORT_BODY_BYTES = 4MB — the 16KB auth-family default had
+  silently capped the 5000-row Import contract at ~140 rows, F-216a);
+  the formula-injection guard's behavioral pin recreated
+  (tests/csv-formula-guard.test.ts — the phantom-reference cure,
+  F-216b); the client data layer's faces wired (the AppShell loading
+  gate + the store-error alert banner with retry; refreshAll's failure
+  branch; the Refresh toasts — LoadingBlock had been dead code,
+  F-216c/d); the QuickAction single-anchor a11y cure (F-216e — the
+  reference's own <a><button/></a> nesting deliberately diverged from;
+  the dashboard's interior-census standing allowances re-derived per
+  the R-7.5 doctrine: 254/270/259/254); dateField calendar-true
+  (F-216h); the OTP log gated behind the in-app branch (F-216g); the
+  Expenses popover Escape/outside close (F-216i); the dead exports
+  retired (F-216j) + the F-215h doc tail cured (SKILL's PDF row,
+  PAD's "JSON/PDF", DEPLOYMENT's seed wording, install_packages.sh
+  deleted). The unit-count lockstep moved 676 → 719 / 51 → 55 files
+  with the verification-gap pin family (25 → 29: import-body-cap,
+  csv-formula-guard, loading-states, parity-216); e2e 85 → 88
+  (6 → 7 specs).
 - `[SYN]` v2.0.0 — Full rewrite for the WealthOS transformation (session
   199): the product domain changed from NEO CRM to personal finance; every
   section re-derived from the live tree (schema, API family, shell, tests).
@@ -235,8 +257,8 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (676) → `next build` → the 14-assertion smoke ladder on the
-  standalone artifact → Playwright e2e (84) against a pinned `db/e2e.db`.
+  → vitest (719) → `next build` → the 14-assertion smoke ladder on the
+  standalone artifact → Playwright e2e (88) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
   R-4.5, session 211 — green end-to-end from cold): the sweep,
@@ -300,7 +322,7 @@ flowchart TB
 **Runtime notes:** one process serves everything (pages + API + static
 assets from `public/`); scaling is vertical. The rate limiter keys on the
 client IP derived from `NEO_PROXY_HOPS` trust depth (fails closed). The
-upload store is same-disk; the export path streams JSON/PDF from the db.
+upload store is same-disk; the export path streams JSON from the db (the CSV export is client-side through the guarded toCsv seam).
 No external services are called at runtime — fonts are the system stack,
 the AI engine is local, analytics-free by design.
 
@@ -367,7 +389,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 51 unit suites (incl. architecture pins) + e2e/ 6 specs
+├── tests/                       # 55 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -656,9 +678,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 51 | 676 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 55 | 719 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 25 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards) | `tests/` | source-scanning contracts |
+| — architecture pins | 29 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216) | `tests/` | source-scanning contracts |
 | — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -691,10 +713,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 676/676 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 719/719 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 85/85
+- [ ] `CI=1 bun run test:e2e` → 88/88
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -761,7 +783,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 676 unit / 85 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 719 unit / 88 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -795,8 +817,8 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 676 unit · build · smoke 14/14 ·
-85 e2e).
+the time of writing (lint 0/0 · tsc 0 · 719 unit · build · smoke 14/14 ·
+88 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
 advisory is cured same-session, never deferred; dev-toolchain bumps stay

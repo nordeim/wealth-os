@@ -73,7 +73,7 @@ Initialize (or reset) the database with:
 
 ```bash
 bun run db:push        # apply schema (db push — no migrations folder)
-bun run db:seed        # idempotent demo workspace (wipes domain tables)
+bun run db:seed        # idempotent demo workspace (scoped to the demo owner — R-12)
 ```
 
 `db/*.db` is gitignored; every fresh clone recreates it from the two

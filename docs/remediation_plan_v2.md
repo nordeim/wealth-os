@@ -7,15 +7,20 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.12.0** (session 215 — the live-seam convergence
-> round R-12: the fresh-eyes audit's completeness cluster cured — the
-> Import page's live parser converged onto the shared csv.ts seam
-> (the F-214h cure had landed in a production-dead module), the
-> analytics CSV export routed through the guarded toCsv seam, the
-> seed's install-wide wipe scoped to the demo owner, the R-10 pins
-> strengthened to the exact `ownerId: guard.user.id` form + a
-> behavioral two-user e2e isolation spec, and the dead PDF dependency
-> tail retired; §5 carries the execution history).
+> **Current version: v2.13.0** (session 216 — the verification-gap
+> convergence round R-13: the fresh-eyes audit's unpinned-behavior
+> cluster cured — the Import commit's 5000-row contract un-blocked from
+> the 16KB global body ceiling (F-216a Medium: real imports of ≳140
+> rows failed "Request body too large" against the UI's own promise),
+> the S48-P1 formula-injection guard given its behavioral pin + the
+> phantom test reference made real (F-216b), the client data layer's
+> missing loading/error faces wired (F-216c/d — LoadingBlock was dead
+> code, refreshAll swallowed failures), the QuickAction nested-
+> interactive cured (F-216e — the a11y two-gate is structurally blind
+> to link-wrapped buttons), the F-215h doc tail completed (F-216f), and
+> the low tail (OTP log gating F-216g, calendar-true dates F-216h, the
+> Expenses popover Escape F-216i, the dead-export sweep F-216j);
+> §5 carries the execution history).
 
 ---
 
@@ -122,6 +127,17 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-215m | Informational | **The role dimension is inert.** Signup's first user becomes `"admin"` (`src/app/api/auth/signup/route.ts:84`, `schema.prisma:32`) but no admin surface exists (the users list died with R-10); role is display-only metadata. Documented here; no cure programmed (removing it would be a schema change for zero behavior gain). | `src/app/api/auth/signup/route.ts:84`; `prisma/schema.prisma:32` | none |
 | F-215n | Informational | **The lowercase route twins carry no per-page metadata** (documented-by-design at `src/lib/site.ts:44-49` — the capital `.jsx` bridges own the `pageMetadata()` calls; `/settings` inherits the root layout title). Noted for the record; the design is deliberate. | `src/lib/site.ts:44-49` | none |
 | F-215o | Informational | **The smoke ladder's silenced `db:push`/`db:seed` (`>/dev/null 2>&1`) can die with zero output** — the "dead script" failure mode F-214m itself named. The `rm -f db/smoke.db` cure makes failure unlikely; a loud on-fail path would make it observable. | `scripts/smoke-test.sh:63-64` | **R-12** (in-commit) |
+| F-216a | Medium | **The Import commit's 5000-row contract is blocked by the global 16KB body ceiling.** `parseBody` rides `readBoundedJson`, which enforces `MAX_AUTH_BODY_BYTES = 16 * 1024` (the auth-family ceiling) on EVERY route — while `csvImportSchema` contracts `.max(5000)` rows and the Import page slices the preview to 5001 rows and posts ALL of them in ONE request. A minimal row is ~115 bytes → 16KB ≈ ~140 rows; realistic rows (~40–80-char descriptions) cap at ~60–100. A real bank-CSV import above that dies with "Request body too large" against the UI's own "all will be imported" promise. No e2e ever posts a >16KB import, so the conflict is invisible to the gate (the schema test bypasses the HTTP seam). | `src/lib/api.ts:76` (the ceiling) + `:128/:161` (readBoundedJson layers 2–3); `src/lib/schemas.ts:476` (.max(5000)); `src/app/(app)/import/page.tsx:97` (slice 5001) + `src/stores/wealthos-store.ts` (the single-request commit) | **R-13** |
+| F-216b | Medium | **The S48-P1 formula-injection guard has ZERO behavioral coverage, and `csv.ts` cites a test file that does not exist.** The docblock claims "tests/csv-formula-guard.test.ts pins the whole contract, including the round-trip trade-off" — that file died in the session-199 suite rewrite (`git log --diff-filter=D`) and was never recreated. `tests/csv.test.ts`'s three toCsv cases use no `=`/`+`/`@`/tab/CR cells; `guardFormulaPrefix` appears in no test file (only a comment in analytics-export-seam). Since R-12 the guard rides the analytics export — a regression of the regex or the escapeCell call ships green. The exact "cure lands where nothing pins it" class F-215a cured, plus the phantom-reference class F-215b cured. | `src/lib/csv.ts:28-29` (the phantom claim) + `:36` (the guard); `ls tests/` (no csv-formula-guard); `tests/csv.test.ts:16-29` (no formula fixtures) | **R-13** |
+| F-216c | Medium | **No loading states on any client page — `LoadingBlock` is dead code.** The store sets `loading` (`wealthos-store.ts`) but NO page consumes it; `LoadingBlock` (`page-parts.tsx:211`) has zero consumers. Every hard load flashes the misleading "No X yet" empty state (with its "Add your first X" CTA) while `/api/dashboard` is in flight. | `src/components/shared/page-parts.tsx:211` (dead); `src/stores/wealthos-store.ts` (loading set, never read by pages); all 9 `src/app/(app)/*/page.tsx` | **R-13** |
+| F-216d | Medium | **Hydrate/refresh failures are silent.** `refreshAll` has no failure branch (errors swallowed — `if (res.ok) {...}` with no else); `store.error` is written by `hydrate` but rendered by NO page; the dashboard/analytics Refresh buttons fire-and-forget (`void store.refresh()`). A failed initial hydrate leaves the page in the empty state with no retry affordance; a failed Refresh click is a dead no-op. | `src/stores/wealthos-store.ts` (refreshAll, error); `src/app/(app)/dashboard/page.tsx:120` (onRefresh); `src/app/(app)/analytics/page.tsx` (its Refresh) | **R-13** |
+| F-216e | Medium | **Nested interactive elements: the QuickAction renders `<Link><button/></Link>`.** Two tab stops for one destination, ambiguous SR announcement — invalid HTML nesting. axe-core's `nested-interactive` rule only matches roles with `childrenPresentational` (`button` yes, `link` no), so the a11y two-gate is STRUCTURALLY blind to link-wrapped buttons — the e2e green is real but the defect class is invisible to it. The code comment honestly notes the reference ships the same nesting (F-209a parity-inherited); the cure keeps the visual genus (same classes on the anchor) while fixing the nesting. | `src/app/(app)/dashboard/page.tsx:562-573` (QuickAction) | **R-13** |
+| F-216f | Medium | **The F-215h doc cure is incomplete — the claims-vs-reality tail the round itself existed to close.** `wealth-os_SKILL.md:127` still advertises the deleted PDF export (`jspdf` 4.2.1 + `html2canvas-pro` 2.6.3 + `src/lib/pdf-export.ts`) — the lockstep commit's own message named "SKILL:127" as cured; `Project_Architecture_Document.md:303` still says the export path "streams JSON/PDF"; `docs/DEPLOYMENT.md:76` still says the seed "wipes domain tables" (R-12 scoped it to the demo owner); the reset route's session-36 comment says "seven deleteMany" (six run); `scripts/install_packages.sh` still installs the dead deps (via npm, no less); `scripts/discover-198.ts:195` readFileSync's the deleted module (ENOENT if re-run); `src/lib/csv.ts:1/:69` keeps the neo-crm lineage ("export endpoints" plural, "contacts CSV" — the Import is bank-transaction CSV). | `wealth-os_SKILL.md:127`; `Project_Architecture_Document.md:303`; `docs/DEPLOYMENT.md:76`; `src/app/api/reset/route.ts:25`; `scripts/install_packages.sh`; `scripts/discover-198.ts:195`; `src/lib/csv.ts:1,:69` | **R-13** |
+| F-216g | Low | **The live OTP code + email land in server logs unconditionally.** `console.info` at signup:91 and resend:55 prints the 6-digit code regardless of `NEO_DISABLE_IN_APP_OTP` — in the production posture (kill-switch `=1`, codes hashed at rest, absent from responses) a live OTP + PII still lands in the logs, defeating the hashed-at-rest posture for anyone with log access. | `src/app/api/auth/signup/route.ts:91`; `src/app/api/auth/resend/route.ts:55` | **R-13** |
+| F-216h | Low | **`dateField` accepts free-form and rollover dates.** Verified live: `Date.parse("2026-02-30")` is NOT NaN in V8 — it rolls to 2026-03-02 and stores silently as March 2; `"02/30/2026"` rolls the same; `"March 5, 2026"` passes free-form. No in-app surface produces these (dialogs send `yyyy-mm-dd` from `type="date"` inputs; the Import page sends full ISO) — the tightening is defense-in-depth at the boundary. | `src/lib/schemas.ts:113-118`; node repro (this session): `"2026-02-30" → 2026-03-02T00:00:00.000Z` | **R-13** |
+| F-216i | Low | **The Expenses filters popover lacks Escape/outside-click close.** A plain conditional div — every other transient surface (the drawer, dialogs, dropdowns) closes on Escape; keyboard users must tab back to the ✕. No WCAG failure; a usability gap against the app's own patterns. | `src/app/(app)/expenses/page.tsx:147-182` | **R-13** |
+| F-216j | Low | **Dead exports and vestiges — drift hazards for future consumers.** `MOBILE_NAV_SHEET.overlay` (a scrim the real full-screen drawer intentionally does not render), `NAV_LAYOUT.icon`/`label`, `PERIOD_SEGMENT`, `GRID_COLS` (`page-layout.ts`); the `chart-no-outline` `@utility` (`globals.css`); the `search` store action (zero UI consumers); the Import page's no-op ternary (`type === "income" ? "Other" : "Other"`). | `src/lib/page-layout.ts`; `src/app/globals.css:454`; `src/stores/wealthos-store.ts:361`; `src/app/(app)/import/page.tsx:108-110` | **R-13** |
+| F-216k | Informational (dismissed, verified) | **The settings `{}`-body suspicion is NOT a bug.** The audit flagged `settingsUpdateSchema` all-optional → `db.setting.update({ data: {} })` as a possible 500; verified live against Prisma 7 this session: the empty-data update is a clean no-op returning the row (200). Recorded so the next audit does not re-derive it. | `src/app/api/settings/route.ts` (PUT); live probe this session (`RESULT empty-update-ok currency=USD`) | none |
 
 ## 3. The remediation program (R-items)
 
@@ -731,6 +747,110 @@ module" class cannot resurface.
   `--clusters` per the standing doctrine) + `bun audit` re-triage
   (the two removed runtime deps shrink the surface).
 
+### R-13 — The verification-gap convergence round (session 216) — Status: Done(v2.13.0)
+
+The session-216 fresh-eyes audit (three parallel Mode-C passes: the
+R-12 cure surfaces, the API/auth/security layer, the UI/a11y layer —
+0 Critical, 0 High, 6 Medium, 11 Low, 19 Informational, every
+material claim re-verified at file:line by the driving session, one
+audit suspicion DISMISSED by live probe: F-216k). The round's theme:
+**claims vs reality and unpinned behavior** — the import path's
+5000-row promise blocked by a ceiling nothing tests (F-216a), a
+security guard whose pin is a phantom file (F-216b), client states
+the store tracks but no page renders (F-216c/d), an a11y defect the
+two-gate cannot see (F-216e), and the doc tail of the round that
+existed to close doc claims (F-216f). The spine: make every claim
+executable — the contract, the pin, and the surface converge.
+
+- **R-13.1 The pins (TDD)** —
+  `tests/import-body-cap.test.ts` born RED: the seam parameterizes
+  its ceiling (`readBoundedJson(req, maxBytes)` + `parseBody(req,
+  schema, maxBytes)` — the 16KB default unchanged for every existing
+  consumer) and the import route passes `MAX_IMPORT_BODY_BYTES`
+  (4MB — 5000 rows × the worst-case ~250B row ≈ 1.25MB, generous
+  headroom); behavioral legs: a >16KB Request accepted at the import
+  cap, rejected at the default cap. `tests/csv-formula-guard.test.ts`
+  born RED (the phantom reference made real): `=/+/@`/tab/CR cells
+  get the `'` marker inside RFC-4180 quoting; `-`-prefixed cells
+  byte-identical (the (b)-vs-(c) exclusion); safe cells
+  byte-identical; the parseCsv round-trip preserves the marker; the
+  toCsv column-form integration escapes through the guard.
+  `tests/schemas-finance.test.ts` extended RED: `"2026-02-30"`,
+  `"02/30/2026"`, `"March 5, 2026"` rejected; `"2026-01-01"` and a
+  full ISO datetime pass (the dialog + import payload forms).
+  `tests/loading-states.test.ts` born RED: the AppShell gates its
+  children on the store's `loading`/`hydrated` state rendering
+  `LoadingBlock` (the component gains its first consumer), and the
+  `store.error` banner (role="alert" + the retry affordance) exists
+  in the shell. `tests/parity-216.test.ts` born RED: the QuickAction
+  carries NO nested interactive (no `<button` inside `<Link` — the
+  classes move onto the anchor); the Expenses filters popover closes
+  on Escape + pointerdown-outside; the signup/resend OTP log line
+  sits INSIDE the inAppOtpEnabled branch; the scaffold-era
+  `scripts/install_packages.sh` is gone; the Import page's no-op
+  ternary is collapsed. `tests/docs-counts.test.ts` extended RED:
+  the SKILL's §2 table carries no "PDF export" row and no "jspdf".
+  E2E born RED/GREEN by design: `tests/e2e/data-import.spec.ts` (the
+  F-216a behavioral leg — a dedicated scratch user imports a 500-row
+  >16KB payload through the REAL route, the count lands, the user's
+  reset cleans up; the demo corpus untouched, the multi-user.spec
+  pattern); the a11y census gains the anon `/reset-password` leg
+  (the missing surface, I-c6); the Expenses spec gains the
+  filters-open → Escape-closed leg.
+- **R-13.2 The cures** —
+  `src/lib/api.ts`: `readBoundedJson`/`parseBody`/`isBodyTooLarge`
+  parameterized (default `MAX_AUTH_BODY_BYTES`; the import route's
+  `MAX_IMPORT_BODY_BYTES = 4 * 1024 * 1024` exported + documented);
+  the import route passes it. `src/stores/wealthos-store.ts`:
+  `refreshAll` gains the failure branch (error set behind the
+  write-token guard), `refresh` returns the Result, the Refresh
+  handlers toast on failure (the house pattern); the dead `search`
+  action retired. `src/components/layout/app-shell.tsx`: the loading
+  gate (`!hydrated || loading` → LoadingBlock in the main column)
+  + the error banner with a Try-again button (store.hydrate()).
+  `src/app/(app)/dashboard/page.tsx`: the QuickAction's button
+  wrapper dropped — the anchor carries the classes (single tab stop,
+  identical computed styles). `src/app/(app)/expenses/page.tsx`: the
+  filters popover Escape + pointerdown-outside effect.
+  `src/app/(app)/import/page.tsx`: the no-op ternary collapsed.
+  `src/app/api/auth/signup` + `resend`: the OTP `console.info` gated
+  behind the inAppOtpEnabled branch (the code logs only when the
+  response also carries it; a code-less email audit line otherwise).
+  `src/lib/schemas.ts`: `dateField` gains the ISO-shape regex + the
+  calendar round-trip refinement. The F-216f doc tail: SKILL:127's
+  PDF row deleted (the dompurify-override note re-homed); PAD:303
+  "JSON/PDF" → "JSON"; DEPLOYMENT.md:76 owner-scoped wording; the
+  reset comment "seven" → "six"; `src/lib/csv.ts`'s docblock
+  corrected (the real test file + the bank-transaction domain + the
+  one export surface); `scripts/install_packages.sh` deleted (the
+  scaffold-era npm artifact contradicting package.json — `bun
+  install` is the documented path); `scripts/discover-198.ts`'s
+  leg-4 guarded with existsSync; `scripts/smoke-test.sh`'s cleanup
+  trap also kills the boot-gate server (GATE_PID — the interrupt
+  leak); the dead exports retired (MOBILE_NAV_SHEET.overlay,
+  NAV_LAYOUT.icon/label, PERIOD_SEGMENT, GRID_COLS,
+  chart-no-outline, store.search); `reset-password-screen.tsx`'s
+  password inputs gain the signup family's minLength={8}.
+- **R-13.3 The verification** — the full gate (lint → tsc → unit →
+  build → smoke → e2e incl. the new legs) + the census + the six
+  parity drift gates re-run (the AppShell/Dashboard/Expenses
+  surfaces changed — the loading gate alters only the pre-hydrate
+  DOM the settled-state sweeps never capture; the QuickAction keeps
+  its computed classes on the anchor; the popover effect is
+  behavior-only; any trip is decoded with `--clusters` per the
+  standing doctrine) + `bun audit` re-triage (no dependency change
+  — the ledger stands at the 1 documented moderate). The live
+  verification’s one event, decoded and cured in-commit: the interior
+  census tripped on the dashboard’s unexplained counts (+6/+6/+6/+9
+  across the four axes) — the QuickAction single-anchor divergence
+  from the reference’s own nested <a><button/></a> DOM (a DELIBERATE
+  a11y superset; every other page matched its standing allowance
+  exactly, proving the shell’s loading gate + error banner add
+  nothing at the settled state; the four pixel sweep classes + the
+  fullpage axis stayed CLEAN) — the dashboard’s standing allowances
+  re-derived per the R-7.5 doctrine (254/270/259/254, the decode
+  documented in the census tool).
+
 ## 4. Plan validation (the re-check, session 203)
 
 After this plan text was drafted, every §2 claim was re-verified against the
@@ -767,11 +887,14 @@ tree before shipping (the plan-validation pass the task spec mandates):
 
 | v2.12.0 | 215 | **R-12** (the live-seam convergence round) + the in-commit tail. The audit round first: the cold baseline gates green at the documented v2.11.0 ship state (lint 0/0 · tsc 0 · 657/657 · build · smoke 14/14 · e2e 84/84 · census MATCH); the reference probe STABLE on every layer; **all six drift gates CLEAN cold**; the ledger re-triaged (the standing 1 moderate minimatch, range-unreachable — no new advisory); the skills-guided fresh-eyes audit (Mode C, `skills/web-application` + `skills/tdd`) found the session's material: the completeness cluster — **F-215a High** (the F-214h cure landed in a production-DEAD module while the live Import parser kept the bare-quote bug + no BOM strip), **F-215b** (the only live CSV export bypassed the formula-injection guard; the seam's docblock claimed a phantom entity-export.ts), **F-215c** (the R-10 pins were string-contains only; zero behavioral multi-user tests), **F-215e** (the seed's seven unscoped deleteMany — the install-wide wipe alive in the seed under R-10's own open-signup premise), **F-215f** (XLS/XLSX advertised, CSV-only parsed — the reference probe proved its bundle carries no spreadsheet library either, so the accept+hint are parity surfaces and the cure is the honest error branch), and the tail (F-215d upgrade path, F-215g users docblock, F-215h dead PDF deps, F-215i settings race, F-215j break-even verdict, F-215k PAD node, F-215l suffix guard, F-215o smoke loudness). A live method lesson recorded: an audit pass mis-read a valid export line as a syntax error — the DISPLAY pipeline ate a `[[h` sequence; byte-level verification (`od`) is now the rule for impossible-looking syntax findings. Shipped: **R-12.1** the pins born RED 14 (import-seam 5 · analytics-export-seam 3 · seed-scoping 3 · script-guards 1 · the ai break-even 1 · the settings-race 1) + the owner-scoping exact-form and the four standing-guard pins green-at-birth + `tests/e2e/multi-user.spec.ts` born GREEN by design (the behavioral contract pin — B's rows invisible to demo, B's reset wipes only B, the demo corpus SURVIVES) → **R-12.2** the cures (the parser swap + the XLS branch; the toCsv rebuild + the docblock corrections; the seed re-order + scoping; the P2002 catch; the break-even line; the name-only docblock; the dead deps retired; DEPLOYMENT §5.1; the smoke loud-on-fail legs; the exact-basename guard) → **R-12.3** the verification: lint 0/0 · tsc 0 · **676 unit** (51 files; +19) · build · smoke 14/14 · **e2e 85/85** (6 specs; +1) · **all six drift gates CLEAN** (the four sweep classes + the fullpage + the interior census — the accept-attr convergence is invisible to pixels, the XLS branch is an error path, the export is behavior-only) · census MATCH · the ledger unchanged (1 moderate, range-unreachable) | lint 0/0 · tsc 0 · **676 unit** (51 files) · build · smoke 14/14 · **e2e 85/85** · census MATCH · six drift gates CLEAN | (this session's execution commit) |
 
-> The next iteration session (216) has **no open R-item by default** —
+| v2.13.0 | 216 | **R-13** (the verification-gap convergence round) + the in-commit tail. The audit round first: the cold baseline gates green at the documented v2.12.0 ship state (lint 0/0 · tsc 0 · 676/676 · build · smoke 14/14 · e2e 85/85 · census MATCH); the reference probe STABLE on every layer; **all six drift gates CLEAN cold**; the ledger re-triaged (the standing 1 moderate minimatch, range-unreachable — no new advisory); the skills-guided fresh-eyes audit (Mode C, three parallel passes: the R-12 cure surfaces, the API/auth/security layer, the UI/a11y layer — 0 Critical / 0 High / 6 Medium / 11 Low / 19 Informational, every material claim re-verified at file:line by the driving session, one suspicion DISMISSED by live probe: the settings {}-body 500, F-216k — Prisma 7's empty-data update is a clean no-op). The session's material: **F-216a Medium** (the Import commit's 5000-row contract blocked by the global 16KB body ceiling — real imports of ≳140 rows failed "Request body too large"), **F-216b** (the S48-P1 formula-injection guard's pin was a phantom test file; zero behavioral coverage since the session-199 rewrite), **F-216c/d** (LoadingBlock dead code, no page consumed loading/error, refreshAll swallowed failures, the Refresh buttons fire-and-forget), **F-216e** (the QuickAction <a><button/></a> nesting — the a11y two-gate is STRUCTURALLY blind to link-wrapped buttons), **F-216f** (the F-215h doc tail: SKILL:127's PDF row, PAD:303's "JSON/PDF", DEPLOYMENT:76's "wipes domain tables", the reset comment's "seven", install_packages.sh, discover-198's ENOENT, csv.ts's lineage rot), and the low tail (F-216g OTP log gating, F-216h calendar-true dates — "2026-02-30" verifiably rolled to March 2, F-216i the Expenses popover Escape, F-216j the dead-export sweep). Shipped: **R-13.1** the pins born RED 26 (import-body-cap 5 · schemas-finance dateField 6 · loading-states 5 · parity-216 9 · docs-counts negative 1) + csv-formula-guard 12 born GREEN by design (the guard's code pre-existed — the pin prevents its regression) + `tests/e2e/data-import.spec.ts` (the 500-row >16KB behavioral leg, the multi-user scratch-user pattern) + the a11y /reset-password anon leg + the Expenses Escape leg → **R-13.2** the cures (the seam parameterized — MAX_IMPORT_BODY_BYTES 4MB; refreshAll's failure branch + refresh returning the Result + the Refresh toasts; the AppShell loading gate + error banner with retry; the QuickAction single-anchor form; the popover Escape/outside; the no-op ternary collapsed; the OTP log gated behind inAppOtpEnabled; dateField's ISO-shape regex + calendar round-trip; reset-password's minLength; the dead exports retired — MOBILE_NAV_SHEET.overlay, NAV_LAYOUT.icon/label, PERIOD_SEGMENT, GRID_COLS, chart-no-outline, store.search; the smoke trap's GATE_PID; discover-198's existsSync; install_packages.sh deleted; the doc tail cured + the dompurify note re-homed; the error banner's red-300/900/950 pinned per the A-209 doctrine) → **R-13.3** the verification: lint 0/0 · tsc 0 · **719 unit** (55 files; +43) · build · smoke 14/14 · **e2e 88/88** (7 specs; +3) · **all six drift gates CLEAN** (the four sweep classes + the fullpage; the interior census after the dashboard's standing allowances re-derived per the R-7.5 doctrine — the QuickAction divergence decode, every other page at its standing value exactly) · census MATCH · the ledger unchanged (1 moderate, range-unreachable) | lint 0/0 · tsc 0 · **719 unit** (55 files) · build · smoke 14/14 · **e2e 88/88** · census MATCH · six drift gates CLEAN | (this session's execution commit) |
+
+> The next iteration session (217) has **no open R-item by default** —
 > the R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8
 > dependency round at v2.9.0, the R-9 prisma major at v2.10.0, the
 > session-214 rounds (R-10 owner-scoping + R-11 palette-completion) at
-> v2.11.0, and the session-215 live-seam convergence (R-12) at v2.12.0
+> v2.11.0, the session-215 live-seam convergence (R-12) at v2.12.0,
+> and the session-216 verification-gap convergence (R-13) at v2.13.0
 > (the advisory census still 1 — minimatch alone, range-unreachable
 > until typescript-estree moves; the re-triage duty stays). A fresh
 > audit's findings always pre-empt (Critical/High first); the natural
