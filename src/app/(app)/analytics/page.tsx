@@ -44,6 +44,8 @@ import {
   portfolioStats,
   spendingByDayOfWeek,
 } from "@/lib/finance";
+// Session-215 (R-12, F-215b): the export rides the guarded seam.
+import { toCsv, csvFilename } from "@/lib/csv";
 import { toDateInputValue } from "@/lib/format";
 import { CARD, GLASS_CARD, PAGE_ROOT, STAT_GRADIENTS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
@@ -93,16 +95,24 @@ export default function AnalyticsPage() {
   const allocation = assetAllocation(store.investments);
 
   const exportCsv = () => {
-    const header = "Date,Description,Type,Category,Budget Category,Amount";
-    const lines = inRange.map(
-      (t) =>
-        `${new Date(t.date).toISOString().slice(0, 10)},"${t.description.replace(/"/g, '""')}",${t.type},"${t.category}",${t.budgetCategory},${t.amount}`,
-    );
-    const blob = new Blob([[header, ...lines].join("\n")], { type: "text/csv" });
+    // Session-215 (R-12, F-215b): the export serializes through the
+    // guarded seam (toCsv — the S48-P1 formula-injection guard rides
+    // every free-text cell; the pre-215 hand-rolled quote-doubling
+    // bypassed it) and names the artifact by the reference's own
+    // prefix_YYYY-MM-DD convention (csvFilename).
+    const csv = toCsv(inRange, [
+      { header: "Date", value: (t) => new Date(t.date).toISOString().slice(0, 10) },
+      { header: "Description", value: (t) => t.description },
+      { header: "Type", value: (t) => t.type },
+      { header: "Category", value: (t) => t.category },
+      { header: "Budget Category", value: (t) => t.budgetCategory },
+      { header: "Amount", value: (t) => t.amount },
+    ]);
+    const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "wealthos-analytics.csv";
+    a.download = csvFilename("wealthos-analytics");
     a.click();
     URL.revokeObjectURL(url);
   };

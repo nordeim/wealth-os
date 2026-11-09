@@ -105,16 +105,28 @@ const localProvider: AiProvider = {
       // Session-214 (F-214j): the overspend verdict keys on EXPENSES, not
       // income — the pre-214 `else if (income > 0)` left the most alarming
       // state (real spending, zero income) with no insight at all.
-      const zeroIncome = monthlyIncomeFromTx(ctx.transactions, now) === 0;
+      // Session-215 (R-12, F-215j): savingsRate returns 0 at exact
+      // break-even too, so keying the verdict on the rate alone titled
+      // an income-equals-expenses month "spending more than you earn" —
+      // false at equality. The comparison decides; break-even gets its
+      // own neutral line.
+      const income = monthlyIncomeFromTx(ctx.transactions, now);
+      const expenses = monthlyExpenses(ctx.transactions, now);
+      const zeroIncome = income === 0;
+      const overspend = expenses > income;
       out.push({
         id: "savings-rate",
-        tone: "warning",
+        tone: zeroIncome || overspend ? "warning" : "neutral",
         title: zeroIncome
           ? "You have no income this month"
-          : "You're spending more than you earn",
+          : overspend
+            ? "You're spending more than you earn"
+            : "You're breaking even this month",
         body: zeroIncome
           ? "This month shows expenses with no income recorded. Log your income sources so the savings math can guide you."
-          : "This month's expenses exceed income. Trim the largest discretionary category first.",
+          : overspend
+            ? "This month's expenses exceed income. Trim the largest discretionary category first."
+            : "This month's spending matches income exactly. A small trim would move the needle toward your savings rate.",
       });
     }
 

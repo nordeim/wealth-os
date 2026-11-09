@@ -39,13 +39,14 @@ SMOKE_SECRET="smoke-test-secret-0123456789abcdef"
 COOKIE_JAR="$(mktemp)"
 SERVER_LOG="$(mktemp)"
 GATE_LOG="$(mktemp)"
+SMOKE_DB_LOG="$(mktemp)"
 SERVER_PID=""
 
 ok()   { echo "  ok $1 — $2"; }
 fail() { echo "  FAIL $1 — $2" >&2; }
 cleanup() {
   [ -n "$SERVER_PID" ] && kill "$SERVER_PID" 2>/dev/null || true
-  rm -f "$COOKIE_JAR" "$SERVER_LOG" "$GATE_LOG"
+  rm -f "$COOKIE_JAR" "$SERVER_LOG" "$GATE_LOG" "$SMOKE_DB_LOG"
 }
 trap cleanup EXIT
 
@@ -60,8 +61,19 @@ trap cleanup EXIT
 # ladder boots its own server AFTER this step, so the deleted-inode hazard
 # never applies), making the leg idempotent against any schema drift.
 rm -f db/smoke.db
-DATABASE_URL="$SMOKE_DB_URL" bun run db:push >/dev/null 2>&1
-DATABASE_URL="$SMOKE_DB_URL" bun run db:seed >/dev/null 2>&1
+# Session-215 (R-12, F-215o — loud-on-fail): the silenced legs once
+# died with zero output (the F-214m "dead script" mode). Failures now
+# replay the captured output before exiting.
+if ! DATABASE_URL="$SMOKE_DB_URL" bun run db:push >"$SMOKE_DB_LOG" 2>&1; then
+  cat "$SMOKE_DB_LOG"
+  echo "  fail 00 — db push failed on the scratch db (output above)"
+  exit 1
+fi
+if ! DATABASE_URL="$SMOKE_DB_URL" bun run db:seed >"$SMOKE_DB_LOG" 2>&1; then
+  cat "$SMOKE_DB_LOG"
+  echo "  fail 00 — db seed failed on the scratch db (output above)"
+  exit 1
+fi
 
 # --- 2. kill squatters on the smoke port ------------------------------------
 lsof -ti:"$PORT" | xargs -r kill 2>/dev/null || true

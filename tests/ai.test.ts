@@ -63,6 +63,40 @@ describe("the local AI provider: insights", () => {
     expect(warning!.title.toLowerCase()).toContain("no income");
   });
 
+  it("renders the NEUTRAL break-even line when income equals expenses (F-215j)", () => {
+    // savingsRate returns 0 at exact break-even — the same value as
+    // zero income — so the pre-215 branch titled the break-even month
+    // "You're spending more than you earn" (false at equality). The
+    // verdict must key on the expense-vs-income comparison, not the
+    // rounded rate alone.
+    const insights = getAiProvider().insights(
+      ctx({
+        transactions: [
+          {
+            description: "Salary",
+            amount: 2000,
+            type: "income",
+            category: "Salary",
+            date: new Date(2026, 10, 1),
+          },
+          {
+            description: "Rent",
+            amount: 2000,
+            type: "expense",
+            category: "Rent/Mortgage",
+            budgetCategory: "needs",
+            date: new Date(2026, 10, 2),
+          },
+        ],
+        incomeSources: [],
+      }),
+    );
+    const verdict = insights.find((i) => i.id === "savings-rate");
+    expect(verdict).toBeDefined();
+    expect(verdict!.title.toLowerCase()).not.toContain("more than you earn");
+    expect(verdict!.title.toLowerCase()).toContain("break");
+  });
+
   it("derives the budget-breach insight when a category goes over", () => {
     const insights = getAiProvider().insights(ctx());
     const breach = insights.find((i) => i.id === "budget-breach");

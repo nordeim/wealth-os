@@ -79,6 +79,18 @@ describe("R-10: /api/reset scopes every delete to the session owner", () => {
   it("no unscoped deleteMany exists anywhere in the reset route", () => {
     expect(src).not.toMatch(/deleteMany\(\s*\)/);
   });
+
+  // Session-215 (R-12, F-215c — the pin-strength cure): the substring
+  // form above passes even if a future edit scopes a delete to a
+  // body-supplied id or a wrong guard field. The EXACT form pins the
+  // semantic: the session owner's id, spelled out.
+  it("every deleteMany scopes through the SESSION owner exactly (F-215c)", () => {
+    const deletes = src.match(/db\.\w+\.deleteMany\(\{[^}]*\}/g) ?? [];
+    expect(deletes.length).toBeGreaterThanOrEqual(6);
+    for (const d of deletes) {
+      expect(norm(d)).toMatch(/where:\s*\{\s*ownerId:\s*guard\.user\.id\s*\}/);
+    }
+  });
 });
 
 describe("R-10: the budgets family is owner-scoped", () => {
@@ -129,6 +141,15 @@ describe("R-10: the settings family resolves the row BY OWNER", () => {
 
   it("the read/upsert keys on the owner", () => {
     expect(src).toContain("ownerId");
+  });
+
+  // Session-215 (R-12, F-215i — the lazy-create race cure): two
+  // concurrent first-touch GETs both find null and both create; the
+  // loser dies on the Setting.ownerId unique constraint. The cure's
+  // source shape: the unique-constraint catch + the re-read.
+  it("readSettings survives the concurrent first-touch race (F-215i)", () => {
+    expect(src).toMatch(/P2002|unique constraint/i);
+    expect(src).toMatch(/findUniqueOrThrow/);
   });
 });
 

@@ -7,8 +7,11 @@ export interface CsvColumn<T> {
 
 /**
  * Session-48 (S48-P1): the CSV formula-injection guard — the operator's
- * posture-(b) decision, covering BOTH this seam and entity-export.ts's
- * qq() (the client-side family). A cell whose FIRST character is
+ * posture-(b) decision. Session-215 (R-12, F-215b): the guard's live
+ * consumers are the toCsv column form (below) and, through it, the
+ * analytics export — the pre-215 docblock claimed coverage of an
+ * "entity-export.ts" that never existed in this repo while the ONE live
+ * export hand-rolled its own quoting. A cell whose FIRST character is
  * `=`, `+`, `@`, tab (U+0009) or CR (U+000D) is a formula-entry vector
  * in spreadsheet consumers (OWASP CSV injection); prefixing the single
  * quote — Excel's own text marker — renders the cell as text while
@@ -25,8 +28,9 @@ export interface CsvColumn<T> {
  * (parseCsv strips no markers — tests/csv-formula-guard.test.ts pins the
  * whole contract, including the round-trip trade-off).
  *
- * The three STATIC import templates (csv-templates.ts) stay OUTSIDE the
- * guard — our own example content, no attacker-controlled data.
+ * Static example/template content authored by THIS app (none today —
+ * the Import wizard's own UI copy) stays OUTSIDE the guard — our own
+ * content, no attacker-controlled data.
  */
 export function guardFormulaPrefix(s: string): string {
   return /^[=+@\t\r]/.test(s) ? `'${s}` : s;

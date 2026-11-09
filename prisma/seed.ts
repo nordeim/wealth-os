@@ -29,17 +29,15 @@ function dayOffset(offsetDays: number): Date {
 }
 
 async function main() {
-  // Idempotency: wipe domain data, keep schema. Users land through
-  // UPSERT-BY-EMAIL (stable ids — the session-cookie's provenance; see
-  // the session-162 contract in git history).
-  await db.transaction.deleteMany();
-  await db.incomeSource.deleteMany();
-  await db.bankAccount.deleteMany();
-  await db.investment.deleteMany();
-  await db.goal.deleteMany();
-  await db.budget.deleteMany();
-  await db.setting.deleteMany();
-
+  // Idempotency: refresh THE DEMO USER's domain data, keep schema and
+  // keep every OTHER account's rows. Session-215 (R-12, F-215e): the
+  // pre-215 seed opened with seven UNSCOPED wipes — an
+  // install-wide wipe on every `bun run db:seed` (the seed-side edition
+  // of F-214a, alive under R-10's own open-signup premise). The demo
+  // user now upserts FIRST (the id resolvable), then every delete
+  // scopes through the demo owner. Users land through UPSERT-BY-EMAIL
+  // (stable ids — the session-cookie's provenance; see the session-162
+  // contract in git history).
   const demo = await db.user.upsert({
     where: { email: "sepnetflix2023@outlook.com" },
     update: {
@@ -62,6 +60,14 @@ async function main() {
       role: "user",
     },
   });
+
+  await db.transaction.deleteMany({ where: { ownerId: demo.id } });
+  await db.incomeSource.deleteMany({ where: { ownerId: demo.id } });
+  await db.bankAccount.deleteMany({ where: { ownerId: demo.id } });
+  await db.investment.deleteMany({ where: { ownerId: demo.id } });
+  await db.goal.deleteMany({ where: { ownerId: demo.id } });
+  await db.budget.deleteMany({ where: { ownerId: demo.id } });
+  await db.setting.deleteMany({ where: { ownerId: demo.id } });
 
   // ---- settings (per-user since R-10 — one row, owner-bound) ----------
   await db.setting.create({

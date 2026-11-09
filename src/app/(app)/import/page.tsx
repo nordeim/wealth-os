@@ -9,6 +9,12 @@ import { EXPENSE_CATEGORIES } from "@/lib/constants";
 import { CARD, PAGE_ROOT, STOCK_CARD } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+// Session-215 (R-12, F-215a — the live-seam convergence): the page’s
+// inline parser copy (pre-214 bare-quote defect, no BOM strip) is
+// RETIRED — the shared, unit-tested seam owns the machine (the BOM
+// strip + the RFC 4180 §2.7 bare-quote rule go live on this surface).
+import { parseCsv } from "@/lib/csv";
+
 
 interface ParsedRow {
   description: string;
@@ -17,46 +23,6 @@ interface ParsedRow {
   category: string;
   budgetCategory: string;
   date: string;
-}
-
-/** RFC-4180-ish CSV parse (quotes, commas, CRLF) — client-side so the
- *  preview table can map columns BEFORE anything reaches the API. */
-function parseCsv(text: string): string[][] {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let field = "";
-  let inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    if (inQuotes) {
-      if (ch === '"') {
-        if (text[i + 1] === '"') {
-          field += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += ch;
-      }
-    } else if (ch === '"') {
-      inQuotes = true;
-    } else if (ch === ",") {
-      row.push(field);
-      field = "";
-    } else if (ch === "\n" || ch === "\r") {
-      if (ch === "\r" && text[i + 1] === "\n") i++;
-      row.push(field);
-      field = "";
-      if (row.some((c) => c.trim() !== "")) rows.push(row);
-      row = [];
-    } else {
-      field += ch;
-    }
-  }
-  row.push(field);
-  if (row.some((c) => c.trim() !== "")) rows.push(row);
-  return rows;
 }
 
 const HEADER_HINTS = {
@@ -98,6 +64,15 @@ export default function ImportPage() {
     if (!f) return;
     if (f.size > MAX_FILE_BYTES) {
       setError("File exceeds the 10MB limit.");
+      return;
+    }
+    // Session-215 (R-12, F-215f — the honest non-CSV branch): the accept
+    // list + hint stay byte-identical to the reference (parity surfaces —
+    // its bundle ships no spreadsheet library either; the advertising is
+    // its own). But a binary .xls/.xlsx pick no longer decodes to garbage
+    // and dies in column detection — it gets the honest guidance now.
+    if (/\.xlsx?$/i.test(f.name) && f.type !== "text/csv") {
+      setError("XLS/XLSX isn’t supported yet — export your spreadsheet as CSV and re-upload.");
       return;
     }
     try {
@@ -198,7 +173,7 @@ export default function ImportPage() {
             <input
               ref={inputRef}
               type="file"
-              accept=".csv,.xls,.xlsx,text/csv"
+              accept=".csv,.xls,.xlsx"
               className="sr-only"
               aria-label="Upload a CSV file"
               onChange={(e) => pickFile(e.target.files?.[0] ?? null)}

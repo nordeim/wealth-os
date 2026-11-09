@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
 import { settingsUpdateSchema } from "@/lib/schemas";
+import { Prisma } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -9,12 +10,29 @@ export const dynamic = "force-dynamic";
  * F-214c): the install-wide "singleton" died with the owner-scoping
  * round. Lazily created on first read (any user who never touched
  * Settings still gets the defaults); one row per user, keyed by ownerId.
+ *
+ * Session-215 (R-12, F-215i — the lazy-create race): two concurrent
+ * first-touch reads both find null and both create; the loser used to
+ * die on the Setting.ownerId unique constraint (P2002) and surface a
+ * 500. The catch now re-reads the winner's row — the loser's answer is
+ * identical to a single-touch read.
  */
 async function readSettings(ownerId: string) {
-  let row = await db.setting.findUnique({ where: { ownerId } });
-  if (!row) {
-    row = await db.setting.create({ data: { ownerId } });
-  }
+  const existing = await db.setting.findUnique({ where: { ownerId } });
+  const row =
+    existing ??
+    (await db.setting
+      .create({ data: { ownerId } })
+      .catch((e: unknown) => {
+        if (
+          e instanceof Prisma.PrismaClientKnownRequestError &&
+          e.code === "P2002"
+        ) {
+          // The unique-constraint race: the other first-touch request won.
+          return db.setting.findUniqueOrThrow({ where: { ownerId } });
+        }
+        throw e;
+      }));
   return {
     defaultCurrency: row.defaultCurrency,
     dateFormat: row.dateFormat,

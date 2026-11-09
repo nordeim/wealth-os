@@ -22,20 +22,19 @@ export async function GET() {
   });
 }
 
-/** Update the signed-in user's own profile (Full Name + photo — email/role
- * are fixed). Session-30 (S30-P3): the photoUrl mirrors the reference's
- * updateMe({display_name, profile_picture}) — an explicit null clears it,
- * an absent key leaves it untouched.
+/** Update the signed-in user's own profile — the display NAME only.
+ * Session-215 (R-12, F-215g — the docblock cure): the pre-215 block
+ * described a photoUrl round-trip ("an explicit null clears it, an
+ * absent key leaves it untouched") and schema rules that do not exist
+ * — profileUpdateSchema is name-only (trim, 1–80), photoUrl is
+ * read-only display metadata, and no UI surface writes it.
  * Session-72 (M-72c2): the body pre-gate — the 13th sessioned
  * req.json() route joined the F-68a2 family at s72.
  * Session-166: the profile joins the Zod seam through the ROUTE-LOCAL
  * readBoundedJson + safeParse form (NOT parseBody) — this route's null
  * body answers its own "Invalid JSON body" message (the one divergent
  * sibling of the family's shared "Invalid request body"; the s165
- * zero-message-drift doctrine extended at s166). The name ≥2 rule + the
- * photoUrl prefix contract + the 500 cap live in profileUpdateSchema
- * (the cap converting from the s37 slice(0,500) truncation to the
- * honest reject — the s163 email precedent). */
+ * zero-message-drift doctrine extended at s166). */
 export async function PATCH(request: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;

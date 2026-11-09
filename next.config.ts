@@ -33,9 +33,13 @@ const nextConfig: NextConfig = {
   // file with user rows), uploads/, skills/ (194 MB) and docs/ (49 MB)
   // inside every deployable artifact (~550 MB where ~151 MB suffices).
   // The excludes keep the artifact to the server's true runtime needs
-  // (verified live: the photo-upload e2e pair ran GREEN against the
-  // clean artifact — prisma/schema.prisma stays traced, the db-path
-  // anchors still validate, db/ and uploads/ are mkdir'd on demand).
+  // (verified live at session 170 — the standalone boot + the API
+  // ladder ran GREEN against the clean artifact — prisma/schema.prisma
+  // stays traced, the db-path anchors still validate, db/ and uploads/
+  // are mkdir'd on demand). Session-215 (R-12, F-215g): the pre-215
+  // comment credited a "photo-upload e2e pair" that never existed in
+  // this repo's spec set (the upload routes' consumers are the API
+  // surface itself, not the UI).
   // Next's own writeStandaloneDirectory ALSO copies .env explicitly
   // (build/index.js — immune to excludes): the build script's trailing
   // `rm -f .next/standalone/.env` removes that copy (the double-cure).

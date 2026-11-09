@@ -19,6 +19,7 @@
 //   e.g. bun scripts/prisma-env.ts db push --accept-data-loss
 
 import { spawnSync } from "node:child_process";
+import path from "node:path";
 import { runtimeDatabaseUrl } from "../src/lib/db-path";
 
 function main(): void {
@@ -36,6 +37,10 @@ function main(): void {
 }
 
 // Only take over the process when executed directly (not when imported by
-// the Vitest suite).
-const invokedAsScript = process.argv[1]?.endsWith("prisma-env.ts");
+// the Vitest suite). Session-215 (R-12, F-215l): the EXACT basename form
+// (the F-210c lesson — a suffix form is a guard a sibling's filename can
+// satisfy; the four capture tools took this form at session 210).
+const invokedAsScript =
+  process.argv[1] !== undefined &&
+  path.basename(process.argv[1]) === "prisma-env.ts";
 if (invokedAsScript) main();
