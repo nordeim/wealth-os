@@ -1,7 +1,7 @@
 {
-  "name": "neo-crm",
+  "name": "wealth-os",
   "version": "1.0.0",
-  "description": "NEO CRM — Next.js 16 + React 19 + Prisma/SQLite CRM application",
+  "description": "WealthOS — self-hostable premium personal-finance workspace (Next.js 16 + React 19 + Prisma/SQLite)",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",

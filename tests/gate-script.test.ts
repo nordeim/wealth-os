@@ -21,7 +21,11 @@ import { describe, expect, it } from "vitest";
 
 const pkg = JSON.parse(
   readFileSync(path.resolve(import.meta.dirname, "..", "package.json"), "utf-8"),
-) as { scripts?: Record<string, string> };
+) as {
+  scripts?: Record<string, string>;
+  name?: string;
+  description?: string;
+};
 
 describe("session-38: the gate umbrella script (S38-P6)", () => {
   it("package.json ships a `gate` script", () => {
@@ -199,5 +203,24 @@ describe("session-201 (D-201c): no scaffold-era brand strings in the rendered tr
       }
     }
     expect(offenders, `brand-string offenders: ${offenders.join(", ")}`).toEqual([]);
+  });
+});
+
+describe("session-211 (F-211a): the package manifest carries the WealthOS identity", () => {
+  // The D-201c brand scan polices the RENDERED tree; the manifest itself
+  // escaped it — package.json still introduced the repo as "neo-crm" with
+  // the CRM description two full product generations after the WealthOS
+  // transformation. The scaffold-heritage IDENTIFIERS that AGENTS.md
+  // documents as intentional (neo_session, NEO_PROXY_HOPS, the dev-secret
+  // constant) survive; the product NAME in the manifest is identity, not
+  // identifier — it is what every tool, lockfile, and npm/Bun surface
+  // prints as the project. The pin keeps it honest.
+  it("package.json name is wealth-os (the product identity, not the scaffold's)", () => {
+    expect(pkg.name).toBe("wealth-os");
+  });
+
+  it("package.json describes the finance domain (no CRM description)", () => {
+    expect(pkg.description).toMatch(/personal-finance|finance/i);
+    expect(pkg.description).not.toMatch(/CRM/i);
   });
 });
