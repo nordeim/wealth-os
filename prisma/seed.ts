@@ -63,10 +63,10 @@ async function main() {
     },
   });
 
-  // ---- settings singleton ---------------------------------------------------
+  // ---- settings (per-user since R-10 — one row, owner-bound) ----------
   await db.setting.create({
     data: {
-      id: "singleton",
+      ownerId: demo.id,
       defaultCurrency: "USD",
       dateFormat: "MM/dd/yyyy",
       pushNotifications: false,
@@ -253,15 +253,17 @@ async function main() {
   await db.transaction.createMany({ data: txs });
 
   // ---- budgets (the reference's Budget vs Actual categories) ------------------
+  // R-10: every ceiling is the demo user's own row (owner-scoped since
+  // session 214 — the install-global budget table died with the round).
   await db.budget.createMany({
     data: [
-      { category: "Groceries", amount: 550, period: "monthly" },
-      { category: "Utilities", amount: 180, period: "monthly" },
-      { category: "Transportation", amount: 220, period: "monthly" },
-      { category: "Dining Out", amount: 250, period: "monthly" },
-      { category: "Entertainment", amount: 150, period: "monthly" },
-      { category: "Healthcare", amount: 200, period: "monthly" },
-      { category: "Shopping", amount: 180, period: "monthly" },
+      { ownerId: demo.id, category: "Groceries", amount: 550, period: "monthly" },
+      { ownerId: demo.id, category: "Utilities", amount: 180, period: "monthly" },
+      { ownerId: demo.id, category: "Transportation", amount: 220, period: "monthly" },
+      { ownerId: demo.id, category: "Dining Out", amount: 250, period: "monthly" },
+      { ownerId: demo.id, category: "Entertainment", amount: 150, period: "monthly" },
+      { ownerId: demo.id, category: "Healthcare", amount: 200, period: "monthly" },
+      { ownerId: demo.id, category: "Shopping", amount: 180, period: "monthly" },
     ],
   });
 

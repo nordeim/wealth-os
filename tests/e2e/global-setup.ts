@@ -22,6 +22,16 @@ import path from "node:path";
 //     db-path seam's validated-root idiom, inlined (this file is
 //     CJS-loaded, so the seam module itself — import.meta-based — cannot
 //     be imported here).
+//
+// F-214m (session 214, discovered live during the R-10 verification):
+// `--accept-data-loss` alone REFUSES a push that adds a REQUIRED column
+// to a populated table (prisma 7: "Added the required column `ownerId` …
+// There are N rows in this table, it is not possible to execute this
+// step") — a stale-schema e2e.db killed the setup with the flag present.
+// `--force-reset` recreates the schema IN PLACE (same file inode — the
+// deleted-inode hazard above does not apply; every reader sees the new
+// tables), making the push idempotent against ANY schema drift, not just
+// data drift. The seed that follows provisions the corpus from zero.
 export default function globalSetup() {
   const root = process.cwd();
   if (!existsSync(path.join(root, "prisma", "schema.prisma"))) {
@@ -30,7 +40,7 @@ export default function globalSetup() {
     );
   }
   const e2eUrl = `file:${path.join(root, "db", "e2e.db")}`;
-  execSync("bunx prisma db push --accept-data-loss", {
+  execSync("bunx prisma db push --force-reset", {
     stdio: "inherit",
     env: { ...process.env, DATABASE_URL: e2eUrl },
   });

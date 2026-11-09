@@ -4,20 +4,22 @@ import { profileUpdateSchema } from "@/lib/schemas";
 
 export const dynamic = "force-dynamic";
 
-/** Owners list (for filter dropdowns + rep leaderboards). */
+/** The session user's own record. R-10 (session 214, F-214c): the
+ *  CRM-era "owners list" (every account's email/name/photo to any
+ *  session — built for filter dropdowns + rep leaderboards that died
+ *  with the session-199 transformation, zero UI consumers since) is
+ *  retired; a session reads ITS OWN profile only. */
 export async function GET() {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
-  // Session-42 (S42-P1): the list read joined the envelope.
-  try {
-    const users = await db.user.findMany({
-      orderBy: { name: "asc" },
-      select: { id: true, email: true, name: true, avatarColor: true, photoUrl: true, role: true },
-    });
-    return ok(users);
-  } catch {
-    return ERR.INTERNAL();
-  }
+  return ok({
+    id: guard.user.id,
+    email: guard.user.email,
+    name: guard.user.name,
+    avatarColor: guard.user.avatarColor,
+    photoUrl: guard.user.photoUrl,
+    role: guard.user.role,
+  });
 }
 
 /** Update the signed-in user's own profile (Full Name + photo — email/role

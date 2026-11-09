@@ -53,6 +53,13 @@ trap cleanup EXIT
 [ -f .next/standalone/server.js ] || { fail "00" "no standalone artifact — run bun run build first"; exit 1; }
 
 # --- 1. the smoke database: fresh schema + seed (the ambient override) ------
+# F-214m (session 214): a stale-schema scratch db REFUSES the push when the
+# schema adds a required column (prisma: "not possible to execute this
+# step" even under --accept-data-loss) — and the silenced >/dev/null made
+# it look like a dead script. The scratch db is RECREATED every run (the
+# ladder boots its own server AFTER this step, so the deleted-inode hazard
+# never applies), making the leg idempotent against any schema drift.
+rm -f db/smoke.db
 DATABASE_URL="$SMOKE_DB_URL" bun run db:push >/dev/null 2>&1
 DATABASE_URL="$SMOKE_DB_URL" bun run db:seed >/dev/null 2>&1
 

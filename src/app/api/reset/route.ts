@@ -26,14 +26,18 @@ export async function POST(req: Request) {
   // $transaction — a mid-chain failure used to leave a PARTIAL wipe plus a
   // raw non-envelope 500; now the wipe is atomic and the failure path is
   // envelope-held.
+  // Session-214 (R-10, F-214a): every delete scopes through the session
+  // owner — the install-wide wipe died with the owner-scoping round
+  // (open signup + unscoped deleteMany = any user could erase every
+  // account's data). Users and settings rows survive, as always.
   try {
     await db.$transaction([
-      db.transaction.deleteMany(),
-      db.incomeSource.deleteMany(),
-      db.bankAccount.deleteMany(),
-      db.investment.deleteMany(),
-      db.goal.deleteMany(),
-      db.budget.deleteMany(),
+      db.transaction.deleteMany({ where: { ownerId: guard.user.id } }),
+      db.incomeSource.deleteMany({ where: { ownerId: guard.user.id } }),
+      db.bankAccount.deleteMany({ where: { ownerId: guard.user.id } }),
+      db.investment.deleteMany({ where: { ownerId: guard.user.id } }),
+      db.goal.deleteMany({ where: { ownerId: guard.user.id } }),
+      db.budget.deleteMany({ where: { ownerId: guard.user.id } }),
     ]);
 
     return ok({ reset: true });

@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         db.incomeSource.findMany({ where: { ownerId: guard.user.id } }),
         db.investment.findMany({ where: { ownerId: guard.user.id } }),
         db.goal.findMany({ where: { ownerId: guard.user.id } }),
-        db.budget.findMany(),
+        db.budget.findMany({ where: { ownerId: guard.user.id } }),
       ]);
 
     const provider = getAiProvider();

@@ -29,7 +29,7 @@ model User {
   passwordHash String
   avatarColor  String   @default("#f59e0b")
   photoUrl     String?
-  role         String   @default("user") // user | admin
+  role         String   @default("user") // admin | rep | user (signup: first admin, later rep; the seed writes user)
   // The email-verification funnel (kept from the hardened auth): a NULL
   // verificationExpiresAt means "no verification pending" — seeded demo
   // users pass straight through login. The code is stored HASHED.
@@ -53,6 +53,8 @@ model User {
   bankAccounts  BankAccount[]
   investments   Investment[]
   goals         Goal[]
+  budgets       Budget[]
+  settings      Setting[]
 }
 
 model IncomeSource {
@@ -175,14 +177,25 @@ model Budget {
   amount    Float
   // monthly (the reference's single period today; enum kept for growth)
   period    String   @default("monthly")
+  // Session-214 (R-10, F-214b): budgets are per-user rows like every
+  // other finance model — the PAD's ER finally true. The unique key
+  // grows the owner dimension (one ceiling per category per user).
+  ownerId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([category, period])
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, category, period])
+  @@index([ownerId])
 }
 
 model Setting {
-  id               String   @id @default("singleton")
+  id               String   @id @default(cuid())
+  // Session-214 (R-10, F-214c): settings are per-user rows — the
+  // install-wide "singleton" died with the owner-scoping round. One
+  // row per user, keyed by ownerId (lazily created on first read).
+  ownerId          String   @unique
   defaultCurrency  String   @default("USD")
   dateFormat       String   @default("MM/dd/yyyy")
   pushNotifications Boolean @default(false)
@@ -191,4 +204,6 @@ model Setting {
   monthlyReports   Boolean  @default(false)
   theme            String   @default("light") // light | dark | system
   updatedAt        DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 }

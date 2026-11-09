@@ -8,7 +8,9 @@ export async function GET() {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
   try {
+    // R-10 (session 214): budgets are the session user's own rows.
     const budgets = await db.budget.findMany({
+      where: { ownerId: guard.user.id },
       orderBy: [{ category: "asc" }],
     });
     return ok(budgets);
@@ -17,9 +19,10 @@ export async function GET() {
   }
 }
 
-/** Upsert by (category, period) — the Settings/Budget surfaces edit the
- *  monthly ceiling per category; a re-POST of the same category updates
- *  the amount instead of duplicating the row. */
+/** Upsert by (ownerId, category, period) — the Settings/Budget surfaces
+ *  edit the monthly ceiling per category; a re-POST of the same category
+ *  updates the amount instead of duplicating the row. R-10 (session 214):
+ *  the key grows the owner dimension — one ceiling per category PER USER. */
 export async function POST(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
@@ -30,9 +33,20 @@ export async function POST(req: Request) {
 
   try {
     const budget = await db.budget.upsert({
-      where: { category_period: { category: body.category, period: body.period } },
+      where: {
+        ownerId_category_period: {
+          ownerId: guard.user.id,
+          category: body.category,
+          period: body.period,
+        },
+      },
       update: { amount: body.amount },
-      create: { category: body.category, amount: body.amount, period: body.period },
+      create: {
+        ownerId: guard.user.id,
+        category: body.category,
+        amount: body.amount,
+        period: body.period,
+      },
     });
     return ok(budget);
   } catch {
@@ -49,7 +63,7 @@ export async function DELETE(req: Request) {
 
   try {
     await db.budget.deleteMany({
-      where: { category: parsed.data.category, period: "monthly" },
+      where: { ownerId: guard.user.id, category: parsed.data.category, period: "monthly" },
     });
     return ok({ category: parsed.data.category });
   } catch {
