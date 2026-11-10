@@ -45,8 +45,8 @@ Follow this six-phase workflow for all implementation tasks:
   functionality.
 - **Determinism everywhere**: the seed, the AI coach, and the test data
   are all deterministic — no `Math.random()` in seeded paths.
-- **The gate is the contract**: lint 0/0 · tsc 0 · 817 unit · build ·
-  smoke 14/14 · 97 e2e. A green gate achieved by weakening a guardrail is
+- **The gate is the contract**: lint 0/0 · tsc 0 · 869 unit · build ·
+  smoke 14/14 · 99 e2e. A green gate achieved by weakening a guardrail is
   not a fix.
 - **Offline-capable by default**: no runtime third-party calls (fonts,
   AI, analytics). The AI coach is a local engine.
@@ -108,8 +108,8 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 | `bun run dev` | Dev server (:3000) |
 | `bun run build` | Production standalone build |
 | `bun run start` | Serve the standalone artifact (needs build) |
-| `bun run test` | Unit suite (Vitest, 817 checks) |
-| `CI=1 bun run test:e2e` | E2E suite (Playwright, 97 checks, own db + :3100) |
+| `bun run test` | Unit suite (Vitest, 869 checks) |
+| `CI=1 bun run test:e2e` | E2E suite (Playwright, 99 checks, own db + :3100) |
 | `bun run lint` | ESLint, fails on warnings |
 | `bun run typecheck` | `tsc --noEmit` |
 | `bun run gate` | The full chain: lint → typecheck → test → build → smoke → e2e |
@@ -121,10 +121,11 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 
 - **Unit (Vitest)**: domain math, schemas, AI engine, auth contract,
   architecture pins (`gate-script`, `db-census`, `route-case`…), property
-  tests via fast-check. 817 checks / 62 files.
+  tests via fast-check. 869 checks / 64 files.
 - **E2E (Playwright, chromium)**: journeys per section, mobile drawer at
-  390×844, dialogs, route-alias equivalence, the 401 auth-wall probe.
-  97 checks / 7 specs. `playwright.config.ts` pins `db/e2e.db`, global
+  390×844 (incl. the short-viewport scroll leg), the fresh-visitor dark
+  default, dialogs, route-alias equivalence, the 401 auth-wall probe.
+  99 checks / 7 specs. `playwright.config.ts` pins `db/e2e.db`, global
   setup reseeds, storageState authenticates; specs opt OUT with an empty
   storageState when testing guests.
 - **Smoke (bash)**: boots the standalone artifact on :3210 with a scratch

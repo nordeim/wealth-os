@@ -7,7 +7,56 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.15.0** (session 218 — the recovery-loop and
+> **Current version: v2.16.0** (session 219 — the parity-default and
+> perceivability round R-16: the owner's standing directive with an
+> EXPLICIT parity-iteration ask ("iterate on the codebase to achieve
+> visual and functional parity" with the live reference, "pay
+> particular attention to the mobile navigation menu") — the
+> session-219 fresh-eyes audit (three parallel Mode-C passes: the R-15
+> cure surfaces, the API/auth/security layer, the UI/a11y/shell layer —
+> 0 Critical / 3 High / 11 Medium / 16 Low / 17 Informational raw,
+> every material claim re-verified at file:line by the driving
+> session, three live-probe classes decoded: the reference's CTA
+> genus measured per-page, its default-theme posture decoded
+> end-to-end incl. the server-side persistence, our mobile drawer's
+> short-viewport clip measured) plus the owner-directed theme-default
+> question (F-205a's "not reopening" deferral superseded by the
+> explicit directive). The round cures: the DEFAULT-THEME parity
+> (F-219c High: the reference's authenticated shell renders DARK for
+> fresh visitors — html.dark, body #0a0a0a, live-verified with the
+> toggle round-trip and the no-localStorage decode; ours rendered
+> system/light — the single most visible divergence on the named
+> /Dashboard surface); the CTA genus (F-219a High: our amber CTAs
+> carry text-white — the a11y register's own citation ("white-on-amber
+> — the reference's own palette", F-218w's umbrella) is factually
+> STALE, live-measured this session: the reference's amber CTAs
+> compute stone-900 rgb(28,25,23) — the cure fixes parity AND the
+> 2.15:1 AA failure in one move; F-219b: the per-page CTA gradients —
+> emerald→teal+white on Income/Investments, rose→red+white on
+> Expenses, amber+stone-900 on Dashboard/Accounts/Goals/Settings —
+> ours solid amber everywhere; F-219s: the Analytics Export genus);
+> the mobile-drawer internal scroll (F-219h: Sign Out unreachable
+> below ~800px viewport height — live-verified at 390×667 and
+> 844×390; the reference shares the clip, so the cure is the
+> functional superset, the Escape-to-close class); the date-seam
+> completion (F-219d High: the investments purchaseDate edit-prefill —
+> the FIFTH raw-parse site, each edit-save walks the date back a day
+> for UTC-negative users; F-219e: the analytics refs — a mixed-mode
+> regression the F-218d cure itself introduced; F-219f/g: the goals
+> card + income relative-day labels); the perceivability tail
+> (F-219i: the dark metadata family dark:text-stone-500 3.16–4.13:1
+> ~30 sites + the EMPTY_STATE/FOOTER constants; F-219j: the AI coach
+> replies never announced; F-219k: the display-text cluster; F-219n:
+> the ring leftovers); the rate-bucket fixes (F-219l: the `reset:`
+> key collision — /api/reset's 3/15 and /api/auth/reset-password's
+> 10/15 silently merge; F-219m: the sessioned CRUD family unbucketed);
+> the low tail (the auth-face light posture closing the stored-dark
+> stranded-body-color state F-219t, the logout case-sensitivity, the
+> 2dp money normalization, the nullable-clear semantics, the
+> analytics empty states, the dead constants). §5 carries the
+> execution history.)
+>
+> **Previous version: v2.15.0** (session 218 — the recovery-loop and
 > perceivability round R-15: the session-218 fresh-eyes audit (three
 > parallel Mode-C passes: the R-14 cure surfaces, the API/auth/security
 > layer, the UI/a11y/shell layer — 0 Critical / 3 High / 12 Medium /
@@ -243,7 +292,29 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-218t | Low | **F-217u executed: the `NEO_PROXY_HOPS` posture.** Unset defaults to depth 1 (the last, client-suppliable XFF hop keys the limiter — full bypass on a direct-exposure deployment, the DEPLOYMENT.md §2 path); DEPLOYMENT.md's env table never lists the knob and the boot gate warns only on unparsable values. Cure: the boot warning when the default rides (name the knob, name 0 for direct exposure) + the DEPLOYMENT.md row + the .env.example comment — the default stays 1 (flipping it would share one bucket across every user behind an unconfigured proxy — the mass-lockout trade is worse). | `src/lib/rate-limit.ts:79-99`; `src/lib/boot-env.ts`; `docs/DEPLOYMENT.md` §2-3; `.env.example` | **R-15** |
 | F-218u | Low | **Six Select labels unassociated (no htmlFor/id)** — income ×2, accounts, investments, goals (naming falls back to the trigger's aria-label; clicking the label does nothing; Expenses/Settings already do it correctly) — and the ExpenseDialog's native checkbox carries inert color classes (`text-amber-600` on a native input is a no-op; the accent- property is the working form). | `src/app/(app)/income/page.tsx:270,285`; `accounts/page.tsx:258`; `investments/page.tsx:427`; `goals/page.tsx:294`; `expenses/page.tsx:561-567` | **R-15** |
 | F-218v | Low | **hydrate's 401 discrimination keys on the message substring** ("authenticate"/"Sign in") — `call()` discards the envelope's error.code, so any rewording of ERR.UNAUTHORIZED silently converts the auth-redirect path into a hard-error banner. Threading the code through Result is a seam change; this round pins the message stability so a rewording trips a test. | `src/stores/wealthos-store.ts:180`; `src/lib/api.ts` (ERR.UNAUTHORIZED's message) | **R-15** |
-| F-218w | Informational (register) | **The amber register's breadth — matcher-level sanctions exceed citation-level genus.** The a11y register's `any:` matchers (`text-white`, `bg-primary`, `bg-amber-500`, `text-amber-500`) sanction every element carrying the class, while the citations justify specific faces (the live-observed amber gradient + white bold label on primaries; the 6M chip; the sidebar gradient captions). Our superset additions wearing the register classes (the coach chat bubble, the Quick Actions h2, the filter-count badge, the HealthGauge band colors — the reference's own RadialBar genus per its docblock) ride the umbrella. Recorded: the genus is the reference's own; per-face tightening is a design decision for the owner, not a defect cure. | `tests/e2e/a11y.spec.ts:33-57`; the riding faces | none (register note) |
+| F-218w | Informational (register) | **The amber register's breadth — matcher-level sanctions exceed citation-level genus.** The a11y register's `any:` matchers (`text-white`, `bg-primary`, `bg-amber-500`, `text-amber-500`) sanction every element carrying the class, while the citations justify specific faces (the live-observed amber gradient + white bold label on primaries; the 6M chip; the sidebar gradient captions). Our superset additions wearing the register classes (the coach chat bubble, the Quick Actions h2, the filter-count badge, the HealthGauge band colors — the reference's own RadialBar genus per its docblock) ride the umbrella. Recorded: the genus is the reference's own; per-face tightening is a design decision for the owner, not a defect cure. *(Session-219 update: the citation's "white bold label on primaries" clause is DISPROVEN — F-219a's live probe measured the reference's amber primaries at stone-900 rgb(28,25,23); the umbrella's primary-button arm retires with the F-219a cure.)* | `tests/e2e/a11y.spec.ts:33-57`; the riding faces | none (register note; superseded in part by F-219a) |
+| F-219a | High | **The amber CTA text genus — ours `text-white`, the reference's stone-900; the a11y register's citation is stale.** Live-measured this session (fresh login, /Dashboard + /Accounts + /Goals + /Settings): the reference's amber CTAs ("Add Transaction" `linear-gradient(to right, rgb(245,158,11), rgb(202,138,4))`, "Add Account", "New Goal", "Save Settings") compute text color **rgb(28,25,23) stone-900** — NOT white. Ours: `BUTTONS.primary` (`page-layout.ts:209`) carries `text-white`; the Button default variant rides `--color-primary-foreground: #ffffff`; the AI-coach user bubble `bg-amber-500 text-white`; the error boundaries' "Try again" rides the token. White on amber-500 measures 2.15:1 — a systemic WCAG 1.4.3 failure on the app's most-used control, latent through every gate because the sanctioned register's arm (`bg-primary`/`button[type="submit"]`/`text-white` — "the reference's own palette") carries the stale citation. The reference's own genus IS the AA cure: stone-900 on amber measures 8.1:1. | `src/lib/page-layout.ts:209` (BUTTONS.primary) + `:237` (--color-primary-foreground consumer via button.tsx:42); `src/app/globals.css` (the token); `src/components/shared/ai-coach.tsx:114`; `src/app/error.tsx:56` + `global-error.tsx:56`; the live probe (this session); `tests/e2e/a11y.spec.ts:41-57` (the stale arm) | **R-16** |
+| F-219b | High | **The per-page CTA gradient genus — the reference deploys THREE CTA families by page; ours renders solid amber everywhere.** Live-measured: Income "Add Income Source" + Investments "Add Investment" = `emerald-500→teal-600` gradient + white text; Expenses "Add Expense" = `rose-500→red-600` gradient + white text; Dashboard/Accounts/Goals/Settings = the amber gradient + stone-900 (F-219a). Ours: every section CTA renders solid `bg-primary` amber + white (the Button default variant) — a systematic genus divergence on all five section toolbars. | The per-page live probe (this session); `src/app/(app)/{income,investments,expenses,accounts,goals}/page.tsx` (the CTA sites); `src/components/ui/button.tsx:42` | **R-16** |
+| F-219c | High (owner-directed) | **The authenticated shell's default theme — the reference defaults DARK, ours system/light.** Live-decoded this session: a fresh-context login to the reference lands `/Dashboard` with `html.class="dark"`, body `rgb(10,10,10)`; NO theme key exists in localStorage (the default is the app's own, and the choice persists SERVER-SIDE per user — the toggle round-trip proves it: flip to light → reload → light, still no localStorage); the auth faces serve light (`/login` html.class=""). Ours: the no-FOUC bootstrap defaults `"system"` (light under a no-preference headless client) — the F-205a deferral ("not reopening"). The owner's session-219 directive ("achieve visual and functional parity with … /Dashboard") supersedes the deferral: the fresh-visitor /Dashboard is the single most visible parity surface and it renders dark there, light here. The sweeps are unaffected (planThemeWrites stores explicit per-page themes); the e2e/a11y legs that rely on the light default need explicit light in-commit. | `src/app/layout.tsx:100` (the bootstrap) + `src/components/layout/theme.tsx:75` (the "system" default); the live probes (`scripts/probe-219-theme.ts` runs, this session); `docs/session_20.md:28-29` (the deferral) | **R-16** |
+| F-219d | High | **The investments purchaseDate edit-prefill still raw-parses (the FIFTH F-218d site — per-edit data drift).** `new Date(editing.purchaseDate)` in the Investment dialog prefill; purchaseDate is a `dateField` (yyyy-MM-dd → stored UTC-midnight ISO). For every UTC-negative user the prefill shows the prior day and saving re-stores it — each edit-save cycle walks the purchase date back one day (cumulative silent corruption). The parity-218 pin enumerated only "expenses/income/goals" — the exact negative-pin blind spot the R-15 commit message itself warns about. | `src/app/(app)/investments/page.tsx:371-373`; `src/lib/schemas.ts:354/388`; `tests/parity-218.test.ts:96-103` | **R-16** |
+| F-219e | Medium | **The analytics month-bucketing refs are raw while the rows now re-anchor — a mixed-mode regression the F-218d cure itself introduced.** The page passes `new Date(to)` (raw; `to` is yyyy-MM-dd → UTC midnight) as the `ref` into cashFlowSeries/expenseBreakdown/budgetCategorySplit/spendingByDayOfWeek/categoryTrend, while those seams now bucket rows via `toDate(t.date)` (local midnight). When `to`'s day-of-month is 1 and the user is UTC-negative, `new Date(to)` lands on the last day of the previous month local — the trailing bucket of every series keys on the wrong month for a full day (the default `to` = today). | `src/app/(app)/analytics/page.tsx:86-92` | **R-16** |
+| F-219f | Medium | **The goals card renders targetDate with a raw parse — one month early for 1st-of-month targets.** The GoalDialog prefill directly above it was cured (`toDate(editing.targetDate)`), but the card's "by {Mon YYYY}" label still uses `new Date(goal.targetDate)` — the label disagrees with the cured `goalProgress()` math beside it. | `src/app/(app)/goals/page.tsx:131-137` | **R-16** |
+| F-219g | Low | **The income "next payment" relative-day label raw-parses** — `relativeDays(new Date(source.nextPaymentDate), new Date())`; the sibling dialog prefill was cured. Off-by-one-day display for UTC-negative users. | `src/app/(app)/income/page.tsx:156-158` | **R-16** |
+| F-219h | Medium | **The mobile drawer clips below ~800px viewport height — Sign Out unreachable, no internal scroll.** Live-verified: at 390×667 and 844×390 the Sign Out button's bottom renders at 787px (viewport 667/390), `innerOverflow: "visible"` — the fixed inset-0 sheet has no `overflow-y-auto` while `main`'s scroll is locked. Even the last nav link (Settings, bottom 710px) is cut at 667px. The REFERENCE shares the defect (Sign Out bottom 721px, no scroll) — so the cure is the house functional-superset class (the Escape-to-close doctrine): an internal scroll on the sheet. | `src/lib/page-layout.ts:53-54` (MOBILE_NAV_SHEET inner/nav); the live probes (this session, both apps) | **R-16** |
+| F-219i | Medium | **The dark metadata family fails AA — `dark:text-stone-500` at 3.16–4.13:1 on ~30 sites — plus the EMPTY_STATE subtitle (2.52:1 light) and the APP_FOOTER.** The `text-xs text-stone-500 dark:text-stone-500` metadata (dates, categories, card labels) dominates every dark-mode page; stone-500 #78716c measures 3.16:1 on stone-900 cards. The sibling constants that already carry the correct arm (`CARD.subtitle`, `SETTINGS_CARD.boxText` → `dark:text-stone-400`) prove the pattern. The EMPTY_STATE subtitle `text-stone-400 dark:text-stone-500` renders 2.52:1 in LIGHT mode; the footer `text-xs text-stone-400` same. Constant-level cures clear the whole family. | `src/lib/page-layout.ts:220,225`; the ~30 `dark:text-stone-500` sites (expenses/income/accounts/goals/import/dashboard/investments/page-parts) | **R-16** |
+| F-219j | Medium | **The AI coach's assistant replies are never announced — the aria-live wraps only the textless bouncing-dots row; the user bubble rides the amber+white genus (F-219a).** A screen-reader user submits a question and hears nothing when the answer lands (WCAG 4.1.3); the busy row announces nothing either (no text). | `src/components/shared/ai-coach.tsx:92-133` | **R-16** |
+| F-219k | Medium | **The display-text cluster fails AA on light surfaces.** Dashboard "Quick Actions" h2 `text-xl font-bold text-amber-500` = 2.09:1; HealthGauge score/band text in the band colors (emerald 2.54 / teal 2.49 / amber 2.15); import preview income amounts `text-emerald-600` at text-sm = 3.77:1 (the F-218j one-step precedent applies); the error boundaries' h1 `text-slate-300` on slate-50 = 1.42:1 (superset surfaces — no parity constraint); the KpiCard flat delta arm `text-stone-500` fails both modes on tinted cards. | `src/app/(app)/dashboard/page.tsx:532,629-635`; `src/app/(app)/import/page.tsx:244`; `src/app/error.tsx:42` + `global-error.tsx:40`; `src/components/shared/page-parts.tsx:64` | **R-16** |
+| F-219l | Medium | **Rate-limit bucket key collision: `reset:` shared by two different endpoints.** `/api/reset` (data wipe, 3/15min) and `/api/auth/reset-password` (password reset, 10/15min) both key `rateLimit(\`reset:${clientKey(req)}\`, …)` — the fixed-window buckets silently merge to the lower threshold; the module's own header comment ("forgot 10 + reset 10") is falsified. | `src/app/api/reset/route.ts:15`; `src/app/api/auth/reset-password/route.ts:37` | **R-16** |
+| F-219m | Medium | **The sessioned CRUD family and the heavy reads carry no rate buckets.** transactions/accounts/budgets/goals/investments/income-sources (+[id]) /users/settings mutations and the dashboard/export/search reads are unbounded (only login/signup/resend/verify/forgot/reset-password/upload/import/coach/reset are bucketed — 10 of 21+). Any signed-up user can hammer single-row creates (bypassing the import route's own 5/15 cap) or the six-full-table-findMany dashboard read — a co-tenant DoS on the single-node SQLite file. | grep `rateLimit(` over `src/app/api` (10 sites); the CRUD family | **R-16** |
+| F-219n | Low | **The F-218i ring family's leftovers.** The dashboard quick-action Link keeps `focus-visible:ring-1` (the ring-1→ring-2 swap missed the bespoke literal); the Import dropzone's `focus-within:ring-amber-400/40` on `bg-stone-50/50` ≈1.3:1 — the exact class F-218i's own math cites. | `src/app/(app)/dashboard/page.tsx:576`; `src/app/(app)/import/page.tsx:158` | **R-16** |
+| F-219o | Low | **The logout content-type gate is case-sensitive** — `contentType.includes("application/json")` while the family seam (`readBoundedJson`) lowercases. A legal `Application/JSON` client gets a 400 and cannot sign out (latent — first-party callers send lowercase). | `src/app/api/auth/logout/route.ts:17-19` | **R-16** |
+| F-219p | Low | **`moneyField` accepts non-2dp amounts** — finite+range only; `3.14159` passes and stores as Float, drifting aggregates (budget-vs-actual, portfolio, health score) with sub-cent residue. | `src/lib/schemas.ts:99-111` | **R-16** |
+| F-219q | Low | **Nullable-string "clear" semantics silently no-op** — `notes`/`institution` map `null`/`""` → `undefined` and the routes' `!== undefined` spreads skip the key: no payload can clear these fields once set (contrast nextDate/targetDate which handle null correctly). | `src/lib/schemas.ts:196-202,309-315,389-395,259-265` | **R-16** |
+| F-219r | Low | **Four analytics chart sections render silent blanks on empty data** — Spending by Day of Week, Needs vs Wants, Income Trend, Portfolio Composition have no `length === 0 → EmptyState` gating (the sibling sections do). | `src/app/(app)/analytics/page.tsx:246-256,260-280,325-341,349-380` | **R-16** |
+| F-219s | Low | **The Analytics Export button genus** — ours renders the amber primary (Button default); the reference's Export is the secondary/dark genus (measured rgb(10,10,10)+white in its dark mode = the outline family). | `src/app/(app)/analytics/page.tsx:167-170`; the live probe | **R-16** |
+| F-219t | Low (latent, live-verified) | **Stored-dark on the auth faces strands the flipped body text color** — with `wealthos-theme=dark` stored, `/login` renders html.dark + bg-background #faf9f7 (the token never flips, keeping the auth faces light — parity-correct) BUT body's `text-foreground` DID flip (R-14's token family) → rgb(250,250,250) on the light wash (live-measured). The card's own slate text carries the page today; the stranded body color is one unmigrated surface away from invisible text. The reference's auth faces are ALWAYS light — the cure (force light on auth faces regardless of stored choice) is both the parity genus and the latent-bug close. | `src/app/layout.tsx:100` (the bootstrap applies stored dark globally); the live probe (this session) | **R-16** |
+| F-219u | Informational | **Dead constants with sub-3:1 focus rings** — `BUTTONS.outline`/`BUTTONS.ghost` (zero consumers repo-wide) carry `focus-visible:ring-stone-400` ≈2.2:1. Delete (the live Button variants carry the real outline/ghost genera). | `src/lib/page-layout.ts:211,213` | **R-16** |
+| F-219v | Informational | **The low tail.** `rate-limit.ts`'s header comment says "the 7 rate-limited routes" (there are 10, 11+ after F-219m); InfoCallout (the green resend banner) uses `role="alert"` (assertive) for a non-error status — `role="status"` is the semantic; the `--animate-fade-in`/`--animate-slide-in-right` tokens + keyframes have zero consumers; the upload route trusts the declared part MIME (nosniff-mitigated — magic-byte validation is defense-in-depth); the a11y main legs rely on the light DEFAULT (must go explicit when F-219c lands); the moon-toggle e2e test starts from the default (same). | `src/lib/rate-limit.ts:13`; `src/components/layout/login-card.tsx:807-813`; `src/app/globals.css:261-262`; `tests/e2e/a11y.spec.ts:122-135`; `tests/e2e/mobile-navigation.spec.ts:159-180` | **R-16** |
 
 ## 3. The remediation program (R-items)
 
@@ -1195,6 +1266,136 @@ ledger rows promote/execute here: F-217s (the tabs cure) and F-217u
   within the standing baselines; no re-derivation needed) · census
   MATCH.
 
+### R-16 — The parity-default and perceivability round (session 219) — Status: Done(v2.16.0)
+
+The session-219 fresh-eyes audit (three parallel Mode-C passes over the
+R-15 cure surfaces, the API/auth/security layer, and the UI/a11y/shell
+layer — 0 Critical / 3 High / 11 Medium / 16 Low / 17 Informational raw,
+adjudicated to the F-219 ledger after the driving session re-verified
+every material claim at file:line; three live-probe classes: the
+per-page CTA genus measurement on the live reference, the default-theme
+end-to-end decode incl. the server-side persistence proof and the
+reference restore, the drawer-clip measurements on both apps) PLUS the
+owner's explicit parity directive — the round's theme: **the default
+postures and the genus faces the parity directive names** (the
+fresh-visitor /Dashboard, the CTA family, the mobile menu) and the
+perceivability tail the same audit surfaced.
+
+Adjudications recorded before execution:
+- F-217m (the in-app delivery default) and the NEO_PROXY_HOPS
+  fail-closed escalation (the M-1 class) REMAIN the owner-decision
+  items — the R-15 boot-warning posture stands; not reopened here.
+- F-219a's cure direction is set by the reference's OWN genus (stone-900
+  on amber — measured): parity and AA point the same way; the a11y
+  register's stale arm retires with the cure.
+- F-219b's emerald/rose gradients + white text ride the reference's own
+  register (the F-208a KPI_TONES class) — the register gains the
+  measured citations.
+- F-219h's cure is the functional superset (the reference clips too).
+- F-219t's cure (auth faces force light) is BOTH the reference's genus
+  and the latent stranded-color close.
+- The GradientKpiCard/StatCard text-on-gradient genus (the audit's M-6)
+  stays the recorded F-208a/F-209b register — not reopened.
+
+- **R-16.1 The pins (TDD, born RED)**
+  - `tests/theme-default.test.ts` (new): the no-FOUC bootstrap's
+    default resolves DARK on app routes and LIGHT on auth faces when no
+    choice is stored; a stored choice wins everywhere (pure seam: a
+    `defaultThemeForPath(pathname, stored)` helper in theme.tsx, probed
+    by the pin); the AppShell mount applies the default when entering
+    the shell without one.
+  - `tests/parity-219.test.ts` (new): BUTTONS.primary carries
+    `text-stone-900` (not text-white); `--color-primary-foreground` is
+    `#1c1917`; the per-page CTA constants (the emerald/rose/amber
+    genera) exist and carry the measured gradients; MOBILE_NAV_SHEET
+    carries `overflow-y-auto`; the analytics refs route through
+    `toDate`; the investments prefill routes through `toDate`; the
+    goals card + income label route through `toDate`; EMPTY_STATE
+    subtitle + APP_FOOTER carry the AA arms; the display-text cluster
+    cures (amber-700/emerald-700/slate-500 h1); the drawer constant's
+    scroll arm; the logout gate lowercases; moneyField rounds to 2dp;
+    the rate bucket keys are disjoint; the CRUD family carries buckets.
+  - `tests/rate-limit.test.ts` extension: the two reset-family keys are
+    distinct strings.
+  - `tests/schemas.test.ts` extension: 2dp normalization + null-clear
+    semantics.
+  - e2e legs (+2): the fresh-visitor /Dashboard renders DARK by default
+    (html.dark + the dark body genus); the drawer scrolls internally at
+    390×667 (Sign Out visible after scroll). In-commit: the a11y main
+    legs set light explicitly; the moon-toggle test stores light first.
+- **R-16.2 The cures**
+  - A. The default-theme parity (F-219c + F-219t): the no-FOUC
+    bootstrap — stored choice wins; otherwise DARK except the auth
+    faces (login/signup/reset-password), which FORCE light (removing
+    .dark even when stored dark — the reference's always-light auth
+    genus); the AppShell mount applies the default on shell entry
+    (closes the login→dashboard client-nav hole); theme.tsx gains the
+    pure `defaultThemeForPath` seam.
+  - B. The CTA genus (F-219a/b/s): `--color-primary-foreground`
+    `#1c1917`; BUTTONS.primary `text-stone-900`; the per-page section
+    CTAs adopt the measured genera (Income/Investments
+    emerald→teal+white, Expenses rose→red+white — new CTA constants in
+    page-layout.ts carrying the citations); the ai-coach user bubble
+    stone-900; the Analytics Export → the outline genus; the a11y
+    register's stale arm retires, the gradient arms gain citations.
+  - C. The mobile drawer scroll (F-219h): `overflow-y-auto` on the
+    sheet's inner column (the superset; parity untouched).
+  - D. The date-seam completion (F-219d/e/f/g): the investments
+    prefill, the analytics refs (a shared `refDate` through toDate),
+    the goals card label, the income relative-day label.
+  - E. The perceivability tail (F-219i/k/n): the page-layout constants
+    (EMPTY_STATE subtitle, APP_FOOTER, KpiCard flat arm); the ~30
+    `dark:text-stone-500` metadata sites → `dark:text-stone-400` (a
+    scripted sweep); the Quick Actions h2, the HealthGauge band text,
+    the import amounts, the error h1s; the ring leftovers (ring-2,
+    ring-ring).
+  - F. The AI coach announcements (F-219j): the messages container is
+    the polite live region; the busy row carries sr-only text.
+  - G. The rate buckets (F-219l/m): distinct keys (`pw-reset:` vs
+    `data-reset:`); a shared sessioned-CRUD bucket (60 writes/15min)
+    + light read buckets (dashboard/export 60/15min, search 30/15min).
+  - H. The low tail: the logout case-insensitivity; moneyField 2dp
+    transform; the nullable-clear semantics (distinguish absent vs
+    explicit null); the four analytics empty-state gates; InfoCallout
+    role="status"; the dead constants retired; the stale comments.
+- **R-16.3 The verification + the evidence** — the full gate (lint →
+  tsc → unit → build → smoke → e2e) from cold; the six drift gates with
+  the sweep/fullpage/census tables RE-DERIVED in-commit (the CTA genus
+  moves the captured pixels — the session-217 precedent); the capture
+  set under docs/screenshots/ (the fresh-visitor dark /Dashboard vs the
+  reference, the CTA genera per page, the drawer scroll at 390×667, the
+  dark metadata family, the coach announcement); the docs lockstep
+  (README/AGENTS/CLAUDE/PAD/SKILL/worklog + this plan's §5 row).
+
+R-16.1's pins were born RED 39+ (theme-default 10 · parity-219 29 · the
+rate-limit disjointness 1 · the schemas-finance null-clear contract
+change 2) and went GREEN with the cures (39 + the in-commit pin-literal
+refinements: the analytics toDate form, the APP_FOOTER block form, the
+sweep/fullpage/census re-derivation literals, the auth-reset key, the
+login-views status/alert split). R-16.2's cures landed as programmed
+(with TWO design refinements decoded mid-execution: the reads bucket —
+the per-navigation dashboard aggregate CANNOT carry a per-IP cap (the
+maiden census run tripped mid-run; the toolchain's page loads
+legitimately exceed any budget) — it stays unbucketed BY DESIGN with
+the heavy EXPLICIT actions bucketed (writes 60/15, export 240/15,
+search 60/15); and the auth faces force light through ALL THREE seams
+(bootstrap + provider pathname effect + the stored-dark removal) —
+closing the F-219t stranded-ink state the R-15 tree shipped). One
+in-commit catch: the ai-coach's send button carried the amber+white
+genus the F-219a sweep missed — cured with the round. R-16.3's
+verification: lint 0/0 · tsc 0 · **869 unit / 64 files** (+52) ·
+build · smoke 14/14 · **e2e 99/99 (7 specs; +2: the fresh-visitor
+dark default, the drawer scroll at 390×667)** · **all six parity
+drift gates CLEAN with the tables RE-DERIVED in-commit** (every
+page's diff moved DOWN — the CTA convergence; the analytics
+empty-state construction absorbed; the census allowances +3/+3/+3 on
+income/accounts/goals (the CTA class stacks) and the analytics shifts
+(the EmptyState gates), decode documented) · census MATCH · the
+capture set 82-87 (eight files incl. the reference's own dark
+/Dashboard beside ours — VLM-verified a near pixel match on the
+fresh-visitor genus) · `bun audit` unchanged (1 moderate minimatch,
+range-unreachable).
+
 ## 4. Plan validation (the re-check, session 203)
 
 After this plan text was drafted, every §2 claim was re-verified against the
@@ -1235,6 +1436,7 @@ tree before shipping (the plan-validation pass the task spec mandates):
 
 | v2.14.0 | 217 | **R-14** (the parity-completion round — the fresh-eyes audit's blind-spot cluster: the surfaces the gates structurally cannot see). The audit round first: the cold baseline gates green at the documented v2.13.0 ship state (lint 0/0 · tsc 0 · 719/719 · build · smoke 14/14 · e2e 88/88 · census MATCH; the browser binaries reinstalled after the sandbox reset); the ledger re-triaged (the standing 1 moderate minimatch, range-unreachable — no new advisory); the skills-guided fresh-eyes audit (Mode C, three parallel passes: the R-13 cure surfaces, the API/auth/security layer, the UI/a11y/shell layer — 0 Critical / 3 High / 6 Medium / 17 Low / 10 Informational, every material claim re-verified at file:line by the driving session, the two live-repro classes verified with probe scripts: the Expenses popover Select kill + the dark-mode invisible surfaces; the LIVE REFERENCE probed for the dark genus — its dialog panel measures #0a0a0a with #262626 borders and #fafafa labels, its sitemap lists the Capital locs; one High RECORDED as the owner-decision item: F-217m, the in-band delivery default posture). The session's material: **F-217c High** (the .dark block never flipped the seven app-native tokens — every dialog, the Select listbox, and the user-menu rendered white panels with light text, 1.09:1/1.00:1, live-verified), **F-217a Medium** (the F-216i outside-close killed the portaled Select — mouse users could not apply a category filter, live-reproduced), **F-217b** (the coach route's schema-vs-cap conflict — the F-216a class one route over), **F-217d** (the verification gate dissolved after its TTL; the resend no-opped the same accounts), **F-217e** (the drawer's Tab order ran under the overlay), and the low tail (F-217f the sitemap's metadata-poor lowercase locs, F-217g no Cache-Control on the envelope, F-217h no frame-ancestors, F-217i the SearchResults/search tails, F-217j dateField's offset roulette, F-217k the hydrate stale-error face, F-217l the late write-token read). Shipped: **R-14.1** the pins born RED 34 (ai-body-cap 6 · expenses-popover 4 · dark-tokens 11 · mobile-navigation-focus 4 · parity-217 5 + the six extension families: auth-contract 2, metadata 1, http-headers 3, owner-scoping 2, schemas-finance 8, palette-pins 1) + the e2e legs (+7: the popover mouse-pick + outside-close, the three drawer-focus legs, the two dark a11y legs) → **R-14.2** the cures (the .dark token completion — the seven app-native flips in the reference's measured family + the toast/button tails + the destructive buttons' dark arms; the popover portal exclusion; MAX_AI_BODY_BYTES 256KB; the login hash-gate + the resend re-arm; the drawer focus contract; the sitemap's Capital locs; the envelope's Cache-Control: no-store + the global frame-ancestors; SearchResults retired + /api/search pinned; dateField's two sanctioned forms; the hydrate error hygiene; the entry-time token capture across the 19 mutation actions) — the dark a11y leg's maiden run CAUGHT the destructive red-600 3.3:1 (cured) and the axe selector-fragility (the register gained the button[type=submit] needle, same citation); the useEffect-cleanup timing decode (focus return keys on "not in header", never "in the removed sheet") → **R-14.3** the verification: lint 0/0 · tsc 0 · **767 unit** (60 files; +48) · build · smoke 14/14 · **e2e 95/95** (7 specs; +7) · **all six drift gates CLEAN with the tables RE-DERIVED** (every page's diff moved down — the dark convergence; phone dashboard 16.5 → 14.47; the sweep-tool + fullpage-tool literal pins updated in-commit) · census MATCH · the ledger unchanged (1 moderate, range-unreachable) | lint 0/0 · tsc 0 · **767 unit** (60 files) · build · smoke 14/14 · **e2e 95/95** · census MATCH · six drift gates CLEAN (re-derived tables) | (this session's execution commit) |
 | v2.15.0 | 218 | **R-15** (the recovery-loop and perceivability round: F-218a the signin 403 → verify view · F-218b the trigger-scoped popover guard · F-218c the export no-store · F-218d the toDate UTC-midnight re-anchor · F-218e the updateSettings guard · F-218f the upload stream bound · F-218g the import/coach/reset buckets · F-218h the toast live region · F-218i the ring-token dark flip + the light-surface rings · F-218j the red-600 steps · F-218k the badge dark-steps · F-218l the muted/subtle flips · F-218m HealthGauge role · F-218n the avatar seam · F-218o the tabs' four panels · F-218p the logout gate · F-218q the fallthroughs · F-218r the P2002 arm · F-218s the 1MB AI cap · F-218t the proxy-hops warning · F-218u the labels + accent · F-218v the message-stability pin) | lint 0/0 · tsc 0 · **817 unit (62 files; +50)** · build · smoke 14/14 · **e2e 97/97 (7 specs; +2)** · all six drift gates CLEAN · census MATCH | (this session's execution commit) |
+| v2.16.0 | 219 | **R-16** (the parity-default and perceivability round — the owner's explicit parity directive) + the in-commit refinements (the reads-bucket design decode; the auth-face three-seam force-light; the coach send-button straggler). The audit round first: the cold baseline gates green at the documented v2.15.0 ship state (lint 0/0 · tsc 0 · 817/817 · build · smoke 14/14 · e2e 97/97 · census MATCH; the browser reinstalled after the sandbox reset); the ledger re-triaged (1 moderate minimatch — unchanged); the LIVE REFERENCE deeply probed per the directive: the drift-probe STABLE on all four standing layers; the theme posture decoded END-TO-END (fresh login → html.dark + body #0a0a0a, NO localStorage key, the choice persists SERVER-SIDE per user — the toggle round-trip proved it, then the standing DARK posture restored after the probe mutated it); the per-page CTA genus measured (amber+stone-900 on Dashboard/Accounts/Goals/Settings; emerald→teal+white Income/Investments; rose→red+white Expenses — the dialog submits carry the same families); the mobile drawer measured on both apps (Sign Out unreachable below ~800px on BOTH — the reference shares the clip); the fresh-eyes audit (Mode C ×3: the R-15 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 3 High / 11 Medium / 16 Low / 17 Informational raw, every material claim re-verified at file:line, three live-repro classes). Shipped: **R-16.1** the pins born RED 39+ (theme-default · parity-219 · rate-limit disjointness · the schemas null-clear contract change) → **R-16.2** the cures (the theme-default seam + the bootstrap mirror + the provider pathname effect; --color-primary-foreground #1c1917 + BUTTONS.primary stone-900 + the CTA constants + the 15 section button sites + the coach/error/period/filter-badge tails; the drawer overflow-y-auto; the four date-seam sites; the AA constants + the 25-site dark metadata sweep + the display-text cluster + the ring leftovers; the coach live region; the rate buckets (data-reset:/pw-reset: + the writes family + export/search); the low tail) → **R-16.3** the verification (lint 0/0 · tsc 0 · **869/869** · build · smoke 14/14 · **e2e 99/99** · the six drift gates CLEAN on the RE-DERIVED tables · census MATCH · the captures 82-87) | lint 0/0 · tsc 0 · **869 unit** (64 files; +52) · build · smoke 14/14 · **e2e 99/99** · census MATCH · six drift gates CLEAN (re-derived tables) | (this session's execution commit) |
 
 > The next iteration session (218) has **no open R-item by default** —
 > the R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8

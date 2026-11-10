@@ -16,6 +16,52 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.16.0 (session 219, R-16 — the parity-default and
+  perceivability round): the owner's explicit parity directive drove
+  the round. THE DEFAULT-THEME PARITY (F-219c High): the reference's
+  authenticated shell renders DARK for fresh visitors (html.dark,
+  body #0a0a0a — live-measured with the toggle round-trip; no
+  localStorage key; the choice persists SERVER-SIDE per user); ours
+  defaulted system/light. The cure: `src/lib/theme-default.ts` (the
+  pure seam — stored choice wins on app routes, otherwise DARK; the
+  auth faces FORCE light, closing the F-219t stranded-ink state),
+  mirrored inline by the no-FOUC bootstrap + re-applied by the
+  ThemeProvider's pathname effect (the client-nav holes). F-205a's
+  "not reopening" deferral superseded by the directive. THE CTA
+  GENUS (F-219a/b High): the reference's amber CTAs compute
+  stone-900 ink rgb(28,25,23) (the a11y register's "white-on-amber"
+  citation was STALE — white measured 2.15:1); the per-page gradient
+  families measured (emerald→teal+white Income/Investments,
+  rose→red+white Expenses, amber+stone-900
+  Dashboard/Accounts/Goals/Settings) — `CTA` constants in
+  page-layout.ts, `--color-primary-foreground: #1c1917`, the stale
+  register arm retired. THE MOBILE DRAWER SCROLL (F-219h): Sign Out
+  was UNREACHABLE below ~800px viewport height (live-measured at
+  390×667/844×390; the reference clips too — the cure is the
+  functional superset): `overflow-y-auto` on the sheet's inner
+  column. THE DATE-SEAM COMPLETION (F-219d/e/f/g): the investments
+  purchaseDate prefill (the FIFTH raw-parse site — per-edit date
+  walk-back), the analytics mixed-mode regression (the refs vs the
+  toDate rows), the goals card + income labels. THE RATE BUCKETS
+  (F-219l/m): the `reset:` key collision split (`data-reset:` vs
+  `pw-reset:`); the sessioned-CRUD writes family bucketed (60/15) +
+  export 240/15 + search 60/15 — with the per-navigation dashboard
+  aggregate DELIBERATELY unbucketed (the maiden census trip decoded
+  the design: every hydrate fires it; the toolchain legitimately
+  exceeds any cap). THE PERCEIVABILITY TAIL: the dark metadata
+  family (dark:text-stone-500 3.16–4.13:1 → stone-400, ~30 sites),
+  EMPTY_STATE/FOOTER/KpiCard constants, the AI coach's polite live
+  region + sr-only thinking text, the display-text cluster (Quick
+  Actions h2, HealthGauge ink, error h1s, import emerald-700), the
+  ring leftovers, InfoCallout role=status, the analytics empty-state
+  gates, moneyField 2dp normalization, the nullable-clear semantics,
+  the dead BUTTONS.outline/ghost retired. The four sweep class
+  tables + the fullpage tables + the interior-census allowances
+  RE-DERIVED in-commit (every page's diff moved DOWN — the
+  convergence). The unit-count lockstep moved 817 → 869 / 62 → 64
+  files with the R-16 pin family (36 → 38: theme-default,
+  parity-219); e2e 97 → 99 (+2: the fresh-visitor dark default, the
+  drawer scroll at 390×667).
 - [SR] v2.15.0 (session 218, R-15 — the recovery-loop and
   perceivability round): two families the gates structurally cannot
   drive, cured. The RECOVERY LOOPS: the signin 403
@@ -339,7 +385,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (817) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (869) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (88) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -760,11 +806,11 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 62 | 817 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 64 | 869 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 36 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218) | `tests/` | source-scanning contracts |
+| — architecture pins | 38 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219) | `tests/` | source-scanning contracts |
 | — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
-| E2E | 7 | 97 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
+| E2E | 7 | 99 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
 *docs-counts pins are re-anchored when doc/test counts change — keep them
@@ -795,10 +841,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 817/817 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 869/869 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 97/97
+- [ ] `CI=1 bun run test:e2e` → 99/99
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -865,7 +911,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 817 unit / 97 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 869 unit / 99 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -899,8 +945,8 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 817 unit · build · smoke 14/14 ·
-97 e2e).
+the time of writing (lint 0/0 · tsc 0 · 869 unit · build · smoke 14/14 ·
+99 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
 advisory is cured same-session, never deferred; dev-toolchain bumps stay

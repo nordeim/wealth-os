@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` |
+| Unit tests (869) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 99) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -221,6 +221,25 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   `contains()` — and the pin asserts the POSITIVE form (the guard
   exists), not merely the bare selector's absence. A negative-only pin
   let the regression ship.
+- **The fresh-visitor DEFAULT THEME is DARK on app routes; the auth faces
+  FORCE light** (session-219, F-219c/F-219t): the reference's authenticated
+  shell renders html.dark for fresh visitors (its auth faces serve light
+  always — live-measured, its choice persists server-side per user; ours
+  persists in localStorage, the superset). The resolution lives in
+  `src/lib/theme-default.ts` (the pure seam), mirrored INLINE by the
+  no-FOUC bootstrap in the root layout (pre-paint JS cannot import) and
+  re-applied by the ThemeProvider's pathname effect (client navigations —
+  the login→dashboard and logout→login holes the bootstrap cannot see).
+  Never parse a stored theme path around the seam; the
+  `tests/theme-default.test.ts` source pins keep the three honest.
+- **A per-navigation API read cannot carry a per-IP rate bucket**
+  (session-219, F-219m's refinement): /api/dashboard fires on EVERY
+  hydrate — the e2e battery, the sweep/fullpage/census toolchain, and any
+  fast-navigating user legitimately exceed any cap inside one window (the
+  maiden census run tripped mid-run and rendered the store-error banner
+  into every capture). The heavy EXPLICIT actions carry the buckets
+  (writes 60/15, export 240/15, search 60/15); the aggregate read stays
+  unbucketed BY DESIGN (the decode is pinned in the route's docblock).
 - **Stored calendar dates are UTC MIDNIGHT — local-accessor reads
   mis-bucket them west of UTC** (session-218, F-218d): `dateField`
   accepts `yyyy-mm-dd`, `new Date("2026-11-01")` parses as UTC
