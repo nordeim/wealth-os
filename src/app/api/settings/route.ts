@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { settingsUpdateSchema } from "@/lib/schemas";
 import { Prisma } from "@/generated/prisma/client";
 
@@ -57,6 +58,12 @@ export async function GET() {
 export async function PUT(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+
+  // Session-220 (R-17, F-220c): the writes bucket — the sessioned
+  // mutation family (the F-219m threat model names settings).
+  const limit = rateLimit(`writes:${clientKey(req)}`, 60, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
   const parsed = await parseBody(req, settingsUpdateSchema);
   if (!parsed.ok) return parsed.response;

@@ -107,7 +107,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             honest by tests/theme-default.test.ts's source pins). */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var p=location.pathname;var a=/^\\/(login|signup|reset-password)(\\/|$|\\?)/.test(p);var t=localStorage.getItem("wealthos-theme");var d=a?false:(t?t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches):true);if(d){document.documentElement.classList.add("dark");}else{document.documentElement.classList.remove("dark");}}catch(e){}`,
+            __html: `try{var p=location.pathname;var a=/^\\/(login|signup|reset-password)(\\/|$|\\?)/.test(p);var t=localStorage.getItem("wealthos-theme");var d=!a&&(t==="light"?false:(t==="system"?window.matchMedia("(prefers-color-scheme: dark)").matches:true));if(d){document.documentElement.classList.add("dark");}else{document.documentElement.classList.remove("dark");}}catch(e){}`,
           }}
         />
         <ThemeProvider>{children}</ThemeProvider>

@@ -67,7 +67,25 @@ export async function POST(req: Request) {
   // (10/IP/15min).
   const inAppResetEnabled = process.env.NEO_DISABLE_IN_APP_RESET !== "1";
   let resetUrl: string | null = null;
-  const user = await db.user.findUnique({ where: { email } }).catch(() => null);
+  // Session-220 (R-17, F-220k): the read path mirrors the update path's
+  // honest failure posture — the old blanket `.catch(() => null)` mapped
+  // a P2024/P2028 (pool/transaction timeout) to "unknown email" → the
+  // no-enumeration 200, telling the user a reset link was sent during a
+  // DB outage when none was minted. A MISSING row is not an error
+  // (findUnique returns null); a broken DB is a 503, never an account
+  // state.
+  let user: Awaited<ReturnType<typeof db.user.findUnique>> = null;
+  try {
+    user = await db.user.findUnique({ where: { email } });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      (error.code === "P2024" || error.code === "P2028")
+    ) {
+      return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
+    }
+    return ERR.INTERNAL();
+  }
   if (user) {
     const token = randomBytes(32).toString("hex");
     // A row vanishing mid-request (the unreachable-via-API class; no

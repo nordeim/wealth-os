@@ -5,7 +5,9 @@ import { pageMetadata } from "@/lib/site";
 // Session-10: the reference has no /signup (404 + a dead login button —
 // kept as our working superset). Its title follows the same scheme.
 // Session-13 (S13-P1): ABSOLUTE — the string already contains the
-// suffix, so the root template doubled it ("Sign up | NEO CRM | NEO CRM").
+// suffix, so the root template doubled it (the "Sign up | <app> | <app>"
+// form, decoded against the CRM-era name — session-220, F-220n: the
+// stale name retired from the living comment).
 // Session-19 (S19-P4/P5): the per-route canonical/OG/Twitter family —
 // the reference has no signup to mirror, so this is our superset's own
 // self-consistent expression (the factory's unprefixed family + the

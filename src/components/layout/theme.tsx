@@ -88,7 +88,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     const mql = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      if (readStoredTheme() === "system") applyTheme("system");
+      // Session-220 (R-17, F-220h): gate on the EXACT stored read —
+      // readStoredTheme() maps null→"system", so a fresh visitor (no
+      // stored choice, the DARK default) would follow the OS on flip,
+      // contradicting the no-choice→dark invariant until the next
+      // route change.
+      if (window.localStorage.getItem(STORAGE_KEY) === "system") applyTheme("system");
     };
     mql.addEventListener("change", onChange);
     return () => mql.removeEventListener("change", onChange);

@@ -92,7 +92,7 @@ export default function IncomePage() {
             <p className="text-2xl font-bold text-stone-900 dark:text-stone-50">
               {formatMoney(monthlyTotal)}
             </p>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-stone-500 dark:text-stone-400">
               From {active.length} active source{active.length === 1 ? "" : "s"}
             </p>
           </div>
@@ -139,7 +139,7 @@ export default function IncomePage() {
                         "rounded-full px-2 py-0.5 text-[11px] font-semibold",
                         source.active
                           ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
-                          : "bg-stone-100 text-stone-600 dark:bg-stone-800",
+                          : "bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300",
                       )}
                     >
                       {source.active ? "Active" : "Paused"}
@@ -147,7 +147,7 @@ export default function IncomePage() {
                   </div>
                   <p className="mt-3 text-2xl font-bold text-stone-900 dark:text-stone-50">
                     {formatMoney(source.amount)}
-                    <span className="ml-1 text-xs font-medium text-stone-500">
+                    <span className="ml-1 text-xs font-medium text-stone-500 dark:text-stone-400">
                       /{source.frequency.replace("biweekly", "2 weeks").replace("annually", "year")}
                     </span>
                   </p>

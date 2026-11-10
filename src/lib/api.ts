@@ -79,9 +79,11 @@ export function isGuarded(x: { user: SessionUser } | { response: NextResponse })
  * CRUD family too — placed after requireSession, before the parse; the
  * honest CRUD bodies are asString-capped fields, far below the ceiling.
  * Session-72 (M-72c2) + session-73 (N-73a1): the family is THIRTEEN
- * routes (accounts/activities/contacts/events/leads x[root+[id]] +
- * settings + users + reset — the users PATCH joined at s72; this
- * comment's "12" enumeration was the s72 record's unlanded half). */
+ * routes (the sessioned resource families x(root+[id]) + settings +
+ * users + reset — the users PATCH joined at s72; this comment's "12"
+ * enumeration was the s72 record's unlanded half). Session-220
+ * (F-220n): the stale CRM-era route names (activities/contacts/
+ * events/leads) retired from the enumeration. */
 export const MAX_AUTH_BODY_BYTES = 16 * 1024;
 
 /** True when the request DECLARES a body larger than the ceiling —

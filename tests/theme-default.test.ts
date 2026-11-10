@@ -17,12 +17,16 @@
 //      default (source pin — the script is inline pre-paint JS, it
 //      cannot import the seam, so the pin keeps the two honest with
 //      each other).
-//   3. The AppShell applies the default on shell entry (source pin —
-//      closes the login→dashboard CLIENT-NAV hole the script cannot
-//      see: the script runs on full loads only).
+//   3. The ThemeProvider's pathname effect applies the default on every
+//      client navigation (source pin — closes the login→dashboard
+//      CLIENT-NAV hole the script cannot see: the script runs on full
+//      loads only).
 //   4. The auth faces FORCE light: the bootstrap REMOVES .dark on auth
 //      faces even when a dark choice is stored (the reference's
 //      always-light auth genus + the F-219t stranded-body-color close).
+//   5. Session-220 (R-17, F-220g): an INVALID stored value is ABSENT —
+//      the app-route default is dark, and the bootstrap's ternary
+//      mirrors the seam (no light flash on corrupted storage).
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { defaultThemeForPath, AUTH_FACE_PATHS } from "@/lib/theme-default";
@@ -61,6 +65,12 @@ describe("defaultThemeForPath — the pure default seam (F-219c)", () => {
     // "system" stored → the resolved state is the OS preference; the
     // seam returns the LABEL (the provider + bootstrap resolve it).
     expect(defaultThemeForPath("/Dashboard", "system")).toBe("system");
+  });
+
+  it("an INVALID stored value is treated as ABSENT — the app-route default stands (F-220g)", () => {
+    expect(defaultThemeForPath("/dashboard", "banana")).toBe("dark");
+    expect(defaultThemeForPath("/Dashboard", "")).toBe("dark");
+    expect(defaultThemeForPath("/login", "banana")).toBe("light");
   });
 });
 

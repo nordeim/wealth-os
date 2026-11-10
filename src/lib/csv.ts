@@ -131,3 +131,31 @@ export function parseCsv(text: string): string[][] {
   }
   return rows.filter((r) => r.some((c) => c.trim().length > 0));
 }
+
+/**
+ * Session-220 (R-17, F-220m): the import page's date STAGING seam — the
+ * F-218d doctrine ("a stored calendar date is the UTC-midnight ISO of
+ * the date the USER chose — not an instant to zone-shift") brought to
+ * the last raw `new Date(<user text>)` site. The page's old
+ * `parsedDate.toISOString()` staged a LOCAL-midnight parse as a shifted
+ * instant for every east-of-UTC user (a Tokyo "05/03/2026" staged as
+ * 2026-05-02T15:00:00.000Z — the previous calendar day in UTC-calendar
+ * terms, inconsistent with every dateField-created row and a different
+ * bucketing genus in cross-timezone views).
+ *
+ * The contract: parse the raw cell (V8's format rules — bare ISO dates
+ * as UTC midnight, locale formats like MM/DD/YYYY as LOCAL midnight,
+ * the US-MDY assumption documented), then stage the UTC MIDNIGHT of
+ * the parsed LOCAL calendar date — the exact serialized form Prisma
+ * returns for dateField rows. Unparseable text returns null; the
+ * caller surfaces the skip in the preview instead of dropping silently.
+ */
+export function stageCsvDate(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const parsed = new Date(trimmed);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return new Date(
+    Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()),
+  ).toISOString();
+}

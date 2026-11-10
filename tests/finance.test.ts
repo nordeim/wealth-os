@@ -25,6 +25,7 @@ import {
   round2,
   sameMonth,
   savingsRate,
+  startOfMonth,
   toDate,
   totalMonthlyIncome,
   transactionsInMonth,
@@ -402,5 +403,35 @@ describe("session-218: UTC-midnight calendar normalization (F-218d)", () => {
     // The API layer stores new Date("2026-11-01") — UTC midnight —
     // serialized back as the .000Z form the re-anchor keys on.
     expect(new Date("2026-11-01").toISOString()).toBe("2026-11-01T00:00:00.000Z");
+  });
+
+  // Session-220 (R-17, F-220a): the BARE form is a calendar date too —
+  // the analytics refs hold toDateInputValue() strings ("2026-11-01"),
+  // and the F-219e "cure" routed them through a toDate whose pattern
+  // matched only the stored .000Z form (a verified no-op: the trailing
+  // bucket keyed October for a UTC-negative user on a 1st-of-month `to`,
+  // and the Nov-1 rows dropped from every series — live-reproduced).
+  it("toDate re-anchors the BARE yyyy-mm-dd form (the F-220a cure)", () => {
+    process.env.TZ = "America/New_York";
+    const d = toDate("2026-11-01");
+    expect(d.getFullYear()).toBe(2026);
+    expect(d.getMonth()).toBe(10); // November — pre-cure: 9 (October)
+    expect(d.getDate()).toBe(1); // the 1st — pre-cure: 31
+  });
+
+  it("startOfMonth keys the month the user sees on a bare-form ref (the analytics trailing bucket)", () => {
+    process.env.TZ = "America/New_York";
+    expect(startOfMonth(toDate("2026-11-01")).getMonth()).toBe(10); // November
+  });
+
+  it("cashFlowSeries keeps a 1st-of-month row in its own bucket on a bare-form ref", () => {
+    process.env.TZ = "America/New_York";
+    const txs: TxLike[] = [
+      { id: "1", description: "rent", amount: 2000, type: "expense", category: "Housing", budgetCategory: "needs", date: "2026-11-01T00:00:00.000Z" },
+    ];
+    const series = cashFlowSeries(txs, 3, toDate("2026-11-30"));
+    const last = series[series.length - 1];
+    expect(last.label).toContain("Nov");
+    expect(last.expenses).toBe(2000); // pre-cure: 0 — the row dropped
   });
 });

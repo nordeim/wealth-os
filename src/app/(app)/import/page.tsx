@@ -13,7 +13,8 @@ import { cn } from "@/lib/utils";
 // inline parser copy (pre-214 bare-quote defect, no BOM strip) is
 // RETIRED — the shared, unit-tested seam owns the machine (the BOM
 // strip + the RFC 4180 §2.7 bare-quote rule go live on this surface).
-import { parseCsv } from "@/lib/csv";
+import { parseCsv, stageCsvDate } from "@/lib/csv";
+import { toDate } from "@/lib/finance";
 
 
 interface ParsedRow {
@@ -49,6 +50,10 @@ export default function ImportPage() {
   const store = useWealthOs();
   const [file, setFile] = React.useState<File | null>(null);
   const [rows, setRows] = React.useState<ParsedRow[] | null>(null);
+  // Session-220 (R-17, F-220m): the skipped-row count — unparseable
+  // dates used to drop silently (the detected-count was the only
+  // signal); the review step now surfaces the skips.
+  const [skipped, setSkipped] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -94,13 +99,24 @@ export default function ImportPage() {
         return;
       }
       const parsed: ParsedRow[] = [];
+      // Session-220 (R-17, F-220m): the date STAGING rides the csv seam
+      // — the old raw `new Date(rawDate).toISOString()` staged a
+      // local-midnight parse as a shifted instant for every
+      // east-of-UTC user (a Tokyo "05/03/2026" staged as the previous
+      // calendar day). stageCsvDate stages the UTC-midnight ISO of the
+      // parsed LOCAL calendar date — the exact form dateField rows
+      // store (the F-218d doctrine's completion).
+      let skippedRows = 0;
       for (const line of table.slice(1, 5001)) {
         const description = (line[descCol] ?? "").trim();
         const rawAmount = Number((line[amountCol] ?? "").replace(/[$,]/g, ""));
         const rawDate = (line[dateCol] ?? "").trim();
-        const parsedDate = new Date(rawDate);
+        const stagedDate = stageCsvDate(rawDate);
         if (!description || !Number.isFinite(rawAmount) || rawAmount === 0) continue;
-        if (Number.isNaN(parsedDate.getTime())) continue;
+        if (!stagedDate) {
+          skippedRows += 1;
+          continue;
+        }
         const type = rawAmount < 0 ? "expense" : "income";
         const category =
           catCol >= 0 && (line[catCol] ?? "").trim()
@@ -112,9 +128,10 @@ export default function ImportPage() {
           type,
           category: category.slice(0, 80),
           budgetCategory: inferBudgetCategory(category),
-          date: parsedDate.toISOString(),
+          date: stagedDate,
         });
       }
+      setSkipped(skippedRows);
       if (parsed.length === 0) {
         setError("No valid transaction rows found.");
         return;
@@ -199,11 +216,12 @@ export default function ImportPage() {
                 <p className={CARD.subtitle}>
                   {rows.length} transaction{rows.length === 1 ? "" : "s"} detected — sign and
                   categories inferred.
+                  {skipped > 0 ? ` ${skipped} row${skipped === 1 ? "" : "s"} skipped (unparseable date).` : ""}
                 </p>
               </div>
               <Button
                 variant="ghost"
-                className="text-xs text-stone-500"
+                className="text-xs text-stone-500 dark:text-stone-400"
                 onClick={() => {
                   setRows(null);
                   setFile(null);
@@ -228,7 +246,7 @@ export default function ImportPage() {
                   {rows.slice(0, 50).map((row, i) => (
                     <tr key={i}>
                       <td className="p-2.5 text-stone-600 dark:text-stone-400">
-                        {new Date(row.date).toLocaleDateString("en-US", {
+                        {toDate(row.date).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
                           year: "2-digit",
@@ -253,7 +271,7 @@ export default function ImportPage() {
               </table>
             </div>
             {rows.length > 50 ? (
-              <p className="mt-2 text-xs text-stone-500">
+              <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
                 Showing the first 50 of {rows.length} rows — all will be imported.
               </p>
             ) : null}

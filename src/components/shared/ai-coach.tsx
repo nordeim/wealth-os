@@ -164,7 +164,7 @@ export function AiCoachDialog({
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask me about your finances..."
               aria-label="Ask the AI coach a question"
-              className="h-11 flex-1 rounded-lg border border-stone-200 bg-white px-3.5 text-sm text-stone-900 shadow-sm placeholder:text-stone-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className="h-11 flex-1 rounded-lg border border-stone-200 bg-white px-3.5 text-sm text-stone-900 shadow-sm placeholder:text-stone-500 dark:placeholder:text-stone-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
             />
             <button
               type="submit"

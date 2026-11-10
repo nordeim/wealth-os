@@ -255,13 +255,13 @@ export default function ExpensesPage() {
         {/* Search + filters */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500 dark:text-stone-400" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search expenses..."
               aria-label="Search expenses"
-              className="h-10 w-full rounded-lg border border-stone-200 bg-white pl-9 pr-3 text-sm text-stone-900 shadow-sm placeholder:text-stone-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className="h-10 w-full rounded-lg border border-stone-200 bg-white pl-9 pr-3 text-sm text-stone-900 shadow-sm placeholder:text-stone-500 dark:placeholder:text-stone-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
             />
           </div>
           <div className="relative">
@@ -291,7 +291,7 @@ export default function ExpensesPage() {
                     type="button"
                     aria-label="Close filters"
                     onClick={() => setFiltersOpen(false)}
-                    className="rounded-md p-1 text-stone-500 hover:text-stone-600 dark:hover:text-stone-200"
+                    className="rounded-md p-1 text-stone-500 hover:text-stone-600 dark:text-stone-400 dark:hover:text-stone-200"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -612,7 +612,7 @@ export function ExpenseDialog({
                   type="button"
                   variant="ghost"
                   onClick={() => setStep("quick")}
-                  className="text-stone-500"
+                  className="text-stone-500 dark:text-stone-400"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back to Quick Select

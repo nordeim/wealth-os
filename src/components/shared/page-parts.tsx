@@ -211,7 +211,7 @@ export function PeriodSegment({
 export function LoadingBlock({ label = "Loading…" }: { label?: string }) {
   return (
     <div className="flex min-h-40 items-center justify-center p-8">
-      <p className="text-sm text-stone-500">{label}</p>
+      <p className="text-sm text-stone-500 dark:text-stone-400">{label}</p>
     </div>
   );
 }

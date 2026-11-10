@@ -20,8 +20,13 @@
 // The seam is PURE (no React, no window): the no-FOUC bootstrap in the
 // root layout mirrors it inline (pre-paint JS cannot import — the
 // theme-default.test.ts source pins keep the two honest), and the
-// AppShell calls it on shell entry to close the login→dashboard
-// CLIENT-NAV hole (the bootstrap runs on full loads only).
+// ThemeProvider pathname effect calls it on every client navigation
+// (closing the login→dashboard and logout→login holes the bootstrap
+// cannot see — the bootstrap runs on full loads only).
+// Session-220 (R-17, F-220g): an INVALID stored value (anything not
+// light/dark/system) is treated as ABSENT — the app-route default is
+// dark, not light (the bootstrap's old ternary painted light for it;
+// the three mirrors now agree).
 
 /** The auth faces — pre-login routes that always render light. */
 export const AUTH_FACE_PATHS = ["/login", "/signup", "/reset-password"] as const;
@@ -52,14 +57,4 @@ export function defaultThemeForPath(
   if (isAuthFace(pathname)) return "light";
   if (stored === "light" || stored === "dark" || stored === "system") return stored;
   return "dark";
-}
-
-/** True when the route's no-choice default is the dark class. */
-export function routeDefaultsToDark(pathname: string): boolean {
-  return !isAuthFace(pathname);
-}
-
-/** True when the route is an auth face (forces light, F-219t). */
-export function routeIsAuthFace(pathname: string): boolean {
-  return isAuthFace(pathname);
 }

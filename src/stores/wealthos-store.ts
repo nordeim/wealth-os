@@ -27,7 +27,16 @@ interface ApiEnvelope<T> {
   error?: { code: string; message: string };
 }
 
-async function call<T>(path: string, init?: RequestInit): Promise<Result<T, string>> {
+// Session-220 (R-17, F-220j): the failure arm carries the envelope's
+// error CODE alongside the message — hydrate used to 401-detect by
+// message substring ("authenticate"/"Sign in"), an unpinned coupling
+// where a reword of ERR.UNAUTHORIZED silently degraded session-expiry
+// handling to the red error banner. Structurally compatible with
+// Result<T, string> (code is additive), so every existing consumer
+// that reads .error keeps compiling unchanged.
+type CallResult<T> = { ok: true; data: T } | { ok: false; error: string; code?: string };
+
+async function call<T>(path: string, init?: RequestInit): Promise<CallResult<T>> {
   try {
     const res = await fetch(path, {
       ...init,
@@ -37,7 +46,7 @@ async function call<T>(path: string, init?: RequestInit): Promise<Result<T, stri
     if (!res.ok || !body || body.ok === false) {
       const message =
         body && body.error ? body.error.message : `Request failed (${res.status})`;
-      return { ok: false, error: message };
+      return { ok: false, error: message, code: body && body.error ? body.error.code : undefined };
     }
     return { ok: true, data: body.data as T };
   } catch {
@@ -50,6 +59,10 @@ async function call<T>(path: string, init?: RequestInit): Promise<Result<T, stri
 // before clearing — a logout landing mid-fetch can never re-populate
 // the cleared slices with the previous user's data.
 let sessionWriteToken = 0;
+
+// Session-220 (R-17, F-220l): the refreshAll sequence — monotonic,
+// last-request-wins (see refreshAll).
+let refreshSeq = 0;
 
 export interface WealthOsState {
   // session
@@ -116,8 +129,15 @@ async function refreshAll(
   token: number,
   set: (partial: Partial<WealthOsState>) => void,
 ): Promise<Result<DashboardData, string>> {
+  // Session-220 (R-17, F-220l): the sequence guard — two quick
+  // mutations A→B can resolve out of order (A's fetch landing after
+  // B's), overwriting B's fresher slices with stale ones; the
+  // write-token guard below protects against logout only. A response
+  // whose sequence is older than the latest issued is discarded
+  // (last-request-wins).
+  const seq = ++refreshSeq;
   const res = await call<DashboardData>("/api/dashboard");
-  if (token !== sessionWriteToken) return res;
+  if (token !== sessionWriteToken || seq !== refreshSeq) return res;
   if (res.ok) {
     set({
       transactions: res.data.transactions,
@@ -177,7 +197,9 @@ function createStore() {
         if (token === sessionWriteToken && settingsRes.ok) {
           set({ settings: settingsRes.data });
         }
-      } else if (res.error.includes("authenticate") || res.error.includes("Sign in")) {
+      } else if (res.code === "UNAUTHORIZED") {
+        // Session-220 (R-17, F-220j): the code-keyed branch (was a
+        // message-substring match on "authenticate"/"Sign in").
         set({ hydrated: true, loading: false, user: null, error: null });
       } else {
         set({ hydrated: true, loading: false, error: res.error });

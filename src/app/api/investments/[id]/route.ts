@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
 import { investmentUpdateSchema } from "@/lib/schemas";
+import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,13 @@ type Params = { params: Promise<{ id: string }> };
 export async function PUT(req: Request, { params }: Params) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+
+  // Session-220 (R-17, F-220c): the writes bucket on the [id] mutations —
+  // the F-219m family the collection POSTs already carry (a direct
+  // single-row PUT/DELETE loop is the same unthrottled bypass).
+  const limit = rateLimit(`writes:${clientKey(req)}`, 60, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
   const { id } = await params;
 
   const parsed = await parseBody(req, investmentUpdateSchema);
@@ -42,9 +50,16 @@ export async function PUT(req: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(_req: Request, { params }: Params) {
+export async function DELETE(req: Request, { params }: Params) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+
+  // Session-220 (R-17, F-220c): the writes bucket on the [id] mutations —
+  // the F-219m family the collection POSTs already carry (a direct
+  // single-row PUT/DELETE loop is the same unthrottled bypass).
+  const limit = rateLimit(`writes:${clientKey(req)}`, 60, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
   const { id } = await params;
   try {
     const existing = await db.investment.findFirst({

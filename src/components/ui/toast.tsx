@@ -149,7 +149,7 @@ function ToastCard({ item }: { item: ToastItem }) {
         // token flips dark — bg-white would strand light text on white)
         // and the hover pair gains its dark arm (neutral-900 on the
         // #262626 hover wash is dark-on-dark).
-        className="shrink-0 rounded-md p-1 text-subtle transition-colors hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50"
+        className="shrink-0 rounded-md p-1 text-muted transition-colors hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50"
         aria-label="Dismiss notification"
       >
         <X className="h-3.5 w-3.5" />

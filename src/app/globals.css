@@ -311,13 +311,14 @@
     font-family: var(--font-sans);
   }
 
-  /* Dark base (session-199): the reference's dark mode repaints the page
-     wash a green-black and keeps the sidebar family — tokens swap under
-     .dark, every surface that reads them follows. */
-  .dark body {
-    background-color: #0e1310;
-    color: #f5f5f4;
-  }
+  /* Session-220 (R-17, F-220d): the old base-layer dark-body rule
+     (session-199) is DELETED — it was INERT (a utilities-layer
+     `bg-background` on <body> always beats a base-layer rule; the
+     F-217c mechanism) and the visible dark wash actually came from
+     SHELL_LAYOUT.root's local `dark:bg-[#0e1310]` patch. The token
+     flip in the .dark block below now carries the wash properly
+     (body, the CSS-canvas overscroll color, and any future
+     bg-background consumer). */
 }
 
 /* Session-209 (F-209a): the card tokens' dark flip — the reference's own
@@ -327,6 +328,16 @@
 .dark {
   --color-card-foreground: #fafafa;
   --color-card: #0a0a0a;
+  /* Session-220 (R-17, F-220d): the background token's dark flip — the
+     F-217c trap class, background edition. The light pin #faf9f7 used to
+     ride .dark untouched while the dead base-layer rule sat inert beside
+     it (the shell's local dark:bg-[#0e1310] patch masked the gap). The
+     flip closes the latent class: the CSS-canvas overscroll color and
+     every bg-background consumer now resolve the reference's dark wash.
+     The settings switch thumb moved to bg-white in the same commit (its
+     old bg-background read was a deliberate use of the UNFLIPPED token
+     as the light knob). */
+  --color-background: #0e1310;
   /* Session-214 (R-11, F-214e): the semantic set's dark flips — the
      shadcn neutral dark family (14.9% surfaces, 98% foregrounds). */
   --color-input: #262626;
@@ -345,8 +356,9 @@
      1.09:1 dialog titles, 1.00:1 user-menu items — the reference's
      own dark dialog panel measures #0a0a0a with #262626 borders and
      #fafafa labels, live-probed this session). The base-layer
-     `.dark body { color: #f5f5f4 }` rule was INERT (a utility on
-     <body> always beats it) — the token flip is the working seam.
+     dark-body color rule (session-199's rgb form) was INERT (a
+     utility on <body> always beats it) — the token flip is the
+     working seam.
      ink/muted-ink follow the existing `.dark .input-base` precedent
      (#f5f5f4 text / #a8a29e placeholders) so the native date inputs
      and the dialog text inputs agree. */

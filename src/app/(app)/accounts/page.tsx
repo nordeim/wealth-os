@@ -89,7 +89,7 @@ export default function AccountsPage() {
                 >
                   {formatMoney(totalBalance)}
                 </p>
-                <p className="text-xs text-stone-500">Across {accounts.length} accounts</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400">Across {accounts.length} accounts</p>
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -157,7 +157,7 @@ function AccountCard({
       >
         {formatMoney(account.balance)}
       </p>
-      <p className="text-xs text-stone-500">
+      <p className="text-xs text-stone-500 dark:text-stone-400">
         {account.currency} · synced{" "}
         {new Date(account.lastSyncedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
       </p>

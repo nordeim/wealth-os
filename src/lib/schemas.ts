@@ -206,6 +206,8 @@ export const transactionUpdateSchema = z.object({
   // CLEAR (both normalize to null and SURVIVE the parse — the routes'
   // `!== undefined` spreads write it). The old null→undefined collapse
   // meant no payload could ever clear these fields once set.
+  // Session-220 (R-17, F-220i): accountId joined the family below
+  // (it had kept the old collapse through the F-219q round).
   notes: z
     .string()
     .trim()
@@ -215,12 +217,18 @@ export const transactionUpdateSchema = z.object({
     .optional(),
   recurring: z.boolean().optional(),
   nextDate: dateField("Enter a valid next date").nullable().optional(),
+  // Session-220 (R-17, F-220i): accountId joins the F-219q null-clear
+  // contract — the old transform collapsed null/"" to undefined (the
+  // exact collapse F-219q cured for notes/institution), so the route's
+  // `!== undefined` clear arm could never fire and a transaction's
+  // account link was permanent once set. Null now SURVIVES the parse;
+  // only the empty string normalizes to it.
   accountId: z
     .string()
     .trim()
     .max(64)
     .nullable()
-    .transform((v) => (v === null || v === "" ? undefined : v))
+    .transform((v) => (v === "" ? null : v))
     .optional(),
 });
 

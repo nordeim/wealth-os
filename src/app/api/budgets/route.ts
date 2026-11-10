@@ -66,6 +66,12 @@ export async function DELETE(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
 
+  // Session-220 (R-17, F-220c): the writes bucket — the family's DELETE
+  // arm (the collection POST above already carries it).
+  const limit = rateLimit(`writes:${clientKey(req)}`, 60, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
+
   const parsed = await parseBody(req, (await import("@/lib/schemas")).budgetDeleteSchema);
   if (!parsed.ok) return parsed.response;
 

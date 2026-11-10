@@ -324,7 +324,7 @@ export default function AnalyticsPage() {
                           {slice.category}
                         </span>
                         <span className="font-medium">
-                          {formatMoney(slice.value)} <span className="text-xs text-stone-500">({slice.pct}%)</span>
+                          {formatMoney(slice.value)} <span className="text-xs text-stone-500 dark:text-stone-400">({slice.pct}%)</span>
                         </span>
                       </li>
                     ))}

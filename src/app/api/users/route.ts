@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { ok, ERR, readBoundedJson, isGuarded, requireSession } from "@/lib/api";
+import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { profileUpdateSchema } from "@/lib/schemas";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +39,12 @@ export async function GET() {
 export async function PATCH(request: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+
+  // Session-220 (R-17, F-220c): the writes bucket — the sessioned
+  // mutation family (the F-219m threat model names the profile write).
+  const limit = rateLimit(`writes:${clientKey(request)}`, 60, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
   const read = await readBoundedJson(request);
   if (read.tooLarge) return ERR.BAD_REQUEST("Request body too large");

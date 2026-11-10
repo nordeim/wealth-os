@@ -336,7 +336,7 @@ export default function DashboardPage() {
                       </span>
                       <span className="shrink-0 font-medium text-stone-900 dark:text-stone-100">
                         {formatMoney(slice.value)}
-                        <span className="ml-1.5 text-xs text-stone-500">{slice.pct}%</span>
+                        <span className="ml-1.5 text-xs text-stone-500 dark:text-stone-400">{slice.pct}%</span>
                       </span>
                     </li>
                   ))}

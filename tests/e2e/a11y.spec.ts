@@ -25,7 +25,12 @@ const SANCTIONED: Record<string, Array<{ any: string[]; cite: string }>> = {
       // the amber-on-gradient sidebar + drawer faces — the reference's own
       // palette (verified on its DOM: text-amber-200/stone-300 over the
       // stone-900 gradient)
-      any: ["text-amber-200", "text-amber-400", "text-stone-300", "text-stone-400", "text-amber-500"],
+      // Session-220 (R-17, F-220p): the amber-500 TEXT arm RETIRED —
+      // zero live CONTRAST-relevant consumers since F-219k (the
+      // remaining amber-500 hits are aria-hidden decorative icons,
+      // which axe excludes); a stale arm auto-sanctions a future
+      // regression riding it.
+      any: ["text-amber-200", "text-amber-400", "text-stone-300", "text-stone-400"],
       cite: "the amber/stone-on-gradient sidebar + muted captions — the reference's own palette",
     },
     {
@@ -37,17 +42,12 @@ const SANCTIONED: Record<string, Array<{ any: string[]; cite: string }>> = {
       any: ["text-white"],
       cite: "white ink on dark surfaces + the emerald/rose gradient CTAs — the reference's own palette",
     },
-    {
-      // the amber primary button family — Session-219 (R-16, F-219a):
-      // the amber CTAs now carry stone-900 ink (the reference's OWN
-      // genus, live-measured rgb(28,25,23) over the amber gradient —
-      // the old "white bold label" citation was stale and hid a 2.15:1
-      // failure). This arm now sanctions only the RESIDUAL faces the
-      // genus still covers (dialog submits not yet on the per-page
-      // constants); the amber+white combination itself is gone.
-      any: ["bg-primary", 'button[type="submit"]'],
-      cite: "the residual solid-amber primaries — stone-900 ink since F-219a; retained for any un-migrated face",
-    },
+    // Session-220 (R-17, F-220p): the residual bg-primary /
+    // button[type="submit"] arm RETIRED — every live submit now either
+    // passes contrast outright (stone-900 on amber since F-219a; white
+    // on the #131b33 login navy) or rides the gradient arms below
+    // (CTA.emerald/rose). A stale arm auto-sanctions a future
+    // white-on-amber regression.
     {
       // Session-219 (R-16, F-219b): the per-page CTA gradient genera —
       // the reference's own measured families: emerald→teal + white
@@ -125,6 +125,30 @@ const SECTIONS = [
   "/Goals",
   "/Settings",
 ];
+
+// Session-220 (R-17, F-220o): the dark-mode two-gate's section set —
+// all nine, matching SECTIONS (the fresh-visitor default theme).
+const DARK_SECTIONS = [
+  "/Dashboard",
+  "/Income",
+  "/Expenses",
+  "/Accounts",
+  "/Investments",
+  "/Import",
+  "/Analytics",
+  "/Goals",
+  "/Settings",
+];
+
+// Session-220 (R-17, F-220p): the DOCUMENTED chart-stroke deviation —
+// CHART_COLORS (src/lib/constants.ts: teal #14b8a6, amber #f59e0b,
+// red, emerald) measures 2.15-2.5:1 against the light card surface
+// (WCAG 1.4.11 non-text contrast wants 3:1). The strokes are the
+// reference's live-observed palette (parity-mandated — live-measured
+// on its charts), the same documented-deviation posture as the text-
+// side sanctions above; axe-core does not evaluate SVG stroke
+// contrast, so no register arm is needed — this note IS the citation.
+// The dark-mode legs pass (~5.9-6.8:1 on #0a0a0a).
 
 test.describe("a11y two-gate (WealthOS)", () => {
   for (const section of SECTIONS) {
@@ -213,22 +237,28 @@ test.describe("a11y two-gate (WealthOS)", () => {
   // mode) was invisible to it. The dark leg writes the persisted theme
   // BEFORE each navigation (the init script runs at document start,
   // before the no-FOUC bootstrap reads it) and re-runs the two-gate.
-  test("desktop /Dashboard DARK — structural zero + sanctioned citations (F-217n)", async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.addInitScript(() => {
-      try {
-        localStorage.setItem("wealthos-theme", "dark");
-      } catch {
-        /* the storage sandbox — the light fallback still runs the gate */
-      }
+  // Session-220 (R-17, F-220o): the dark legs now walk ALL NINE
+  // sections (dark is the fresh-visitor DEFAULT — the two-leg coverage
+  // left seven sections' dark faces unverified; the F-220b missing-arm
+  // class is exactly what these legs catch).
+  for (const section of DARK_SECTIONS) {
+    test(`desktop ${section} DARK — structural zero + sanctioned citations (F-217n/F-220o)`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1280, height: 800 });
+      await page.addInitScript(() => {
+        try {
+          localStorage.setItem("wealthos-theme", "dark");
+        } catch {
+          /* the storage sandbox — the light fallback still runs the gate */
+        }
+      });
+      await page.goto(section);
+      await page.waitForLoadState("networkidle");
+      expect(await page.evaluate(() => document.documentElement.className)).toContain("dark");
+      assertTwoGate(await runAxe(page));
     });
-    await page.goto("/Dashboard");
-    await page.waitForLoadState("networkidle");
-    expect(await page.evaluate(() => document.documentElement.className)).toContain("dark");
-    assertTwoGate(await runAxe(page));
-  });
+  }
 
   test("desktop /Accounts DARK with the Add dialog OPEN — the F-217c cure pinned (F-217n)", async ({
     page,

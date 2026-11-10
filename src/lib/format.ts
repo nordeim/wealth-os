@@ -47,23 +47,9 @@ export const MONTHS_SHORT = [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
-/** The Settings date-format vocabulary applied to display dates. */
-export function formatDateByPattern(
-  date: Date,
-  pattern: string,
-): string {
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  const yyyy = date.getFullYear();
-  switch (pattern) {
-    case "dd/MM/yyyy":
-      return `${dd}/${mm}/${yyyy}`;
-    case "yyyy-MM-dd":
-      return `${yyyy}-${mm}-${dd}`;
-    case "MMM d, yyyy":
-      return `${MONTHS_SHORT[date.getMonth()]} ${date.getDate()}, ${yyyy}`;
-    case "MM/dd/yyyy":
-    default:
-      return `${mm}/${dd}/${yyyy}`;
-  }
-}
+// Session-220 (R-17, F-220n): the Settings date-pattern formatter
+// (the by-pattern export) RETIRED — the
+// Settings date-format vocabulary was never applied to any display
+// seam (zero consumers at retirement; a dead export invites untested
+// drift). Reintroduce WITH a consumer if the settings preference
+// ever drives display formatting.

@@ -61,7 +61,15 @@ export interface BudgetLike {
 // (the dateField "yyyy-mm-dd" form parses as UTC midnight, and Prisma
 // returns it as 2026-11-01T00:00:00.000Z). The UTC-calendar prefix is
 // the date the USER chose — not an instant to zone-shift.
-const UTC_MIDNIGHT_ISO = /^(\d{4})-(\d{2})-(\d{2})T00:00:00(?:\.000)?Z$/;
+// Session-220 (R-17, F-220a): the BARE yyyy-mm-dd form joins the
+// re-anchor — the analytics refs hold toDateInputValue() strings
+// (date-input values), and the F-219e cure was a verified no-op for
+// them (the pattern matched only the stored .000Z form, so a 1st-of-
+// month `to` keyed the previous month for a UTC-negative user and the
+// 1st-of-month rows dropped from every series). The bare form is a
+// calendar date under the same doctrine; true timestamps (any other
+// ISO form) still keep their instant.
+const UTC_MIDNIGHT_ISO = /^(\d{4})-(\d{2})-(\d{2})(?:T00:00:00(?:\.000)?Z)?$/;
 
 /**
  * Parse a stored date into the LOCAL calendar date it names.

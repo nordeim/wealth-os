@@ -51,10 +51,15 @@ describe("R-14: the .dark block completes the app-native token set (F-217c)", ()
     expect(darkStart).toBeGreaterThan(-1);
     expect(rootEnd).toBeGreaterThan(-1);
     // The :root declaration comes first (the light values); the .dark
-    // override must exist as a separate later block.
-    const darkBlock = CSS.slice(darkStart, darkStart + 2000);
+    // override must exist as a separate later block. Session-220
+    // (F-220d): the window now runs to the next top-level block (the
+    // @utility section) — the background flip's citation comment
+    // outgrew the old fixed 2000-char window without moving any flip
+    // out of the block.
+    const darkBlock = CSS.slice(darkStart, CSS.indexOf("@utility", darkStart));
     expect(darkBlock).toMatch(/--color-surface: #0a0a0a/);
     expect(darkBlock).toMatch(/--color-foreground: #fafafa/);
+    expect(darkBlock).toMatch(/--color-background: #0e1310/);
   });
 
   it("the light values still stand in @theme (the flips are additive)", () => {
