@@ -34,7 +34,12 @@
      nav chip mixes amber-500/20 → emerald-600/20. */
   --color-primary: #f59e0b;
   --color-primary-hover: #d97706;
-  --color-primary-foreground: #ffffff;
+  /* Session-219 (R-16, F-219a): stone-900 ink — the reference's own
+     amber-CTA genus, live-measured ("Add Transaction" / "Add Account"
+     / "New Goal" / "Save Settings" all compute rgb(28,25,23) over the
+     amber-500→yellow-600 gradient). The old #ffffff measured 2.15:1 —
+     a systemic AA failure the a11y register's stale citation hid. */
+  --color-primary-foreground: #1c1917;
   --color-brand: #f59e0b;
   /* Session-207 (F-207e): the reference's H1 navy token — live-computed
      rgb(15,20,25) on its seven non-dashboard section H1s

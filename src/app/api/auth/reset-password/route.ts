@@ -34,7 +34,7 @@ const INVALID_TOKEN_MESSAGE = "Invalid or expired reset token";
  * longer outlives the reset performed specifically to kill it.
  */
 export async function POST(req: Request) {
-  const limit = rateLimit(`reset:${clientKey(req)}`, 10, 15 * 60 * 1000);
+  const limit = rateLimit(`pw-reset:${clientKey(req)}`, 10, 15 * 60 * 1000);
   // Session-163: the family's sweep placement (denied requests sweep too).
   sweepRateLimits();
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);

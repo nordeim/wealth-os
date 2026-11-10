@@ -6,8 +6,18 @@
 // persists in localStorage under "wealthos-theme"; the no-FOUC inline
 // script in the root layout applies it before first paint. "system"
 // follows prefers-color-scheme live.
+// Session-219 (R-16, F-219c + F-219t): the DEFAULT is now the parity
+// default — app routes resolve DARK for fresh visitors (the reference's
+// own posture, live-measured), the auth faces FORCE light (the
+// reference's always-light pre-login genus). The inline bootstrap owns
+// full page loads; the provider's pathname effect below owns CLIENT
+// navigations (the login→dashboard and logout→login holes the bootstrap
+// cannot see). The resolution logic lives in src/lib/theme-default.ts
+// (the pure seam both mirrors).
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
+import { defaultThemeForPath } from "@/lib/theme-default";
 
 export type Theme = "light" | "dark" | "system";
 
@@ -83,6 +93,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     mql.addEventListener("change", onChange);
     return () => mql.removeEventListener("change", onChange);
   }, []);
+
+  // Session-219 (R-16, F-219c + F-219t): re-resolve the theme on every
+  // pathname change — the CLIENT-NAV seam. Full loads are owned by the
+  // no-FOUC bootstrap; this effect owns login→dashboard (the default
+  // dark must land without a reload) and logout→login (the auth face
+  // must force light even with a dark choice stored). A stored choice
+  // wins on app routes; nothing is written to storage here.
+  const pathname = usePathname();
+  React.useEffect(() => {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    applyTheme(defaultThemeForPath(pathname ?? "/", stored));
+  }, [pathname]);
 
   // Keep the label in step with external changes (the toggle writes both,
   // but the OS-level system switch resolves through the class alone).

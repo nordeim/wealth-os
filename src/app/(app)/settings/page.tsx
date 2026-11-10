@@ -247,7 +247,7 @@ export default function SettingsPage() {
                       {budget.category}
                     </span>
                     <span className="flex items-center gap-3">
-                      <span className="text-sm text-stone-600 dark:text-stone-500">
+                      <span className="text-sm text-stone-600 dark:text-stone-400">
                         ${budget.amount.toLocaleString("en-US", { minimumFractionDigits: 0 })}/mo
                       </span>
                       <Button

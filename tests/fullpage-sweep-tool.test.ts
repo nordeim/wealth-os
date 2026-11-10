@@ -213,14 +213,14 @@ describe("session-210 (R-4.4): the fullpage sweep re-anchored to the WealthOS re
     // converged every page's diff; the shared-viewport values track the
     // sweep's own fresh tables (the cross-check below enforces the pair).
     expect(baselines.desktop).toEqual({
-      dashboard: 59.88, income: 29.93, expenses: 13.48, accounts: 10.8,
-      investments: 49.43, import: 26.51, analytics: 40.13, goals: 7.16,
-      settings: 50.5, login: 7.82, "reset-password": 3.87,
+      dashboard: 59.8, income: 29.6, expenses: 13.3, accounts: 10.6,
+      investments: 49.3, import: 26.6, analytics: 36.1, goals: 7.0,
+      settings: 50.6, login: 7.9, "reset-password": 3.9,
     });
     expect(baselines.phone).toEqual({
-      dashboard: 77.9, income: 45.32, expenses: 61.0, accounts: 23.21,
-      investments: 80.89, import: 31.06, analytics: 66.9, goals: 17.87,
-      settings: 60.79, login: 16.5, "reset-password": 16.42,
+      dashboard: 78.0, income: 44.2, expenses: 60.2, accounts: 22.5,
+      investments: 80.5, import: 31.1, analytics: 67.7, goals: 17.5,
+      settings: 60.8, login: 16.5, "reset-password": 16.5,
     });
     // the shared-viewport cross-check: where both documents are
     // viewport-height the fullpage values track the sweep's own tables

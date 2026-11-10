@@ -23,7 +23,7 @@ import { useWealthOs } from "@/stores/wealthos-store";
 import { GOAL_CATEGORIES } from "@/lib/constants";
 import { formatMoney, goalProgress, toDate } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, GLASS_CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT, CTA } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Goal } from "@/types";
@@ -49,7 +49,7 @@ export default function GoalsPage() {
           title="Savings Goals"
           subtitle="Set and track your financial objectives"
           actions={
-            <Button onClick={openCreate}>
+            <Button onClick={openCreate} className={CTA.amber}>
               <PlusCircle className="h-4 w-4" />
               New Goal
             </Button>
@@ -63,7 +63,7 @@ export default function GoalsPage() {
               title="No Goals Set Yet"
               subtitle="Create your first savings goal to start tracking your financial objectives"
               action={
-                <Button onClick={openCreate}>
+                <Button onClick={openCreate} className={CTA.amber}>
                   <PlusCircle className="h-4 w-4" />
                   Create Your First Goal
                 </Button>
@@ -88,7 +88,7 @@ export default function GoalsPage() {
                       </span>
                       <div>
                         <p className="font-semibold text-stone-900 dark:text-stone-100">{goal.name}</p>
-                        <p className="text-xs capitalize text-stone-500 dark:text-stone-500">
+                        <p className="text-xs capitalize text-stone-500 dark:text-stone-400">
                           {category?.label ?? goal.category}
                         </p>
                       </div>
@@ -111,7 +111,7 @@ export default function GoalsPage() {
                     <p className="text-2xl font-bold text-stone-900 dark:text-stone-50">
                       {formatMoney(goal.currentAmount)}
                     </p>
-                    <p className="text-sm text-stone-500 dark:text-stone-500">
+                    <p className="text-sm text-stone-500 dark:text-stone-400">
                       of {formatMoney(goal.targetAmount)}
                     </p>
                   </div>
@@ -126,12 +126,12 @@ export default function GoalsPage() {
                       style={{ width: `${progress.pct}%` }}
                     />
                   </div>
-                  <div className="mt-2 flex items-center justify-between text-xs text-stone-500 dark:text-stone-500">
+                  <div className="mt-2 flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
                     <span className="font-semibold text-amber-700 dark:text-amber-400">{progress.pct}% funded</span>
                     {goal.targetDate ? (
                       <span>
                         by{" "}
-                        {new Date(goal.targetDate).toLocaleDateString("en-US", {
+                        {toDate(goal.targetDate).toLocaleDateString("en-US", {
                           month: "short",
                           year: "numeric",
                         })}
@@ -322,7 +322,7 @@ function GoalDialog({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={busy}>
+            <Button type="submit" disabled={busy} className={CTA.amber}>
               {editing ? "Save Changes" : "Create Goal"}
             </Button>
           </DialogFooter>

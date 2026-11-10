@@ -44,6 +44,25 @@ test.describe("section navigation", () => {
       page.getByRole("heading", { name: "Financial Dashboard" }),
     ).toBeVisible();
   });
+
+  // Session-219 (R-16, F-219c): the reference's authenticated shell
+  // renders DARK for fresh visitors (live-measured: html.dark, body
+  // #0a0a0a, no localStorage theme key — the app's own default). The
+  // storageState carries cookies only, so this context IS the fresh
+  // visitor: no stored choice, the no-FOUC bootstrap's app-route
+  // default applies.
+  test("the fresh visitor's Dashboard renders DARK by default (F-219c)", async ({ page }) => {
+    await page.goto("/Dashboard");
+    await expect(page.locator("html")).toHaveClass(/dark/);
+    // The SHELL root carries the visible wash (`dark:bg-[#0e1310]` —
+    // page-layout.ts:7); the body's bg-background token never flips (the
+    // auth faces' light mechanism, F-219t).
+    const shellBg = await page.evaluate(() => {
+      const shell = document.querySelector(".page-wash") ?? document.body;
+      return getComputedStyle(shell).backgroundColor;
+    });
+    expect(shellBg).toBe("rgb(14, 19, 16)"); // #0e1310 — the dark wash
+  });
 });
 
 test.describe("the dashboard's card genus (seeded data)", () => {

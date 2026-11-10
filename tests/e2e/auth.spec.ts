@@ -186,7 +186,9 @@ test("a fresh signup swaps to the verify-email view with its ladder", async ({ p
   // The resend: the green info Callout (auto-dismissing on the reference).
   await page.getByRole("button", { name: "Resend" }).click();
   await expect(
-    page.getByRole("alert").filter({ hasText: "New verification code sent to your email" }),
+    // Session-219 (R-16, F-219v): the resend banner is the polite
+    // InfoCallout (role="status") — ErrorCallout keeps role="alert".
+    page.getByRole("status").filter({ hasText: "New verification code sent to your email" }),
   ).toBeVisible();
 });
 
@@ -248,7 +250,9 @@ test("the wrong-code ladder climbs to lockout and repeats its message", async ({
   // server-side).
   await page.getByRole("button", { name: "Resend" }).click();
   await expect(
-    page.getByRole("alert").filter({ hasText: "New verification code sent to your email" }),
+    // Session-219 (R-16, F-219v): the resend banner is the polite
+    // InfoCallout (role="status") — ErrorCallout keeps role="alert".
+    page.getByRole("status").filter({ hasText: "New verification code sent to your email" }),
   ).toBeVisible();
 });
 
@@ -355,6 +359,8 @@ test("the signin 403 lands the verify view and the Resend re-arms (F-218a)", asy
   // The Resend completes the recovery loop (the F-217d re-arm).
   await page.getByRole("button", { name: "Resend" }).click();
   await expect(
-    page.getByRole("alert").filter({ hasText: "New verification code sent to your email" }),
+    // Session-219 (R-16, F-219v): the resend banner is the polite
+    // InfoCallout (role="status") — ErrorCallout keeps role="alert".
+    page.getByRole("status").filter({ hasText: "New verification code sent to your email" }),
   ).toBeVisible();
 });

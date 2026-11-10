@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   // Session-218 (R-15, F-218g): the DESTRUCTIVE wipe — 3 / 15 min / IP
   // (the e2e battery's two reset legs ride comfortably under it; the
   // confirm-gate stays the primary guard, the bucket bounds replays).
-  const limit = rateLimit(`reset:${clientKey(req)}`, 3, 15 * 60 * 1000);
+  const limit = rateLimit(`data-reset:${clientKey(req)}`, 3, 15 * 60 * 1000);
   sweepRateLimits();
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 

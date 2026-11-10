@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
  */
 export async function POST(req: Request) {
   const contentType = req.headers.get("content-type") ?? "";
-  if (!contentType.includes("application/json")) {
+  if (!contentType.toLowerCase().includes("application/json")) {
     return ERR.BAD_REQUEST("Invalid request body");
   }
   await clearSessionCookie();

@@ -29,24 +29,33 @@ const SANCTIONED: Record<string, Array<{ any: string[]; cite: string }>> = {
       cite: "the amber/stone-on-gradient sidebar + muted captions — the reference's own palette",
     },
     {
-      // the white-wash family on the dark surfaces
+      // the white-wash family on the dark surfaces. Session-219
+      // (F-219a): the amber+white combination is GONE (stone-900 ink
+      // now); this umbrella covers the white ink on the DARK surfaces
+      // and the F-219b gradient CTAs (emerald/rose — the measured
+      // register class).
       any: ["text-white"],
-      cite: "white-on-amber primaries — the reference's own palette",
+      cite: "white ink on dark surfaces + the emerald/rose gradient CTAs — the reference's own palette",
     },
     {
-      // the amber primary button family (bg-primary = #f59e0b + white
-      // bold text) — the reference's own "Add Transaction" genus
-      // (live-observed: amber gradient + white bold label).
-      // Session-217 (F-217n): the `button[type="submit"]` needle — the
-      // dialog submits are the SAME amber+white primaries, but axe's
-      // generated selector for them does not always carry the bg-primary
-      // class (the shortest-unique-selector form is context-dependent —
-      // the Expenses dialog's submit generated `.bg-primary…`, the
-      // Accounts dialog's generated `button[type="submit"]`; the light
-      // Accounts dialog flagged identically, untested until the dark
-      // leg opened it). Same genus, same citation.
+      // the amber primary button family — Session-219 (R-16, F-219a):
+      // the amber CTAs now carry stone-900 ink (the reference's OWN
+      // genus, live-measured rgb(28,25,23) over the amber gradient —
+      // the old "white bold label" citation was stale and hid a 2.15:1
+      // failure). This arm now sanctions only the RESIDUAL faces the
+      // genus still covers (dialog submits not yet on the per-page
+      // constants); the amber+white combination itself is gone.
       any: ["bg-primary", 'button[type="submit"]'],
-      cite: "the amber primary buttons — the reference's own palette",
+      cite: "the residual solid-amber primaries — stone-900 ink since F-219a; retained for any un-migrated face",
+    },
+    {
+      // Session-219 (R-16, F-219b): the per-page CTA gradient genera —
+      // the reference's own measured families: emerald→teal + white
+      // (Income/Investments) and rose→red + white (Expenses) ride the
+      // F-208a KPI_TONES register class (white-on-gradient, the
+      // reference's own palette).
+      any: ["from-emerald-500", "from-rose-500"],
+      cite: "the per-page CTA gradient genera — the reference's own measured palette (F-219b)",
     },
     {
       // the ACTIVE period chip (bg-amber-500 + white 12px) — the
@@ -121,6 +130,10 @@ test.describe("a11y two-gate (WealthOS)", () => {
   for (const section of SECTIONS) {
     test(`desktop ${section} — structural zero + sanctioned citations`, async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 });
+      // Session-219 (R-16, F-219c): the app's default is now DARK on
+      // app routes — these light-mode legs set the theme EXPLICITLY so
+      // the two-gate keeps covering BOTH modes regardless of default.
+      await page.addInitScript(() => localStorage.setItem("wealthos-theme", "light"));
       await page.goto(section);
       await page.waitForLoadState("networkidle");
       assertTwoGate(await runAxe(page));
@@ -128,6 +141,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
 
     test(`phone ${section} — structural zero + sanctioned citations`, async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
+      await page.addInitScript(() => localStorage.setItem("wealthos-theme", "light"));
       await page.goto(section);
       await page.waitForLoadState("networkidle");
       assertTwoGate(await runAxe(page));

@@ -89,7 +89,10 @@ export function AiCoachDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div ref={listRef} className="flex-1 space-y-4 overflow-y-auto px-5 py-4 scrollbar-thin">
+        {/* Session-219 (R-16, F-219j): the message LIST is the polite live
+             region — assistant replies are announced when they land (the
+             old aria-live wrapped only the textless dots row). */}
+        <div ref={listRef} aria-live="polite" className="flex-1 space-y-4 overflow-y-auto px-5 py-4 scrollbar-thin">
           {messages.map((message, i) => (
             <div
               key={i}
@@ -100,7 +103,7 @@ export function AiCoachDialog({
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
                   message.role === "assistant"
                     ? "bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300"
-                    : "bg-amber-500 text-white",
+                    : "bg-amber-500 text-stone-900",
                 )}
                 aria-hidden="true"
               >
@@ -111,7 +114,7 @@ export function AiCoachDialog({
                   "max-w-[80%] whitespace-pre-line rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
                   message.role === "assistant"
                     ? "rounded-tl-sm bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-200"
-                    : "rounded-tr-sm bg-amber-500 text-white",
+                    : "rounded-tr-sm bg-amber-500 text-stone-900",
                 )}
               >
                 {message.content}
@@ -119,7 +122,10 @@ export function AiCoachDialog({
             </div>
           ))}
           {busy ? (
-            <div className="flex gap-2.5" aria-live="polite">
+            <div className="flex gap-2.5">
+              {/* F-219j: the thinking state is announced (sr-only text —
+                  the dots alone say nothing). */}
+              <span className="sr-only">Coach is thinking…</span>
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300">
                 <Bot className="h-4 w-4" />
               </span>
@@ -164,7 +170,7 @@ export function AiCoachDialog({
               type="submit"
               disabled={busy || input.trim().length === 0}
               aria-label="Send question"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 text-white shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 disabled:opacity-50"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 text-stone-900 shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
             </button>

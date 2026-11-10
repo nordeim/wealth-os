@@ -51,7 +51,11 @@ export const MOBILE_NAV_SHEET = {
   // veil whose light mode ships stone-300-on-light text) and adopt the
   // tint via the mobile-drawer-sheen utility (globals.css).
   content: "lg:hidden fixed inset-0 z-40 mobile-drawer-sheen focus:outline-none",
-  inner: "flex flex-col h-full pt-20",
+  // Session-219 (R-16, F-219h): overflow-y-auto — the sheet scrolls
+  // internally below ~800px viewport height (Sign Out live-measured
+  // UNREACHABLE at 390×667 before; the reference clips too — this is
+  // the functional superset, the Escape-to-close class).
+  inner: "flex flex-col h-full pt-20 overflow-y-auto",
   nav: "flex-1 px-4 py-6 space-y-2",
   link: "flex items-center gap-3 px-4 py-4 rounded-xl font-medium transition-all duration-200 text-stone-300 hover:bg-gradient-to-r hover:from-white/5 hover:to-amber-500/5 hover:text-amber-100",
   // The active pill STAYS (the F-207c withdrawal): the reference's
@@ -205,24 +209,47 @@ export const SETTINGS_CARD = {
 } as const;
 
 export const BUTTONS = {
+  // Session-219 (R-16, F-219a): text-stone-900 — the reference's own
+  // amber-CTA genus (live-measured: its "Add Transaction" computes
+  // rgb(28,25,23) over the amber-500→yellow-600 gradient; the old
+  // text-white measured 2.15:1). The dead outline/ghost constants
+  // retired the same round (F-219u — zero consumers, sub-3:1 focus
+  // rings; the live Button variants carry the real genera).
   primary:
-    "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
-  outline:
-    "inline-flex items-center justify-center gap-2 rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 shadow-sm transition-colors hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 disabled:opacity-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800",
-  ghost:
-    "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 dark:text-stone-300 dark:hover:bg-stone-800",
+    "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 px-4 py-2.5 text-sm font-semibold text-stone-900 shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
+} as const;
+
+/** Session-219 (R-16, F-219b): the per-page CTA genera — the reference
+ * deploys THREE CTA families by section (live-measured, fresh login):
+ *   - emerald→teal + white: Income ("Add Income Source"),
+ *     Investments ("Add Investment") — white-on-gradient rides the
+ *     F-208a KPI_TONES register class (the reference's own);
+ *   - rose→red + white: Expenses ("Add Expense") — the same register;
+ *   - amber→yellow + stone-900: Dashboard/Accounts/Goals/Settings (the
+ *     F-219a genus — the reference's dialog submits carry the SAME
+ *     per-page families, measured inside the open dialogs).
+ * Applied to both the toolbar CTA and the dialog submit per section. */
+export const CTA = {
+  amber:
+    "bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-stone-900 font-semibold shadow-md",
+  emerald:
+    "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold shadow-md",
+  rose:
+    "bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-semibold shadow-md",
 } as const;
 
 export const EMPTY_STATE = {
   root: "flex flex-col items-center justify-center gap-2 py-12 text-center",
   icon: "h-12 w-12 text-stone-300 dark:text-stone-600",
   title: "text-base font-semibold text-stone-500 dark:text-stone-400",
-  subtitle: "text-sm text-stone-400 dark:text-stone-500",
+  // Session-219 (R-16, F-219i): the AA arms — stone-400 on white was
+  // 2.52:1; stone-500 light / stone-400 dark passes both modes.
+  subtitle: "text-sm text-stone-500 dark:text-stone-400",
 } as const;
 
 export const APP_FOOTER = {
   footer:
-    "border-t border-stone-200/60 px-6 py-4 text-xs text-stone-400 dark:border-stone-800",
+    "border-t border-stone-200/60 px-6 py-4 text-xs text-stone-500 dark:text-stone-400 dark:border-stone-800",
   copyright: "© 2026 WealthOS — Premium Finance Suite",
 } as const;
 

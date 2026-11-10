@@ -75,24 +75,24 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     // R-7.5 doctrine.
     const { STANDING_BASELINES } = await sweep();
     expect({ ...STANDING_BASELINES.desktop }).toEqual({
-      dashboard: 8.63, income: 29.93, expenses: 13.48, accounts: 10.8,
-      investments: 8.41, import: 9.25, analytics: 40.13, goals: 7.16,
-      settings: 19.81, login: 5.99, "reset-password": 3.87,
+      dashboard: 8.5, income: 29.6, expenses: 13.3, accounts: 10.6,
+      investments: 8.1, import: 9.3, analytics: 36.1, goals: 7.0,
+      settings: 19.9, login: 6.0, "reset-password": 3.9,
     });
     expect({ ...STANDING_BASELINES.phone }).toEqual({
-      dashboard: 14.47, income: 41.17, expenses: 41.69, accounts: 17.38,
-      investments: 27.92, import: 13.27, analytics: 51.87, goals: 11.64,
-      settings: 18.43, login: 10.92, "reset-password": 16.42,
+      dashboard: 14.5, income: 40.0, expenses: 40.5, accounts: 16.6,
+      investments: 26.4, import: 13.3, analytics: 53.1, goals: 11.3,
+      settings: 18.5, login: 11.0, "reset-password": 16.5,
     });
     expect({ ...STANDING_BASELINES.tablet }).toEqual({
-      dashboard: 7.18, income: 31.43, expenses: 29.42, accounts: 10.46,
-      investments: 20.92, import: 8.7, analytics: 49.58, goals: 6.59,
-      settings: 32.21, login: 11.48, "reset-password": 6.41,
+      dashboard: 7.2, income: 31.0, expenses: 29.1, accounts: 10.2,
+      investments: 20.3, import: 8.8, analytics: 48.9, goals: 6.5,
+      settings: 32.3, login: 11.5, "reset-password": 6.5,
     });
     expect({ ...STANDING_BASELINES.landscape }).toEqual({
-      dashboard: 10.47, income: 33.59, expenses: 26.47, accounts: 14.35,
-      investments: 23.9, import: 11.61, analytics: 31.16, goals: 9.83,
-      settings: 19.44, login: 4.52, "reset-password": 6.4,
+      dashboard: 10.5, income: 33.0, expenses: 26.1, accounts: 13.9,
+      investments: 23.2, import: 11.7, analytics: 30.9, goals: 9.6,
+      settings: 19.5, login: 4.6, "reset-password": 6.4,
     });
   });
 
@@ -127,8 +127,8 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     // the measured standing shares sit INSIDE their baselines + margin
     const ok = driftVerdict(
       [
-        ["dashboard", 9.04],
-        ["settings", 19.96],
+        ["dashboard", 8.9],
+        ["settings", 19.9],
       ],
       { ...STANDING_BASELINES.desktop },
       0.5,
@@ -137,8 +137,8 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     // a real drift — above the baseline + margin — fails with the evidence
     const drift = driftVerdict(
       [
-        ["dashboard", 9.04],
-        ["settings", 19.96],
+        ["dashboard", 8.9],
+        ["settings", 19.9],
         ["login", 7.3],
       ],
       { ...STANDING_BASELINES.desktop },
@@ -146,7 +146,7 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     );
     expect(drift.ok).toBe(false);
     expect(drift.failures).toEqual([
-      { page: "login", pct: 7.3, baseline: 5.99, allowed: 6.49 },
+      { page: "login", pct: 7.3, baseline: 6, allowed: 6.5 },
     ]);
   });
 

@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 817;
-const E2E_TOTAL = 97;
+const UNIT_TOTAL = 869;
+const E2E_TOTAL = 99;
 const SMOKE_TOTAL = 14;
-const TEST_FILES = 62;
+const TEST_FILES = 64;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -58,10 +58,11 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // Session-215 (R-12): the live-seam pins joined the family (25:
     // +import-seam, analytics-export-seam, seed-scoping, script-guards)
     // and the four files took the suite to 51; session-218 (R-15) added
-    // login-recovery + parity-218 (25 → 27 pins, 34 → 36 rows) — the
-    // arithmetic 3 + 36 + 23 = 62 now closes).
+    // login-recovery + parity-218 (25 → 27 pins, 34 → 36 rows; session-219:
+    // theme-default + parity-219, 36 → 38 rows — the arithmetic
+    // 3 + 38 + 23 = 64 now closes).
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 36 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218) |",
+      "| — architecture pins | 38 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219) |",
     );
   });
 

@@ -120,9 +120,24 @@ describe("transactionUpdateSchema (three-state PUT)", () => {
     expect(parsed.description).toBeUndefined();
     expect(parsed.recurring).toBeUndefined();
 
+    // Session-219 (R-16, F-219q): an EXPLICIT null now survives the parse
+    // so the routes' `!== undefined` spreads WRITE the clear — the old
+    // null→undefined collapse made notes/institution unclearable (no
+    // payload could ever clear them). nextDate keeps its null (a true
+    // nullable); the string-nullable fields join it.
     const cleared = transactionUpdateSchema.parse({ notes: null, nextDate: null });
-    expect(cleared.notes).toBeUndefined();
+    expect(cleared.notes).toBeNull();
     expect(cleared.nextDate).toBeNull();
+  });
+
+  it("an empty string also means the clear (not a skip) — F-219q", () => {
+    const cleared = transactionUpdateSchema.parse({ notes: "" });
+    expect(cleared.notes).toBeNull();
+  });
+
+  it("a present notes value round-trips", () => {
+    const parsed = transactionUpdateSchema.parse({ notes: "keep me" });
+    expect(parsed.notes).toBe("keep me");
   });
 
   it("still validates present fields", () => {

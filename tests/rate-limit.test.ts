@@ -261,3 +261,27 @@ describe("the injectable clock seam (session-173, F-173a)", () => {
     expect(stripped).toContain("export function rateLimit(key: string, limit: number, windowMs: number, now = Date.now())");
   });
 });
+
+// ---- session-219 (R-16, F-219l): the reset-family key disjointness --------
+// /api/reset (the destructive data wipe, 3/15min) and
+// /api/auth/reset-password (the password reset, 10/15min) BOTH keyed
+// `reset:<ip>` — one fixed-window bucket shared by two different
+// endpoints, silently merging to the lower threshold. The cure: distinct
+// prefixes (`data-reset:` vs `pw-reset:`), pinned at the source level
+// (the keys are string literals at the call sites).
+describe("the reset-family bucket keys are disjoint (F-219l)", () => {
+  it("the two routes key distinct prefixes", () => {
+    const data = readFileSync(
+      path.resolve(import.meta.dirname, "..", "src/app/api/reset/route.ts"),
+      "utf8",
+    );
+    const pw = readFileSync(
+      path.resolve(import.meta.dirname, "..", "src/app/api/auth/reset-password/route.ts"),
+      "utf8",
+    );
+    expect(data).toContain("data-reset:");
+    expect(data).not.toContain("`reset:");
+    expect(pw).toContain("pw-reset:");
+    expect(pw).not.toContain("`reset:");
+  });
+});

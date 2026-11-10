@@ -11,6 +11,13 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+  // Session-219 (R-16, F-219m — the design refinement): NO bucket here
+  // by design. The aggregate read fires on EVERY navigation (hydrate) —
+  // the e2e battery, the sweep/fullpage/census toolchain, and any real
+  // user navigating fast all legitimately exceed any per-IP cap inside
+  // one window (the maiden census run tripped it mid-run). The heavy
+  // EXPLICIT actions carry the buckets instead: writes (60/15), export
+  // (240/15), search (60/15), import (5/15), coach (30/15).
   try {
     const [transactions, incomeSources, accounts, investments, goals, budgets] =
       await Promise.all([

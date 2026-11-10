@@ -806,7 +806,7 @@ function ErrorCallout({ message }: { message: string }) {
  */
 function InfoCallout({ message }: { message: string }) {
   return (
-    <div role="alert" className={LOGIN_INFO_CALLOUT.callout}>
+    <div role="status" className={LOGIN_INFO_CALLOUT.callout}>
       <div className={LOGIN_INFO_CALLOUT.text}>{message}</div>
     </div>
   );

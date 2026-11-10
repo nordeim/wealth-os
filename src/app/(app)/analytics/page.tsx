@@ -44,6 +44,7 @@ import {
   monthlyAverages,
   portfolioStats,
   spendingByDayOfWeek,
+  toDate,
 } from "@/lib/finance";
 // Session-215 (R-12, F-215b): the export rides the guarded seam.
 import { toCsv, csvFilename } from "@/lib/csv";
@@ -83,14 +84,20 @@ export default function AnalyticsPage() {
     [txs, from, to],
   );
 
-  const trend = React.useMemo(() => cashFlowSeries(inRange, n, new Date(to)), [inRange, n, to]);
+  // Session-219 (R-16, F-219e): the refs ride toDate — the same local-
+  // midnight re-anchor the seams apply to rows. The raw new Date(to) was
+  // the mixed-mode regression the F-218d cure itself introduced: on a
+  // 1st-of-month `to` a UTC-negative user's trailing bucket keyed on the
+  // previous month for a full day.
+  const refDate = React.useMemo(() => toDate(to), [to]);
+  const trend = React.useMemo(() => cashFlowSeries(inRange, n, refDate), [inRange, n, refDate]);
   const avg = React.useMemo(() => monthlyAverages(trend), [trend]);
-  const breakdown = React.useMemo(() => expenseBreakdown(inRange, new Date(to)), [inRange, to]);
-  const split = React.useMemo(() => budgetCategorySplit(inRange, new Date(to)), [inRange, to]);
-  const byDay = React.useMemo(() => spendingByDayOfWeek(inRange, new Date(to)), [inRange, to]);
+  const breakdown = React.useMemo(() => expenseBreakdown(inRange, refDate), [inRange, refDate]);
+  const split = React.useMemo(() => budgetCategorySplit(inRange, refDate), [inRange, refDate]);
+  const byDay = React.useMemo(() => spendingByDayOfWeek(inRange, refDate), [inRange, refDate]);
   const incomeTrend = React.useMemo(
-    () => categoryTrend(inRange, n, new Date(to), null, "income"),
-    [inRange, n, to],
+    () => categoryTrend(inRange, n, refDate, null, "income"),
+    [inRange, n, refDate],
   );
   const stats = portfolioStats(store.investments);
   const allocation = assetAllocation(store.investments);
@@ -164,7 +171,7 @@ export default function AnalyticsPage() {
                 <RefreshCw className="h-4 w-4" />
                 Refresh
               </Button>
-              <Button onClick={exportCsv}>
+              <Button variant="outline" onClick={exportCsv}>
                 <Download className="h-4 w-4" />
                 Export
               </Button>
@@ -243,6 +250,9 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <section className={cn(GLASS_CARD.base, CARD.padding)}>
                 <CardTitleRow title="Spending by Day of Week" caption="This month" />
+                {inRange.length === 0 ? (
+                  <EmptyState icon={RefreshCw} title="No spending in range" />
+                ) : (
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={byDay}>
@@ -254,9 +264,13 @@ export default function AnalyticsPage() {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
+                )}
               </section>
               <section className={cn(GLASS_CARD.base, CARD.padding)}>
                 <CardTitleRow title="Needs vs Wants vs Savings" />
+                {inRange.length === 0 ? (
+                  <EmptyState icon={RefreshCw} title="No budget split in range" />
+                ) : (
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
@@ -278,6 +292,7 @@ export default function AnalyticsPage() {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
+                )}
               </section>
             </div>
           </TabsPanel>
@@ -322,6 +337,9 @@ export default function AnalyticsPage() {
           <TabsPanel tab="income" className="mt-4 space-y-4">
             <section className={cn(GLASS_CARD.base, CARD.padding)}>
               <CardTitleRow title="Income Trend" />
+              {incomeTrend.length === 0 ? (
+                <EmptyState icon={RefreshCw} title="No income in range" />
+              ) : (
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={incomeTrend} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -339,6 +357,7 @@ export default function AnalyticsPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
+              )}
             </section>
           </TabsPanel>
 
@@ -346,6 +365,9 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <section className={cn(GLASS_CARD.base, CARD.padding)}>
                 <CardTitleRow title="Portfolio Composition" />
+                {allocation.length === 0 ? (
+                  <EmptyState icon={RefreshCw} title="No holdings to allocate" />
+                ) : (
                 <div className="h-60">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -359,9 +381,13 @@ export default function AnalyticsPage() {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
+                )}
               </section>
               <section className={cn(GLASS_CARD.base, CARD.padding)}>
                 <CardTitleRow title="Holdings Performance" />
+                {stats.holdings.length === 0 ? (
+                  <EmptyState icon={RefreshCw} title="No holdings yet" />
+                ) : (
                 <div className="h-60">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={stats.holdings.map((h) => ({ symbol: h.symbol, gain: h.gainLoss }))}>
@@ -377,6 +403,7 @@ export default function AnalyticsPage() {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
+                )}
               </section>
             </div>
           </TabsPanel>

@@ -86,9 +86,9 @@ describe("reset-password route contract (session-163, digma S67-A/S76-A/S124-A)"
     expect(existsSync(path.resolve(import.meta.dirname, "..", "src/app/api/auth/reset-password/route.ts"))).toBe(true);
   });
 
-  it("rate-limits on its own reset: bucket (10/15min)", () => {
+  it("rate-limits on its own pw-reset: bucket (10/15min — the F-219l disjoint key)", () => {
     const src = resetRoute();
-    expect(src).toContain('rateLimit(`reset:${clientKey(req)}`, 10, 15 * 60 * 1000)');
+    expect(src).toContain('rateLimit(`pw-reset:${clientKey(req)}`, 10, 15 * 60 * 1000)');
   });
 
   it("parses through the Zod seam (parseBody composes the declared-size pre-gate)", () => {

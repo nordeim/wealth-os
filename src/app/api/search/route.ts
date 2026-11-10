@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { ok, ERR, asString, isGuarded, requireSession } from "@/lib/api";
+import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +9,13 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+
+  // Session-219 (R-16, F-219m): the heavy-read bucket — 60 / 15 min / IP
+  // (the six-full-table findMany dashboard read + the full-dataset
+  // export were unbounded; search rides its own lighter cap).
+  const limit = rateLimit(`search:${clientKey(req)}`, 60, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
   const url = new URL(req.url);
   const q = (asString(url.searchParams.get("q"), { max: 80 }) ?? "").toLowerCase();

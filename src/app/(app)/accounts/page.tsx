@@ -22,7 +22,7 @@ import { EmptyState, PageHeader } from "@/components/shared/page-parts";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { ACCOUNT_TYPES, CURRENCIES } from "@/lib/constants";
 import { formatMoney } from "@/lib/finance";
-import { CARD, PAGE_ROOT, STOCK_CARD } from "@/lib/page-layout";
+import { CARD, PAGE_ROOT, STOCK_CARD, CTA } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { BankAccount } from "@/types";
@@ -52,7 +52,7 @@ export default function AccountsPage() {
           title="My Accounts"
           subtitle="Manage your connected bank accounts"
           actions={
-            <Button onClick={openCreate}>
+            <Button onClick={openCreate} className={CTA.amber}>
               <PlusCircle className="h-4 w-4" />
               Add Account
             </Button>
@@ -66,7 +66,7 @@ export default function AccountsPage() {
               title="No accounts yet"
               subtitle="Add a bank account to start tracking your finances."
               action={
-                <Button onClick={openCreate}>
+                <Button onClick={openCreate} className={CTA.amber}>
                   <PlusCircle className="h-4 w-4" />
                   Add your first account
                 </Button>
@@ -80,7 +80,7 @@ export default function AccountsPage() {
                 <Landmark className="h-6 w-6 text-amber-500" />
               </span>
               <div>
-                <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Net Balance</p>
+                <p className="text-sm font-medium text-stone-500 dark:text-stone-400">Net Balance</p>
                 <p
                   className={cn(
                     "text-2xl font-bold",
@@ -142,7 +142,7 @@ function AccountCard({
           </span>
           <div>
             <p className="font-semibold text-stone-900 dark:text-stone-100">{account.name}</p>
-            <p className="text-xs text-stone-500 dark:text-stone-500">
+            <p className="text-xs text-stone-500 dark:text-stone-400">
               {typeLabel}
               {account.institution ? ` · ${account.institution}` : ""}
             </p>
@@ -302,7 +302,7 @@ function AccountDialog({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={busy}>
+            <Button type="submit" disabled={busy} className={CTA.amber}>
               {editing ? "Save Changes" : "Add Account"}
             </Button>
           </DialogFooter>

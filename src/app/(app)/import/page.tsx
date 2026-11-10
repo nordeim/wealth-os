@@ -155,7 +155,7 @@ export default function ImportPage() {
           {/* A LABEL (not role=button): the click forwards to the input
               natively and no interactive element nests inside another. */}
           <label
-            className="mt-4 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-stone-300 bg-stone-50/50 px-6 py-12 text-center transition-colors hover:border-amber-400 hover:bg-amber-50/30 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/40 dark:border-stone-700 dark:bg-stone-800/30 dark:hover:border-amber-500/50"
+            className="mt-4 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-stone-300 bg-stone-50/50 px-6 py-12 text-center transition-colors hover:border-amber-400 hover:bg-amber-50/30 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-ring dark:border-stone-700 dark:bg-stone-800/30 dark:hover:border-amber-500/50"
           >
             <span className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-500/10">
               <Upload className="h-7 w-7 text-amber-500" />
@@ -164,7 +164,7 @@ export default function ImportPage() {
               <p className="font-medium text-stone-900 dark:text-stone-100">
                 {file ? file.name : "Upload a file"}
               </p>
-              <p className="mt-0.5 text-xs text-stone-500 dark:text-stone-500">
+              <p className="mt-0.5 text-xs text-stone-500 dark:text-stone-400">
                 CSV, XLS, XLSX up to 10MB
               </p>
             </div>
@@ -217,7 +217,7 @@ export default function ImportPage() {
             <div className="max-h-80 overflow-auto rounded-lg border border-stone-200 scrollbar-thin dark:border-stone-800">
               <table className="w-full min-w-[560px] text-sm">
                 <thead className="sticky top-0 bg-stone-50 dark:bg-stone-800">
-                  <tr className="text-left text-xs uppercase tracking-wide text-stone-500 dark:text-stone-500">
+                  <tr className="text-left text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400">
                     <th className="p-2.5 font-semibold">Date</th>
                     <th className="p-2.5 font-semibold">Description</th>
                     <th className="p-2.5 font-semibold">Category</th>
@@ -227,7 +227,7 @@ export default function ImportPage() {
                 <tbody className="divide-y divide-stone-200/70 bg-white dark:divide-stone-800 dark:bg-stone-900">
                   {rows.slice(0, 50).map((row, i) => (
                     <tr key={i}>
-                      <td className="p-2.5 text-stone-600 dark:text-stone-500">
+                      <td className="p-2.5 text-stone-600 dark:text-stone-400">
                         {new Date(row.date).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
@@ -237,11 +237,11 @@ export default function ImportPage() {
                       <td className="p-2.5 font-medium text-stone-900 dark:text-stone-100">
                         {row.description}
                       </td>
-                      <td className="p-2.5 text-stone-600 dark:text-stone-500">{row.category}</td>
+                      <td className="p-2.5 text-stone-600 dark:text-stone-400">{row.category}</td>
                       <td
                         className={cn(
                           "p-2.5 text-right font-semibold",
-                          row.type === "income" ? "text-emerald-600" : "text-stone-900 dark:text-stone-100",
+                          row.type === "income" ? "text-emerald-700" : "text-stone-900 dark:text-stone-100",
                         )}
                       >
                         {row.type === "income" ? "+" : "−"}$
@@ -258,7 +258,7 @@ export default function ImportPage() {
               </p>
             ) : null}
             <div className="mt-4 flex items-center justify-between">
-              <p className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-500">
+              <p className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
                 Importing adds to your existing records — nothing is overwritten.
               </p>

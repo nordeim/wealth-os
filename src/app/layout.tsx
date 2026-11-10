@@ -93,11 +93,21 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           (this class + the retired html rule in globals.css) rendered
           thinner text than the reference on macOS. */}
       <body className="min-h-screen bg-background font-sans text-foreground">
-        {/* The no-FOUC theme bootstrap: applies the persisted dark class
-            BEFORE first paint (the reference toggles .dark on <html>). */}
+        {/* The no-FOUC theme bootstrap: applies the theme class BEFORE
+            first paint. Session-219 (R-16, F-219c + F-219t — the
+            parity-default cure): a STORED choice wins everywhere;
+            otherwise app routes default DARK (the reference's
+            fresh-visitor posture — its authed shell renders html.dark,
+            body #0a0a0a, live-measured) and the AUTH FACES
+            (login/signup/reset-password) default LIGHT and FORCE it —
+            .dark is REMOVED even when stored dark (the reference's
+            always-light pre-login genus; the stored-dark login
+            previously stranded the flipped body ink on the light wash).
+            Mirrors src/lib/theme-default.ts (the pure seam — kept
+            honest by tests/theme-default.test.ts's source pins). */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("wealthos-theme")||"system";var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);if(d)document.documentElement.classList.add("dark");}catch(e){}`,
+            __html: `try{var p=location.pathname;var a=/^\\/(login|signup|reset-password)(\\/|$|\\?)/.test(p);var t=localStorage.getItem("wealthos-theme");var d=a?false:(t?t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches):true);if(d){document.documentElement.classList.add("dark");}else{document.documentElement.classList.remove("dark");}}catch(e){}`,
           }}
         />
         <ThemeProvider>{children}</ThemeProvider>

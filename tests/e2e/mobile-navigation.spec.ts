@@ -158,7 +158,12 @@ test.describe("mobile navigation drawer", () => {
 
   test("the moon toggle in the mobile header flips dark mode (persisted)", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
+    // Session-219 (R-16, F-219c): the app's default is now DARK on app
+    // routes — store an explicit LIGHT first so this stays the
+    // light→dark→light round-trip it always was.
     await page.goto("/Dashboard");
+    await page.evaluate(() => localStorage.setItem("wealthos-theme", "light"));
+    await page.reload();
 
     const moon = page.getByRole("button", { name: "Switch to dark mode" });
     await moon.click();
@@ -174,6 +179,42 @@ test.describe("mobile navigation drawer", () => {
     // Back to light.
     await page.getByRole("button", { name: "Switch to light mode" }).click();
     await expect(page.locator("html")).not.toHaveClass(/dark/);
+    // Restore the pristine default for the specs that follow.
+    await page.evaluate(() => localStorage.removeItem("wealthos-theme"));
+  });
+
+  // Session-219 (R-16, F-219h): the sheet scrolls internally below
+  // ~800px viewport height — Sign Out live-measured UNREACHABLE at
+  // 390×667 before the cure (bottom 787px vs viewport 667, no
+  // overflow). The reference shares the clip; the scroll is the house
+  // functional-superset class (the Escape-to-close doctrine).
+  test("the drawer scrolls internally on short viewports — Sign Out reachable (F-219h)", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 667 });
+    await page.goto("/Dashboard");
+
+    const trigger = page.getByRole("button", { name: "Open navigation menu" });
+    await trigger.click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    // The sheet's inner column is the scroll container.
+    const scrolled = await page.evaluate(() => {
+      const overlays = [...document.querySelectorAll("div")].filter((el) => {
+        const cs = getComputedStyle(el);
+        const r = el.getBoundingClientRect();
+        return cs.position === "fixed" && r.width >= 380 && r.height >= 350 && el.querySelector("nav") !== null;
+      });
+      const drawer = overlays[0];
+      if (!drawer) return { found: false };
+      const inner = drawer.firstElementChild as HTMLElement | null;
+      if (!inner) return { found: true, scrollable: false };
+      inner.scrollTop = 200;
+      return { found: true, scrollable: inner.scrollTop > 0, overflow: getComputedStyle(inner).overflowY };
+    });
+    expect(scrolled.found).toBe(true);
+    expect(scrolled.scrollable, `inner overflow: ${JSON.stringify(scrolled)}`).toBe(true);
+
+    // Sign Out becomes visible after the scroll.
+    await expect(page.getByRole("button", { name: /sign out/i })).toBeVisible();
   });
 
   test("the desktop sidebar is visible at lg and carries the brand + Synced pill", async ({

@@ -1510,6 +1510,17 @@ export interface StandingAllowance {
  *  re-derives DOWNWARD — the R-7 doctrine). Settings' mainH stays
  *  REPORT-ONLY (the L-150c2 skip in the verdict below). */
 /**
+ * Session-219 (R-16): the income/accounts/goals/analytics allowances
+ * re-derived (+3/+3/+3 per axis on the first three — the per-page CTA
+ * genus: the toolbar + empty-state + dialog-submit buttons gained the
+ * measured gradient class stacks, each a composition-split event;
+ * analytics +5..+11 unexplained + the mainH shifts — the four F-219r
+ * EmptyState gates replaced the bare recharts containers, the dead-stub
+ * genus growing with them). Every other page matched its standing value
+ * exactly. The F-216e doctrine: a legitimate cure that changes the DOM
+ * genus re-derives the affected pages' allowances in the same commit.
+ */
+/**
  * Session-216 (R-13, F-216e): the dashboard allowances re-derived
  * (+6/+6/+6/+9 across the four axes — 254/270/259/254). The decode: the
  * QuickAction nested-interactive cure (an a11y fix — the reference ships
@@ -1529,52 +1540,52 @@ export const STANDING_CENSUS: Readonly<
 > = {
   desktop: {
     dashboard: { unexplained: 254, mainH: -167 },
-    income: { unexplained: 40, mainH: 49 },
+    income: { unexplained: 43, mainH: 49 },
     expenses: { unexplained: 115, mainH: 49 },
-    accounts: { unexplained: 22, mainH: 49 },
+    accounts: { unexplained: 25, mainH: 49 },
     investments: { unexplained: 129, mainH: -643 },
     import: { unexplained: 31, mainH: 49 },
-    analytics: { unexplained: 76, mainH: 73 },
-    goals: { unexplained: 23, mainH: 49 },
+    analytics: { unexplained: 85, mainH: 49 },
+    goals: { unexplained: 26, mainH: 49 },
     settings: { unexplained: 53, mainH: 103 },
     login: { unexplained: 52, mainH: -40 },
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   phone: {
     dashboard: { unexplained: 270, mainH: 217 },
-    income: { unexplained: 38, mainH: -15 },
+    income: { unexplained: 41, mainH: -15 },
     expenses: { unexplained: 112, mainH: -261 },
-    accounts: { unexplained: 20, mainH: -15 },
+    accounts: { unexplained: 23, mainH: -15 },
     investments: { unexplained: 131, mainH: -625 },
     import: { unexplained: 32, mainH: -15 },
-    analytics: { unexplained: 78, mainH: 381 },
-    goals: { unexplained: 21, mainH: -15 },
+    analytics: { unexplained: 89, mainH: 329 },
+    goals: { unexplained: 24, mainH: -15 },
     settings: { unexplained: 68, mainH: 75 },
     login: { unexplained: 50, mainH: -22 },
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   tablet: {
     dashboard: { unexplained: 259, mainH: -151 },
-    income: { unexplained: 38, mainH: -15 },
+    income: { unexplained: 41, mainH: -15 },
     expenses: { unexplained: 111, mainH: -15 },
-    accounts: { unexplained: 20, mainH: -15 },
+    accounts: { unexplained: 23, mainH: -15 },
     investments: { unexplained: 141, mainH: -487 },
     import: { unexplained: 32, mainH: -15 },
-    analytics: { unexplained: 78, mainH: 245 },
-    goals: { unexplained: 21, mainH: -15 },
+    analytics: { unexplained: 88, mainH: 149 },
+    goals: { unexplained: 24, mainH: -15 },
     settings: { unexplained: 53, mainH: 19 },
     login: { unexplained: 55, mainH: 0 },
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   landscape: {
     dashboard: { unexplained: 254, mainH: 35 },
-    income: { unexplained: 40, mainH: 49 },
+    income: { unexplained: 43, mainH: 49 },
     expenses: { unexplained: 115, mainH: 103 },
-    accounts: { unexplained: 22, mainH: 49 },
+    accounts: { unexplained: 25, mainH: 49 },
     investments: { unexplained: 142, mainH: -455 },
     import: { unexplained: 31, mainH: 49 },
-    analytics: { unexplained: 90, mainH: 209 },
-    goals: { unexplained: 23, mainH: 49 },
+    analytics: { unexplained: 95, mainH: 161 },
+    goals: { unexplained: 26, mainH: 49 },
     settings: { unexplained: 55, mainH: 83 },
     login: { unexplained: 53, mainH: -58 },
     "reset-password": { unexplained: 19, mainH: 0 },

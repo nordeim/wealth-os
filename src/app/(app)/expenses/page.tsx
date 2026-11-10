@@ -37,7 +37,7 @@ import {
 } from "@/lib/constants";
 import { budgetCategorySplit, formatMoney, toDate } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, GLASS_CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT, CTA } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/types";
@@ -144,7 +144,7 @@ export default function ExpensesPage() {
       title="No expenses yet"
       subtitle="Start tracking your spending to better manage your budget"
       action={
-        <Button onClick={openCreate}>
+        <Button onClick={openCreate} className={CTA.rose}>
           <PlusCircle className="h-4 w-4" />
           Add Your First Expense
         </Button>
@@ -167,7 +167,7 @@ export default function ExpensesPage() {
                 <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
                   {tx.description}
                 </p>
-                <p className="text-xs text-stone-500 dark:text-stone-500">
+                <p className="text-xs text-stone-500 dark:text-stone-400">
                   {tx.category} · {toDate(tx.date).toLocaleDateString("en-US", { // F-218d
                     month: "short",
                     day: "numeric",
@@ -219,7 +219,7 @@ export default function ExpensesPage() {
           title="Expenses"
           subtitle="Track and categorize all your spending"
           actions={
-            <Button onClick={openCreate}>
+            <Button onClick={openCreate} className={CTA.rose}>
               <PlusCircle className="h-4 w-4" />
               Add Expense
             </Button>
@@ -231,14 +231,14 @@ export default function ExpensesPage() {
             the documented superset, plain glass) */}
         <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           <div className={cn(GLASS_CARD.base, CARD.padding)}>
-            <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Total Expenses</p>
+            <p className="text-sm font-medium text-stone-500 dark:text-stone-400">Total Expenses</p>
             <p className="mt-1 text-2xl font-bold text-stone-900 dark:text-stone-50">
               {formatMoney(split.needs + split.wants + split.savings)}
             </p>
           </div>
           {(["needs", "wants", "savings"] as const).map((key) => (
             <div key={key} className={cn(GLASS_CARD.hover, CARD.padding)}>
-              <span className="flex items-center gap-1.5 text-sm font-medium text-stone-500 dark:text-stone-500">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">
                 <span
                   className="h-2.5 w-2.5 rounded-full"
                   style={{ backgroundColor: BUDGET_CATEGORY_META[key].color }}
@@ -274,7 +274,7 @@ export default function ExpensesPage() {
               <Filter className="h-4 w-4" />
               Filters
               {activeFilters > 0 ? (
-                <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[11px] font-bold text-white">
+                <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[11px] font-bold text-stone-900">
                   {activeFilters}
                 </span>
               ) : null}
@@ -296,7 +296,7 @@ export default function ExpensesPage() {
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-                <label className="mb-1 block text-xs font-medium text-stone-500 dark:text-stone-500" htmlFor="expense-category-filter">
+                <label className="mb-1 block text-xs font-medium text-stone-500 dark:text-stone-400" htmlFor="expense-category-filter">
                   Category
                 </label>
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -486,7 +486,7 @@ export function ExpenseDialog({
             <button
               type="button"
               onClick={() => setStep("form")}
-              className="mt-4 w-full text-center text-sm font-medium text-stone-500 underline-offset-4 hover:text-amber-600 hover:underline dark:text-stone-500"
+              className="mt-4 w-full text-center text-sm font-medium text-stone-500 underline-offset-4 hover:text-amber-600 hover:underline dark:text-stone-400"
             >
               Or fill manually
             </button>
@@ -624,7 +624,7 @@ export function ExpenseDialog({
                 <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" disabled={busy}>
+                <Button type="submit" disabled={busy} className={CTA.rose}>
                   <PlusCircle className="h-4 w-4" />
                   {editing ? "Save Changes" : "Add Expense"}
                 </Button>

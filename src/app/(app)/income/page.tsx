@@ -27,7 +27,7 @@ import {
 } from "@/lib/constants";
 import { formatMoney, relativeDays, toDate, totalMonthlyIncome } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, GLASS_CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT, CTA } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { IncomeSource } from "@/types";
@@ -76,7 +76,7 @@ export default function IncomePage() {
           title="Income Sources"
           subtitle="Track and manage all your income streams"
           actions={
-            <Button onClick={openCreate}>
+            <Button onClick={openCreate} className={CTA.emerald}>
               <PlusCircle className="h-4 w-4" />
               Add Income Source
             </Button>
@@ -88,7 +88,7 @@ export default function IncomePage() {
             <TrendingUp className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
           </span>
           <div>
-            <p className="text-sm font-medium text-stone-500 dark:text-stone-500">Total Monthly Income</p>
+            <p className="text-sm font-medium text-stone-500 dark:text-stone-400">Total Monthly Income</p>
             <p className="text-2xl font-bold text-stone-900 dark:text-stone-50">
               {formatMoney(monthlyTotal)}
             </p>
@@ -105,7 +105,7 @@ export default function IncomePage() {
               title="No Income Sources Yet"
               subtitle="Start by adding your income sources to track your financial progress"
               action={
-                <Button onClick={openCreate}>
+                <Button onClick={openCreate} className={CTA.emerald}>
                   <PlusCircle className="h-4 w-4" />
                   Add Your First Income Source
                 </Button>
@@ -129,7 +129,7 @@ export default function IncomePage() {
                       </span>
                       <div>
                         <p className="font-semibold text-stone-900 dark:text-stone-100">{source.name}</p>
-                        <p className="text-xs capitalize text-stone-500 dark:text-stone-500">
+                        <p className="text-xs capitalize text-stone-500 dark:text-stone-400">
                           {source.type} · {source.frequency}
                         </p>
                       </div>
@@ -151,10 +151,10 @@ export default function IncomePage() {
                       /{source.frequency.replace("biweekly", "2 weeks").replace("annually", "year")}
                     </span>
                   </p>
-                  <p className="text-xs text-stone-500 dark:text-stone-500">
+                  <p className="text-xs text-stone-500 dark:text-stone-400">
                     ≈ {formatMoney(monthly)} / month
                     {source.nextPaymentDate
-                      ? ` · next ${relativeDays(new Date(source.nextPaymentDate), new Date())}`
+                      ? ` · next ${relativeDays(toDate(source.nextPaymentDate), new Date())}`
                       : ""}
                   </p>
                   <div className="mt-4 flex gap-2">
@@ -344,7 +344,7 @@ function IncomeSourceDialog({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={busy}>
+            <Button type="submit" disabled={busy} className={CTA.emerald}>
               {editing ? "Save Changes" : "Add Income Source"}
             </Button>
           </DialogFooter>

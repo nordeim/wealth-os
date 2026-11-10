@@ -61,12 +61,12 @@ export function KpiCard({
       ? "text-emerald-700 dark:text-emerald-400"
       : deltaDirection === "down"
         ? "text-red-600 dark:text-red-400" // F-218j: red-500 was 3.76:1 at text-xs
-        : "text-stone-500 dark:text-stone-500";
+        : "text-stone-600 dark:text-stone-400";
   return (
     <div className={cn(CARD.kpi)}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-stone-500 dark:text-stone-500">{label}</p>
+          <p className="text-sm font-medium text-stone-600 dark:text-stone-400">{label}</p>
           <p className="mt-1 text-2xl font-bold tracking-tight text-stone-900 md:text-3xl dark:text-stone-50">
             {value}
           </p>
@@ -196,8 +196,8 @@ export function PeriodSegment({
           className={cn(
             "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200",
             value === option
-              ? "bg-amber-500 text-white shadow-sm"
-              : "text-stone-600 hover:text-stone-900 dark:text-stone-500 dark:hover:text-stone-100",
+              ? "bg-gradient-to-r from-amber-500 to-yellow-600 text-stone-900 shadow-sm"
+              : "text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100",
           )}
         >
           {option}

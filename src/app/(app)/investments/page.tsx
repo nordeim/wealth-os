@@ -45,9 +45,10 @@ import {
   formatAxisMoney,
   formatMoney,
   portfolioStats,
+  toDate,
 } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, PAGE_ROOT } from "@/lib/page-layout";
+import { CARD, PAGE_ROOT, CTA } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Investment } from "@/types";
@@ -97,7 +98,7 @@ export default function InvestmentsPage() {
           title="Investments"
           subtitle="Track your portfolio performance"
           actions={
-            <Button onClick={openCreate}>
+            <Button onClick={openCreate} className={CTA.emerald}>
               <PlusCircle className="h-4 w-4" />
               Add Investment
             </Button>
@@ -232,7 +233,7 @@ export default function InvestmentsPage() {
               icon={Wallet}
               title="No investments yet"
               action={
-                <Button onClick={openCreate}>
+                <Button onClick={openCreate} className={CTA.emerald}>
                   <PlusCircle className="h-4 w-4" />
                   Add Your First Investment
                 </Button>
@@ -242,7 +243,7 @@ export default function InvestmentsPage() {
             <div className="overflow-x-auto scrollbar-thin">
               <table className="w-full min-w-[720px] text-sm">
                 <thead>
-                  <tr className="border-b border-stone-200 text-left text-xs uppercase tracking-wide text-stone-500 dark:border-stone-800 dark:text-stone-500">
+                  <tr className="border-b border-stone-200 text-left text-xs uppercase tracking-wide text-stone-500 dark:border-stone-800 dark:text-stone-400">
                     <th className="pb-2 pr-4 font-semibold">Asset</th>
                     <th className="pb-2 pr-4 font-semibold">Name</th>
                     <th className="pb-2 pr-4 font-semibold">Type</th>
@@ -273,7 +274,7 @@ export default function InvestmentsPage() {
                             {meta?.label ?? row.type}
                           </span>
                         </td>
-                        <td className="py-3 pr-4 text-right text-stone-600 dark:text-stone-500">{formatMoney(row.invested)}</td>
+                        <td className="py-3 pr-4 text-right text-stone-600 dark:text-stone-400">{formatMoney(row.invested)}</td>
                         <td className="py-3 pr-4 text-right font-semibold text-stone-900 dark:text-stone-100">
                           {formatMoney(row.value)}
                         </td>
@@ -290,7 +291,7 @@ export default function InvestmentsPage() {
                             {row.gainPct}%)
                           </span>
                         </td>
-                        <td className="py-3 pr-4 text-right text-stone-600 dark:text-stone-500">{row.pctOfPortfolio}%</td>
+                        <td className="py-3 pr-4 text-right text-stone-600 dark:text-stone-400">{row.pctOfPortfolio}%</td>
                         <td className="py-3 text-right">
                           <span className="flex justify-end gap-1">
                             <Button
@@ -369,7 +370,7 @@ function InvestmentDialog({
       setAvgCost(editing ? String(editing.avgCost) : "");
       setCurrentValue(editing ? String(editing.currentValue) : "");
       setPurchaseDate(
-        editing?.purchaseDate ? toDateInputValue(new Date(editing.purchaseDate)) : "",
+        editing?.purchaseDate ? toDateInputValue(toDate(editing.purchaseDate)) : "",
       );
   }
 
@@ -519,7 +520,7 @@ function InvestmentDialog({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={busy}>
+            <Button type="submit" disabled={busy} className={CTA.emerald}>
               {editing ? "Save Changes" : "Add Investment"}
             </Button>
           </DialogFooter>

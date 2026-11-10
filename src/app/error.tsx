@@ -39,7 +39,7 @@ export default function ErrorPage({
       <div className="max-w-md w-full">
         <div className="text-center space-y-6">
           <div className="space-y-2">
-            <h1 className="text-4xl font-light text-slate-300">Something went wrong</h1>
+            <h1 className="text-4xl font-light text-slate-500">Something went wrong</h1>
             <div className="h-0.5 w-16 bg-slate-200 mx-auto" aria-hidden="true" />
           </div>
           <div className="space-y-3">
@@ -53,7 +53,7 @@ export default function ErrorPage({
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-stone-900 bg-primary rounded-lg hover:bg-primary-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
               <RotateCcw className="h-4 w-4 mr-2" aria-hidden="true" />
               Try again

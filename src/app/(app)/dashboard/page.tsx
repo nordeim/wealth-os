@@ -367,7 +367,7 @@ export default function DashboardPage() {
                           "text-xs font-semibold",
                           row.over
                             ? "text-red-600 dark:text-red-400" // F-218j
-                            : "text-stone-500 dark:text-stone-500",
+                            : "text-stone-500 dark:text-stone-400",
                         )}
                       >
                         {formatMoney(row.actual)} / {formatMoney(row.budget)}
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                       <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
                         {item.description}
                       </p>
-                      <p className="text-xs text-stone-500 dark:text-stone-500">
+                      <p className="text-xs text-stone-500 dark:text-stone-400">
                         Due {relativeDays(item.nextDate, now)} · {item.category}
                       </p>
                     </div>
@@ -454,7 +454,7 @@ export default function DashboardPage() {
                         <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
                           {row.description}
                         </p>
-                        <p className="text-xs text-stone-500 dark:text-stone-500">
+                        <p className="text-xs text-stone-500 dark:text-stone-400">
                           {row.category} · {relativeDays(row.date, now)}
                         </p>
                       </div>
@@ -518,7 +518,7 @@ export default function DashboardPage() {
                     )}
                   >
                     <p className="text-sm font-semibold text-stone-900 dark:text-stone-100">{insight.title}</p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-stone-600 dark:text-stone-500">{insight.body}</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-stone-600 dark:text-stone-400">{insight.body}</p>
                   </li>
                 ))}
               </ul>
@@ -529,7 +529,9 @@ export default function DashboardPage() {
         {/* Quick actions — the reference's one-off warm variant (via-30,
             rounded-2xl, amber-200 border; p-6 in the literal) */}
         <section className={QUICK_ACTIONS_CARD} aria-label="Quick Actions">
-          <h2 className="mb-4 text-xl font-bold text-amber-500">Quick Actions</h2>
+          {/* Session-219 (R-16, F-219k): amber-700 — amber-500 measured 2.09:1
+        on the light surface (the AA one-step doctrine). */}
+        <h2 className="mb-4 text-xl font-bold text-amber-700 dark:text-amber-400">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <QuickAction href="/Income" label="Add Income" icon={TrendingUp} className="border-emerald-200 dark:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-300" iconClassName="text-emerald-600 dark:text-emerald-400" />
             <QuickAction href="/Expenses" label="Add Expense" icon={TrendingDown} className="border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:border-rose-300" iconClassName="text-rose-600 dark:text-rose-400" />
@@ -573,7 +575,7 @@ function QuickAction({
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-card shadow-sm hover:text-neutral-900 dark:hover:text-neutral-50 px-4 py-2 w-full h-16 flex-col gap-2",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-card shadow-sm hover:text-neutral-900 dark:hover:text-neutral-50 px-4 py-2 w-full h-16 flex-col gap-2",
         className,
       )}
     >
@@ -627,10 +629,14 @@ function HealthGauge({ score, band }: { score: number; band: string }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-1">
-        <span className="text-3xl font-black" style={{ color }}>
+        {/* Session-219 (R-16, F-219k): the score + band ride the ink, not
+            the band colors (emerald 2.54 / teal 2.49 / amber 2.15:1 as
+            small text) — the colored arc carries the hue; role="img"
+            carries the semantics. */}
+        <span className="text-3xl font-black text-stone-900 dark:text-stone-100">
           {score}
         </span>
-        <span className="text-xs font-bold" style={{ color }}>
+        <span className="text-xs font-bold text-stone-700 dark:text-stone-300">
           {band}
         </span>
       </div>

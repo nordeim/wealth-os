@@ -136,35 +136,35 @@ export const FULLPAGE_CLASSES = [
  *  cross-check). */
 export const STANDING_FULLPAGE_BASELINES: Record<string, BaselineTable> = {
   // 1440×900 — the desktop class (the sweep's own) — session-210 maiden,
-  // re-derived session-217 (R-14): the dark-mode completion converged the
-  // shared-viewport values onto the sweep's own fresh tables.
+  // re-derived session-217 (R-14) and session-219 (R-16 — the CTA genus
+  // convergence + the analytics empty-state construction).
   desktop: {
-    dashboard: 59.88,
-    income: 29.93,
-    expenses: 13.48,
-    accounts: 10.8,
-    investments: 49.43,
-    import: 26.51,
-    analytics: 40.13,
-    goals: 7.16,
-    settings: 50.5,
-    login: 7.82,
-    "reset-password": 3.87,
+    dashboard: 59.8,
+    income: 29.6,
+    expenses: 13.3,
+    accounts: 10.6,
+    investments: 49.3,
+    import: 26.6,
+    analytics: 36.1,
+    goals: 7.0,
+    settings: 50.6,
+    login: 7.9,
+    "reset-password": 3.9,
   },
   // 390×844 — the phone class (the sweep's own) — session-210 maiden,
-  // re-derived session-217 (R-14).
+  // re-derived session-217 (R-14) and session-219 (R-16).
   phone: {
-    dashboard: 77.9,
-    income: 45.32,
-    expenses: 61.0,
-    accounts: 23.21,
-    investments: 80.89,
-    import: 31.06,
-    analytics: 66.9,
-    goals: 17.87,
-    settings: 60.79,
+    dashboard: 78.0,
+    income: 44.2,
+    expenses: 60.2,
+    accounts: 22.5,
+    investments: 80.5,
+    import: 31.1,
+    analytics: 67.7,
+    goals: 17.5,
+    settings: 60.8,
     login: 16.5,
-    "reset-password": 16.42,
+    "reset-password": 16.5,
   },
 };
 

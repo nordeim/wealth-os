@@ -96,19 +96,28 @@ export const resetPasswordSchema = z.object({
 // Finance CRUD — the shared field builders
 // ---------------------------------------------------------------------------
 
+// Session-219 (R-16, F-219p): money normalizes to 2dp AT THE BOUNDARY —
+// finite+range alone admitted 3.14159, and the stored Float drifted
+// sub-cent residue into every aggregate (budget-vs-actual, portfolio,
+// health score). The transform rounds once, here, so no consumer
+// re-rounds.
+const round2dp = (v: number) => Math.round(v * 100) / 100;
+
 const moneyField = (message: string) =>
   z
     .number({ message })
     .finite(message)
     .min(0, "Amount must be zero or more")
-    .max(1_000_000_000, "Amount is too large");
+    .max(1_000_000_000, "Amount is too large")
+    .transform(round2dp);
 
 const signedMoneyField = (message: string) =>
   z
     .number({ message })
     .finite(message)
     .min(-1_000_000_000, "Amount is too large")
-    .max(1_000_000_000, "Amount is too large");
+    .max(1_000_000_000, "Amount is too large")
+    .transform(round2dp);
 
 // Session-216 (R-13, F-216h): calendar-true dates. The pre-216 refine
 // was Date.parse-based — V8 ROLLS invalid calendar dates ("2026-02-30"
@@ -193,12 +202,16 @@ export const transactionUpdateSchema = z.object({
     .optional(),
   budgetCategory: enumField(BUDGET_CATEGORIES, "Invalid budget category").optional(),
   date: dateField("Date is required").optional(),
+  // Session-219 (R-16, F-219q): an explicit null OR "" now means THE
+  // CLEAR (both normalize to null and SURVIVE the parse — the routes'
+  // `!== undefined` spreads write it). The old null→undefined collapse
+  // meant no payload could ever clear these fields once set.
   notes: z
     .string()
     .trim()
     .max(1000, "Notes must be reasonably sized")
     .nullable()
-    .transform((v) => (v === null || v === "" ? undefined : v))
+    .transform((v) => (v === "" ? null : v))
     .optional(),
   recurring: z.boolean().optional(),
   nextDate: dateField("Enter a valid next date").nullable().optional(),
@@ -256,12 +269,16 @@ export const incomeSourceUpdateSchema = z.object({
   ).optional(),
   active: z.boolean().optional(),
   nextPaymentDate: dateField("Enter a valid next payment date").nullable().optional(),
+  // Session-219 (R-16, F-219q): an explicit null OR "" now means THE
+  // CLEAR (both normalize to null and SURVIVE the parse — the routes'
+  // `!== undefined` spreads write it). The old null→undefined collapse
+  // meant no payload could ever clear these fields once set.
   notes: z
     .string()
     .trim()
     .max(1000, "Notes must be reasonably sized")
     .nullable()
-    .transform((v) => (v === null || v === "" ? undefined : v))
+    .transform((v) => (v === "" ? null : v))
     .optional(),
 });
 
@@ -311,7 +328,7 @@ export const bankAccountUpdateSchema = z.object({
     .trim()
     .max(120, "Institution must be reasonably sized")
     .nullable()
-    .transform((v) => (v === null || v === "" ? undefined : v))
+    .transform((v) => (v === "" ? null : v))
     .optional(),
   balance: signedMoneyField("Balance is required").optional(),
   currency: enumField(
@@ -386,12 +403,16 @@ export const investmentUpdateSchema = z.object({
   avgCost: moneyField("Cost per share is required").optional(),
   currentValue: moneyField("Current price is required").optional(),
   purchaseDate: dateField("Enter a valid purchase date").nullable().optional(),
+  // Session-219 (R-16, F-219q): an explicit null OR "" now means THE
+  // CLEAR (both normalize to null and SURVIVE the parse — the routes'
+  // `!== undefined` spreads write it). The old null→undefined collapse
+  // meant no payload could ever clear these fields once set.
   notes: z
     .string()
     .trim()
     .max(1000, "Notes must be reasonably sized")
     .nullable()
-    .transform((v) => (v === null || v === "" ? undefined : v))
+    .transform((v) => (v === "" ? null : v))
     .optional(),
 });
 
