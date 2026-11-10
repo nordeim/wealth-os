@@ -87,6 +87,31 @@ describe("dateField — calendar-true dates (F-216h, session 216)", () => {
       false,
     );
   });
+
+  // Session-217 (R-14, F-217j): the pre-217 shape regex's `(T.*)?` tail
+  // admitted offset datetimes and zoneless datetimes — the UTC round-trip
+  // then accepted or rejected them depending on the offset crossing the
+  // UTC day boundary (and the server's TZ for zoneless forms).
+  // Third-party API callers got semi-random 400s on valid-looking ISO
+  // strings. The cure: ONLY the two sanctioned forms — the bare calendar
+  // date and the Z-suffixed ISO datetime — everything else rejects
+  // deterministically.
+  it.each([
+    "2026-01-15T23:30:00+05:00", // offset form (the day-boundary roulette)
+    "2026-01-15T00:30:00+05:00",
+    "2026-01-15T23:30:00-05:00",
+    "2026-01-15T23:30:00",       // zoneless datetime (TZ-dependent)
+    "2026-01-15T23:30:00.000",   // zoneless with millis
+    "2026-01-15 23:30:00",       // space separator
+  ])("rejects the unsanctioned datetime form %j (F-217j)", (date) => {
+    expect(transactionCreateSchema.safeParse({ ...valid, date }).success).toBe(false);
+  });
+
+  it("accepts the Z-suffixed datetime without millis (a sanctioned form)", () => {
+    expect(
+      transactionCreateSchema.safeParse({ ...valid, date: "2026-11-08T23:30:00Z" }).success,
+    ).toBe(true);
+  });
 });
 
 describe("transactionUpdateSchema (three-state PUT)", () => {

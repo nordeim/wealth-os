@@ -244,6 +244,40 @@ test.describe("the Expenses tabs + search", () => {
     await page.keyboard.press("Escape");
     await expect(page.getByRole("group", { name: "Expense filters" })).toHaveCount(0);
   });
+
+  test("a mouse pick on the portaled Select option applies the filter (F-217a)", async ({ page }) => {
+    // Session-217 (R-14): the F-216i outside-close guard fired on the
+    // Category Select's PORTALED options (they live in document.body,
+    // outside the popover group) — the popover unmounted mid-pick and
+    // the filter never applied for mouse users (live-reproduced).
+    // The cure: the guard spares the Radix portal surfaces.
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    const popover = page.getByRole("group", { name: "Expense filters" });
+    await expect(popover).toBeVisible();
+    await page.locator("#expense-category-filter").click();
+    await page.getByRole("option", { name: /Groceries/ }).click();
+    // The popover SURVIVES the pick and the filter APPLIES — the
+    // history count collapses to the seeded Groceries rows.
+    await expect(popover).toBeVisible();
+    await expect(page.locator("#expense-category-filter")).toContainText(/Groceries/);
+    // Close cleanly and assert the list is filtered.
+    await page.getByRole("button", { name: "Close filters" }).click();
+    await expect(popover).toHaveCount(0);
+    await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
+    await expect(page.getByText("Apartment Rent")).toHaveCount(0);
+  });
+
+  test("outside pointerdown still closes the popover (the F-216i contract kept)", async ({ page }) => {
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    const popover = page.getByRole("group", { name: "Expense filters" });
+    await expect(popover).toBeVisible();
+    // A pointerdown on the page HEADING (outside the popover, not a
+    // portal surface, not an expanded trigger) closes it.
+    await page.getByRole("heading", { name: /Expenses/ }).first().click();
+    await expect(popover).toHaveCount(0);
+  });
 });
 
 test.describe("the API auth wall (N-69g probe — the 401 seam)", () => {

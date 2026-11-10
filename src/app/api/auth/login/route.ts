@@ -3,7 +3,7 @@ import { ok, fail, ERR, parseBody } from "@/lib/api";
 import { verifyPassword, timingEqualizerHash, setSessionCookie } from "@/lib/auth";
 import { loginSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
-import { isVerificationPending, verificationRequiredMessage } from "@/lib/verification";
+import { verificationRequiredMessage } from "@/lib/verification";
 
 export const dynamic = "force-dynamic";
 
@@ -45,9 +45,15 @@ export async function POST(req: Request) {
     // Session-21 (S21-P5): an unverified account cannot sign in — the
     // reference answers "Please verify your email before logging in. Check
     // your email for the verification code." (live-verified with a throwaway
-    // signup). Pre-session-21 rows (verificationExpiresAt null) and expired
-    // codes pass through — the seeded demo account predates the flow.
-    if (isVerificationPending(user.verificationExpiresAt)) {
+    // signup). Pre-session-21 rows (verificationCodeHash null) pass through
+    // — the seeded demo account predates the flow. Session-217 (R-14,
+    // F-217d): the gate now keys on the HASH, not the TTL — an expired
+    // code used to pass isVerificationPending and sign the never-verified
+    // account straight in (the gate held for exactly 15 minutes), while
+    // the resend route's same predicate no-opped, locking the account out
+    // of its own recovery. A present hash = never verified (verify-success
+    // clears it); the resend re-arms expired accounts with a fresh code.
+    if (user.verificationCodeHash) {
       return fail("VERIFICATION_REQUIRED", verificationRequiredMessage(), 403);
     }
 

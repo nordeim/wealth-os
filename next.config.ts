@@ -108,6 +108,15 @@ const nextConfig: NextConfig = {
           },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Strict-Transport-Security", value: "max-age=31536000" },
+          // Session-217 (R-14, F-217h): frame-ancestors closes the
+          // clickjacking surface (the JSON CSRF gate + SameSite=Lax
+          // already bar cross-origin WRITES; this bars the framing
+          // itself). A functional superset — the reference's edge set
+          // does not carry it, and headers are function, not visuals.
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors 'self'",
+          },
         ],
       },
     ];

@@ -40,7 +40,10 @@ const buttonVariants = cva(
         // Filter) compute rgba(0,0,0,.1) 0 1px 3px 0 (the bare scale);
         // shadow-sm was one step light under the s9-re-pinned scale.
         default: "bg-primary text-primary-foreground shadow hover:bg-primary-hover",
-        secondary: "bg-white text-foreground border border-line shadow-sm hover:bg-line-soft",
+        // Session-217 (R-14, F-217c): secondary rides bg-surface (the
+        // token flips dark) — bg-white would strand the flipped light
+        // text on a white chip in dark mode.
+        secondary: "bg-surface text-foreground border border-line shadow-sm hover:bg-line-soft",
         // Session-17 (S17-P5): NO base text color — the stock ghost. The
         // reference's ghost carries only the hover pair; its one
         // text-bearing ghost ("Save All") renders the inherited #0a0a0a.
@@ -53,7 +56,9 @@ const buttonVariants = cva(
         // #171717. The F-128c1/F-129c3 value pair on the ghost variant
         // (s128 the menu-item ink · s129 the outline hover text · s130
         // the ghost hover text); the s80 badge precedent.
-        ghost: "hover:bg-line-soft hover:text-neutral-900",
+        // Session-217 (R-14, F-217c): the dark arm — neutral-900 on the
+        // #262626 dark hover wash is dark-on-dark.
+        ghost: "hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50",
         // Session-129 (F-129c2): the destructive hover is the ALPHA form —
         // live-walked on the Danger Zone reset (both viewports): ours
         // computed the SOLID darker step rgb(220,38,38) (the old
@@ -71,7 +76,7 @@ const buttonVariants = cva(
         // stock outline's hover:text-accent-foreground #171717. The
         // F-128c1 value pair; the s80 badge precedent expresses its
         // accent-foreground as our neutral-900 literal.
-        outline: "border border-line bg-surface text-foreground shadow-sm hover:bg-line-soft hover:text-neutral-900",
+        outline: "border border-line bg-surface text-foreground shadow-sm hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

@@ -161,3 +161,34 @@ describe("R-10: /api/users answers the session user only", () => {
     expect(src).toContain("guard.user");
   });
 });
+
+// Session-217 (R-14, F-217i — the search tails): R-13 retired
+// store.search but left the `SearchResults` interface exported with
+// zero importers (dead code that will drift) and /api/search with no
+// coverage of any kind. The route STAYS (a real, owner-scoped API
+// surface the README documents); the dead interface retires and the
+// route joins the exact-form pin family.
+
+describe("R-14: /api/search scopes through the owner (F-217i)", () => {
+  const src = norm(read("src/app/api/search/route.ts"));
+
+  it("every family query keys on ownerId", () => {
+    expect(src).toContain("ownerId: guard.user.id");
+    const ownerIdCount = (src.match(/ownerId: guard\.user\.id/g) ?? []).length;
+    // transactions + accounts + investments + goals — four families.
+    expect(ownerIdCount).toBe(4);
+  });
+
+  it("the route is session-gated", () => {
+    expect(src).toContain("requireSession()");
+  });
+});
+
+describe("R-14: the dead SearchResults interface is retired (F-217i)", () => {
+  it("types/index.ts no longer exports SearchResults", () => {
+    // Comment-stripped (the needle-in-own-docs rule): the retirement
+    // comment names the interface it retired.
+    const src = read("src/types/index.ts").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+    expect(src).not.toContain("SearchResults");
+  });
+});

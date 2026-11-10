@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { ok, ERR, parseBody, isGuarded, requireSession, MAX_AI_BODY_BYTES } from "@/lib/api";
 import { aiCoachSchema } from "@/lib/schemas";
 import { getAiProvider } from "@/lib/ai";
 
@@ -12,7 +12,10 @@ export async function POST(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
 
-  const parsed = await parseBody(req, aiCoachSchema);
+  // Session-217 (R-14, F-217b): the schema contracts history 30 × 4000
+  // (the LLM-provider surface) — the 16KB default rejected the schema's
+  // own worst case before validation ran. The route rides its own cap.
+  const parsed = await parseBody(req, aiCoachSchema, MAX_AI_BODY_BYTES);
   if (!parsed.ok) return parsed.response;
   const { question, history } = parsed.data;
 

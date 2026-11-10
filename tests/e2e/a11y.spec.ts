@@ -36,8 +36,16 @@ const SANCTIONED: Record<string, Array<{ any: string[]; cite: string }>> = {
     {
       // the amber primary button family (bg-primary = #f59e0b + white
       // bold text) — the reference's own "Add Transaction" genus
-      // (live-observed: amber gradient + white bold label)
-      any: ["bg-primary"],
+      // (live-observed: amber gradient + white bold label).
+      // Session-217 (F-217n): the `button[type="submit"]` needle — the
+      // dialog submits are the SAME amber+white primaries, but axe's
+      // generated selector for them does not always carry the bg-primary
+      // class (the shortest-unique-selector form is context-dependent —
+      // the Expenses dialog's submit generated `.bg-primary…`, the
+      // Accounts dialog's generated `button[type="submit"]`; the light
+      // Accounts dialog flagged identically, untested until the dark
+      // leg opened it). Same genus, same citation.
+      any: ["bg-primary", 'button[type="submit"]'],
       cite: "the amber primary buttons — the reference's own palette",
     },
     {
@@ -182,6 +190,46 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/Expenses");
     await page.getByRole("button", { name: "Add Expense" }).first().click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    assertTwoGate(await runAxe(page));
+  });
+
+  // Session-217 (R-14, F-217n): the two-gate ran light-mode only — the
+  // entire F-217c family (white dialog panels with light text in dark
+  // mode) was invisible to it. The dark leg writes the persisted theme
+  // BEFORE each navigation (the init script runs at document start,
+  // before the no-FOUC bootstrap reads it) and re-runs the two-gate.
+  test("desktop /Dashboard DARK — structural zero + sanctioned citations (F-217n)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.addInitScript(() => {
+      try {
+        localStorage.setItem("wealthos-theme", "dark");
+      } catch {
+        /* the storage sandbox — the light fallback still runs the gate */
+      }
+    });
+    await page.goto("/Dashboard");
+    await page.waitForLoadState("networkidle");
+    expect(await page.evaluate(() => document.documentElement.className)).toContain("dark");
+    assertTwoGate(await runAxe(page));
+  });
+
+  test("desktop /Accounts DARK with the Add dialog OPEN — the F-217c cure pinned (F-217n)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.addInitScript(() => {
+      try {
+        localStorage.setItem("wealthos-theme", "dark");
+      } catch {
+        /* see above */
+      }
+    });
+    await page.goto("/Accounts");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: /add (your first )?account/i }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible();
     assertTwoGate(await runAxe(page));
   });

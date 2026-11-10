@@ -166,3 +166,42 @@ describe("session-67: the standing auth-seam records (the N-67 keep set)", () =>
     expect(src).toContain("MAX_UPLOAD_BYTES + 64 * 1024");
   });
 });
+
+// Session-217 (R-14, F-217d — the verification-gate pins): the gate
+// dissolved after the 15-minute TTL — isVerificationPending returns
+// false for an EXPIRED code, so login passed a never-verified account
+// straight to a session, and the resend route (same predicate) answered
+// the no-op banner, locking the account out of its own recovery path.
+// The contract the reference's own banner states ("Please verify your
+// email before logging in") holds for the account's whole unverified
+// life, not its first 15 minutes. The cure's shape: login gates on the
+// HASH (present = never verified, expired or not; verify-success clears
+// it), resend re-arms for hash-present accounts.
+
+describe("session-217: the verification gate survives its TTL (F-217d)", () => {
+  const loginSrc = loginRoute();
+  const resendSrc = resendRoute();
+  const verificationSrc = stripComments(read("src/lib/verification.ts") ?? "");
+
+  it("login gates on the verification hash, not the TTL", () => {
+    expect(loginSrc).toMatch(/user\.verificationCodeHash/);
+    expect(loginSrc).not.toMatch(
+      /if \(isVerificationPending\(user\.verificationExpiresAt\)\)/,
+    );
+  });
+
+  it("the null-hash pass-through survives (pre-flow rows + verified accounts)", () => {
+    // The seeded demo account predates the flow — its NULL hash must
+    // keep passing (the cure must not lock the demo out).
+    expect(verificationSrc).toContain(
+      "if (expiresAt === null || expiresAt === undefined) return false",
+    );
+  });
+
+  it("resend re-arms for hash-present accounts (the expired account's recovery)", () => {
+    expect(resendSrc).not.toMatch(
+      /!user\.verificationCodeHash \|\| !isVerificationPending/,
+    );
+    expect(resendSrc).toMatch(/user\.verificationCodeHash/);
+  });
+});

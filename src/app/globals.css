@@ -332,6 +332,26 @@
   --color-muted-foreground: #a3a3a3;
   --color-popover: #0a0a0a;
   --color-popover-foreground: #fafafa;
+  /* Session-217 (R-14, F-217c): the app-native set's dark flips —
+     the completion R-11 left behind. Without these, every dialog
+     (DIALOG_CONTENT.base = bg-surface), the Select listbox, the
+     dropdown menu, and every text-foreground inheritor rendered
+     WHITE panels with light text in dark mode (live-verified:
+     1.09:1 dialog titles, 1.00:1 user-menu items — the reference's
+     own dark dialog panel measures #0a0a0a with #262626 borders and
+     #fafafa labels, live-probed this session). The base-layer
+     `.dark body { color: #f5f5f4 }` rule was INERT (a utility on
+     <body> always beats it) — the token flip is the working seam.
+     ink/muted-ink follow the existing `.dark .input-base` precedent
+     (#f5f5f4 text / #a8a29e placeholders) so the native date inputs
+     and the dialog text inputs agree. */
+  --color-surface: #0a0a0a;
+  --color-foreground: #fafafa;
+  --color-ink: #f5f5f4;
+  --color-muted-ink: #a8a29e;
+  --color-line: #262626;
+  --color-line-soft: #262626;
+  --color-line-strong: #404040;
 }
 
 /* ---------------------------------------------------------------------------

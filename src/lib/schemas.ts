@@ -118,13 +118,21 @@ const signedMoneyField = (message: string) =>
 // datetime (the Import page's toISOString) — so the field now accepts
 // ONLY those shapes, with a calendar round-trip (the parsed UTC date
 // must equal the date the user wrote) killing the rollovers.
+// Session-217 (R-14, F-217j): the shape's `(T.*)?` tail admitted
+// offset datetimes and zoneless datetimes — the round-trip then
+// accepted or rejected them on the offset's day-boundary crossing
+// (and the server's TZ for zoneless forms), a semi-random 400 for
+// third-party API callers. The shape now names the two sanctioned
+// forms EXACTLY: the bare calendar date and the Z-suffixed ISO
+// datetime (optional milliseconds), everything else rejects
+// deterministically.
 const dateField = (message: string) =>
   z
     .string({ message })
     .trim()
     .min(1, message)
     .refine((v) => {
-      if (!/^\d{4}-\d{2}-\d{2}(T.*)?$/.test(v)) return false;
+      if (!/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z)?$/.test(v)) return false;
       const d = new Date(v);
       return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v.slice(0, 10);
     }, "Enter a valid date");

@@ -1,0 +1,50 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+
+// Session-217 (R-14, F-217k/F-217l — the store's state-hygiene pins):
+// (k) hydrate() never cleared a stale `error` at entry — the R-13
+//     error banner's Try-again rendered BOTH the stale banner and the
+//     LoadingBlock mid-retry, and a 401 retry left the stale non-auth
+//     error showing after the failure mode changed.
+// (l) the mutation actions read sessionWriteToken at refreshAll-
+//     INVOCATION time (after their fetch resolved), violating the
+//     write-guard's own "captured at entry" contract — a logout
+//     completing in between let refreshAll(N+1) write the previous
+//     user's dashboard payload into the cleared store.
+
+const ROOT = path.resolve(import.meta.dirname, "..");
+const STORE = readFileSync(
+  path.join(ROOT, "src/stores/wealthos-store.ts"),
+  "utf-8",
+);
+
+describe("R-14: hydrate clears the stale error face (F-217k)", () => {
+  it("hydrate's entry write resets error alongside loading", () => {
+    expect(STORE).toMatch(/set\(\{ loading: true, error: null \}\)/);
+  });
+
+  it("the 401 branch no longer leaves a stale error standing", () => {
+    expect(STORE).toMatch(/hydrated: true,\s*loading: false,\s*user: null,\s*error: null/);
+  });
+});
+
+describe("R-14: the mutation actions capture the write token at entry (F-217l)", () => {
+  it("no action passes the LIVE token to refreshAll after its fetch", () => {
+    // The pre-cure pattern: `if (res.ok) await refreshAll(sessionWriteToken, set);`
+    // — the token read AFTER the mutation resolves. Zero occurrences
+    // is the contract.
+    expect(STORE).not.toMatch(/refreshAll\(sessionWriteToken, set\)/);
+  });
+
+  it("every action captures the token before its first await", () => {
+    expect(STORE).toMatch(/const token = sessionWriteToken;/);
+    expect(STORE).toMatch(/refreshAll\(token, set\)/);
+  });
+
+  it("refresh captures the token at entry too", () => {
+    // The comment between the brace and the capture is fine — the pin
+    // allows the documentation line(s) the cure carries.
+    expect(STORE).toMatch(/refresh: async \(\) => \{\s*(?:\/\/[^\n]*\n\s*)*const token = sessionWriteToken;/);
+  });
+});

@@ -141,26 +141,29 @@ describe("session-18: the favicon (S18-P3)", () => {
 });
 
 describe("session-18: sitemap.xml + robots.txt (S18-P4)", () => {
-  it("serves the reference's nine WealthOS URLs at our lowercase canonicals", () => {
+  it("serves the reference's nine WealthOS URLs at the Capital metadata-rich twins", () => {
     const src = sitemapSrc();
-    // The WealthOS reference's sitemap (fetched live 2026-11-08): 9 URLs —
-    // the root at 1.0 plus Accounts/Analytics/Expenses/Goals/Import/
-    // Income/Investments/Settings at 0.8. Its locs are CAPITALIZED (its
-    // platform routes case-insensitively); our router is case-sensitive,
-    // so ours lists the lowercase canonicals the router actually serves
-    // (the s14 house rule — the platform quirk is fixed, not copied). The
-    // reference lists NO /Dashboard (its root IS the dashboard for
-    // signed-in visitors) and no auth pages — mirrored exactly.
+    // The WealthOS reference's sitemap (fetched live 2026-11-08; casing
+    // re-verified 2026-11-10): 9 URLs — the root at 1.0 plus Accounts/
+    // Analytics/Expenses/Goals/Import/Income/Investments/Settings at 0.8.
+    // Session-217 (R-14, F-217f): the locs moved to the CAPITAL twins —
+    // the reference's own casing AND the only form that carries per-route
+    // metadata (the lowercase page.tsx files are "use client" and cannot
+    // export metadata, so the lowercase locs self-canonicalized every
+    // sitemap URL to the homepage — functionally inert for crawlers).
+    // The route twins serve BOTH casings (ADR-004), so nothing 404s
+    // either way; the s14 case-sensitivity concern is moot for the
+    // listed set.
     for (const route of [
       "/",
-      "/accounts",
-      "/analytics",
-      "/expenses",
-      "/goals",
-      "/import",
-      "/income",
-      "/investments",
-      "/settings",
+      "/Accounts",
+      "/Analytics",
+      "/Expenses",
+      "/Goals",
+      "/Import",
+      "/Income",
+      "/Investments",
+      "/Settings",
     ]) {
       expect(src).toContain(`{ path: "${route}"`);
     }
@@ -170,9 +173,8 @@ describe("session-18: sitemap.xml + robots.txt (S18-P4)", () => {
     expect(src).toContain('<changefreq>weekly</changefreq>');
     expect(src).toContain('priority: "1.0"');
     expect(src).toContain('priority: "0.8"');
-    // Lowercase only — the reference's capitalized locs are its
-    // case-insensitive-platform quirk (fixed, not copied).
-    expect(src).not.toContain('"/Accounts"');
+    // The metadata-poor lowercase twins are gone from the loc set.
+    expect(src).not.toContain('{ path: "/accounts"');
   });
 
   it("session-201 (D-201a): carries no loc the router does not serve", () => {

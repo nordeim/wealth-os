@@ -114,9 +114,9 @@ function ToastCard({ item }: { item: ToastItem }) {
         // path) — no reference surface contracts an animation; retired per
         // the D-124a7 dead-code doctrine. The tw-animate.css vendor import
         // stays (the Radix dialog family rides it).
-        item.variant === "success" && "border-emerald-200 bg-white",
-        item.variant === "error" && "border-rose-200 bg-white",
-        item.variant === "info" && "border-line bg-white",
+        item.variant === "success" && "border-emerald-200 bg-surface dark:border-emerald-800",
+        item.variant === "error" && "border-rose-200 bg-surface dark:border-rose-800",
+        item.variant === "info" && "border-line bg-surface",
       )}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -124,7 +124,7 @@ function ToastCard({ item }: { item: ToastItem }) {
       <span className="mt-0.5 shrink-0">{ICONS[item.variant]}</span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-foreground">{item.title}</p>
-        {item.description && <p className="mt-0.5 text-xs text-muted">{item.description}</p>}
+        {item.description && <p className="mt-0.5 text-xs text-muted dark:text-stone-400">{item.description}</p>}
       </div>
       <button
         type="button"
@@ -137,7 +137,11 @@ function ToastCard({ item }: { item: ToastItem }) {
         // surface is DOM-DEAD (F-131c1 — no live face to parity), so the
         // fix rides OUR superset by the trio precedent + internal
         // consistency: the LAST live hover:text-foreground ride in src/.
-        className="shrink-0 rounded-md p-1 text-subtle transition-colors hover:bg-line-soft hover:text-neutral-900"
+        // Session-217 (R-14, F-217c): the panel rides bg-surface (the
+        // token flips dark — bg-white would strand light text on white)
+        // and the hover pair gains its dark arm (neutral-900 on the
+        // #262626 hover wash is dark-on-dark).
+        className="shrink-0 rounded-md p-1 text-subtle transition-colors hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50"
         aria-label="Dismiss notification"
       >
         <X className="h-3.5 w-3.5" />

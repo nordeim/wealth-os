@@ -99,3 +99,41 @@ describe("session-20: the static-file content-types (S20-P4)", () => {
     expect(src).toContain('"content-type": "application/json"');
   });
 });
+
+// Session-217 (R-14, F-217g/F-217h — the response-hardening pair):
+// (g) the API envelope carried no Cache-Control — financial-data GETs
+//     (/api/transactions, /api/dashboard, /api/export — the GDPR dump)
+//     could be heuristically cached by browsers/intermediaries. The
+//     cure: `Cache-Control: no-store` on the ok()/fail() envelope (the
+//     uploads GET keeps its own immutable caching — capability URLs).
+// (h) the app shipped no frame-ancestors — the authed surfaces were
+//     framable (the JSON CSRF gate + SameSite=Lax constrain practical
+//     exploitation; the header closes the class). A functional
+//     superset, sanctioned by the parity doctrine.
+
+describe("session-217: the response-hardening pair (F-217g/F-217h)", () => {
+  it("the envelope sets Cache-Control: no-store on ok()", async () => {
+    const { ok } = await import("@/lib/api");
+    const res = ok({ x: 1 });
+    expect(res.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("the envelope sets Cache-Control: no-store on fail() and the 429 arm", async () => {
+    const { ERR } = await import("@/lib/api");
+    expect(ERR.BAD_REQUEST("x").headers.get("cache-control")).toBe("no-store");
+    expect(ERR.RATE_LIMITED(30).headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("next.config.ts ships Content-Security-Policy: frame-ancestors 'self' (F-217h)", () => {
+    const src = configSrc();
+    expect(src).toMatch(
+      /key:\s*"Content-Security-Policy",\s*value:\s*"frame-ancestors 'self'"/,
+    );
+  });
+
+  it("the bare-HSTS reference-parity pins survive the addition", () => {
+    const src = configSrc();
+    expect(src).not.toMatch(/includeSubDomains/);
+    expect(src).not.toMatch(/preload/);
+  });
+});

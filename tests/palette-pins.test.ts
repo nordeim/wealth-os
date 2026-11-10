@@ -189,4 +189,27 @@ describe("R-11: the v3 re-pin values (the F-214d cure literals)", () => {
     );
     expect(missingDark).toEqual([]);
   });
+
+  // Session-217 (R-14, F-217c — the dark-mode completion): the seven
+  // APP-NATIVE tokens join the flip set — the reference's own dark
+  // family (its dialog panel measures #0a0a0a with #262626 borders and
+  // #fafafa labels; ink/muted-ink follow the existing .dark .input-base
+  // precedent). Without these, every dialog, the Select listbox, and
+  // the user-menu rendered white panels with light text (1.09:1).
+  it("the 7 app-native tokens flip in .dark (F-217c)", () => {
+    const DARK = CSS.slice(CSS.indexOf(".dark {"));
+    const darkFlips: Record<string, string> = {
+      surface: "#0a0a0a",
+      foreground: "#fafafa",
+      ink: "#f5f5f4",
+      "muted-ink": "#a8a29e",
+      line: "#262626",
+      "line-soft": "#262626",
+      "line-strong": "#404040",
+    };
+    const missingDark = Object.entries(darkFlips).filter(
+      ([token, hex]) => !DARK.includes(`--color-${token}: ${hex};`),
+    );
+    expect(missingDark).toEqual([]);
+  });
 });

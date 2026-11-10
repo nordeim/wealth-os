@@ -66,27 +66,33 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     expect(read("scripts/sweep-state.ts")).not.toContain("neo-crm-8ab2c17c.base44.app");
   });
 
-  it("the four class tables carry the R-7.10 re-derivation — the F-209a card-genus convergence collapsed the card-heavy pages everywhere (the literal values are the contract)", async () => {
+  it("the four class tables carry the R-14 re-derivation — the dark-mode completion (F-217c) converged our dark pages closer to the reference everywhere (the literal values are the contract)", async () => {
+    // Session-217 (R-14): the .dark token completion + the dark arms
+    // moved every page's diff DOWN (the dashboard the most — its header
+    // carries the outline buttons that flipped to the reference's own
+    // dark panel family; phone dashboard 16.5 → 14.47). The tables
+    // re-derived to the fresh measurements in the same commit, per the
+    // R-7.5 doctrine.
     const { STANDING_BASELINES } = await sweep();
     expect({ ...STANDING_BASELINES.desktop }).toEqual({
-      dashboard: 9.1, income: 30.0, expenses: 13.5, accounts: 10.9,
-      investments: 8.5, import: 9.4, analytics: 40.4, goals: 7.2,
-      settings: 20.0, login: 6.0, "reset-password": 3.9,
+      dashboard: 8.63, income: 29.93, expenses: 13.48, accounts: 10.8,
+      investments: 8.41, import: 9.25, analytics: 40.13, goals: 7.16,
+      settings: 19.81, login: 5.99, "reset-password": 3.87,
     });
     expect({ ...STANDING_BASELINES.phone }).toEqual({
-      dashboard: 16.5, income: 41.2, expenses: 41.8, accounts: 17.5,
-      investments: 28.0, import: 13.5, analytics: 52.4, goals: 11.7,
-      settings: 18.9, login: 11.0, "reset-password": 16.5,
+      dashboard: 14.47, income: 41.17, expenses: 41.69, accounts: 17.38,
+      investments: 27.92, import: 13.27, analytics: 51.87, goals: 11.64,
+      settings: 18.43, login: 10.92, "reset-password": 16.42,
     });
     expect({ ...STANDING_BASELINES.tablet }).toEqual({
-      dashboard: 8.1, income: 31.5, expenses: 29.5, accounts: 10.5,
-      investments: 21.0, import: 8.8, analytics: 49.8, goals: 6.6,
-      settings: 32.5, login: 11.5, "reset-password": 6.5,
+      dashboard: 7.18, income: 31.43, expenses: 29.42, accounts: 10.46,
+      investments: 20.92, import: 8.7, analytics: 49.58, goals: 6.59,
+      settings: 32.21, login: 11.48, "reset-password": 6.41,
     });
     expect({ ...STANDING_BASELINES.landscape }).toEqual({
-      dashboard: 11.2, income: 33.6, expenses: 26.5, accounts: 14.4,
-      investments: 24.0, import: 11.8, analytics: 31.5, goals: 9.9,
-      settings: 19.7, login: 4.6, "reset-password": 6.4,
+      dashboard: 10.47, income: 33.59, expenses: 26.47, accounts: 14.35,
+      investments: 23.9, import: 11.61, analytics: 31.16, goals: 9.83,
+      settings: 19.44, login: 4.52, "reset-password": 6.4,
     });
   });
 
@@ -140,7 +146,7 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     );
     expect(drift.ok).toBe(false);
     expect(drift.failures).toEqual([
-      { page: "login", pct: 7.3, baseline: 6.0, allowed: 6.5 },
+      { page: "login", pct: 7.3, baseline: 5.99, allowed: 6.49 },
     ]);
   });
 

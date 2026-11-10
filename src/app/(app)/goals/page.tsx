@@ -155,7 +155,7 @@ export default function GoalsPage() {
                     </Button>
                     <Button
                       variant="ghost"
-                      className="h-8 flex-1 text-xs text-red-600 hover:text-red-700"
+                      className="h-8 flex-1 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                       onClick={async () => {
                         const res = await store.deleteGoal(goal.id);
                         if (res.ok) toast.success("Goal deleted");

@@ -152,7 +152,12 @@ function createStore() {
 
     hydrate: async () => {
       const token = ++sessionWriteToken;
-      set({ loading: true });
+      // Session-217 (R-14, F-217k): clear the stale error at entry — the
+      // error banner's Try-again re-entered here with the previous error
+      // still set (the banner + the LoadingBlock rendered together
+      // mid-retry), and a 401 landing left a stale non-auth error
+      // standing after the failure mode changed.
+      set({ loading: true, error: null });
       const res = await call<DashboardData>("/api/dashboard");
       if (token !== sessionWriteToken) return;
       if (res.ok) {
@@ -173,7 +178,7 @@ function createStore() {
           set({ settings: settingsRes.data });
         }
       } else if (res.error.includes("authenticate") || res.error.includes("Sign in")) {
-        set({ hydrated: true, loading: false, user: null });
+        set({ hydrated: true, loading: false, user: null, error: null });
       } else {
         set({ hydrated: true, loading: false, error: res.error });
       }
@@ -199,151 +204,175 @@ function createStore() {
     },
 
     refresh: async () => {
-      return refreshAll(sessionWriteToken, set);
+      // Session-217 (R-14, F-217l): capture the write token at ENTRY —
+      // the pre-217 form read the LIVE token after the fetch resolved,
+      // so a logout completing in between bumped the token first and the
+      // post-fetch guard passed, writing the previous user's payload
+      // into the cleared store.
+      const token = sessionWriteToken;
+      return refreshAll(token, set);
     },
 
     createTransaction: async (body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<Transaction>("/api/transactions", {
         method: "POST",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     updateTransaction: async (id, body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<Transaction>(`/api/transactions/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     deleteTransaction: async (id) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<{ id: string }>(`/api/transactions/${id}`, {
         method: "DELETE",
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     importTransactions: async (rows) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<{ imported: number }>("/api/import", {
         method: "POST",
         body: JSON.stringify({ rows }),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
 
     createIncomeSource: async (body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<IncomeSource>("/api/income-sources", {
         method: "POST",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     updateIncomeSource: async (id, body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<IncomeSource>(`/api/income-sources/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     deleteIncomeSource: async (id) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<{ id: string }>(`/api/income-sources/${id}`, {
         method: "DELETE",
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
 
     createAccount: async (body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<BankAccount>("/api/accounts", {
         method: "POST",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     updateAccount: async (id, body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<BankAccount>(`/api/accounts/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     deleteAccount: async (id) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<{ id: string }>(`/api/accounts/${id}`, {
         method: "DELETE",
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
 
     createInvestment: async (body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<Investment>("/api/investments", {
         method: "POST",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     updateInvestment: async (id, body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<Investment>(`/api/investments/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     deleteInvestment: async (id) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<{ id: string }>(`/api/investments/${id}`, {
         method: "DELETE",
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
 
     createGoal: async (body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<Goal>("/api/goals", {
         method: "POST",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     updateGoal: async (id, body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<Goal>(`/api/goals/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     deleteGoal: async (id) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<{ id: string }>(`/api/goals/${id}`, {
         method: "DELETE",
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
 
     upsertBudget: async (body) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<Budget>("/api/budgets", {
         method: "POST",
         body: JSON.stringify(body),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
     deleteBudget: async (category) => {
+      const token = sessionWriteToken; // F-217l: captured at entry
       const res = await call<{ category: string }>("/api/budgets", {
         method: "DELETE",
         body: JSON.stringify({ category }),
       });
-      if (res.ok) await refreshAll(sessionWriteToken, set);
+      if (res.ok) await refreshAll(token, set);
       return res;
     },
 

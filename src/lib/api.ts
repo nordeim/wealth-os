@@ -9,12 +9,21 @@ export type ApiError = { code: string; message: string };
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: ApiError };
 
 export function ok<T>(data: T, init?: number): NextResponse {
-  return NextResponse.json({ ok: true, data } satisfies ApiResult<T>, { status: init ?? 200 });
+  // Session-217 (R-14, F-217g): every envelope response carries
+  // `Cache-Control: no-store` — the financial-data GETs (transactions,
+  // dashboard, export — the GDPR dump) must never sit in a browser or
+  // intermediary cache. The uploads GET is NOT an envelope response
+  // (its own immutable caching on capability URLs stands).
+  return NextResponse.json({ ok: true, data } satisfies ApiResult<T>, {
+    status: init ?? 200,
+    headers: { "Cache-Control": "no-store" },
+  });
 }
 
 export function fail(code: string, message: string, status = 400): NextResponse {
   return NextResponse.json({ ok: false, error: { code, message } } satisfies ApiResult<never>, {
     status,
+    headers: { "Cache-Control": "no-store" },
   });
 }
 
@@ -32,7 +41,7 @@ export const ERR = {
       ? fail("RATE_LIMITED", "Too many attempts. Try again later.", 429)
       : NextResponse.json(
           { ok: false, error: { code: "RATE_LIMITED", message: "Too many attempts. Try again later." } } satisfies ApiResult<never>,
-          { status: 429, headers: { "Retry-After": String(Math.max(1, retryAfterSec)) } },
+          { status: 429, headers: { "Retry-After": String(Math.max(1, retryAfterSec)), "Cache-Control": "no-store" } },
         ),
   INTERNAL: () => fail("INTERNAL", "Something went wrong. Please try again.", 500),
 };
@@ -93,6 +102,17 @@ export function isBodyTooLarge(req: Request, maxBytes: number = MAX_AUTH_BODY_BY
  * the read (the seam's whole point). Every other route keeps the
  * 16KB default. */
 export const MAX_IMPORT_BODY_BYTES = 4 * 1024 * 1024;
+
+/** Session-217 (R-14, F-217b): the AI coach route's OWN body ceiling.
+ * aiCoachSchema contracts `history: 30 × content-max-4000` ("rides the
+ * request for a future LLM provider", the route's own docblock) — the
+ * worst-case LEGAL payload is quote-heavy content whose every byte
+ * JSON-escapes (30 × 4000 chars → ~242KB on the wire), far past the
+ * 16KB default. 256KB covers the schema's worst case with headroom
+ * while still bounding the read. The first-party client sends only
+ * { question } (≤ ~600B) — the cap guards the CONTRACT, not a live
+ * consumer. */
+export const MAX_AI_BODY_BYTES = 256 * 1024;
 
 // ---- the bounded body reader (session-165 — the digma S148-A/S75-B -----
 // port): the ONE seam every JSON body parse site consumes.

@@ -135,33 +135,36 @@ export const FULLPAGE_CLASSES = [
  *  10.9 · analytics 40.4 · goals 7.2 · reset 3.9 — the shared-viewport
  *  cross-check). */
 export const STANDING_FULLPAGE_BASELINES: Record<string, BaselineTable> = {
-  // 1440×900 — the desktop class (the sweep's own) — session-210 maiden
+  // 1440×900 — the desktop class (the sweep's own) — session-210 maiden,
+  // re-derived session-217 (R-14): the dark-mode completion converged the
+  // shared-viewport values onto the sweep's own fresh tables.
   desktop: {
-    dashboard: 60.1,
-    income: 30.0,
-    expenses: 13.5,
-    accounts: 10.9,
-    investments: 49.5,
-    import: 26.6,
-    analytics: 40.4,
-    goals: 7.2,
-    settings: 50.7,
-    login: 7.9,
-    "reset-password": 3.9,
+    dashboard: 59.88,
+    income: 29.93,
+    expenses: 13.48,
+    accounts: 10.8,
+    investments: 49.43,
+    import: 26.51,
+    analytics: 40.13,
+    goals: 7.16,
+    settings: 50.5,
+    login: 7.82,
+    "reset-password": 3.87,
   },
-  // 390×844 — the phone class (the sweep's own) — session-210 maiden
+  // 390×844 — the phone class (the sweep's own) — session-210 maiden,
+  // re-derived session-217 (R-14).
   phone: {
-    dashboard: 78.5,
-    income: 45.4,
-    expenses: 61.1,
-    accounts: 23.3,
-    investments: 80.9,
-    import: 31.3,
-    analytics: 67.3,
-    goals: 17.9,
-    settings: 61.0,
+    dashboard: 77.9,
+    income: 45.32,
+    expenses: 61.0,
+    accounts: 23.21,
+    investments: 80.89,
+    import: 31.06,
+    analytics: 66.9,
+    goals: 17.87,
+    settings: 60.79,
     login: 16.5,
-    "reset-password": 16.5,
+    "reset-password": 16.42,
   },
 };
 

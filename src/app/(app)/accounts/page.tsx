@@ -167,7 +167,7 @@ function AccountCard({
         </Button>
         <Button
           variant="ghost"
-          className="h-8 flex-1 text-xs text-red-600 hover:text-red-700"
+          className="h-8 flex-1 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
           onClick={onDelete}
         >
           Remove

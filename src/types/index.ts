@@ -110,12 +110,10 @@ export interface DashboardData {
   user: Pick<User, "id" | "name" | "email" | "avatarColor">;
 }
 
-export interface SearchResults {
-  transactions: Transaction[];
-  accounts: BankAccount[];
-  investments: Investment[];
-  goals: Goal[];
-}
+// Session-217 (R-14, F-217i): the SearchResults interface retired —
+// R-13 deleted store.search (its only consumer) and this export was
+// left with zero importers (the F-216j dead-export doctrine). The
+// /api/search ROUTE stays — a real, owner-scoped API surface.
 
 export interface InsightDto {
   id: string;

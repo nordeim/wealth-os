@@ -16,7 +16,13 @@
 //  - auto-close when the viewport grows past lg (the sidebar's range),
 //  - the MAIN-scroller lock (`main` owns scrolling in the shell model),
 //  - the route-change close (AppShell's adjust-during-render),
-//  - Escape closes (our own keydown listener — the reference ships none).
+//  - Escape closes (our own keydown listener — the reference ships none),
+//  - the focus contract (session-217, R-14/F-217e): the sheet renders
+//    BEFORE the main column in DOM, so natural Tab order ran under the
+//    full-screen overlay — on open focus moves into the sheet, Tab
+//    cycles the visible modal surface (the sticky header's controls +
+//    the sheet's links — the ✕ stays reachable, the non-modal design
+//    preserved), and focus returns to the trigger on close.
 
 import * as React from "react";
 import Link from "next/link";
@@ -33,6 +39,9 @@ interface MobileNavProps {
   onOpenChange: (open: boolean) => void;
 }
 
+/** The sheet's DOM address (shared by the focus contract's queries). */
+const SHEET_SELECTOR = '[role="dialog"][aria-label="WealthOS navigation"]';
+
 export function MobileNav({ open, onOpenChange }: MobileNavProps) {
   // Escape closes (our superset — a plain keydown listener, no modal).
   React.useEffect(() => {
@@ -43,6 +52,52 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onOpenChange]);
+
+  // Session-217 (R-14, F-217e): the focus contract. `offsetParent` is
+  // null for position:fixed elements, so the cycle's visibility filter
+  // uses getClientRects (the sheet itself is fixed) — the desktop
+  // sidebar's buttons drop out below lg and the drawer auto-closes at
+  // lg anyway.
+  React.useEffect(() => {
+    if (!open) return;
+    const sheet = document.querySelector<HTMLElement>(SHEET_SELECTOR);
+    sheet?.querySelector<HTMLElement>("a, button")?.focus();
+    const cycleScope = () =>
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          `header button, ${SHEET_SELECTOR} a, ${SHEET_SELECTOR} button`,
+        ),
+      ).filter((el) => el.getClientRects().length > 0);
+    const onTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const items = cycleScope();
+      if (items.length === 0) return;
+      const idx = items.indexOf(document.activeElement as HTMLElement);
+      if (e.shiftKey && idx <= 0) {
+        e.preventDefault();
+        items[items.length - 1].focus();
+      } else if (!e.shiftKey && (idx === items.length - 1 || idx === -1)) {
+        e.preventDefault();
+        items[0].focus();
+      }
+    };
+    window.addEventListener("keydown", onTab);
+    return () => {
+      window.removeEventListener("keydown", onTab);
+      // Focus return: useEffect cleanups run AFTER the commit that
+      // removed the sheet — activeElement is already <body> (a removed
+      // node's focus dies to body), so `sheet.contains(activeElement)`
+      // is always false here. The working shape: land focus on the
+      // trigger unless it already lives in the header (the ✕-click
+      // path keeps its own focus). A display:none trigger (the
+      // past-lg auto-close) takes no focus — the call is a no-op.
+      const trigger = document.querySelector<HTMLButtonElement>(
+        "header button[aria-expanded]",
+      );
+      const focusInHeader = !!document.activeElement?.closest("header");
+      if (trigger && !focusInHeader) trigger.focus();
+    };
+  }, [open]);
 
   // Auto-close when the viewport grows past the lg breakpoint — the
   // query MUST match the sidebar's `lg:flex` show range (1024px).

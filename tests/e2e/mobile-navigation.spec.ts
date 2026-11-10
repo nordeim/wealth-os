@@ -83,6 +83,64 @@ test.describe("mobile navigation drawer", () => {
     ).toBeVisible();
   });
 
+  test("opening the drawer moves focus into it (F-217e)", async ({ page }) => {
+    // Session-217 (R-14): the sheet renders BEFORE the main column in
+    // DOM, so natural Tab order ran under the full-screen overlay.
+    // The cure: focus moves into the sheet on open.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/Dashboard");
+
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    // Focus now lives INSIDE the drawer (the first nav link).
+    const inDrawer = await page.evaluate(() => {
+      const sheet = document.querySelector('[role="dialog"]');
+      return !!sheet && sheet.contains(document.activeElement);
+    });
+    expect(inDrawer).toBe(true);
+  });
+
+  test("Tab cycles the modal surface, never the content behind the overlay (F-217e)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/Dashboard");
+
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    // Walk the WHOLE Tab order (header buttons + 9 links + Sign Out +
+    // the wrap) — activeElement must never leave the modal surface
+    // (the sticky header + the sheet).
+    for (let i = 0; i < 14; i++) {
+      await page.keyboard.press("Tab");
+      const escaped = await page.evaluate(() => {
+        const el = document.activeElement;
+        const inHeader = !!el?.closest("header");
+        const inSheet = !!el?.closest('[role="dialog"]');
+        return !(inHeader || inSheet);
+      });
+      expect(escaped, `Tab #${i + 1} ran under the overlay`).toBe(false);
+    }
+  });
+
+  test("closing the drawer returns focus to the trigger (F-217e)", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/Dashboard");
+
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toBeHidden();
+    // Focus lands back on the hamburger/✕ trigger.
+    const onTrigger = await page.evaluate(() => {
+      const el = document.activeElement;
+      return el instanceof HTMLButtonElement && el.getAttribute("aria-expanded") !== null;
+    });
+    expect(onTrigger).toBe(true);
+  });
+
   test("the drawer auto-closes when the viewport grows past lg (the kept superset)", async ({
     page,
   }) => {

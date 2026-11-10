@@ -81,9 +81,15 @@ describe("session-131 parity pins (the toast family walk — F-131c1: the refere
   });
 
   it("the three variant borders (the walk-censused success/error/info pair)", () => {
-    expect(src).toContain('item.variant === "success" && "border-emerald-200 bg-white"');
-    expect(src).toContain('item.variant === "error" && "border-rose-200 bg-white"');
-    expect(src).toContain('item.variant === "info" && "border-line bg-white"');
+    // Session-217 (R-14, F-217c): the panel moved bg-white → bg-surface (the
+    // token flips dark — light text on a white chip post-flip was unreadable)
+    // and the success/error borders gained dark arms. The toast is OUR
+    // deliberate superset (F-131c1: the reference's toast system is
+    // DOM-DEAD, no live face to parity) — the light-mode computed values
+    // are unchanged (bg-surface = #ffffff in light).
+    expect(src).toContain('item.variant === "success" && "border-emerald-200 bg-surface dark:border-emerald-800"');
+    expect(src).toContain('item.variant === "error" && "border-rose-200 bg-surface dark:border-rose-800"');
+    expect(src).toContain('item.variant === "info" && "border-line bg-surface"');
   });
 
   it("the 4000ms auto-dismiss + the max-4 cap (live-measured 4126/4118ms; 4 cards after 5 pushes)", () => {
@@ -92,8 +98,10 @@ describe("session-131 parity pins (the toast family walk — F-131c1: the refere
   });
 
   it("the title/description classes (the walk-censused 14px/500 title + the 12px muted description)", () => {
+    // Session-217 (R-14, F-217c): the description gained its dark arm
+    // (stone-500 on the #0a0a0a dark panel computed 2.4:1).
     expect(src).toContain('"text-sm font-medium text-foreground"');
-    expect(src).toContain('"mt-0.5 text-xs text-muted"');
+    expect(src).toContain('"mt-0.5 text-xs text-muted dark:text-stone-400"');
   });
 
   it("the icon family (h-4.5 w-4.5 + the three token rides — live-censused 18px rgb(16,185,129) success)", () => {

@@ -252,7 +252,7 @@ export default function SettingsPage() {
                       </span>
                       <Button
                         variant="ghost"
-                        className="h-7 px-2 text-xs text-red-600 hover:text-red-700"
+                        className="h-7 px-2 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                         aria-label={`Delete ${budget.category} budget`}
                         onClick={() => void store.deleteBudget(budget.category)}
                       >

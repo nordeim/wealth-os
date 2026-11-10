@@ -62,15 +62,34 @@ export default function ExpensesPage() {
   // outside pointerdown — every other transient surface (the drawer,
   // the dialogs, the dropdowns) already did; keyboard users had to tab
   // back to the ✕ button.
+  // Session-217 (R-14, F-217a): the outside-close must spare the
+  // PORTALED Radix surfaces — the Category <Select> renders its
+  // options through SelectPrimitive.Portal into document.body, OUTSIDE
+  // the popover group in DOM; a pointerdown on div[role="option"] fired
+  // setFiltersOpen(false) mid-pick, unmounting the popover (and the
+  // Select root with it) before the selection registered — mouse users
+  // could not apply a category filter at all (live-reproduced). The
+  // exclusion list names the portal carriers; the expanded-button guard
+  // is scoped to the popover's OWN trigger (the bare
+  // button[aria-expanded] form also matched the drawer hamburger);
+  // Escape closes the popover only when no Radix layer is open above
+  // it (Radix preventDefault does not stopPropagation — one Escape
+  // must dismiss the Select alone and leave the popover standing).
   React.useEffect(() => {
     if (!filtersOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setFiltersOpen(false);
+      if (e.key !== "Escape") return;
+      if (document.querySelector("[data-radix-popper-content-wrapper]")) return;
+      setFiltersOpen(false);
     };
     const onPointer = (e: PointerEvent) => {
       if (!(e.target instanceof HTMLElement)) return;
       if (e.target.closest('[aria-label="Expense filters"]')) return;
-      if (e.target.closest('button[aria-expanded]')) return;
+      // The portaled Select option/listbox surfaces — an option lives
+      // in document.body, so "outside the popover group" is its NORMAL
+      // address, not an outside click.
+      if (e.target.closest('[role="option"], [role="listbox"], [data-radix-popper-content-wrapper]')) return;
+      if (e.target.closest('button[aria-label="Close filters"]')) return;
       setFiltersOpen(false);
     };
     window.addEventListener("keydown", onKey);
@@ -276,7 +295,7 @@ export default function ExpensesPage() {
                       </Button>
                       <Button
                         variant="ghost"
-                        className="h-8 px-2 text-xs text-red-600 hover:text-red-700"
+                        className="h-8 px-2 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                         onClick={() => void deleteExpense(tx)}
                       >
                         <X className="h-3.5 w-3.5" />
