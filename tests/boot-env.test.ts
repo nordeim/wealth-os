@@ -45,6 +45,10 @@ const read = (p: string) => readFileSync(join(root, p), "utf8");
 // kill-switches on — no in-app code/reset-link responses), so the
 // pre-214 warning-count pins stay honest; the delivery-warning block
 // below unsets the knobs to pin the demo posture instead.
+// Session-218 (R-15, F-218t): the real-deployment posture now also
+// sets the proxy hop depth EXPLICITLY (NEO_PROXY_HOPS: "1") — the
+// default-ride warning fires when the knob is unset in production, so
+// the count pins need the explicit posture to stay honest.
 type Env = Record<string, string | undefined>;
 const env = (over: Env = {}): Env => ({
   NODE_ENV: "production",
@@ -53,7 +57,40 @@ const env = (over: Env = {}): Env => ({
   DATABASE_URL: "file:../db/custom.db",
   NEO_DISABLE_IN_APP_OTP: "1",
   NEO_DISABLE_IN_APP_RESET: "1",
+  NEO_PROXY_HOPS: "1",
   ...over,
+});
+
+// Session-218 (R-15, F-218t — the default-ride warning's own pins):
+// unset NEO_PROXY_HOPS in production means the limiter keys on the
+// last, client-suppliable XFF hop — the direct-exposure bypass. The
+// warning makes the posture visible at boot (the F-214f warn-throw
+// discipline: never fatal).
+describe("session-218: the NEO_PROXY_HOPS default-ride warning (F-218t)", () => {
+  it("production + unset hops: the direct-exposure warning", () => {
+    const report = bootEnvCheck(env({ NEO_PROXY_HOPS: undefined }));
+    expect(report.fatal).toBeNull();
+    expect(report.warnings).toHaveLength(1);
+    expect(report.warnings[0]).toContain("NEO_PROXY_HOPS is unset");
+    expect(report.warnings[0]).toContain("DIRECT-exposure");
+    expect(report.warnings[0]).toContain("NEO_PROXY_HOPS=0");
+  });
+
+  it("production + the empty-string form: the same warning", () => {
+    const report = bootEnvCheck(env({ NEO_PROXY_HOPS: "" }));
+    expect(report.warnings).toHaveLength(1);
+    expect(report.warnings[0]).toContain("NEO_PROXY_HOPS is unset");
+  });
+
+  it("production + hops=0 (the direct-exposure posture): NO warning — the operator chose", () => {
+    const report = bootEnvCheck(env({ NEO_PROXY_HOPS: "0" }));
+    expect(report.warnings).toHaveLength(0);
+  });
+
+  it("development + unset hops: NO warning (localhost is not the exposure)", () => {
+    const report = bootEnvCheck(env({ NODE_ENV: "development", NEO_PROXY_HOPS: undefined }));
+    expect(report.warnings).toHaveLength(0);
+  });
 });
 
 describe("session-170 (WP-3): the production AUTH_SECRET boot gate (the s169 seam front-run)", () => {

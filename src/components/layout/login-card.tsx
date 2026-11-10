@@ -134,6 +134,22 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
       });
       const body = await res.json().catch(() => null);
       if (!res.ok || !body?.ok) {
+        // Session-218 (R-15, F-218a): a VERIFICATION_REQUIRED 403 means
+        // the credentials were RIGHT — the account simply carries an
+        // unverified (or expired) code. Render the banner dead-end and
+        // the user is locked out: the verify view (the only surface
+        // with the Resend) was reachable solely via signup success,
+        // re-signup answers "already exists", and the reset flow never
+        // clears the hash. Land the verify view instead — its Resend
+        // re-arms the code (the F-217d server cure).
+        if (body?.error?.code === "VERIFICATION_REQUIRED") {
+          setCodeDigits(Array(VERIFICATION_CODE_LENGTH).fill(""));
+          setError(null);
+          setInfo(null);
+          setVerifyCodeHint("");
+          setView("verify");
+          return;
+        }
         setError(body?.error?.message ?? "Sign in failed. Try again.");
         return;
       }

@@ -117,7 +117,7 @@ test.describe("the full reset round-trip (the in-app delivery)", () => {
 
     // The scratch session is LIVE in this context — the forgot flow needs
     // the signed-out card, so log the scratch session out first.
-    await page.evaluate(() => fetch("/api/auth/logout", { method: "POST" }).then(() => undefined));
+    await page.evaluate(() => fetch("/api/auth/logout", { method: "POST", headers: { "Content-Type": "application/json" } }).then(() => undefined)); /* F-218p: the route gates on the content-type */
 
     // 1. The forgot request on the scratch account (the reset view's
     //    submit is now the REAL endpoint — the client-side theater is

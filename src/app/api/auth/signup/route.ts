@@ -75,18 +75,32 @@ export async function POST(req: Request) {
     // is logged to the SERVER console for the demo workflow (never shipped
     // to the client, never committed).
     const code = generateVerifyCode();
-    const user = await db.user.create({
-      data: {
-        name,
-        email,
-        passwordHash: hashPassword(password),
-        avatarColor: NAME_COLORS[count % NAME_COLORS.length],
-        role: count === 0 ? "admin" : "rep",
-        verificationCodeHash: hashVerificationCode(code),
-        verificationAttempts: 0,
-        verificationExpiresAt: new Date(Date.now() + VERIFICATION_TTL_MS),
-      },
-    });
+    let user;
+    try {
+      user = await db.user.create({
+        data: {
+          name,
+          email,
+          passwordHash: hashPassword(password),
+          avatarColor: NAME_COLORS[count % NAME_COLORS.length],
+          role: count === 0 ? "admin" : "rep",
+          verificationCodeHash: hashVerificationCode(code),
+          verificationAttempts: 0,
+          verificationExpiresAt: new Date(Date.now() + VERIFICATION_TTL_MS),
+        },
+      });
+    } catch (e) {
+      // Session-218 (R-15, F-218r): the findUnique→create race — two
+      // concurrent first-signups for one email slip past the explicit
+      // duplicate check above and the unique constraint answers a raw
+      // 500 "Something went wrong". The P2002 arm answers the same
+      // duplicate 400 the explicit check does (the settings route's
+      // pattern).
+      if (typeof e === "object" && e !== null && "code" in e && (e as { code?: string }).code === "P2002") {
+        return ERR.BAD_REQUEST("A user with this email already exists");
+      }
+      throw e;
+    }
 
     // Session-216 (R-13, F-216g): the OTP log rides the in-app branch —
     // the code prints ONLY when the response also carries it (the demo

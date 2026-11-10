@@ -137,3 +137,21 @@ describe("session-217: the response-hardening pair (F-217g/F-217h)", () => {
     expect(src).not.toMatch(/preload/);
   });
 });
+
+// Session-218 (R-15, F-218c): /api/export — the GDPR dump — returned a
+// raw NextResponse (Content-Type + Content-Disposition only) and never
+// rode the ok()/fail() envelope whose F-217g no-store api.ts's own
+// comment claims for it ("transactions, dashboard, export — the GDPR
+// dump"). Live-reproduced: the authenticated 200 answered cc:null.
+describe("session-218: the export route carries the no-store posture (F-218c)", () => {
+  it("/api/export sets Cache-Control: no-store on the dump", () => {
+    const src = readFileSync(repoFile("src/app/api/export/route.ts"), "utf-8");
+    expect(src).toMatch(/"Cache-Control":\s*"no-store"/);
+  });
+
+  it("the Content-Disposition attachment survives the addition (the download contract)", () => {
+    const src = readFileSync(repoFile("src/app/api/export/route.ts"), "utf-8");
+    expect(src).toMatch(/Content-Disposition/);
+    expect(src).toMatch(/wealthos-export\.json/);
+  });
+});

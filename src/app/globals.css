@@ -352,6 +352,19 @@
   --color-line: #262626;
   --color-line-soft: #262626;
   --color-line-strong: #404040;
+  /* Session-218 (R-15, F-218i): the ring token flips too — input-base's
+     focus box-shadow (var(--color-ring)) was #1c1917 on dark inputs,
+     an INVISIBLE focus indicator (the F-217c token class on the ring
+     token; the completion's own gap). #f5f5f4 keeps ~17:1 on the dark
+     input surfaces. */
+  --color-ring: #f5f5f4;
+  /* Session-218 (R-15, F-218l): the last two unflipped app-native
+     tokens — muted rides the disabled-input text (SC 1.4.3 exempts
+     disabled controls, but the flip closes the latent F-217c class:
+     any future text-muted consumer on a dark surface would compute
+     2.9:1). */
+  --color-muted: #a8a29e;
+  --color-subtle: #78716c;
 }
 
 /* ---------------------------------------------------------------------------

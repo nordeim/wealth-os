@@ -217,7 +217,7 @@ export default function SettingsPage() {
                 onChange={(e) => setBudgetCategory(e.target.value)}
                 placeholder="Category (e.g. Groceries)"
                 aria-label="Budget category"
-                className="h-10 flex-1 rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 flex-1 rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
               <datalist id="budget-category-options">
                 {EXPENSE_CATEGORIES.map((c) => (
@@ -232,7 +232,7 @@ export default function SettingsPage() {
                 onChange={(e) => setBudgetAmount(e.target.value)}
                 placeholder="Monthly $"
                 aria-label="Monthly budget amount"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 sm:w-32 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-32 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
               <Button variant="outline" onClick={() => void addBudget()}>
                 <PlusCircle className="h-4 w-4" />
@@ -396,7 +396,7 @@ function NotificationRow({
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={cn(
-          "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400",
+          "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           checked ? "bg-emerald-600" : "bg-stone-300 dark:bg-stone-700",
         )}
       >

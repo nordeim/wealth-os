@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import {
   addMonths,
   assetAllocation,
@@ -23,7 +23,9 @@ import {
   recentActivity,
   round1,
   round2,
+  sameMonth,
   savingsRate,
+  toDate,
   totalMonthlyIncome,
   transactionsInMonth,
   unusualTransactions,
@@ -337,5 +339,68 @@ describe("formatting", () => {
 
   it("longDate renders the reference's weekday genus", () => {
     expect(longDate(new Date(2026, 10, 8))).toBe("Sunday, November 8, 2026");
+  });
+});
+
+// Session-218 (R-15, F-218d — the UTC-midnight calendar normalization):
+// dateField accepts yyyy-mm-dd; new Date("2026-11-01") parses as UTC
+// midnight; Prisma returns 2026-11-01T00:00:00.000Z — and the bucketing
+// seams (sameMonth/startOfMonth) plus the raw-parse display sites read
+// LOCAL calendar parts. Verified live: in America/New_York a Nov 1
+// transaction rendered 10/31/2026 and bucketed into October — rent on
+// the 1st, the canonical case — for every UTC-negative user (the
+// sandbox runs UTC, which is why every gate was blind). The cure:
+// toDate re-anchors UTC-midnight ISO strings to LOCAL midnight of the
+// same calendar date; true timestamps keep their instant. Both engines
+// honor dynamic process.env.TZ (verified), so the pins run the real
+// zone rather than reasoning about it.
+describe("session-218: UTC-midnight calendar normalization (F-218d)", () => {
+  const SAVED_TZ = process.env.TZ;
+  afterEach(() => {
+    process.env.TZ = SAVED_TZ;
+  });
+
+  it("a UTC-midnight ISO string re-anchors to the same LOCAL calendar date in a UTC-negative zone", () => {
+    process.env.TZ = "America/New_York";
+    const d = toDate("2026-11-01T00:00:00.000Z");
+    expect(d.getFullYear()).toBe(2026);
+    expect(d.getMonth()).toBe(10); // November — pre-cure: 9 (October)
+    expect(d.getDate()).toBe(1); // the 1st — pre-cure: 31
+  });
+
+  it("sameMonth buckets a 1st-of-month row into its own month (rent on the 1st)", () => {
+    process.env.TZ = "America/New_York";
+    const stored = toDate("2026-11-01T00:00:00.000Z");
+    expect(sameMonth(stored, new Date(2026, 10, 15))).toBe(true);
+    expect(sameMonth(stored, new Date(2026, 9, 15))).toBe(false);
+  });
+
+  it("transactionsInMonth counts the 1st-of-month row in its own month", () => {
+    process.env.TZ = "America/New_York";
+    const txs: TxLike[] = [
+      { id: "1", description: "rent", amount: 2000, type: "expense", category: "Housing", budgetCategory: "needs", date: "2026-11-01T00:00:00.000Z" },
+    ];
+    expect(transactionsInMonth(txs, new Date(2026, 10, 15))).toHaveLength(1);
+    expect(transactionsInMonth(txs, new Date(2026, 9, 15))).toHaveLength(0);
+  });
+
+  it("non-midnight instants keep their time (true timestamps are not calendar dates)", () => {
+    process.env.TZ = "America/New_York";
+    expect(toDate("2026-11-01T18:30:00.000Z").toISOString()).toBe(
+      "2026-11-01T18:30:00.000Z",
+    );
+  });
+
+  it("Date inputs pass through untouched (the seed and tests construct local Dates)", () => {
+    process.env.TZ = "America/New_York";
+    const d = new Date(2026, 10, 1);
+    expect(toDate(d)).toBe(d);
+  });
+
+  it("the yyyy-mm-dd bare form stays a UTC-midnight anchor (the dateField contract)", () => {
+    process.env.TZ = "America/New_York";
+    // The API layer stores new Date("2026-11-01") — UTC midnight —
+    // serialized back as the .000Z form the re-anchor keys on.
+    expect(new Date("2026-11-01").toISOString()).toBe("2026-11-01T00:00:00.000Z");
   });
 });

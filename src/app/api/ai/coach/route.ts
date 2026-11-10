@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { ok, ERR, parseBody, isGuarded, requireSession, MAX_AI_BODY_BYTES } from "@/lib/api";
+import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { aiCoachSchema } from "@/lib/schemas";
 import { getAiProvider } from "@/lib/ai";
 
@@ -11,6 +12,13 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+
+  // Session-218 (R-15, F-218g): five full-table findManys per call —
+  // 30 / 15 min / IP (the upload route's sessioned-bucket pattern,
+  // deliberately after the session guard).
+  const limit = rateLimit(`ai:${clientKey(req)}`, 30, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
   // Session-217 (R-14, F-217b): the schema contracts history 30 × 4000
   // (the LLM-provider surface) — the 16KB default rejected the schema's

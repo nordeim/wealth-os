@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { parseBody, readBoundedJson, MAX_AUTH_BODY_BYTES } from "@/lib/api";
+import { parseBody, readBoundedJson, MAX_AUTH_BODY_BYTES , MAX_AI_BODY_BYTES } from "@/lib/api";
 import { aiCoachSchema } from "@/lib/schemas";
 
 // Session-217 (R-14, F-217b — the AI coach body-cap pin): the coach
@@ -41,7 +41,7 @@ describe("R-14: the coach route rides its own cap (F-217b)", () => {
   it("the schema's worst legal payload is past the default ceiling", async () => {
     const body = worstCaseCoachBody();
     expect(body.length).toBeGreaterThan(16 * 1024);
-    expect(body.length).toBeLessThan(256 * 1024);
+    expect(body.length).toBeLessThan(256 * 1024); // quote-escape worst case; the control-char form rides ~720KB (F-218s)
     // …and the schema itself accepts it (the contract is real).
     expect(aiCoachSchema.safeParse(JSON.parse(body)).success).toBe(true);
   });
@@ -62,12 +62,12 @@ describe("R-14: the coach route rides its own cap (F-217b)", () => {
       headers: JSON_HEADERS,
       body: worstCaseCoachBody(),
     });
-    const parsed = await parseBody(req, z.object({ question: z.string() }), 256 * 1024);
+    const parsed = await parseBody(req, z.object({ question: z.string() }), MAX_AI_BODY_BYTES);
     expect(parsed.ok).toBe(true);
   });
 
   it("api.ts declares the coach-specific ceiling", () => {
-    expect(API).toMatch(/export const MAX_AI_BODY_BYTES = 256 \* 1024/);
+    expect(API).toMatch(/export const MAX_AI_BODY_BYTES = 1024 \* 1024/);
   });
 
   it("the coach route passes MAX_AI_BODY_BYTES to parseBody", () => {

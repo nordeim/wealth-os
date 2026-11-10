@@ -366,7 +366,7 @@ export default function DashboardPage() {
                         className={cn(
                           "text-xs font-semibold",
                           row.over
-                            ? "text-red-500 dark:text-red-400"
+                            ? "text-red-600 dark:text-red-400" // F-218j
                             : "text-stone-500 dark:text-stone-500",
                         )}
                       >
@@ -614,7 +614,7 @@ function HealthGauge({ score, band }: { score: number; band: string }) {
     return `M ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2}`;
   };
   return (
-    <div className="relative flex flex-col items-center" aria-label={`Financial health score ${score} out of 100, ${band}`}>
+    <div className="relative flex flex-col items-center" role="img" aria-label={`Financial health score ${score} out of 100, ${band}`}> {/* F-218m: role-less aria-label is ignored by AT */}
       <svg width="160" height="96" viewBox="0 0 160 96" role="presentation">
         <path d={arc(0, 180)} fill="none" stroke="#e7e5e4" strokeWidth="12" strokeLinecap="round" className="dark:opacity-20" />
         <path

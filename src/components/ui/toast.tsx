@@ -75,6 +75,13 @@ function Toaster() {
     <div
       aria-label="Notifications"
       role="region"
+      // Session-218 (R-15, F-218h): the ALWAYS-MOUNTED viewport is the
+      // polite live region — a live region that ARRIVES with its
+      // content is not announced (the region must pre-exist in the
+      // a11y tree), so the pre-cure per-card role="status" was silent
+      // for screen-reader users. Toasts are the sole feedback channel
+      // for every mutation outcome; they announce now.
+      aria-live="polite"
       // Session-7 live pin: the reference viewport is top-of-screen on
       // phones and bottom-right from sm (sonner-style), max-w-[420px] at md.
       className="pointer-events-none fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse gap-2 p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"
@@ -101,7 +108,8 @@ function ToastCard({ item }: { item: ToastItem }) {
 
   return (
     <div
-      role="status"
+      // Session-218 (R-15, F-218h): NO per-card live role — the viewport
+      // above is the live region; a nested live role double-announces.
       className={cn(
         "pointer-events-auto flex items-start gap-3 rounded-xl border p-3.5 shadow-lg outline-none",
         // Session-131 (D-131a1): the scaffold-era data-[state] animation

@@ -377,11 +377,16 @@ function createStore() {
     },
 
     updateSettings: async (body) => {
+      // F-218e: the write-guard family's one missing member — the
+      // token must be captured at ENTRY and the set guarded, or a
+      // logout/hydrate landing mid-PUT writes the PREVIOUS user's
+      // settings into the cleared store (the docblock's own contract).
+      const token = sessionWriteToken;
       const res = await call<Settings>("/api/settings", {
         method: "PUT",
         body: JSON.stringify(body),
       });
-      if (res.ok) set({ settings: res.data });
+      if (res.ok && token === sessionWriteToken) set({ settings: res.data });
       return res;
     },
 

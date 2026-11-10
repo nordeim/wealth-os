@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown";
 import { NAV_ITEMS, isNavActive } from "./nav-config";
 import { NAV_LAYOUT } from "@/lib/page-layout";
+import { avatarTextColor } from "@/components/ui/avatar"; // F-218n: the luminance seam
 import { useTheme } from "./theme";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { cn } from "@/lib/utils";
@@ -112,8 +113,8 @@ function SidebarFooter({ user }: { user: User }) {
           )}
         >
           <span
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-stone-900"
-            style={{ backgroundColor: user.avatarColor || "#fbbf24" }}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+            style={{ backgroundColor: user.avatarColor || "#fbbf24", color: avatarTextColor(user.avatarColor || "#fbbf24") }} /* F-218n: the ink derives from the fill */
             aria-hidden="true"
           >
             {initial}

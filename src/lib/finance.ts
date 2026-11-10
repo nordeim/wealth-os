@@ -57,8 +57,31 @@ export interface BudgetLike {
 
 // ---- date helpers -------------------------------------------------------------
 
+// A Prisma-serialized calendar date: stored UTC-midnight ISO strings
+// (the dateField "yyyy-mm-dd" form parses as UTC midnight, and Prisma
+// returns it as 2026-11-01T00:00:00.000Z). The UTC-calendar prefix is
+// the date the USER chose — not an instant to zone-shift.
+const UTC_MIDNIGHT_ISO = /^(\d{4})-(\d{2})-(\d{2})T00:00:00(?:\.000)?Z$/;
+
+/**
+ * Parse a stored date into the LOCAL calendar date it names.
+ *
+ * Session-218 (R-15, F-218d): UTC-midnight storage + local-accessor
+ * bucketing mis-rendered 1st-of-month rows for every UTC-negative user
+ * (verified live: in America/New_York a Nov 1 transaction rendered
+ * 10/31/2026, bucketed into October — rent on the 1st — and the edit
+ * prefill would re-store the wrong day). The cure re-anchors the exact
+ * UTC-midnight form to LOCAL midnight of the same calendar date, so
+ * every local-accessor consumer (sameMonth, startOfMonth, format
+ * seams, native date inputs) reads the calendar the user meant. True
+ * timestamps (any other ISO form) keep their instant; Date inputs pass
+ * through untouched (the seed and tests construct local Dates).
+ */
 export function toDate(value: Date | string): Date {
-  return value instanceof Date ? value : new Date(value);
+  if (value instanceof Date) return value;
+  const m = UTC_MIDNIGHT_ISO.exec(value);
+  if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return new Date(value);
 }
 
 export function startOfMonth(date: Date): Date {

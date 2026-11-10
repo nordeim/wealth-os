@@ -46,3 +46,25 @@ describe("R-14: the filters popover's outside-close spares the portaled Select (
     expect(PAGE).toMatch(/portal/i);
   });
 });
+
+// Session-218 (R-15, F-218b — the trigger-scoped guard): the R-14 cure
+// removed the bare button[aria-expanded] guard but never landed the
+// scoped replacement its own comment claimed — the trigger carries no
+// aria-label (that label rides the popover PANEL, a DOM sibling, so
+// closest() never matches it), pointerdown closed the popover, the
+// effect detached, and the subsequent click toggled false→true: the
+// toggle flicker-reopened (live-reproduced — the e2e battery covered
+// the Select pick and the outside close, never the trigger toggle).
+describe("R-15: the trigger-scoped guard exists (F-218b)", () => {
+  it("the filters trigger's own pointerdown never closes the popover", () => {
+    // The positive form: the trigger's ref is excluded BEFORE
+    // setFiltersOpen(false) — the bare-selector absence pin above let
+    // the regression ship.
+    expect(PAGE).toMatch(/filtersTriggerRef/);
+    expect(PAGE).toMatch(/filtersTriggerRef\.current\?\.contains\(e\.target\)/);
+  });
+
+  it("the ref rides the Filters button (the toggle itself, not a stranger)", () => {
+    expect(PAGE).toMatch(/ref=\{filtersTriggerRef\}/);
+  });
+});

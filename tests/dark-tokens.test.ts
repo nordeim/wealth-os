@@ -86,3 +86,30 @@ describe("R-14: the explicit-light tails ride the flips (F-217c)", () => {
     expect(BUTTON).toMatch(/dark:hover:text-neutral-50/);
   });
 });
+
+// Session-218 (R-15, F-218i/F-218l — the completion's own gaps): the
+// R-14 flip set left (i) --color-ring unflipped — input-base's focus
+// box-shadow is near-black (#1c1917) on dark inputs, an invisible focus
+// indicator, the exact F-217c token class on the ring token — and
+// (l) --color-muted/--color-subtle unflipped (the disabled-input text
+// rides muted; the dead exports would compute 2.9:1 on dark surfaces).
+describe("R-15: the ring + muted/subtle flips complete the set (F-218i/l)", () => {
+  it("flips --color-ring in .dark (the invisible dark focus ring)", () => {
+    const darkStart = CSS.indexOf(".dark {");
+    const darkBlock = CSS.slice(darkStart, CSS.indexOf("}", CSS.indexOf("--color-line-strong", darkStart)) + 1);
+    expect(darkBlock).toMatch(/--color-ring:\s*#f5f5f4/);
+  });
+
+  it("flips --color-muted and --color-subtle", () => {
+    const darkStart = CSS.indexOf(".dark {");
+    const darkBlock = CSS.slice(darkStart, CSS.indexOf("}", CSS.indexOf("--color-line-strong", darkStart)) + 1);
+    expect(darkBlock).toMatch(/--color-muted:\s*#a8a29e/);
+    expect(darkBlock).toMatch(/--color-subtle:\s*#78716c/);
+  });
+
+  it("the light values still stand in @theme (the flips are additive)", () => {
+    const themeStart = CSS.indexOf("@theme");
+    const themeBlock = CSS.slice(themeStart, CSS.indexOf("}", CSS.indexOf("--color-subtle", themeStart)) + 1);
+    expect(themeBlock).toMatch(/--color-ring:\s*#1c1917/);
+  });
+});

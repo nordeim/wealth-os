@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
-import { ok, ERR, readBoundedJson, isGuarded, requireSession  } from "@/lib/api";
+import { ok, ERR, readBoundedJson, isGuarded, requireSession } from "@/lib/api";
+import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -7,6 +8,13 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+
+  // Session-218 (R-15, F-218g): the DESTRUCTIVE wipe — 3 / 15 min / IP
+  // (the e2e battery's two reset legs ride comfortably under it; the
+  // confirm-gate stays the primary guard, the bucket bounds replays).
+  const limit = rateLimit(`reset:${clientKey(req)}`, 3, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
   // Session-68 (F-68a2) + session-165 (the digma S148-A/S75-B port):
   // the bounded reader BEFORE the parse — the N-67d declared-length

@@ -113,6 +113,22 @@ export function bootEnvCheck(env: Record<string, string | undefined>): BootEnvRe
     );
   }
 
+  // ---- Session-218 (R-15, F-218t): the default-ride warning ----------
+  // Unset NEO_PROXY_HOPS defaults the limiter to depth 1 — it keys on
+  // the LAST X-Forwarded-For hop (the one an appending proxy writes).
+  // That is correct behind exactly one proxy but client-SUPPLIABLE on
+  // a direct-exposure deployment (the DEPLOYMENT.md §2 `bun run start`
+  // path): a rotating XFF header rotates the buckets and bypasses
+  // every rate limit. The default stays 1 (flipping it would share
+  // one "unknown" bucket across every user behind an unconfigured
+  // proxy — the mass-lockout trade is worse); the warning names the
+  // knob so a direct-exposure operator sets it explicitly.
+  if (isProduction && (hops === undefined || hops === "")) {
+    warnings.push(
+      "[boot] NEO_PROXY_HOPS is unset — the rate limiter assumes ONE trusted proxy and keys on the last X-Forwarded-For hop. On a DIRECT-exposure deployment (no reverse proxy) a client can rotate that header to bypass every rate limit: set NEO_PROXY_HOPS=0 (one honest shared bucket). Behind a proxy, set the hop depth explicitly.",
+    );
+  }
+
   return { fatal: null, warnings };
 }
 

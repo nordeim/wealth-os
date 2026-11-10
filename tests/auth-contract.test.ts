@@ -205,3 +205,20 @@ describe("session-217: the verification gate survives its TTL (F-217d)", () => {
     expect(resendSrc).toMatch(/user\.verificationCodeHash/);
   });
 });
+
+// Session-218 (R-15, F-218v — the hydrate discriminator's dependency):
+// the store's hydrate() branches to the auth-redirect path by matching
+// the ERROR MESSAGE ("Sign in") because call() discards the envelope's
+// error.code. Threading the code through Result is a seam change this
+// round defers; the honest pin: ERR.UNAUTHORIZED's message keeps its
+// discriminator — any rewording trips THIS test before it silently
+// converts the auth-redirect into a hard-error banner.
+describe("session-218: the UNAUTHORIZED message keeps the hydrate discriminator (F-218v)", () => {
+  it("ERR.UNAUTHORIZED's message contains 'Sign in'", async () => {
+    const { ERR } = await import("@/lib/api");
+    const res = ERR.UNAUTHORIZED();
+    const body = (await res.json()) as { error?: { message?: string } };
+    expect(String(body?.error?.message)).toMatch(/Sign in/);
+    expect(res.status).toBe(401);
+  });
+});

@@ -278,6 +278,27 @@ test.describe("the Expenses tabs + search", () => {
     await page.getByRole("heading", { name: /Expenses/ }).first().click();
     await expect(popover).toHaveCount(0);
   });
+
+  test("the filters TRIGGER toggles the popover closed (F-218b — the R-14 regression's own face)", async ({ page }) => {
+    // Session-218 (R-15): the R-14 popover cure removed the bare
+    // button[aria-expanded] outside-close guard without landing the
+    // trigger-scoped replacement its comment claimed — pointerdown on
+    // the toggle fired setFiltersOpen(false), the effect detached, and
+    // the subsequent click toggled false→true: the popover flicker-
+    // reopened (live-reproduced — every mouse user clicking the primary
+    // toggle to dismiss found it dead). The cure: the trigger's own
+    // pointerdown never closes; the click alone toggles.
+    await page.goto("/Expenses");
+    const trigger = page.getByRole("button", { name: /^Filters/ });
+    await trigger.click();
+    const popover = page.getByRole("group", { name: "Expense filters" });
+    await expect(popover).toBeVisible();
+    await trigger.click();
+    await expect(popover).toHaveCount(0);
+    // And it reopens cleanly (the toggle is a real toggle).
+    await trigger.click();
+    await expect(popover).toBeVisible();
+  });
 });
 
 test.describe("the API auth wall (N-69g probe — the 401 seam)", () => {

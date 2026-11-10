@@ -41,6 +41,12 @@ export async function GET() {
       headers: {
         "Content-Type": "application/json",
         "Content-Disposition": 'attachment; filename="wealthos-export.json"',
+        // Session-218 (R-15, F-218c): the GDPR dump rides the same
+        // no-store posture as the envelope's financial GETs — this raw
+        // response never passed through ok(), so the F-217g header
+        // api.ts's comment names for it never landed (live-reproduced:
+        // cc:null on the authenticated 200).
+        "Cache-Control": "no-store",
       },
     });
   } catch {

@@ -106,13 +106,14 @@ export const MAX_IMPORT_BODY_BYTES = 4 * 1024 * 1024;
 /** Session-217 (R-14, F-217b): the AI coach route's OWN body ceiling.
  * aiCoachSchema contracts `history: 30 × content-max-4000` ("rides the
  * request for a future LLM provider", the route's own docblock) — the
- * worst-case LEGAL payload is quote-heavy content whose every byte
- * JSON-escapes (30 × 4000 chars → ~242KB on the wire), far past the
- * 16KB default. 256KB covers the schema's worst case with headroom
- * while still bounding the read. The first-party client sends only
- * { question } (≤ ~600B) — the cap guards the CONTRACT, not a live
- * consumer. */
-export const MAX_AI_BODY_BYTES = 256 * 1024;
+ * worst-case LEGAL payload quote-escapes every byte (2× per char,
+ * ~242KB) AND control characters escape to SIX bytes each (`\u0001` —
+ * 30 × 4000 → ~720KB on the wire, the F-218s correction of the
+ * session-217 budget math). 1MB covers the schema's true worst case
+ * with headroom while still bounding the read. The first-party client
+ * sends only { question } (≤ ~600B) — the cap guards the CONTRACT,
+ * not a live consumer. */
+export const MAX_AI_BODY_BYTES = 1024 * 1024;
 
 // ---- the bounded body reader (session-165 — the digma S148-A/S75-B -----
 // port): the ONE seam every JSON body parse site consumes.

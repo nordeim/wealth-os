@@ -36,15 +36,49 @@ export async function POST(request: Request) {
   // Session-36 (S36-P3): pre-gate on the declared Content-Length BEFORE
   // formData() buffers the body — a multi-GB body must be rejected without
   // ever being read into memory. The 64KB allowance covers multipart
-  // overhead (boundaries + part headers). Documented limitation: a chunked
-  // upload without Content-Length bypasses this gate; the post-parse
-  // ceiling below remains the backstop.
+  // overhead (boundaries + part headers).
   const declaredLength = Number(request.headers.get("content-length") ?? 0);
   if (declaredLength > MAX_UPLOAD_BYTES + 64 * 1024) {
     return ERR.BAD_REQUEST("File too large (max 5MB)");
   }
 
-  const form = await request.formData().catch(() => null);
+  // Session-218 (R-15, F-218f): the chunked-multipart bypass closed.
+  // The Content-Length pre-gate above is skipped by
+  // `Transfer-Encoding: chunked`, and formData() buffers the ENTIRE
+  // body before the post-parse file.size ceiling runs — that ceiling
+  // bounds the STORED file, not the BUFFERED memory (the S36-P3 comment
+  // called it "the backstop"; it never was one for this path). A
+  // counting TransformStream bounds the stream itself: the moment the
+  // byte count passes the same MAX+64KB allowance, the stream errors,
+  // formData() rejects, and the caller answers the too-large 400 — a
+  // sessioned multi-GB chunked POST can no longer OOM the process.
+  const maxStreamBytes = MAX_UPLOAD_BYTES + 64 * 1024;
+  let streamBytes = 0;
+  let streamOverflowed = false;
+  const bound = new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      streamBytes += chunk.byteLength;
+      if (streamBytes > maxStreamBytes) {
+        streamOverflowed = true;
+        throw new Error("upload stream exceeded the size bound");
+      }
+      controller.enqueue(chunk);
+    },
+  });
+  const bodyStream = request.body ? request.body.pipeThrough(bound) : undefined;
+  const boundedRequest = new Request(request.url, {
+    method: "POST",
+    headers: request.headers,
+    body: bodyStream,
+    // Node/undici require the duplex option for streaming request
+    // bodies (not yet in the TS DOM lib's RequestInit — the spread-cast
+    // carries it without an any).
+    ...({ duplex: "half" } as RequestInit),
+  });
+  const form = await boundedRequest.formData().catch(() => null);
+  if (streamOverflowed) {
+    return ERR.BAD_REQUEST("File too large (max 5MB)");
+  }
   const file = form?.get("file");
   if (!(file instanceof File)) {
     return ERR.BAD_REQUEST("No file provided");

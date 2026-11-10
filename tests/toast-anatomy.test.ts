@@ -75,9 +75,24 @@ describe("session-131 parity pins (the toast family walk — F-131c1: the refere
     expect(src).toContain('role="region"');
   });
 
+  // Session-218 (R-15, F-218h — the announcement contract): the viewport
+  // was role="region" (NOT a live region) and each card INSERTED with
+  // role="status" at push time — a live region that arrives with its
+  // content is not announced (the region must pre-exist in the a11y
+  // tree), so toasts (the sole feedback channel for every mutation
+  // outcome) were silent for screen-reader users. The cure: the
+  // always-mounted viewport becomes the polite live region; the per-card
+  // role retires (a nested live role double-announces).
+  it("the always-mounted viewport is the polite live region (F-218h)", () => {
+    expect(src).toContain('aria-live="polite"');
+  });
+
+  it("no per-card live role rides the insertion (the double-announcement cure)", () => {
+    expect(src).not.toContain('role="status"');
+  });
+
   it("the card chrome family (rounded-xl + p-3.5 + shadow-lg — live-censused 12px radius, 14px padding, the two-layer lg shadow)", () => {
     expect(src).toContain("rounded-xl border p-3.5 shadow-lg");
-    expect(src).toContain('role="status"');
   });
 
   it("the three variant borders (the walk-censused success/error/info pair)", () => {

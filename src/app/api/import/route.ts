@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { ok, ERR, parseBody, isGuarded, requireSession, MAX_IMPORT_BODY_BYTES } from "@/lib/api";
+import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { csvImportSchema } from "@/lib/schemas";
 import { BUDGET_CATEGORIES, EXPENSE_CATEGORIES } from "@/lib/constants";
 
@@ -15,6 +16,13 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;
+
+  // Session-218 (R-15, F-218g): a 4MB / 5000-row createMany per call —
+  // 5 / 15 min / IP (the e2e battery's one import leg rides comfortably
+  // under it; the sessioned-bucket pattern).
+  const limit = rateLimit(`import:${clientKey(req)}`, 5, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
   const parsed = await parseBody(req, csvImportSchema, MAX_IMPORT_BODY_BYTES);
   if (!parsed.ok) return parsed.response;

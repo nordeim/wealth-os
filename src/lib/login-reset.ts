@@ -111,7 +111,7 @@ export const LOGIN_RESET_LAYOUT = {
    *  (M-79c1/M-79c4): the stock text-base md:text-sm pair + the SOLID
    *  slate-400 ring with the 2px offset (live-probed on the reference). */
   resetInput:
-    "h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 text-base md:text-sm sm:h-11",
+    "h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3 placeholder:text-slate-400 focus:border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 text-base md:text-sm sm:h-11",
   /** The sent view's heading stack (icon circle + title block). */
   sentHeadingStack: "text-center space-y-3 sm:space-y-4",
   /** The sent view's icon circle wrap. */
@@ -183,7 +183,7 @@ export const LOGIN_SIGNUP_LAYOUT = {
    *  focus:border-slate-400 focus:ring-slate-400 rounded-xl
    *  placeholder:text-slate-400 text-sm sm:text-base. */
   input:
-    "h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 text-sm sm:text-base md:text-sm sm:h-11",
+    "h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3 placeholder:text-slate-400 focus:border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 text-sm sm:text-base md:text-sm sm:h-11",
   /** The submit — the s11 one-size-down send family (the text-sm +
    *  chrome ride the shared send record). */
   submit: "w-full h-10 sm:h-11 bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-sm rounded-xl transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-sm",

@@ -141,7 +141,9 @@ login_code=$(code -c "$COOKIE_JAR" -H "Content-Type: application/json" \
 # 10 — the logout teardown (-c: the jar takes the cleared cookie; /me is
 # the by-design data:null face, session-41 — a logged-out caller gets
 # 200 + data:null, NOT a 401)
-code -b "$COOKIE_JAR" -c "$COOKIE_JAR" -X POST "$BASE/api/auth/logout" >/dev/null
+# Session-218 (F-218p): the logout route gates on the JSON content-type
+# (the s165 CSRF family) — the first-party form carries it.
+code -b "$COOKIE_JAR" -c "$COOKIE_JAR" -X POST -H "Content-Type: application/json" "$BASE/api/auth/logout" >/dev/null
 body -b "$COOKIE_JAR" "$BASE/api/auth/me" | grep -q '"data":null' \
   && ok 10 "logout + post-logout data:null" || { fail 10 "logout teardown"; exit 1; }
 

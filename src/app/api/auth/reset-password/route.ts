@@ -92,7 +92,7 @@ export async function POST(req: Request) {
     ) {
       return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
     }
-    throw error;
+    return ERR.INTERNAL(); // F-218q: the no-bare-throw discipline the comment claims
   }
 
   return ok({ message: "Password reset successfully" });

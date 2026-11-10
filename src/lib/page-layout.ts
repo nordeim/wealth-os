@@ -92,7 +92,7 @@ export const MOBILE_HEADER = {
   syncedPill:
     "inline-flex items-center gap-1 rounded-md border px-2.5 py-0.5 text-xs font-semibold text-green-700 border-green-300 dark:text-green-400 dark:border-green-600",
   iconButton:
-    "inline-flex items-center justify-center rounded-md h-9 w-9 text-gray-700 dark:text-gray-300 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-stone-800 dark:hover:text-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
+    "inline-flex items-center justify-center rounded-md h-9 w-9 text-gray-700 dark:text-gray-300 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-stone-800 dark:hover:text-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 } as const;
 
 /** Page headers inside main (every page's own top block). Session-207
@@ -201,12 +201,12 @@ export const SETTINGS_CARD = {
   boxText: "text-sm text-stone-600 dark:text-stone-400",
   saveRow: "flex justify-end",
   saveButton:
-    "inline-flex items-center justify-center gap-2 rounded-md text-sm h-9 px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-stone-900 font-semibold shadow-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex items-center justify-center gap-2 rounded-md text-sm h-9 px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-stone-900 font-semibold shadow-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
 } as const;
 
 export const BUTTONS = {
   primary:
-    "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:opacity-50",
+    "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
   outline:
     "inline-flex items-center justify-center gap-2 rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 shadow-sm transition-colors hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 disabled:opacity-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800",
   ghost:
@@ -250,7 +250,7 @@ export const DIALOG_FOOTER_WIDE =
   "flex flex-col-reverse gap-2 sm:flex-row sm:justify-between" as const;
 
 export const DIALOG_CLOSE =
-  "absolute right-4 top-4 rounded-md text-stone-400 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:pointer-events-none" as const;
+  "absolute right-4 top-4 rounded-md text-stone-400 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none" as const;
 
 export const INPUT_BASE = {
   size: "text-base md:text-sm",
@@ -258,21 +258,21 @@ export const INPUT_BASE = {
   ink: "text-ink",
   placeholder: "placeholder:text-muted-ink",
   transition: "transition-colors",
-  focusRing: "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+  focusRing: "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
   file: "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
 } as const;
 
 export const DIALOG_TEXTAREA =
-  "flex min-h-[60px] w-full rounded-md border border-line bg-transparent px-3 py-2 text-base md:text-sm text-ink shadow-sm transition-colors placeholder:text-muted-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+  "flex min-h-[60px] w-full rounded-md border border-line bg-transparent px-3 py-2 text-base md:text-sm text-ink shadow-sm transition-colors placeholder:text-muted-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 export const SELECT_TRIGGER = {
   base: "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-line bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background",
   placeholderState: "data-[placeholder]:text-muted-ink",
-  focusRing: "focus:outline-none focus:ring-1 focus:ring-ring",
+  focusRing: "focus:outline-none focus:ring-2 focus:ring-ring",
 } as const;
 
 export const BUTTON_BASE = {
-  focusRing: "focus-visible:ring-1 focus-visible:ring-ring",
+  focusRing: "focus-visible:ring-2 focus-visible:ring-ring",
   svgSize: "[&_svg]:size-4",
   rounded: "rounded-md",
 } as const;
@@ -285,7 +285,7 @@ export const MENU_ITEM =
 
 export const CHECKBOX = {
   control:
-    "peer h-4 w-4 shrink-0 rounded border border-stone-300 text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-stone-600",
+    "peer h-4 w-4 shrink-0 rounded border border-stone-300 text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 dark:border-stone-600",
   indicator: "flex items-center justify-center text-current",
   row: "flex items-start space-x-2",
   label: "text-sm leading-none font-medium text-stone-700 dark:text-stone-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
@@ -296,13 +296,13 @@ export const TABS_SEGMENTED = {
   // track — AA; stone-500 computed 4.0:1 and failed the two-gate).
   track: "inline-flex h-10 items-center justify-center rounded-lg bg-stone-100 p-1 text-stone-600 dark:bg-stone-800 dark:text-stone-300",
   trigger:
-    "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
+    "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
 } as const;
 
 export const TABS_PILL = {
   track: "inline-flex h-9 items-center justify-center rounded-full bg-stone-100 p-1 text-stone-600 dark:bg-stone-800 dark:text-stone-300",
   trigger:
-    "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
+    "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
 } as const;
 
 
@@ -345,7 +345,7 @@ export const LOGIN_LAYOUT = {
   inputWrap: "relative",
   inputIcon: "absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6b7688]",
   input:
-    "h-11 w-full rounded-xl border border-[#e3e7ee] bg-white pl-10 pr-3 placeholder:text-[#a3adc2] focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 text-base md:text-sm",
+    "h-11 w-full rounded-xl border border-[#e3e7ee] bg-white pl-10 pr-3 placeholder:text-[#a3adc2] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40 text-base md:text-sm",
   submit:
     "flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-[#131b33] font-medium text-white shadow-sm transition-all duration-200 hover:bg-[#0f1630] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 text-sm",
   footer: "flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0",

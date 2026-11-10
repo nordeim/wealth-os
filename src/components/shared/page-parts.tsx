@@ -60,7 +60,7 @@ export function KpiCard({
     deltaDirection === "up"
       ? "text-emerald-700 dark:text-emerald-400"
       : deltaDirection === "down"
-        ? "text-red-500 dark:text-red-400"
+        ? "text-red-600 dark:text-red-400" // F-218j: red-500 was 3.76:1 at text-xs
         : "text-stone-500 dark:text-stone-500";
   return (
     <div className={cn(CARD.kpi)}>

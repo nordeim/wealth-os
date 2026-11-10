@@ -103,12 +103,16 @@ export const ACCOUNT_TYPES = [
 ] as const;
 
 export const INVESTMENT_TYPES = [
-  { value: "stock", label: "Stock", color: "#3b82f6" },
-  { value: "etf", label: "ETF", color: "#10b981" },
-  { value: "bond", label: "Bond", color: "#f59e0b" },
-  { value: "crypto", label: "Crypto", color: "#a855f7" },
-  { value: "realestate", label: "Real Estate", color: "#f43f5e" },
-  { value: "other", label: "Other", color: "#78716c" },
+  // Session-218 (R-15, F-218k): `text` is the readable ink for the type
+  // chip — the 500-level `color` renders 2.1–3.7:1 as text-xs on its own
+  // 10% tint; the 600/700-level steps carry 4.5:1+ while the tint keeps
+  // the type's hue.
+  { value: "stock", label: "Stock", color: "#3b82f6", text: "#1d4ed8" },
+  { value: "etf", label: "ETF", color: "#10b981", text: "#047857" },
+  { value: "bond", label: "Bond", color: "#f59e0b", text: "#b45309" },
+  { value: "crypto", label: "Crypto", color: "#a855f7", text: "#6d28d9" },
+  { value: "realestate", label: "Real Estate", color: "#f43f5e", text: "#be123c" },
+  { value: "other", label: "Other", color: "#78716c", text: "#57534e" },
 ] as const;
 
 export const GOAL_CATEGORIES = [

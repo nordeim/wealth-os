@@ -25,7 +25,7 @@ import {
   INCOME_FREQUENCIES,
   INCOME_SOURCE_TYPES,
 } from "@/lib/constants";
-import { formatMoney, relativeDays, totalMonthlyIncome } from "@/lib/finance";
+import { formatMoney, relativeDays, toDate, totalMonthlyIncome } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
 import { CARD, GLASS_CARD, PAGE_ROOT } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
@@ -212,7 +212,7 @@ function IncomeSourceDialog({
       setAmount(editing ? String(editing.amount) : "");
       setFrequency(editing?.frequency ?? "monthly");
       setNextPaymentDate(
-        editing?.nextPaymentDate ? toDateInputValue(new Date(editing.nextPaymentDate)) : "",
+        editing?.nextPaymentDate ? toDateInputValue(toDate(editing.nextPaymentDate)) : "", // F-218d
       );
       setNotes(editing?.notes ?? "");
   }
@@ -262,14 +262,14 @@ function IncomeSourceDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Software Engineering Salary"
-              className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
             />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Type</label>
+              <label htmlFor="income-type" className="text-sm font-medium text-stone-700 dark:text-stone-300">Type</label> {/* F-218u */}
               <Select value={type} onValueChange={setType}>
-                <SelectTrigger aria-label="Income type">
+                <SelectTrigger id="income-type" aria-label="Income type">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -282,9 +282,9 @@ function IncomeSourceDialog({
               </Select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Frequency</label>
+              <label htmlFor="income-frequency" className="text-sm font-medium text-stone-700 dark:text-stone-300">Frequency</label> {/* F-218u */}
               <Select value={frequency} onValueChange={setFrequency}>
-                <SelectTrigger aria-label="Payment frequency">
+                <SelectTrigger id="income-frequency" aria-label="Payment frequency">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -311,7 +311,7 @@ function IncomeSourceDialog({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
             </div>
             <div className="space-y-1.5">
@@ -337,7 +337,7 @@ function IncomeSourceDialog({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="min-h-16 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className="min-h-16 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
             />
           </div>
           <DialogFooter>

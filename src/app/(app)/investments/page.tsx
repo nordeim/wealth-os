@@ -268,7 +268,7 @@ export default function InvestmentsPage() {
                         <td className="py-3 pr-4">
                           <span
                             className="rounded-full px-2 py-0.5 text-xs font-medium"
-                            style={{ backgroundColor: `${meta?.color ?? "#78716c"}1a`, color: meta?.color ?? "#78716c" }}
+                            style={{ backgroundColor: `${meta?.color ?? "#78716c"}1a`, color: meta?.text ?? "#57534e" }} /* F-218k: the readable step, the tint keeps the hue */
                           >
                             {meta?.label ?? row.type}
                           </span>
@@ -280,7 +280,7 @@ export default function InvestmentsPage() {
                         <td
                           className={cn(
                             "py-3 pr-4 text-right font-semibold",
-                            row.gainLoss >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-500",
+                            row.gainLoss >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400", // F-218j
                           )}
                         >
                           {row.gainLoss >= 0 ? "+" : ""}
@@ -420,13 +420,13 @@ function InvestmentDialog({
                 value={symbol}
                 onChange={(e) => setSymbol(e.target.value.toUpperCase())}
                 placeholder="AAPL"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 font-mono text-sm uppercase text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 font-mono text-sm uppercase text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Type</label>
+              <label htmlFor="investment-type" className="text-sm font-medium text-stone-700 dark:text-stone-300">Type</label> {/* F-218u */}
               <Select value={type} onValueChange={setType}>
-                <SelectTrigger aria-label="Investment type">
+                <SelectTrigger id="investment-type" aria-label="Investment type">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -450,7 +450,7 @@ function InvestmentDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Apple Inc."
-              className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
             />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -467,7 +467,7 @@ function InvestmentDialog({
                 value={shares}
                 onChange={(e) => setShares(e.target.value)}
                 placeholder="0"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
             </div>
             <div className="space-y-1.5">
@@ -483,7 +483,7 @@ function InvestmentDialog({
                 value={avgCost}
                 onChange={(e) => setAvgCost(e.target.value)}
                 placeholder="0.00"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
             </div>
             <div className="space-y-1.5">
@@ -499,7 +499,7 @@ function InvestmentDialog({
                 value={currentValue}
                 onChange={(e) => setCurrentValue(e.target.value)}
                 placeholder="0.00"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
             </div>
           </div>

@@ -325,3 +325,36 @@ test("the signup 4xx negatives: the duplicate surfaces in the card + the API qua
   const csrfBody = await csrfShape.json();
   expect(csrfBody.error.message).toBe("Invalid request body");
 });
+
+// Session-218 (R-15, F-218a — the expired-verification recovery loop,
+// the e2e leg): R-14's hash-gate 403s VERIFICATION_REQUIRED for any
+// hash-present account (expired code or fresh — the client path is
+// identical), and the resend re-arms server-side. Pre-cure the client
+// rendered the 403 as a banner dead-end: the verify view (the ONLY
+// surface with the Resend link) was reachable solely via signup
+// success. NOTE the signup budget: this leg is the battery's 10th and
+// FINAL signup-IP POST (the route's own cap) — any future signup-adding
+// leg must consolidate.
+test("the signin 403 lands the verify view and the Resend re-arms (F-218a)", async ({ page }) => {
+  const email = `e2e-recovery-${Date.now()}@example.com`;
+  // A hash-present account (an unverified signup) via the API.
+  await page.request.post("/api/auth/signup", {
+    data: { email, password: "TestPass123" },
+  });
+
+  // The UI signin — the 403 arm must land the verify view, never the
+  // banner dead-end that locked expired-code accounts out.
+  await page.goto("/login");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password", { exact: true }).fill("TestPass123");
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await expect(page.getByRole("heading", { name: "Verify your email" })).toBeVisible();
+  await expect(page.getByText("We've sent a 6-digit code to")).toBeVisible();
+  await expect(page.getByText(email)).toBeVisible();
+
+  // The Resend completes the recovery loop (the F-217d re-arm).
+  await page.getByRole("button", { name: "Resend" }).click();
+  await expect(
+    page.getByRole("alert").filter({ hasText: "New verification code sent to your email" }),
+  ).toBeVisible();
+});

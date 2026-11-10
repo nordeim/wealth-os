@@ -35,7 +35,7 @@ import {
   EXPENSE_CATEGORIES,
   QUICK_EXPENSE_CATEGORIES,
 } from "@/lib/constants";
-import { budgetCategorySplit, formatMoney } from "@/lib/finance";
+import { budgetCategorySplit, formatMoney, toDate } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
 import { CARD, GLASS_CARD, PAGE_ROOT } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
@@ -51,6 +51,17 @@ export default function ExpensesPage() {
   const [search, setSearch] = React.useState("");
   const [tab, setTab] = React.useState("all");
   const [filtersOpen, setFiltersOpen] = React.useState(false);
+  // Session-218 (R-15, F-218b): the trigger's own ref — the R-14 cure
+  // removed the bare `button[aria-expanded]` outside-close guard but
+  // never landed the scoped replacement its comment claimed (the
+  // trigger carries no aria-label; that label rides the popover PANEL,
+  // a DOM sibling, so the closest('[aria-label=…]') exclusion never
+  // matched it): pointerdown on the toggle fired setFiltersOpen(false),
+  // the effect detached, and the subsequent click toggled false→true —
+  // the popover flicker-reopened and the toggle could not dismiss it
+  // (live-reproduced). The ref scopes the exclusion to the toggle
+  // itself: its pointerdown never closes, the click alone toggles.
+  const filtersTriggerRef = React.useRef<HTMLButtonElement | null>(null);
   const [categoryFilter, setCategoryFilter] = React.useState("all");
 
   const now = new Date();
@@ -75,6 +86,8 @@ export default function ExpensesPage() {
   // Escape closes the popover only when no Radix layer is open above
   // it (Radix preventDefault does not stopPropagation — one Escape
   // must dismiss the Select alone and leave the popover standing).
+  // F-218b: the trigger guard keys on the ref (not the effect's deps —
+  // the ref is stable across renders).
   React.useEffect(() => {
     if (!filtersOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -84,6 +97,10 @@ export default function ExpensesPage() {
     };
     const onPointer = (e: PointerEvent) => {
       if (!(e.target instanceof HTMLElement)) return;
+      // The toggle's OWN pointerdown never closes (F-218b): the click
+      // that follows pointerdown owns the toggle; closing here would
+      // fire twice (close + reopen) and the toggle could never dismiss.
+      if (filtersTriggerRef.current?.contains(e.target)) return;
       if (e.target.closest('[aria-label="Expense filters"]')) return;
       // The portaled Select option/listbox surfaces — an option lives
       // in document.body, so "outside the popover group" is its NORMAL
@@ -117,6 +134,76 @@ export default function ExpensesPage() {
     setEditing(null);
     setDialogOpen(true);
   };
+
+  // F-218o: the shared history body — rendered inside every tab panel
+  // (the active one shows; the rest stay hidden but their
+  // aria-controls now resolve).
+  const historyBody = visible.length === 0 ? (
+    <EmptyState
+      icon={TrendingDown}
+      title="No expenses yet"
+      subtitle="Start tracking your spending to better manage your budget"
+      action={
+        <Button onClick={openCreate}>
+          <PlusCircle className="h-4 w-4" />
+          Add Your First Expense
+        </Button>
+      }
+    />
+  ) : (
+    <ul className="divide-y divide-stone-200/70 dark:divide-stone-800">
+      {visible.map((tx) => {
+        const meta = BUDGET_CATEGORY_META[tx.budgetCategory as "needs" | "wants" | "savings"] ?? BUDGET_CATEGORY_META.wants;
+        return (
+          <li key={tx.id} className="flex items-center justify-between gap-3 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <span
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                style={{ backgroundColor: meta.soft, color: meta.color }}
+              >
+                <Receipt className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
+                  {tx.description}
+                </p>
+                <p className="text-xs text-stone-500 dark:text-stone-500">
+                  {tx.category} · {toDate(tx.date).toLocaleDateString("en-US", { // F-218d
+                    month: "short",
+                    day: "numeric",
+                  })}
+                  {tx.recurring ? " · recurring" : ""}
+                </p>
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                {formatMoney(tx.amount)}
+              </span>
+              <Button
+                variant="ghost"
+                className="h-8 px-2 text-xs"
+                onClick={() => {
+                  setEditing(tx);
+                  setDialogOpen(true);
+                }}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="ghost"
+                className="h-8 px-2 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                onClick={() => void deleteExpense(tx)}
+              >
+                <X className="h-3.5 w-3.5" />
+                <span className="sr-only">Delete {tx.description}</span>
+              </Button>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
 
   const deleteExpense = async (tx: Transaction) => {
     const res = await store.deleteTransaction(tx.id);
@@ -174,11 +261,16 @@ export default function ExpensesPage() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search expenses..."
               aria-label="Search expenses"
-              className="h-10 w-full rounded-lg border border-stone-200 bg-white pl-9 pr-3 text-sm text-stone-900 shadow-sm placeholder:text-stone-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className="h-10 w-full rounded-lg border border-stone-200 bg-white pl-9 pr-3 text-sm text-stone-900 shadow-sm placeholder:text-stone-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
             />
           </div>
           <div className="relative">
-            <Button variant="outline" onClick={() => setFiltersOpen((v) => !v)} aria-expanded={filtersOpen}>
+            <Button
+              variant="outline"
+              ref={filtersTriggerRef}
+              onClick={() => setFiltersOpen((v) => !v)}
+              aria-expanded={filtersOpen}
+            >
               <Filter className="h-4 w-4" />
               Filters
               {activeFilters > 0 ? (
@@ -240,74 +332,20 @@ export default function ExpensesPage() {
                 { id: "savings", label: "Savings" },
               ]}
             >
-              <TabsPanel tab={tab}>
-          {visible.length === 0 ? (
-            <EmptyState
-              icon={TrendingDown}
-              title="No expenses yet"
-              subtitle="Start tracking your spending to better manage your budget"
-              action={
-                <Button onClick={openCreate}>
-                  <PlusCircle className="h-4 w-4" />
-                  Add Your First Expense
-                </Button>
-              }
-            />
-          ) : (
-            <ul className="divide-y divide-stone-200/70 dark:divide-stone-800">
-              {visible.map((tx) => {
-                const meta = BUDGET_CATEGORY_META[tx.budgetCategory as "needs" | "wants" | "savings"] ?? BUDGET_CATEGORY_META.wants;
-                return (
-                  <li key={tx.id} className="flex items-center justify-between gap-3 py-3">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <span
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                        style={{ backgroundColor: meta.soft, color: meta.color }}
-                      >
-                        <Receipt className="h-4 w-4" />
-                      </span>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">
-                          {tx.description}
-                        </p>
-                        <p className="text-xs text-stone-500 dark:text-stone-500">
-                          {tx.category} · {new Date(tx.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                          {tx.recurring ? " · recurring" : ""}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <span className="text-sm font-bold text-stone-900 dark:text-stone-100">
-                        {formatMoney(tx.amount)}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        className="h-8 px-2 text-xs"
-                        onClick={() => {
-                          setEditing(tx);
-                          setDialogOpen(true);
-                        }}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        className="h-8 px-2 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                        onClick={() => void deleteExpense(tx)}
-                      >
-                        <X className="h-3.5 w-3.5" />
-                        <span className="sr-only">Delete {tx.description}</span>
-                      </Button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-              </TabsPanel>
+              {/* Session-218 (R-15, F-218o): one panel per trigger — the
+                  pre-cure single panel left three triggers' aria-controls
+                  dangling at dead ids (the F-217s promotion; the analytics
+                  pattern). The list body is the shared filtered view. */}
+              {(["all", "needs", "wants", "savings"] as const).map((panelId) => (
+                <TabsPanel key={panelId} tab={panelId}>
+                  {/* Only the ACTIVE panel carries the list — the hidden
+                      shells stay empty so text selectors stay unique
+                      (the maiden e2e run decoded the quadruplicated
+                      hidden copies). aria-controls resolves for every
+                      trigger; the content renders once. */}
+                  {tab === panelId ? historyBody : null}
+                </TabsPanel>
+              ))}
             </Tabs>
           </div>
         </section>
@@ -357,7 +395,7 @@ export function ExpenseDialog({
         setAmount(String(editing.amount));
         setBudgetCategory(editing.budgetCategory);
         setCategory(editing.category);
-        setDate(toDateInputValue(new Date(editing.date)));
+        setDate(toDateInputValue(toDate(editing.date))); // F-218d: the stored UTC-midnight form, re-anchored
         setNotes(editing.notes ?? "");
         setRecurring(editing.recurring);
       } else {
@@ -466,7 +504,7 @@ export function ExpenseDialog({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. Whole Foods run"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
             </div>
 
@@ -483,7 +521,7 @@ export function ExpenseDialog({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
               <div className="flex flex-wrap gap-1.5 pt-1" aria-label="Quick amount adders">
                 {QUICK_ADDS.map((n) => (
@@ -554,7 +592,7 @@ export function ExpenseDialog({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
-                className="min-h-16 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className="min-h-16 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
             </div>
 
@@ -563,7 +601,7 @@ export function ExpenseDialog({
                 type="checkbox"
                 checked={recurring}
                 onChange={(e) => setRecurring(e.target.checked)}
-                className="h-4 w-4 rounded border-stone-300 text-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 dark:border-stone-600"
+                className="h-4 w-4 rounded border-stone-300 accent-amber-600 focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-600" /* F-218u: accent- is the working native form — text- is a no-op on inputs */
               />
               This is a recurring expense
             </label>
