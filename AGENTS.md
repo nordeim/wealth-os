@@ -187,3 +187,24 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   `tests/dependency-floors-213.test.ts` (better-sqlite3 must not ride
   the lockfile). Revisit only when bun ships support or prisma ships a
   bun:sqlite adapter.
+- **The `.dark` block must flip the APP-NATIVE tokens too** (session-217,
+  F-217c): R-11 flipped the shadcn neutral set but left
+  `--color-surface/foreground/ink/muted-ink/line/line-soft/line-strong`
+  unflipped — every dialog (bg-surface), the Select listbox, and the
+  user-menu rendered WHITE panels with light text in dark mode for 17
+  sessions, invisible to every gate (the sweeps capture settled pages
+  with dialogs closed; the a11y two-gate ran light-mode only). A
+  base-layer `.dark body { color }` rule can NEVER beat the
+  `text-foreground` utility on `<body>` — flip the TOKEN, not the rule.
+  Pinned in `tests/dark-tokens.test.ts` + the a11y dark legs.
+- **A DOM-scoped outside-close listener fires on PORTALED Radix
+  surfaces** (session-217, F-217a): the Expenses filters popover's
+  pointerdown guard closed on Select OPTIONS — they live in
+  `document.body` through `SelectPrimitive.Portal`, so "outside the
+  popover group" is their normal address; the popover unmounted
+  mid-pick and the filter never applied (mouse users only — the e2e
+  Escape leg never covered the pointer path). Exclude the portal
+  carriers (`[role="option"]`, `[role="listbox"]`,
+  `[data-radix-popper-content-wrapper]`) and scope expanded-button
+  guards to the trigger, not every `button[aria-expanded]`. Pinned in
+  `tests/expenses-popover.test.ts` + the mouse-pick e2e leg.

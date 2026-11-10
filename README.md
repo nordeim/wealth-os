@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-807%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-862%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,8 +59,8 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 719 checks incl. property tests |
-| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 88 checks; chromium; seeded `db/e2e.db` |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 767 checks incl. property tests |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 95 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
 ```mermaid
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 55 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 60 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,8 +166,8 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 719 checks / 55 files |
-| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 88 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
+| Unit (Vitest) | `bun run test` | 767 checks / 60 files |
+| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 95 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
 | Parity sweeps | `bun run gate:full` | **active** (re-activated v2.8.0 / R-4.5): the standing gate + six WealthOS-native drift gates — the four sweep classes (1440×900 · 390×844 · 768×1024 · 1024×768, theme-matched zero-data baselines), the fullpage sweep (the 11-page below-the-fold axis with the zero-data sentinel), and the interior census (four-axis standing allowances at margin 0) — green end-to-end from cold at v2.8.0; run it when parity surfaces changed or per the standing cadence (the pre-push bar stays `bun run gate`; the sweep legs need the live reference, so `gate` remains the offline gate) |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 719 unit · 88 e2e · 14 smoke · full gate green |
+| Verification layer | ✅ Complete | 767 unit · 95 e2e · 14 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 216: **R-13 shipped — the verification-gap convergence round**: the Import commit's 5000-row contract un-blocked from the global 16KB body ceiling (real imports of ≳140 rows had failed), the formula-injection guard given its behavioral pin (the phantom test file made real), the client data layer's loading + error faces wired (LoadingBlock was dead code; refresh failures were silent), the QuickAction nested-interactive cured (an a11y defect axe structurally cannot see), calendar-true dates, the OTP log gated, the Expenses popover Escape, the F-215h doc tail completed, and the dead-export sweep); next: findings-led iterations (no open R-item by default) |
+| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 217: **R-14 shipped — the parity-completion round**: the dark-mode token set completed — the seven app-native tokens now flip in `.dark` (dialogs, the Select listbox, and the user-menu had rendered white panels with light text at 1.09:1/1.00:1 — the reference's own dark surfaces measure #0a0a0a/#262626/#fafafa); the a11y gate gained a dark leg (whose maiden run caught and cured the destructive buttons' dark contrast); the Expenses filters popover spares the portaled Select (the outside-close had killed mouse-picked category filters); the AI coach route's own body cap; the verification gate now survives its TTL (hash-keyed, with the resend re-arm); the mobile drawer's focus contract; the sitemap's Capital metadata-rich locs; `Cache-Control: no-store` + `frame-ancestors 'self'`; and the low tail (search tails retired, calendar-true date forms, hydrate error hygiene, entry-time write tokens). F-217m (the in-band delivery default) recorded for the owner's ask; next: findings-led iterations (no open R-item by default) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

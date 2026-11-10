@@ -7,7 +7,31 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.13.0** (session 216 — the verification-gap
+> **Current version: v2.14.0** (session 217 — the parity-completion
+> round R-14: the fresh-eyes audit's blind-spot cluster cured — the
+> surfaces the gates structurally cannot see. The dark-mode token
+> completion (F-217c High: `--color-surface/foreground/ink/muted-ink/
+> line/line-soft/line-strong` never flipped in `.dark`, so every
+> dialog, the Select listbox, and the sidebar user-menu rendered
+> WHITE panels with light text — 1.09:1, live-verified, while the
+> reference's own dark surfaces measure #0a0a0a/#262626/#fafafa);
+> the Expenses filters popover's F-216i outside-close killing the
+> portaled Select (F-217a Medium — mouse users could not apply a
+> category filter, live-reproduced); the AI coach route's
+> schema-vs-cap conflict (F-217b Medium — the exact F-216a class the
+> round before cured, one route left behind); the verification gate
+> dissolving after the 15-minute TTL (F-217d Medium — an unverified
+> account signs in once the code expires, and the resend no-ops, so
+> the "gate" is cosmetic); the mobile drawer's focus order running
+> under the overlay (F-217e Medium); and the low tail (the sitemap's
+> metadata-poor lowercase locs F-217f, the missing envelope
+> `Cache-Control: no-store` F-217g, the missing `frame-ancestors`
+> F-217h, the F-216j search tails F-217i, `dateField`'s offset-form
+> inconsistency F-217j, the hydrate stale-error face F-217k, the
+> mutation actions' late write-token read F-217l); §5 carries the
+> execution history).
+>
+> **Previous version: v2.13.0** (session 216 — the verification-gap
 > convergence round R-13: the fresh-eyes audit's unpinned-behavior
 > cluster cured — the Import commit's 5000-row contract un-blocked from
 > the 16KB global body ceiling (F-216a Medium: real imports of ≳140
@@ -138,6 +162,28 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-216i | Low | **The Expenses filters popover lacks Escape/outside-click close.** A plain conditional div — every other transient surface (the drawer, dialogs, dropdowns) closes on Escape; keyboard users must tab back to the ✕. No WCAG failure; a usability gap against the app's own patterns. | `src/app/(app)/expenses/page.tsx:147-182` | **R-13** |
 | F-216j | Low | **Dead exports and vestiges — drift hazards for future consumers.** `MOBILE_NAV_SHEET.overlay` (a scrim the real full-screen drawer intentionally does not render), `NAV_LAYOUT.icon`/`label`, `PERIOD_SEGMENT`, `GRID_COLS` (`page-layout.ts`); the `chart-no-outline` `@utility` (`globals.css`); the `search` store action (zero UI consumers); the Import page's no-op ternary (`type === "income" ? "Other" : "Other"`). | `src/lib/page-layout.ts`; `src/app/globals.css:454`; `src/stores/wealthos-store.ts:361`; `src/app/(app)/import/page.tsx:108-110` | **R-13** |
 | F-216k | Informational (dismissed, verified) | **The settings `{}`-body suspicion is NOT a bug.** The audit flagged `settingsUpdateSchema` all-optional → `db.setting.update({ data: {} })` as a possible 500; verified live against Prisma 7 this session: the empty-data update is a clean no-op returning the row (200). Recorded so the next audit does not re-derive it. | `src/app/api/settings/route.ts` (PUT); live probe this session (`RESULT empty-update-ok currency=USD`) | none |
+| F-217a | Medium | **The F-216i outside-close listener breaks the Expenses filters popover's own Select — mouse users cannot apply a category filter.** The listener closes on any `pointerdown` outside `[aria-label="Expense filters"]` or a `button[aria-expanded]` — but the Category `<Select>` renders its options through a **body portal** (`select.tsx:68` `SelectPrimitive.Portal`), outside the popover group, and a `SelectItem` is a `div[role="option"]` (not a `button[aria-expanded]`): pointerdown on an option fires `setFiltersOpen(false)` mid-pick, the popover (parent of the Select root) unmounts, and the selection never registers. Live-reproduced this session: mouse-pick "🛒 Groceries" → popover unmounts, select value unchanged, filter NOT applied. Keyboard (Enter) still works — the e2e Escape leg never covered the pointer path. Also: the `button[aria-expanded]` guard matches ANY expanded button (the drawer hamburger included), and one Escape closes both the Select and the popover (Radix `preventDefault` does not `stopPropagation`). | `src/app/(app)/expenses/page.tsx:70-75` (the guard); `src/components/ui/select.tsx:68` (the portal); live repro `scripts/probe-217-m1.ts` (this session) | **R-14** |
+| F-217b | Medium | **`/api/ai/coach` still carries the F-216a conflict class: the schema admits ~242KB, the seam caps at 16KB.** `aiCoachSchema.history` = 30 × content-max-4000 (JSON-escaped worst case ≈ 242KB with quote-heavy content) while the route calls `parseBody(req, aiCoachSchema)` on the 16KB default — a schema-legal payload dies "Request body too large" before validation. The route's own docblock sanctions `history` "for a future LLM provider" — exactly the large-honest-payload class `maxBytes` was built for. No first-party impact today (the client sends only `{ question }`, ≤ ~600B) — a latent contract inconsistency, the incomplete tail of the F-216a cure. | `src/app/api/ai/coach/route.ts:15` (default cap); `src/lib/schemas.ts:499-507` (the 30×4000 history); `src/lib/api.ts:82,145` (the parameterization R-13 shipped) | **R-14** |
+| F-217c | High | **The dark-mode token set is incomplete — 7 tokens never flip, so every dialog, the Select listbox, and the sidebar user-menu render white panels with light text (1.09:1 / 1.00:1 — invisible).** The `.dark` block (`globals.css:322-335`, R-11's F-214e) flips the shadcn neutral set (card/popover/secondary/accent/muted-foreground/input) but NOT `--color-surface/foreground/ink/muted-ink/line/line-soft/line-strong`. Consequences, live-verified this session (dark mode, our dev server): the Accounts dialog panel computes `rgb(255,255,255)` while its title computes `rgb(245,245,244)` — 1.09:1; the sidebar user-menu's "Dark Mode" item computes `rgb(28,25,23)` on the `dark:bg-stone-900` menu — 1.00:1 (the desktop dark-mode toggle-off is INVISIBLE to the very users who need it); `DIALOG_CONTENT.base` is `bg-surface`, `SelectContent` is `bg-surface text-foreground`, `MENU_ITEM` inherits the body's `text-foreground` — all unflipped. The `.dark body { color:#f5f5f4 }` base-layer rule (globals.css:312-315) is INERT — a base-layer declaration can never beat the `text-foreground` utility on `<body>`. Meanwhile the LIVE REFERENCE (probed this session, fresh-context login): defaults `html.dark`, body `#0a0a0a`/`#fafafa`, its dialog panel measures **#0a0a0a** with #262626 border and #fafafa labels, its Select listbox `rgb(10,10,10)`/`rgb(250,250,250)` — our white panels are a genuine PARITY DIVERGENCE, invisible to the gates because the sweeps capture settled pages (dialogs/menus closed) and the a11y two-gate runs light-mode only. Page surfaces are unaffected (every page-card genus carries its own explicit `dark:` arms — verified by grep: `bg-surface`/`border-line`/`text-ink` appear in NO page surface, only in the dialog/select/dropdown/button/toast seams). | `src/app/globals.css:322-335` (the .dark block) + `:46-85` (the unflipped tokens) + `:312-315` (the inert rule); `src/lib/page-layout.ts:237,243-244,283-284` (DIALOG_CONTENT/DIALOG_TITLE/MENU_ITEM); `src/components/ui/select.tsx:84`, `dropdown.tsx:28`, `button.tsx:43,56,74` (bg-white/bg-surface/neutral-900 tails), `toast.tsx:117-119,140`; live probes: our `scripts/probe-217-ours.ts` + the reference `scripts/probe-217-reference{,2}.ts` (this session) | **R-14** |
+| F-217d | Medium | **The email-verification gate dissolves after the 15-minute TTL — and the resend no-ops for the same accounts.** `isVerificationPending` returns `exp > Date.now()` (verification.ts:70-74), and login blocks ONLY while pending (login route:50-52): an account that never verified has a past expiry → pending false → login proceeds to a session. The gate's own contract ("an unverified account cannot sign in", S21-P5, the reference's live-verified banner) holds for exactly 15 minutes. The pass-through comment cites "pre-session-21 rows" — but those carry a NULL hash and already pass via the null check; the expired branch guards only never-verified accounts. Compounding: the resend route (resend:39) requires `isVerificationPending` — for an expired account it answers the no-op banner, so the locked-out account cannot even get a fresh code. Cure: login gates on `verificationCodeHash != null` (any hash = never verified, expired or not; verify-success clears the hash, verify:84-87), and resend re-arms for hash-present accounts. | `src/app/api/auth/login/route.ts:44-53`; `src/lib/verification.ts:70-74`; `src/app/api/auth/resend/route.ts:39`; `src/app/api/auth/verify/route.ts:84-87` (the hash clear) | **R-14** |
+| F-217e | Medium | **The mobile drawer's keyboard Tab order runs into the page content behind the opaque overlay.** MobileNav renders BEFORE the header+main in DOM (app-shell.tsx:45-59) and nothing moves focus on open: from the hamburger, Tab lands on page content `inDrawer:false` — behind the fixed full-screen overlay (WCAG 2.4.3). The drawer's links are reachable only by repeated Shift+Tab. The non-Radix construction (correct — the aria-hidden trap) simply never grew the compensating focus management; the shell's other closers (dialogs) get it from Radix. | `src/components/layout/app-shell.tsx:45-59` (DOM order); `src/components/layout/mobile-nav.tsx:70-76` (no focus move); audit 217-c live probe (Tab from the hamburger → "AI Coach" behind the overlay) | **R-14** |
+| F-217f | Low | **The sitemap advertises the metadata-poor lowercase twins — every listed URL declares the homepage canonical.** `sitemap.xml/route.ts` lists `/accounts`…`/settings`, but the per-route metadata (title/canonical/OG) lives ONLY on the Capital `.jsx` twins (the lowercase `page.tsx` files are `"use client"` and cannot export metadata): `/income` renders title "WealthOS" + canonical `/` — the sitemap's nine URLs all self-canonicalize to the homepage, functionally inert for any crawler. The reference's sitemap lists the CAPITAL locs (live-fetched this session: `/Accounts /Analytics /Expenses /Goals /Import /Income /Investments /Settings`); our lowercase choice was the documented s14 decision ("the real lowercase routes the router actually serves") — but the twins serve BOTH forms, so the Capital locs are both reference-cased and metadata-rich. | `src/app/sitemap.xml/route.ts:21-31`; the reference sitemap (live fetch this session); `tests/metadata.test.ts` (the pin to update in-commit) | **R-14** |
+| F-217g | Low | **Authenticated API responses carry no `Cache-Control`.** The `ok()/fail()` envelope (api.ts) sets only the JSON content-type + the global security headers — financial-data GETs (`/api/transactions`, `/api/dashboard`, `/api/export` — the full GDPR dump) can be heuristically cached by browsers/intermediaries on shared machines or caching proxies. The uploads GET is unaffected (its own `public, max-age=31536000, immutable` — correct for capability URLs). | `src/lib/api.ts` (ok/fail); live curl of `/api/auth/me` + `/api/transactions` (audit 217-b, verified: no Cache-Control) | **R-14** |
+| F-217h | Low | **No CSP `frame-ancestors` / `X-Frame-Options`.** `next.config.ts:100-114` ships Referrer-Policy/nosniff/HSTS only — the authed app is framable (clickjacking surface; practical exploitation constrained by the JSON CSRF gate + SameSite=Lax, but the one-line functional-superset header closes it). The header set is pinned by `tests/http-headers.test.ts` — the pin extends in-commit with the addition (the bare-HSTS reference-parity pin stays untouched). | `next.config.ts:100-114`; `tests/http-headers.test.ts:60-75` | **R-14** |
+| F-217i | Low | **The F-216j dead-export sweep left two tails: the `SearchResults` interface and the untested `/api/search` route.** R-13 deleted `store.search` (zero UI consumers) but `SearchResults` (`types/index.ts:113-118`) remains exported with zero importers — and the route that shaped it has no test coverage of any kind (no unit pin, no e2e leg, no smoke rung). The route itself is a real, owner-scoped API surface (README documents it) — it stays; the dead interface retires (the F-216j doctrine) and the route joins the owner-scoping pin family. | `src/types/index.ts:113-118`; `src/app/api/search/route.ts`; `rg "SearchResults" src/ tests/` (zero importers) | **R-14** |
+| F-217j | Low | **`dateField` accepts offset datetimes inconsistently and zoneless datetimes TZ-dependently.** The F-216h round-trip compares the UTC-normalized date against the string's literal prefix: `"2026-01-15T23:30:00+05:00"` passes but `"2026-01-15T00:30:00+05:00"` rejects; `"2026-01-15T23:30:00"` (zoneless) passes on a UTC server and rejects on UTC−5. In-app senders are all safe (`type="date"` inputs + the Import page's Z-form `toISOString()` — verified) — third-party API callers get semi-random 400s. Cure: tighten the regex to the two sanctioned forms (`yyyy-mm-dd` and `yyyy-mm-ddTHH:mm:ss(.sss)?Z`), pin both. | `src/lib/schemas.ts:121-130`; audit 217-a empirical matrix (this session) | **R-14** |
+| F-217k | Low | **`hydrate()` never clears a stale `error` at entry — the retry face shows contradictory state.** The R-13 error banner's Try-again calls `hydrate()`, which sets `loading: true` but leaves the previous `error` set until the fetch resolves: mid-retry the shell renders BOTH the stale banner and the LoadingBlock; and a retry landing on 401 sets `{ hydrated: true, loading: false, user: null }` without touching `error` — a stale non-auth error keeps showing after the failure mode changed. | `src/stores/wealthos-store.ts:153-155,175-179`; `src/components/layout/app-shell.tsx:61-82` | **R-14** |
+| F-217l | Low | **The mutation actions read `sessionWriteToken` at `refreshAll`-invocation time, violating the write-guard's own "captured at entry" contract.** The docblock (store:48-52) says every fetch captures the token at entry; `hydrate`/`logout` comply, but the mutation actions pass the CURRENT `sessionWriteToken` to `refreshAll` only AFTER their mutation fetch resolves — a logout completing in between bumps the token first, the post-fetch guard passes, and `refreshAll(N+1)` can write the previous user's dashboard payload into the cleared store (single-tab sub-second window; login re-bumps the token, so no cross-user persistence). | `src/stores/wealthos-store.ts:202-347` (the pattern); the docblock `:48-52` | **R-14** |
+| F-217m | High (recorded — owner decision required) | **The in-band delivery default posture: the forgot-password response carries the live reset link, the resend response the live OTP, whenever the `NEO_DISABLE_IN_APP_*` knobs are unset** — the shipped default. Documented demo posture (the digma ADR-014 family), boot-warned in production since F-214f, knob-gated, no-enumeration envelope preserved. The audit's recommendation: invert the production default (in-band only when `NODE_ENV !== "production"`) or make the posture boot-fatal like AUTH_SECRET. Rejected THIS round: flipping the default changes the env contract's semantics and the demo/e2e flows (the Playwright standalone boots NODE_ENV=production and relies on in-app delivery); the posture is ADR-documented and boot-warned. Recorded for the owner's explicit ask — the same standing status as R-5. | `src/app/api/auth/forgot-password/route.ts:68,107-112`; `src/app/api/auth/resend/route.ts:60-74`; `src/lib/boot-env.ts:100-107` (the warn); `.env.example:57` | none (owner ask) |
+| F-217n | Informational | **The a11y two-gate runs light-mode only — the entire F-217c family was invisible to it.** Folded into R-14 as the dark-mode axe leg (a per-section dark variant of the SECTIONS loop). | `tests/e2e/a11y.spec.ts:112-126` (no theme write) | **R-14** (the dark leg) |
+| F-217o | Informational (deferred) | **Upload content-type validation trusts the client-declared MIME** — no magic-byte sniffing; a sessioned user can store arbitrary bytes (≤5MB) served as `image/*` at unguessable URLs under nosniff (content-hosting abuse, not XSS). Hardening candidate; deferred (Low, self-hosted threat model). | `src/app/api/upload/route.ts:54-58` | none |
+| F-217p | Informational (deferred) | **scrypt rides the Node default cost (N=16384)** — below OWASP's interactive floor (N ≥ 2^16). Salt/key-length/timing-equalizer correct; the residual is offline-cracking pace on a stolen DB. Deferred (a cost bump re-hashes nothing retroactively — needs the versioned-hash format first). | `src/lib/password.ts:15` | none |
+| F-217q | Informational (standing) | **The whole-store `useWealthOs()` subscription pattern persists across all 9 pages (14 call sites)** — F-214l's standing note, re-flagged by this audit. No correctness impact (no derived state in store); the `useShallow` sweep stays "only if a page ever proves render-bound". | 14 call sites (audit 217-c enumeration) | none (standing) |
+| F-217r | Informational (parity) | **Destructive deletes carry no confirmation** — one click permanently removes financial records (accounts/expenses/budgets/investments). The reference's own UX (no confirms observed on its faces); parity genus, recorded. | `src/app/(app)/*/page.tsx` (the delete buttons) | none |
+| F-217s | Informational (deferred) | **The Expenses filter-tabs' inactive `aria-controls` dangle** (4 tabs, one panel — three referenced ids don't exist). Minor ARIA wiring; the Analytics tabs use the component correctly. Deferred. | `src/app/(app)/expenses/page.tsx:213-292`; `src/components/ui/tabs.tsx:150` | none |
+| F-217t | Informational (parity) | **No `noindex` on the auth pages; robots.txt allows all** — mirrors the reference's own robots (live-fetched: `Allow: /`). The auth faces are sitemap-excluded; recorded as the reference genus. | `src/app/robots.txt/route.ts:13-16`; the reference robots (live fetch) | none |
+| F-217u | Informational (doc note) | **Rate-limit IP keying trusts the last XFF hop when `NEO_PROXY_HOPS` is unset (default 1)** — fail-open for the direct-exposure topology (no proxy present, client-suppliable XFF). The knob (`0`) exists and fails closed; DEPLOYMENT.md should name it in the direct-exposure path. | `src/lib/rate-limit.ts:79-99` | none (doc note) |
+| F-217v | Informational (deferred) | **The seed re-writes the publicly documented demo credential on every run** — any production install that runs `db:seed` keeps a known-credential account forever (role "user", demo data only). A production-seed guard is the candidate; deferred (self-hosted demo posture). | `prisma/seed.ts:5,45,58` | none |
 
 ## 3. The remediation program (R-items)
 
@@ -851,6 +897,125 @@ executable — the contract, the pin, and the surface converge.
   re-derived per the R-7.5 doctrine (254/270/259/254, the decode
   documented in the census tool).
 
+### R-14 — The parity-completion round (session 217) — Status: Done(v2.14.0)
+
+The session-217 fresh-eyes audit (three parallel Mode-C passes: the
+R-13 cure surfaces, the API/auth/security layer, the UI/a11y/shell
+layer — 0 Critical / 3 High / 6 Medium / 17 Low / 10 Informational,
+every material claim re-verified at file:line by the driving session
+— the two live-repro classes: the Expenses popover Select kill and
+the dark-mode invisible surfaces; the reference probed live for the
+dark genus: its dialog panel measures #0a0a0a with #262626 borders
+and #fafafa labels, its sitemap lists the Capital locs). The round's
+theme: **the surfaces the gates structurally cannot see** —
+closed-state surfaces (dialogs, menus, listboxes) in the theme half
+the a11y gate never runs, portal overlays outside every DOM-scoped
+guard, and auth states that expire between test runs. F-217m (the
+in-band delivery default posture) is RECORDED as the owner-decision
+item — the same standing status as R-5.
+
+- **R-14.1 The pins (TDD, born RED)** —
+  `tests/expenses-popover.test.ts`: the outside-close guard's portal
+  exclusion (the closest() list covers `[role="option"]` /
+  `[role="listbox"]` / `[data-radix-popper-content-wrapper]`) + the
+  trigger-scoped `button[aria-expanded]` guard + the e2e MOUSE-PICK
+  leg (pick a category by click → popover stays open, the filter
+  applies — the path the Escape-only pin missed).
+  `tests/ai-body-cap.test.ts` (the import-body-cap pattern): the
+  coach schema's worst-case legal payload (30 × 4000 escaped-quote
+  chars ≈ 242KB) passes at the route's own cap and the default cap
+  still rejects it.
+  `tests/dark-tokens.test.ts`: the `.dark` block flips the 7
+  app-native tokens (`--color-surface/foreground/ink/muted-ink/line/
+  line-soft/line-strong`) to the reference-measured dark family;
+  the toast/button tails ride the flips (toast `bg-surface`,
+  button secondary `bg-surface`, the ghost/outline
+  `dark:hover:text-neutral-50` arms); `tests/palette-pins.test.ts`
+  extends in-commit (the complete-enumeration guard).
+  `tests/auth-contract.test.ts` extension: login blocks on
+  hash-present (expired or not — the null-hash pre-flow/verified
+  pass-through intact); resend re-arms for hash-present accounts
+  (the expired account's recovery path).
+  `tests/mobile-navigation-focus.test.ts` (source pin) + the e2e
+  legs: opening the drawer moves focus inside it; Tab cycles
+  {header trigger ↔ drawer links} and never lands in the page
+  content behind the overlay.
+  `tests/metadata.test.ts` extension: the sitemap's locs are the
+  Capital twins (the reference's own casing, the metadata-rich
+  form).
+  `tests/http-headers.test.ts` extension:
+  `Content-Security-Policy: frame-ancestors 'self'` on the global
+  header set + the envelope's `Cache-Control: no-store`.
+  `tests/owner-scoping.test.ts` extension: `/api/search` joins the
+  exact-form pin family; `SearchResults` (types/index.ts) deleted
+  (the F-216j doctrine — zero importers).
+  `tests/schemas-finance.test.ts` extension: `dateField` accepts
+  ONLY the two sanctioned forms (`yyyy-mm-dd`,
+  `yyyy-mm-ddTHH:mm:ss(.sss)?Z`); offset/zoneless forms reject.
+  `tests/loading-states.test.ts` extension: `hydrate` clears
+  `error` at entry and on the 401 branch.
+  `tests/parity-217.test.ts`: the store's mutation actions capture
+  `sessionWriteToken` at ENTRY (the write-guard contract
+  restated as a source pin).
+  `tests/e2e/a11y.spec.ts`: the DARK leg (per-section, the
+  theme written before goto — the F-217n gap).
+- **R-14.2 The cures** —
+  (a) the Expenses popover guard: the portal exclusion list + the
+  trigger-scoped expanded-button check (F-217a);
+  (b) `MAX_AI_BODY_BYTES = 256KB` on the coach route (F-217b);
+  (c) the `.dark` token completion (the 7 flips, values from the
+  reference-measured family: surface #0a0a0a, foreground #fafafa,
+  ink #f5f5f4 [the existing `.dark .input-base` precedent],
+  muted-ink #a8a29e, line #262626, line-soft #262626,
+  line-strong #404040) + the toast/button tails (F-217c) — the
+  page surfaces are untouched (their card genera carry explicit
+  `dark:` arms; the flips touch only the dialog/select/dropdown/
+  button/toast seams);
+  (d) the login hash-gate + the resend re-arm (F-217d);
+  (e) the drawer focus move + Tab cycle + focus return (F-217e);
+  (f) the sitemap's Capital locs + the docblock's s14 correction
+  (F-217f);
+  (g) `Cache-Control: no-store` on the `ok()/fail()` envelope
+  (F-217g);
+  (h) `Content-Security-Policy: frame-ancestors 'self'` in
+  next.config headers (F-217h);
+  (i) the `SearchResults` retirement + the search route's
+  owner-scoping pin (F-217i);
+  (j) `dateField`'s sanctioned-forms regex (F-217j);
+  (k) `hydrate`'s error hygiene (F-217k);
+  (l) the entry-time token capture across the mutation actions
+  (F-217l).
+- **R-14.3 The verification** — the full gate cold + the six drift
+  gates (the four sweep classes' standing baselines RE-DERIVED for
+  the pages whose outline buttons flip dark — the divergence to the
+  reference DECREASES, so the cure tightens the tables; the
+  fullpage axis likewise; the interior census untouched — DOM
+  counts unchanged) + census MATCH + the capture set (the dark
+  dialog/menu faces before → after, the popover mouse-pick, the
+  drawer focus) + the docs lockstep (README/PAD/AGENTS/SKILL
+  counts + the dark-family documentation).
+
+  **Shipped (the execution record):** R-14.1's pins born RED 34
+  (ai-body-cap 6 · expenses-popover 4 · dark-tokens 11 ·
+  mobile-navigation-focus 4 · parity-217 5 · the six extension
+  families) + the e2e legs (+7: the popover mouse-pick +
+  outside-close, the three drawer-focus legs, the two dark a11y
+  legs); R-14.2's cures landed as programmed PLUS the dark leg's
+  maiden-run catch — the destructive `text-red-600` buttons
+  computed 3.3:1 on the dark cards (five pages, cured with
+  `dark:text-red-400 dark:hover:text-red-300` arms) and the axe
+  selector-fragility decode (the amber-primary register matcher
+  gained the `button[type="submit"]` needle — the same genus, a
+  context-dependent selector form); the sweep tables + fullpage
+  tables re-derived in-commit (every page's diff moved DOWN — the
+  dark convergence; phone dashboard 16.5 → 14.47) with the
+  sweep-tool/fullpage-tool literal pins updated in the same commit;
+  the store cure's updateSettings exception (it set()s directly,
+  no refreshAll — the capture would have been an unused variable).
+  R-14.3's verification: lint 0/0 · tsc 0 · **767 unit / 60 files**
+  · build · smoke 14/14 · **e2e 95/95 / 7 specs** · **all six drift
+  gates CLEAN** (the re-derived tables) · census MATCH.
+
 ## 4. Plan validation (the re-check, session 203)
 
 After this plan text was drafted, every §2 claim was re-verified against the
@@ -889,12 +1054,15 @@ tree before shipping (the plan-validation pass the task spec mandates):
 
 | v2.13.0 | 216 | **R-13** (the verification-gap convergence round) + the in-commit tail. The audit round first: the cold baseline gates green at the documented v2.12.0 ship state (lint 0/0 · tsc 0 · 676/676 · build · smoke 14/14 · e2e 85/85 · census MATCH); the reference probe STABLE on every layer; **all six drift gates CLEAN cold**; the ledger re-triaged (the standing 1 moderate minimatch, range-unreachable — no new advisory); the skills-guided fresh-eyes audit (Mode C, three parallel passes: the R-12 cure surfaces, the API/auth/security layer, the UI/a11y layer — 0 Critical / 0 High / 6 Medium / 11 Low / 19 Informational, every material claim re-verified at file:line by the driving session, one suspicion DISMISSED by live probe: the settings {}-body 500, F-216k — Prisma 7's empty-data update is a clean no-op). The session's material: **F-216a Medium** (the Import commit's 5000-row contract blocked by the global 16KB body ceiling — real imports of ≳140 rows failed "Request body too large"), **F-216b** (the S48-P1 formula-injection guard's pin was a phantom test file; zero behavioral coverage since the session-199 rewrite), **F-216c/d** (LoadingBlock dead code, no page consumed loading/error, refreshAll swallowed failures, the Refresh buttons fire-and-forget), **F-216e** (the QuickAction <a><button/></a> nesting — the a11y two-gate is STRUCTURALLY blind to link-wrapped buttons), **F-216f** (the F-215h doc tail: SKILL:127's PDF row, PAD:303's "JSON/PDF", DEPLOYMENT:76's "wipes domain tables", the reset comment's "seven", install_packages.sh, discover-198's ENOENT, csv.ts's lineage rot), and the low tail (F-216g OTP log gating, F-216h calendar-true dates — "2026-02-30" verifiably rolled to March 2, F-216i the Expenses popover Escape, F-216j the dead-export sweep). Shipped: **R-13.1** the pins born RED 26 (import-body-cap 5 · schemas-finance dateField 6 · loading-states 5 · parity-216 9 · docs-counts negative 1) + csv-formula-guard 12 born GREEN by design (the guard's code pre-existed — the pin prevents its regression) + `tests/e2e/data-import.spec.ts` (the 500-row >16KB behavioral leg, the multi-user scratch-user pattern) + the a11y /reset-password anon leg + the Expenses Escape leg → **R-13.2** the cures (the seam parameterized — MAX_IMPORT_BODY_BYTES 4MB; refreshAll's failure branch + refresh returning the Result + the Refresh toasts; the AppShell loading gate + error banner with retry; the QuickAction single-anchor form; the popover Escape/outside; the no-op ternary collapsed; the OTP log gated behind inAppOtpEnabled; dateField's ISO-shape regex + calendar round-trip; reset-password's minLength; the dead exports retired — MOBILE_NAV_SHEET.overlay, NAV_LAYOUT.icon/label, PERIOD_SEGMENT, GRID_COLS, chart-no-outline, store.search; the smoke trap's GATE_PID; discover-198's existsSync; install_packages.sh deleted; the doc tail cured + the dompurify note re-homed; the error banner's red-300/900/950 pinned per the A-209 doctrine) → **R-13.3** the verification: lint 0/0 · tsc 0 · **719 unit** (55 files; +43) · build · smoke 14/14 · **e2e 88/88** (7 specs; +3) · **all six drift gates CLEAN** (the four sweep classes + the fullpage; the interior census after the dashboard's standing allowances re-derived per the R-7.5 doctrine — the QuickAction divergence decode, every other page at its standing value exactly) · census MATCH · the ledger unchanged (1 moderate, range-unreachable) | lint 0/0 · tsc 0 · **719 unit** (55 files) · build · smoke 14/14 · **e2e 88/88** · census MATCH · six drift gates CLEAN | (this session's execution commit) |
 
-> The next iteration session (217) has **no open R-item by default** —
+| v2.14.0 | 217 | **R-14** (the parity-completion round — the fresh-eyes audit's blind-spot cluster: the surfaces the gates structurally cannot see). The audit round first: the cold baseline gates green at the documented v2.13.0 ship state (lint 0/0 · tsc 0 · 719/719 · build · smoke 14/14 · e2e 88/88 · census MATCH; the browser binaries reinstalled after the sandbox reset); the ledger re-triaged (the standing 1 moderate minimatch, range-unreachable — no new advisory); the skills-guided fresh-eyes audit (Mode C, three parallel passes: the R-13 cure surfaces, the API/auth/security layer, the UI/a11y/shell layer — 0 Critical / 3 High / 6 Medium / 17 Low / 10 Informational, every material claim re-verified at file:line by the driving session, the two live-repro classes verified with probe scripts: the Expenses popover Select kill + the dark-mode invisible surfaces; the LIVE REFERENCE probed for the dark genus — its dialog panel measures #0a0a0a with #262626 borders and #fafafa labels, its sitemap lists the Capital locs; one High RECORDED as the owner-decision item: F-217m, the in-band delivery default posture). The session's material: **F-217c High** (the .dark block never flipped the seven app-native tokens — every dialog, the Select listbox, and the user-menu rendered white panels with light text, 1.09:1/1.00:1, live-verified), **F-217a Medium** (the F-216i outside-close killed the portaled Select — mouse users could not apply a category filter, live-reproduced), **F-217b** (the coach route's schema-vs-cap conflict — the F-216a class one route over), **F-217d** (the verification gate dissolved after its TTL; the resend no-opped the same accounts), **F-217e** (the drawer's Tab order ran under the overlay), and the low tail (F-217f the sitemap's metadata-poor lowercase locs, F-217g no Cache-Control on the envelope, F-217h no frame-ancestors, F-217i the SearchResults/search tails, F-217j dateField's offset roulette, F-217k the hydrate stale-error face, F-217l the late write-token read). Shipped: **R-14.1** the pins born RED 34 (ai-body-cap 6 · expenses-popover 4 · dark-tokens 11 · mobile-navigation-focus 4 · parity-217 5 + the six extension families: auth-contract 2, metadata 1, http-headers 3, owner-scoping 2, schemas-finance 8, palette-pins 1) + the e2e legs (+7: the popover mouse-pick + outside-close, the three drawer-focus legs, the two dark a11y legs) → **R-14.2** the cures (the .dark token completion — the seven app-native flips in the reference's measured family + the toast/button tails + the destructive buttons' dark arms; the popover portal exclusion; MAX_AI_BODY_BYTES 256KB; the login hash-gate + the resend re-arm; the drawer focus contract; the sitemap's Capital locs; the envelope's Cache-Control: no-store + the global frame-ancestors; SearchResults retired + /api/search pinned; dateField's two sanctioned forms; the hydrate error hygiene; the entry-time token capture across the 19 mutation actions) — the dark a11y leg's maiden run CAUGHT the destructive red-600 3.3:1 (cured) and the axe selector-fragility (the register gained the button[type=submit] needle, same citation); the useEffect-cleanup timing decode (focus return keys on "not in header", never "in the removed sheet") → **R-14.3** the verification: lint 0/0 · tsc 0 · **767 unit** (60 files; +48) · build · smoke 14/14 · **e2e 95/95** (7 specs; +7) · **all six drift gates CLEAN with the tables RE-DERIVED** (every page's diff moved down — the dark convergence; phone dashboard 16.5 → 14.47; the sweep-tool + fullpage-tool literal pins updated in-commit) · census MATCH · the ledger unchanged (1 moderate, range-unreachable) | lint 0/0 · tsc 0 · **767 unit** (60 files) · build · smoke 14/14 · **e2e 95/95** · census MATCH · six drift gates CLEAN (re-derived tables) | (this session's execution commit) |
+
+> The next iteration session (218) has **no open R-item by default** —
 > the R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8
 > dependency round at v2.9.0, the R-9 prisma major at v2.10.0, the
 > session-214 rounds (R-10 owner-scoping + R-11 palette-completion) at
 > v2.11.0, the session-215 live-seam convergence (R-12) at v2.12.0,
-> and the session-216 verification-gap convergence (R-13) at v2.13.0
+> the session-216 verification-gap convergence (R-13) at v2.13.0, and
+> the session-217 parity-completion round (R-14) at v2.14.0
 > (the advisory census still 1 — minimatch alone, range-unreachable
 > until typescript-estree moves; the re-triage duty stays). A fresh
 > audit's findings always pre-empt (Critical/High first); the natural
@@ -902,10 +1070,12 @@ tree before shipping (the plan-validation pass the task spec mandates):
 > genus — cure only if a future round re-architects the shell),
 > F-214l's whole-store subscription note (a `useShallow` sweep, only if
 > a page ever proves render-bound), F-215m's inert role dimension (a
-> schema cleanup, only if tenancy ever needs roles), or R-5 (the LLM
-> provider wiring) on the owner's explicit ask. The standing residuals
-> stay the documented content supersets (the populated tables/charts our
-> corpus renders where the reference's empty workspace shows
-> placeholders) + the F-210a scroll-model genus (absorbed into the
+> schema cleanup, only if tenancy ever needs roles), the F-217m
+> in-band-delivery default posture (the owner-decision item), or R-5
+> (the LLM provider wiring) on the owner's explicit ask. The standing
+> residuals stay the documented content supersets (the populated
+> tables/charts our corpus renders where the reference's empty
+> workspace shows placeholders) + the F-210a scroll-model genus
+> (absorbed into the
 > fullpage tables by the stability call — cure only if a future round
 > re-architects the shell).

@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 719 / Playwright 88 / smoke 14). Covers the design system,
+  layer (Vitest 767 / Playwright 95 / smoke 14). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -122,8 +122,8 @@ Locked versions from `package.json` (verified at distillation):
 | State | `zustand` | 5.1.0 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` + `@prisma/adapter-libsql` | 7.10.1 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3); R-9: the prisma 7 major — generated client in `src/generated/prisma` (postinstall), PrismaLibSql driver adapter (bun hard-blocks better-sqlite3 — oven-sh/bun#4290), `prisma.config.ts` on the db-path seam |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses. The `dompurify` npm override (3.4.17 — session 198's critical cure) stays as a defensive pin |
-| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 719 checks / 55 files |
-| E2E tests | `@playwright/test` + `axe-core` | 1.65.0 / 4.14.0 | Chromium; 88 checks / 7 specs; own db + port 3100 |
+| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 767 checks / 60 files |
+| E2E tests | `@playwright/test` + `axe-core` | 1.65.0 / 4.14.0 | Chromium; 95 checks / 7 specs; own db + port 3100 |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
 | Runtime tooling | `bun` | ≥ 1.3 | `bun run` scripts; Node-compatible build/start |
 
@@ -198,8 +198,8 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (719 checks) |
-| E2E (boots own server) | `CI=1 bun run test:e2e` (88 checks) |
+| Unit tests | `bun run test` (767 checks) |
+| E2E (boots own server) | `CI=1 bun run test:e2e` (95 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (14 assertions; needs build) |
 | DB push / seed / census | `bun run db:push` / `db:seed` / `db:census` |
@@ -218,6 +218,21 @@ CSS-first, no config file. Structure:
 5. `@layer utilities` — `.dark body`, `.sidebar-gradient`, `.page-wash`
    re-maps: dark mode re-declares the semantic tokens once and every
    surface follows
+
+**Session-217 (R-14, F-217c) — the `.dark` completion contract:** the
+`.dark` block AFTER the `@theme` emission flips BOTH token families —
+the shadcn neutral set (card/popover/secondary/accent/muted-foreground/
+input, R-11) AND the seven app-native tokens (surface `#0a0a0a`,
+foreground `#fafafa`, ink `#f5f5f4`, muted-ink `#a8a29e`, line and
+line-soft `#262626`, line-strong `#404040` — the reference's own
+measured dark family). Before R-14 the app-native set never flipped:
+every dialog (`bg-surface`), the Select listbox, and the user-menu
+rendered white panels with light text (1.09:1) — invisible to the gates
+because the sweeps capture settled pages and the a11y two-gate ran
+light-mode only. A base-layer `.dark body { color }` rule can NEVER
+beat the `text-foreground` utility on `<body>` — flip the TOKEN, not
+the rule. Pinned: `tests/dark-tokens.test.ts` + `tests/palette-pins.test.ts`
++ the a11y dark e2e legs.
 
 **Semantic tokens (the design decisions):**
 
@@ -648,11 +663,11 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 719 passed / 55 files
+- [ ] `bun run test` — 767 passed / 60 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 14/14 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)
-- [ ] `CI=1 bun run test:e2e` — 88/88 (7 specs)
+- [ ] `CI=1 bun run test:e2e` — 95/95 (7 specs)
 - [ ] `bun run db:census` — `census: MATCH`
 - [ ] Parity chain when parity surfaces changed (active since
       v2.8.0/R-4.5): `bun run gate:full` — the four sweep class drift
@@ -1019,9 +1034,10 @@ stone 50–950 (`#fafaf9` → `#0c0a09`), teal 50–700 (`#f0fdfa` →
 
 **Dark theme:** `.dark` class on `<html>` + `@custom-variant dark`;
 `.dark body`, `.sidebar-gradient`, `.page-wash` re-map the semantic set
-(stone-950 washes, stone-800 surfaces, stone-100 ink). Because surfaces
-read the semantic tokens, a re-map propagates everywhere — new surfaces
-must consume tokens, not hex.
+(stone-950 washes, stone-800 surfaces, stone-100 ink); the `.dark` block
+flips the seven app-native tokens too (session-217 — see §2). Because
+surfaces read the semantic tokens, a re-map propagates everywhere — new
+surfaces must consume tokens, not hex.
 
 **AA-critical pairings (pinned by the a11y battery):** inactive tabs
 `stone-600` on `stone-100`; KPI deltas `emerald-700`/`red-700`-class;
