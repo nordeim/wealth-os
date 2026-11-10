@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (869) | `bun run test` |
+| Unit tests (924) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 99) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 107) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -238,7 +238,10 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   fast-navigating user legitimately exceed any cap inside one window (the
   maiden census run tripped mid-run and rendered the store-error banner
   into every capture). The heavy EXPLICIT actions carry the buckets
-  (writes 60/15, export 240/15, search 60/15); the aggregate read stays
+  (writes 60/15 — on EVERY mutating handler since session-220/F-220c:
+  the collection POSTs AND the `[id]` PUT/DELETE pairs, budgets
+  DELETE, settings PUT, users PATCH — export 240/15, search 60/15);
+  the aggregate read stays
   unbucketed BY DESIGN (the decode is pinned in the route's docblock).
 - **Stored calendar dates are UTC MIDNIGHT — local-accessor reads
   mis-bucket them west of UTC** (session-218, F-218d): `dateField`
@@ -253,4 +256,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   keep their instant; Date inputs pass through); NEVER parse stored
   dates with a raw `new Date()` — route through `toDate`. Pinned with
   TZ-switching tests (`process.env.TZ = "America/New_York"` — both
-  engines honor dynamic TZ; verified).
+  engines honor dynamic TZ; verified). Session-220 (F-220a): the
+  seam's pattern now takes the BARE `yyyy-mm-dd` form too — a cure
+  that doesn't match the caller's input FORM is a no-op (the F-219e
+  analytics "cure" routed date-INPUT values through a pattern that
+  matched only the stored `.000Z` form; live-reproduced). Pin the
+  FORM, not just the call site.
