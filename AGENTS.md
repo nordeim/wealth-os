@@ -208,3 +208,30 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   `[data-radix-popper-content-wrapper]`) and scope expanded-button
   guards to the trigger, not every `button[aria-expanded]`. Pinned in
   `tests/expenses-popover.test.ts` + the mouse-pick e2e leg.
+- **A popover's TOGGLE must be excluded from its own outside-close
+  guard — or the click reopens what the pointerdown closed**
+  (session-218, F-218b): the F-217a cure removed the bare
+  `button[aria-expanded]` guard without landing the scoped replacement
+  its comment claimed — the trigger matches no exclusion (its
+  aria-label rides the popover PANEL, a DOM sibling, so `closest()`
+  never matches it), pointerdown fired close, the effect detached, and
+  the click toggled false→true: the toggle flicker-reopened
+  (live-reproduced; the e2e battery covered the pick and the outside
+  click, never the trigger toggle). The cure is a `filtersTriggerRef` +
+  `contains()` — and the pin asserts the POSITIVE form (the guard
+  exists), not merely the bare selector's absence. A negative-only pin
+  let the regression ship.
+- **Stored calendar dates are UTC MIDNIGHT — local-accessor reads
+  mis-bucket them west of UTC** (session-218, F-218d): `dateField`
+  accepts `yyyy-mm-dd`, `new Date("2026-11-01")` parses as UTC
+  midnight, Prisma returns `.000Z` — then `sameMonth`/`startOfMonth`
+  and the display seams read LOCAL parts. In America/New_York a Nov 1
+  transaction rendered 10/31 and bucketed into October (rent on the
+  1st), and the edit prefill — a RAW `new Date(editing.date)` —
+  re-stored the wrong day. The UTC sandbox is why every gate was
+  blind. The cure: `toDate()` re-anchors the exact UTC-midnight ISO
+  form to local midnight of the same calendar date (true timestamps
+  keep their instant; Date inputs pass through); NEVER parse stored
+  dates with a raw `new Date()` — route through `toDate`. Pinned with
+  TZ-switching tests (`process.env.TZ = "America/New_York"` — both
+  engines honor dynamic TZ; verified).

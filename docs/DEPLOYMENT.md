@@ -41,6 +41,7 @@ TLS at the app process if you must run without the flag.
 | `DATABASE_URL` | Yes | SQLite connection string. See §4. |
 | `AUTH_SECRET` | **Yes in production** | HMAC secret for session cookies. Generate with `openssl rand -hex 32`. Must be at least 16 characters — shorter values fall back to the insecure dev constant (with a server warning) instead of the run-time error an absent value raises. Never ship the dev constant. |
 | `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical public origin, used for metadata URLs and `sitemap.xml` (e.g. `https://orbital.example.com`). |
+| `NEO_PROXY_HOPS` | **Set it explicitly in production** | Trusted-proxy depth for rate-limit IP keying. Unset = 1 (correct behind exactly one reverse proxy; CLIENT-SUPPLIABLE on a direct-exposure deployment — a rotating `X-Forwarded-For` bypasses every rate limit, and the production boot warns). Direct exposure: `0`. Behind N appending proxies: `N`. See §2 for the direct-exposure path. |
 
 ## 4. Database location (§4 — the `.env.example` reference)
 

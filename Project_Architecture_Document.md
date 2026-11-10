@@ -16,6 +16,50 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.15.0 (session 218, R-15 — the recovery-loop and
+  perceivability round): two families the gates structurally cannot
+  drive, cured. The RECOVERY LOOPS: the signin 403
+  VERIFICATION_REQUIRED now lands the verify view (F-218a High — the
+  Resend was unreachable from the signin arm, so an expired-code
+  account was locked out of the very recovery path R-14 built
+  server-side; the e2e recovery journey proves the loop end-to-end);
+  the Expenses filters trigger toggles again (F-218b High — the R-14
+  popover cure removed the bare expanded-button guard without landing
+  the trigger-scoped replacement its comment claimed; the toggle
+  flicker-reopened, live-reproduced — now a filtersTriggerRef with the
+  positive pin + the toggle e2e leg); /api/export carries
+  Cache-Control: no-store (F-218c — the GDPR dump rode a raw response
+  past the envelope's F-217g claim); the UTC-midnight calendar
+  normalization (F-218d — toDate re-anchors stored UTC-midnight ISO
+  strings to local midnight of the same calendar date; 1st-of-month
+  rows rendered as the prior day/month for every UTC-negative user,
+  and the edit prefill re-stored the wrong day — the sandbox's UTC
+  posture is why every gate was blind; the TZ-switching pins run
+  America/New_York for real). The PERCEIVABILITY cluster: the toast
+  viewport is the polite live region (F-218h — per-card role="status"
+  arriving WITH its content is unannounced); the focus-indicator
+  family (F-218i — --color-ring never flipped in .dark, input-base's
+  dark focus ring was invisible, the F-217c token class on the ring
+  token; the light-surface amber-400 rings computed 1.67:1 against
+  SC 1.4.11's 3:1 — now ring-ring, the token working both modes; the
+  three ring-1 sites became ring-2 for SC 2.4.11); red-500 small text
+  darkened to red-600 (F-218j); the investment badges ride dark-step
+  text over their tints (F-218k); HealthGauge role="img" (F-218m);
+  the sidebar avatar's luminance seam (F-218n); F-217s promoted — the
+  Expenses tabs' four aria-controls resolve (F-218o, the active panel
+  carries the content); the low tail (the updateSettings token guard
+  F-218e; the upload chunked-stream bound F-218f; the heavy-endpoint
+  rate buckets import/coach/reset F-218g; the muted/subtle dark flips
+  F-218l; the logout content-type gate F-218p; the forgot/reset
+  fallthrough F-218q; the signup P2002 arm F-218r; the AI cap 1MB vs
+  the control-char worst case F-218s; F-217u executed — the
+  NEO_PROXY_HOPS boot warning + the DEPLOYMENT row F-218t; the label
+  associations + the checkbox accent F-218u; the UNAUTHORIZED
+  message-stability pin F-218v). F-218w records the amber register's
+  breadth. The unit-count lockstep moved 767 → 817 / 60 → 62 files
+  with the R-15 pin family (34 → 36: login-recovery, parity-218); e2e
+  95 → 97 (7 specs; +2: the signin→verify→resend recovery journey,
+  the filters-trigger toggle).
 - [SR] v2.14.0 (session 217, R-14 — the parity-completion round): the
   dark-mode token set COMPLETED (the `.dark` block flips the seven
   app-native tokens — surface #0a0a0a / foreground #fafafa / ink
@@ -295,7 +339,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (767) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (817) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (88) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -716,11 +760,11 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 60 | 767 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 62 | 817 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 34 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217) | `tests/` | source-scanning contracts |
+| — architecture pins | 36 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218) | `tests/` | source-scanning contracts |
 | — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
-| E2E | 5 | 84 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
+| E2E | 7 | 97 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
 *docs-counts pins are re-anchored when doc/test counts change — keep them
@@ -751,10 +795,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 767/767 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 817/817 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 95/95
+- [ ] `CI=1 bun run test:e2e` → 97/97
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -821,7 +865,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 767 unit / 95 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 817 unit / 97 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -855,8 +899,8 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 767 unit · build · smoke 14/14 ·
-95 e2e).
+the time of writing (lint 0/0 · tsc 0 · 817 unit · build · smoke 14/14 ·
+97 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
 advisory is cured same-session, never deferred; dev-toolchain bumps stay
