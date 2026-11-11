@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { ok, ERR, asString, isGuarded, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
+import { sanitizeSearchQuery } from "@/lib/search-query";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,14 @@ export async function GET(req: Request) {
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
   const url = new URL(req.url);
-  const q = (asString(url.searchParams.get("q"), { max: 80 }) ?? "").toLowerCase();
+  // Session-224 (R-21, F-224j): the LIKE-metacharacter strip — a
+  // literal "%"/"_" query must not act as a wildcard (the seam's
+  // docblock carries the decode; the min-length check runs AFTER the
+  // strip so a wildcard-only query short-circuits to the empty
+  // result).
+  const q = sanitizeSearchQuery(
+    asString(url.searchParams.get("q"), { max: 80 }) ?? "",
+  ).toLowerCase();
   if (q.length < 2) {
     return ok({ transactions: [], accounts: [], investments: [], goals: [] });
   }

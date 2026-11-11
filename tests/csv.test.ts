@@ -410,3 +410,64 @@ describe("stageCsvDate month-only named rejection (F-223e)", () => {
     expect(stageCsvDate("November 15, 2026")).toBe("2026-11-15T00:00:00.000Z");
   });
 });
+
+// Session-224 (R-21, F-224a): the YMD-slash rollover bypass —
+// localeRollover's year-length gate read the MDY year group only, so
+// every YMD rolled date skipped the guard and staged silently
+// (live-reproduced: "2026/02/30" → Mar 2, and "2026/02/29" in the
+// NON-LEAP 2026 → Mar 1, while the MDY twins correctly null).
+describe("stageCsvDate YMD rollover guard (F-224a)", () => {
+  it("YMD-slash rolled dates are unparseable in every zone", () => {
+    for (const tz of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = tz;
+      expect(stageCsvDate("2026/02/30")).toBeNull();
+      expect(stageCsvDate("2026/02/29")).toBeNull(); // 2026 is not a leap year
+      expect(stageCsvDate("2026/02/30 10:00")).toBeNull();
+    }
+  });
+
+  it("valid YMD-slash dates keep staging — including the leap-year control", () => {
+    for (const tz of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = tz;
+      expect(stageCsvDate("2028/02/29")).toBe("2028-02-29T00:00:00.000Z"); // 2028 IS a leap year
+      expect(stageCsvDate("2026/11/01")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+});
+
+// Session-224 (R-21, F-224c): the month-year family completion. The
+// F-223e rejection's `$` anchor could not see a trailing time
+// ("Nov 2026 10:00" staged the invented day 1), and the REVERSED
+// twins ("2026 Nov" / "2026-Nov" — live-probed, V8 reads 2026-11-01)
+// were never covered at all. The rejection family is now
+// form-precise: separator class [\s.-], an optional TIME tail, and
+// the reversed twin — while every day-carrying form keeps staging.
+describe("stageCsvDate month-year family completion (F-224c)", () => {
+  it("time-suffixed month-year forms are unparseable (no day was chosen)", () => {
+    for (const tz of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = tz;
+      expect(stageCsvDate("Nov 2026 10:00")).toBeNull();
+      expect(stageCsvDate("January 2026 8:30 AM")).toBeNull();
+    }
+  });
+
+  it("the REVERSED month-year twins are unparseable (with and without time)", () => {
+    for (const tz of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = tz;
+      expect(stageCsvDate("2026 Nov")).toBeNull();
+      expect(stageCsvDate("2026-Nov")).toBeNull();
+      expect(stageCsvDate("2026 Nov 10:00")).toBeNull();
+      expect(stageCsvDate("Nov-2026")).toBeNull();
+    }
+  });
+
+  it("day-carrying named forms keep staging through the widened family", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("Nov 2026 15")).toBe("2026-11-15T00:00:00.000Z");
+    expect(stageCsvDate("2026 Nov 15")).toBe("2026-11-15T00:00:00.000Z");
+    expect(stageCsvDate("2026 Nov 15 10:00")).toBe("2026-11-15T00:00:00.000Z");
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("Nov 15 2026")).toBe("2026-11-15T00:00:00.000Z");
+    expect(stageCsvDate("15 Nov 2026")).toBe("2026-11-15T00:00:00.000Z");
+  });
+});

@@ -88,13 +88,22 @@ export const MOBILE_HEADER = {
   brandRow: "flex items-center gap-3",
   brandLogo:
     "w-8 h-8 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-lg flex items-center justify-center shadow-md shadow-amber-500/20",
+  // Session-224 (F-224y): the brand WORDMARK — WCAG 1.4.3 exempts
+  // "text that is part of a logo or brand name", and the genus is the
+  // reference's own (F-207b, live-pinned): the light arm's gradient
+  // stops compute 3.05:1 (amber-600) and 2.81:1 (yellow-600) on the
+  // near-white wash; the dark arm passes easily. Recorded so a future
+  // arm-retirement sweep does not "discover" it.
   brandWordmark:
     "text-lg font-bold bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-600 dark:from-amber-400 dark:via-yellow-300 dark:to-amber-400 bg-clip-text text-transparent",
   // The reference's badge genus (rounded-md, semibold, green + wifi),
   // rendered in its RIGHT cluster beside the theme toggle + hamburger
   // (F-207a: always visible — the old `hidden xs:inline-flex` rode a
   // breakpoint Tailwind v4 never defines, hiding the pill below sm).
-  // green-700 = the AA superset (see NAV_LAYOUT.syncedPill).
+  // Session-223 (F-223f): the MOBILE twin keeps its light/dark arms
+  // (the topbar wash IS light in light mode) — only the desktop
+  // NAV_LAYOUT.syncedPill carries the unconditional dark-surface
+  // pairing.
   syncedPill:
     "inline-flex items-center gap-1 rounded-md border px-2.5 py-0.5 text-xs font-semibold text-green-700 border-green-300 dark:text-green-400 dark:border-green-600",
   iconButton:

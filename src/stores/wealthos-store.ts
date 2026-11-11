@@ -84,7 +84,7 @@ export interface WealthOsState {
 
   // actions
   hydrate: () => Promise<void>;
-  logout: () => Promise<void>;
+  logout: () => Promise<boolean>;
   refresh: () => Promise<Result<DashboardData, string>>;
 
   createTransaction: (body: Record<string, unknown>) => Promise<Result<Transaction, string>>;
@@ -206,10 +206,23 @@ function createStore() {
       }
     },
 
-    logout: async () => {
+    // Session-224 (R-21, F-224e): the honest sign-out. The POST's
+    // result is checked — a failed logout (500 from the tokenVersion
+    // write, 429 off the shared writes bucket, a network drop)
+    // surfaces through the store-error banner and keeps the session
+    // state intact (the httpOnly cookie cannot be cleared client-
+    // side, so "pretend it worked" would strand a live session the
+    // next app-route load silently re-establishes). Returns whether
+    // the sign-out completed; the signOut helpers gate their
+    // navigation on it.
+    logout: async (): Promise<boolean> => {
       const token = ++sessionWriteToken;
-      await call("/api/auth/logout", { method: "POST" });
-      if (token !== sessionWriteToken) return;
+      const res = await call("/api/auth/logout", { method: "POST" });
+      if (token !== sessionWriteToken) return false;
+      if (!res.ok) {
+        set({ hydrated: true, loading: false, error: res.error });
+        return false;
+      }
       set({
         user: null,
         transactions: [],
@@ -223,6 +236,7 @@ function createStore() {
         loading: true,
         error: null,
       });
+      return true;
     },
 
     refresh: async () => {

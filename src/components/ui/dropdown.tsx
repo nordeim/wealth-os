@@ -91,9 +91,11 @@ export { Dropdown, DropdownTrigger, DropdownContent, DropdownItem, DropdownLabel
 // contents — the account menu + the accounts/contacts/leads/calendar row
 // menus, 13 stock $s items, ALL text-only). Session-73 (S73-P1): the four
 // row menus migrated here from the Popover family. The Popover-based
-// Dropdown above stays for our SUPerset menus only (the dashboard
-// quick-create + export dropdowns and the leads Filters panel — surfaces
-// with no reference menu counterpart). Token VALUES are preserved via our
+// Dropdown above stays as the vendored stock family for future superset
+// menus (session-224, F-224q: the CRM-era citations retired — WealthOS
+// renders no Popover menus today; the N-56e operator KEEP stands, and
+// --color-danger-soft now flips in .dark so the destructive hover
+// cannot paint a light chip on a dark surface). Token VALUES are preserved via our
 // own variables where the reference uses popover tokens (bg-popover = our
 // --color-surface white, border = --color-line #e5e5e5, text =
 // --color-foreground).

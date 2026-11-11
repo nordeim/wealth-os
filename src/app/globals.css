@@ -1,6 +1,26 @@
 @import "tailwindcss";
 @import "./vendor/tw-animate.css";
 
+/* Session-224 (R-21, F-224v): the content-detection set is bounded to
+   the real sources. Tailwind v4 auto-detection scans every
+   non-gitignored file — the skills folder's markdown and stack CSVs
+   and the test sources were emitting utilities from PROSE (the
+   reserved success/card/subtle token utilities rode the built CSS
+   with zero src consumers), so a skills-folder edit could change the
+   production stylesheet. The negative @source directives remove the
+   prose carriers; every used utility lives under src/ (or public/)
+   and is untouched by construction. (The F-220 lesson holds here
+   too: this comment names no class-shaped strings — the extractor
+   scans stylesheets as well.) */
+@source not "../../skills";
+@source not "../../tests";
+@source not "../../docs";
+@source not "../../scripts";
+/* The root-level skill/doc markdown (neo-crm_SKILL.md & siblings) is
+   the other prose carrier — every .md at any depth is out of the
+   detection set (no source file under src/ is markdown). */
+@source not "../../**/*.md";
+
 /* Session-80 (kept): Tailwind v4 compiles every `hover:` utility inside
    `@media (hover: hover)`, so ALL hover affordances no-op on touch devices.
    The reference's v3-era stylesheet contains ZERO (hover: hover) media
@@ -94,7 +114,13 @@
   /* Blur scale (the same rename family): v3 blur-sm = 4px. */
   --blur-sm: 4px;
 
-  /* Feedback / finance semantics */
+  /* Feedback / finance semantics — RESERVED-BUT-UNWIRED families
+     (session-224, F-224t): success/warning/info/-soft and danger-soft
+     are pin-enumerated contract tokens (palette-pins) with zero live
+     consumers today; chart-* mirror CHART_COLORS but the charts read
+     the src/lib/constants.ts hexes — do NOT "fix" a chart to
+     var(--color-chart-*) or it silently diverges from the constants.
+     danger (no -soft) IS live (the destructive buttons). */
   --color-success: #10b981;
   --color-success-soft: #ecfdf5;
   --color-warning: #f59e0b;
@@ -383,6 +409,12 @@
      2.9:1). */
   --color-muted: #a8a29e;
   --color-subtle: #78716c;
+  /* Session-224 (R-21, F-224q): the reserved danger-soft flips too —
+     the DropdownItem destructive hover (hover:bg-danger-soft) would
+     paint a near-white chip on any dark popover surface (the F-222k
+     latent-arm class: a token consumed by a stock primitive that has
+     not yet rendered in dark). */
+  --color-danger-soft: #3f1d1d;
 }
 
 /* ---------------------------------------------------------------------------

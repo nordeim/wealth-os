@@ -23,6 +23,11 @@
 #   14  THE ARTIFACT-HYGIENE assertions: the built artifact contains NO
 #       .env / .git / db / skills / docs / uploads / worklog.md /
 #       test-results entries (the F-170a cure, policed every smoke run)
+#   15  THE ROUNDED-FULL RADIUS FLOOR: the built CSS serializes
+#       .rounded-full as the infinity form (2147483647px) — a future
+#       "normalization" to a finite radius would pass every unit gate
+#       (no unit test reads the built stylesheet); this leg is the
+#       artifact-level pin (session-224, F-224u)
 #
 # Every assertion: ok "NN — description" || { fail "NN"; exit 1; }
 # (the §13.4 convention). The trap kills the server on ANY exit.
@@ -187,4 +192,13 @@ done
   && ok 14 "the artifact carries no .env/.git/db/skills/docs/uploads/logs" \
   || { fail 14 "the artifact ships:$hygiene_fail"; exit 1; }
 
-echo "SMOKE: 14/14 PASS"
+# --- 15. THE ROUNDED-FULL RADIUS FLOOR (the F-224u pin) ----------------------
+# Tailwind v4 computes rounded-full as calc(infinity*1px), serialized
+# 2147483647px. The skill's §12 rule ("assert radius > 1000") gets its
+# artifact-level home here — the only gate tier that sees the BUILT CSS.
+radius_val="$(grep -ho '\.rounded-full{border-radius:[0-9]*px}' .next/standalone/.next/static/chunks/*.css 2>/dev/null | head -1 | grep -o '[0-9]*')"
+[ -n "$radius_val" ] && [ "$radius_val" -gt 1000 ] \
+  && ok 15 "rounded-full keeps the infinity-form radius (${radius_val}px)" \
+  || { fail 15 "the rounded-full radius floor"; exit 1; }
+
+echo "SMOKE: 15/15 PASS"

@@ -87,17 +87,22 @@ function SidebarFooter({ user }: { user: User }) {
   const initial = (user.name || user.email).charAt(0).toUpperCase();
 
   const signOut = async () => {
-    await logout();
+    // Session-224 (R-21, F-224e): navigate only on a completed
+    // sign-out — a failed POST leaves the session honest (the
+    // store-error banner carries the failure).
+    if (!(await logout())) return;
     router.push("/login");
     router.refresh();
   };
 
   return (
     <div className={NAV_LAYOUT.footer}>
-      {/* The Synced status pill (session-207, F-207h): the reference's
-          badge genus — rounded-md, semibold, green + the wifi glyph
-          (live-extracted from its sidebar footer; green-700 = the AA
-          step, see NAV_LAYOUT.syncedPill). */}
+      {/* The Synced status pill (session-207, F-207h; session-223,
+          F-223f): the reference's badge genus — rounded-md, semibold,
+          green + the wifi glyph. The SIDEBAR's gradient is near-black
+          in both themes, so NAV_LAYOUT.syncedPill carries the
+          dark-surface pairing (green-400/green-600) unconditionally
+          here — the MOBILE twin keeps its light/dark arms. */}
       <div className="flex">
         <span className={NAV_LAYOUT.syncedPill}>
           <Wifi className="h-3 w-3" strokeWidth={2} aria-hidden="true" />

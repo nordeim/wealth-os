@@ -31,20 +31,29 @@ export default function GlobalError({
   }, [error]);
 
   return (
+    // Session-224 (R-21, F-224p): the F-222f genus — the third
+    // resilience face joins its siblings' dark arms. A client-side
+    // root crash leaves the imperatively-set html.dark class in
+    // place (React never owned it), so the light-only literals
+    // rendered a light card on a dark document — and the flipped
+    // --color-ring token painted an INVISIBLE focus ring on the
+    // recovery button. The dark arms render correctly in that world
+    // and stay dead classes under the SSR path (fresh html, no
+    // class) — world-robust either way.
     <html lang="en">
-      <body className="min-h-screen bg-slate-50 font-sans text-slate-900">
+      <body className="min-h-screen bg-slate-50 font-sans text-slate-900 dark:bg-[#0a0a0a] dark:text-stone-100">
         <div className="min-h-screen flex items-center justify-center p-6">
           <div className="max-w-md w-full">
             <div className="text-center space-y-6">
               <div className="space-y-2">
-                <h1 className="text-4xl font-light text-slate-500">Something went wrong</h1>
-                <div className="h-0.5 w-16 bg-slate-200 mx-auto" aria-hidden="true" />
+                <h1 className="text-4xl font-light text-slate-500 dark:text-stone-400">Something went wrong</h1>
+                <div className="h-0.5 w-16 bg-slate-200 mx-auto dark:bg-stone-800" aria-hidden="true" />
               </div>
               <div className="space-y-3">
-                <h2 className="text-2xl font-medium text-slate-800">
+                <h2 className="text-2xl font-medium text-slate-800 dark:text-stone-100">
                   An unexpected error occurred
                 </h2>
-                <p className="text-slate-600 leading-relaxed">
+                <p className="text-slate-600 dark:text-stone-400 leading-relaxed">
                   We have logged the issue{error.digest ? ` (ref: ${error.digest})` : ""}.
                   Please try again.
                 </p>

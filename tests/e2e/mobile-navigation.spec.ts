@@ -247,6 +247,40 @@ test.describe("mobile navigation drawer", () => {
     await expect(menu.getByRole("menuitem", { name: "Sign Out" })).toBeVisible();
   });
 
+  // Session-224 (R-21, F-224s): the skip-to-content bypass (WCAG
+  // 2.4.1). The link is the shell's FIRST child — one Tab from page
+  // load reaches it (before the sidebar's ~10 controls), it becomes
+  // visible on focus, and Enter lands focus in the main scroller.
+  test("the skip-to-content link: first Tab reveals it, Enter jumps to main (F-224s)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/Dashboard");
+
+    const skip = page.getByRole("link", { name: "Skip to main content" });
+    // The sr-only pattern: a 1x1 clipped box — invisible to sighted
+    // users (Playwright's toBeVisible counts a 1x1 box as visible, so
+    // the leg asserts the BOX itself).
+    await expect(skip).toBeAttached();
+    const before = await skip.boundingBox();
+    expect(before?.width).toBe(1);
+    expect(before?.height).toBe(1);
+
+    await page.keyboard.press("Tab");
+    await expect(skip).toBeFocused();
+    const after = await skip.boundingBox();
+    expect(after && after.width).toBeGreaterThan(50);
+
+    await page.keyboard.press("Enter");
+    await expect(page.locator("main#main-content")).toBeVisible();
+    const active = await page.evaluate(() => document.activeElement?.id);
+    expect(active).toBe("main-content");
+  });
+
+  // Session-224 (R-21, F-224g): the sign-out family gets its OWN
+  // nested describe so the re-mint hook fires for exactly these legs
+  // (the outer describe's non-sign-out tests must not burn logins).
+  test.describe("sign-out family (the F-223k revocation legs)", () => {
   // Shared helper for the sign-out legs: the F-223k tokenVersion
   // eviction ("sign out" means revoke) bumps the USER's version — the
   // suite's static storageState cookie (tests/e2e/.auth/user.json,
@@ -254,7 +288,7 @@ test.describe("mobile navigation drawer", () => {
   // at every later test's getSessionUser comparison. Each sign-out leg
   // re-authenticates and OVERWRITES the state file so the next test's
   // fresh context carries the re-minted cookie (the login lands in the
-  // same per-IP budget the setup login rides — 7 total against 10).
+  // same per-IP budget the setup login rides — 6 total against 10).
   async function reMintSharedAuth(page: import("@playwright/test").Page) {
     await page.getByLabel("Email").fill("sepnetflix2023@outlook.com");
     await page.getByLabel("Password").fill("$Abcd1234");
@@ -262,6 +296,16 @@ test.describe("mobile navigation drawer", () => {
     await page.waitForURL("/");
     await page.context().storageState({ path: "tests/e2e/.auth/user.json" });
   }
+
+  // Session-224 (R-21, F-224g): the re-mint rides afterEach, not the
+  // success path — a leg that fails between the Sign Out click and an
+  // in-test re-mint used to leave the shared state file dead for
+  // EVERY later spec (one real failure cascading into many reds). The
+  // hook re-mints after each sign-out leg regardless of its verdict
+  // (the describe contains the sign-out family only).
+  test.afterEach(async ({ page }) => {
+    await reMintSharedAuth(page);
+  });
 
   test("Sign Out from the drawer returns to the login wall", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -272,9 +316,6 @@ test.describe("mobile navigation drawer", () => {
 
     await page.waitForURL("**/login**");
     await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
-
-    // F-223k: restore the shared auth state the eviction just killed.
-    await reMintSharedAuth(page);
   });
 
   // Session-223 (R-20, F-223a): the DESKTOP Sign Out dead-ended on the
@@ -294,8 +335,6 @@ test.describe("mobile navigation drawer", () => {
 
     await page.waitForURL("**/login**");
     await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
-
-    // F-223k: restore the shared auth state the eviction just killed.
-    await reMintSharedAuth(page);
+  });
   });
 });

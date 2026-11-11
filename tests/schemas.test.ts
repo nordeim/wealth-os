@@ -242,3 +242,23 @@ describe("resetPasswordSchema", () => {
     }
   });
 });
+
+// Session-224 (R-21, F-224h): the password-length contract is
+// unified across the auth family — signup's passwordSchema gains the
+// reset flow's own max(200) bound, so a >200-char password can no
+// longer be SET at signup while reset rejects it (the cross-surface
+// drift a password manager could trip).
+describe("passwordSchema max bound (F-224h)", () => {
+  it("rejects a signup password beyond 200 chars with the size message", () => {
+    const result = passwordSchema.safeParse("x".repeat(201));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toBe("Password must be reasonably sized");
+    }
+  });
+
+  it("accepts the 200-char boundary", () => {
+    const result = passwordSchema.safeParse("x".repeat(200));
+    expect(result.success).toBe(true);
+  });
+});

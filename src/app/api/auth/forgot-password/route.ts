@@ -62,6 +62,10 @@ export async function POST(req: Request) {
   // single-IP flow trips the IP bucket first. Fired BEFORE the
   // no-enumeration branch — the 429 is identical for known and
   // unknown emails (the contract holds).
+  // Session-224 (F-224k): the mirrored trade-off — a caller who
+  // KNOWS an email can burn its 20-slot bucket and block that
+  // account's forgot-password flow for the window (the designed,
+  // accepted availability cost of the per-account bound).
   const acctLimit = rateLimit(`forgot-acct:${email}`, 20, 15 * 60 * 1000);
   if (!acctLimit.allowed) return ERR.RATE_LIMITED(acctLimit.retryAfterSec);
 

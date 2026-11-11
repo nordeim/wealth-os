@@ -33,10 +33,14 @@ const emailFormat = emailField("Enter a valid email address").regex(
 
 export const emailSchema = emailFormat;
 
-/** Passwords: the 8-char minimum every password-setting surface enforces. */
+/** Passwords: the 8-char minimum every password-setting surface
+ * enforces, with the reset flow's own 200-char bound (session-224,
+ * F-224h: the set-time contract is unified — a >200-char password
+ * could be SET at signup but never re-set). */
 export const passwordSchema = z
   .string()
-  .min(8, "Password must be at least 8 characters");
+  .min(8, "Password must be at least 8 characters")
+  .max(200, "Password must be reasonably sized");
 
 export const loginSchema = z
   .object({

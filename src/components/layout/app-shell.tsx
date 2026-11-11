@@ -44,6 +44,18 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
 
   return (
     <div className={SHELL_LAYOUT.root}>
+        {/* Session-224 (R-21, F-224s): the skip-to-content bypass
+            (WCAG 2.4.1) — visually hidden until focus, FIRST in the
+            tab order (before the sidebar's ~10 controls), jumping to
+            the main scroller. Outside <main> on purpose: the interior
+            census is main-scoped and the pixel sweeps never see an
+            sr-only element. */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-stone-900"
+        >
+          Skip to main content
+        </a>
         {/* Desktop sidebar — in-flow flex child, visible from lg. */}
         <Sidebar user={user} />
 
@@ -57,7 +69,7 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
             drawerOpen={mobileNavOpen}
             onDrawerOpenChange={setMobileNavOpen}
           />
-          <main className={SHELL_LAYOUT.main}>
+          <main id="main-content" tabIndex={-1} className={SHELL_LAYOUT.main}>
             {storeError ? (
               <div
                 role="alert"

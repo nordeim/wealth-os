@@ -74,8 +74,13 @@ describe("F-223c — every Tooltip site carries the isDark styles (per-page coun
 describe("F-223d — the numeric locale anchor tolerates a trailing time", () => {
   it("NUMERIC_LOCALE anchors on (?![0-9]) lookahead, not end-of-string", () => {
     const src = read("src/lib/csv.ts");
+    // Session-224 (R-21, F-224a) recalibration: the separators are
+    // NON-LETTER runs — the old \\D+ matched " Nov ", so the named
+    // form "2026 Nov 15 10:00" rode the NUMERIC guard and the widened
+    // year gate failed it (live-reproduced in-commit). The anchor
+    // contract (the trailing-time tolerance) is unchanged.
     expect(src).toContain(
-      "const NUMERIC_LOCALE = /^(\\d{1,4})\\D+(\\d{1,2})\\D+(\\d{2,4})(?!\\d)/;",
+      "const NUMERIC_LOCALE = /^(\\d{1,4})[^\\dA-Za-z]+(\\d{1,2})[^\\dA-Za-z]+(\\d{2,4})(?!\\d)/;",
     );
     expect(src).not.toContain("(\\d{2,4})$;");
   });
@@ -84,8 +89,22 @@ describe("F-223d — the numeric locale anchor tolerates a trailing time", () =>
 describe("F-223e — month-only named forms skip (never an invented day)", () => {
   it("the MONTH_ONLY rejection rides the seam head beside PARTIAL_ISO", () => {
     const src = read("src/lib/csv.ts");
-    expect(src).toContain("const MONTH_ONLY = /^[A-Za-z]{3,9}\\s+\\d{4}$/;");
-    expect(src).toContain("if (MONTH_ONLY.test(trimmed)) return null;");
+    // Session-224 (R-21, F-224c) recalibration: the bare forward form
+    // became the FORM-PRECISE family — separators [\\s.-], an
+    // optional TIME tail (a bare lookahead would reject the
+    // day-carrying "Nov 2026 15"), and the REVERSED twin. The seam
+    // head contract (the rejection fires beside PARTIAL_ISO) is
+    // unchanged; the behavioral pins live in tests/csv.test.ts.
+    expect(src).toContain(
+      "const MONTH_ONLY = new RegExp(",
+    );
+    expect(src).toContain(
+      "`^[A-Za-z]{3,9}[\\\\s.-]+\\\\d{4}${MONTH_YEAR_TIME}`",
+    );
+    expect(src).toContain("const REV_MONTH_ONLY = new RegExp(");
+    expect(src).toContain(
+      "if (MONTH_ONLY.test(trimmed) || REV_MONTH_ONLY.test(trimmed)) return null;",
+    );
   });
 });
 
@@ -203,8 +222,13 @@ describe("F-223k — logout bumps tokenVersion before clearing the cookie", () =
 describe("F-223l — the no-pending branch answers the remaining-message form", () => {
   it("the no-pending branch uses verificationRemainingMessage (no pending-state oracle)", () => {
     const src = read("src/app/api/auth/verify/route.ts");
+    // Session-224 (R-21, F-224b) recalibration: the FIRST RUNG —
+    // answering MAX left a numeric tell (the wrong-code ladder's
+    // reachable values are 4…1, so a single probe read "5 remaining"
+    // ⟺ no pending code). MAX-1 makes the single-probe reply
+    // byte-identical to a fresh pending code's.
     expect(src).toContain(
-      "verificationRemainingMessage(VERIFICATION_MAX_ATTEMPTS)",
+      "verificationRemainingMessage(VERIFICATION_MAX_ATTEMPTS - 1)",
     );
     // The lockout message stays on the LOCKED branch only (429) —
     // the two 400 bodies must be identical in shape.

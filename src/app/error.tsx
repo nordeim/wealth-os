@@ -39,7 +39,10 @@ export default function ErrorPage({
     // DARK for any non-auth path with no stored choice, so a fresh dark
     // visitor's error card rendered light under html.dark (the NOT_FOUND
     // twin; the reference's SPA serves these faces inside the dark shell).
-    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50 dark:bg-[#0a0a0a]">
+    // Session-224 (R-21, F-224aa): the <main> landmark — the boundary
+    // card replaces the shell (and its main) wholesale, leaving the
+    // face landmark-less.
+    <main className="min-h-screen flex items-center justify-center p-6 bg-slate-50 dark:bg-[#0a0a0a]">
       <div className="max-w-md w-full">
         <div className="text-center space-y-6">
           <div className="space-y-2">
@@ -71,6 +74,6 @@ export default function ErrorPage({
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1029;
-const E2E_TOTAL = 111;
-const SMOKE_TOTAL = 14;
-const TEST_FILES = 68;
+const UNIT_TOTAL = 1060;
+const E2E_TOTAL = 122;
+const SMOKE_TOTAL = 15;
+const TEST_FILES = 71;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -62,9 +62,18 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // theme-default + parity-219, 36 → 38 rows — the arithmetic
     // 3 + 39 + 23 = 65 now closes; session-220 added parity-220;
     // session-221 added parity-221 — 40 rows; session-222 added
-    // parity-222 — 41 rows; session-223 added parity-223 — 42 rows).
+    // parity-222 — 41 rows; session-223 added parity-223 — 42 rows;
+    // session-224 added parity-224 — 43 rows).
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 42 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223) |",
+      "| — architecture pins | 43 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224) |",
+    );
+    // Session-224 (R-21, the F-204a site-inventory completion's own
+    // lesson applied to itself): the §7.1 E2E row carried a stale 99
+    // through two lockstep passes — a live-tense site no pin watched.
+    // Pinned now: the distribution table's E2E row must carry the live
+    // e2e total.
+    expect(norm(doc("Project_Architecture_Document.md"))).toContain(
+      `| E2E | 7 | ${E2E_TOTAL} |`,
     );
   });
 
@@ -111,6 +120,10 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     expect(c).toContain(`E2E suite (Playwright, ${E2E_TOTAL} checks, own db + :3100)`);
     expect(c).toContain(`property tests via fast-check. ${UNIT_TOTAL} checks / ${TEST_FILES} files.`);
     expect(c).toContain(`${E2E_TOTAL} checks / 7 specs.`);
+    // Session-224 (R-21): the CLAUDE smoke-pyramid line and the PAD's
+    // ADR-006 e2e count were live-tense sites no pin watched — the
+    // §7.1 E2E row's lesson applied to its own blind spot.
+    expect(c).toContain(`db; ${SMOKE_TOTAL} assertions including the AUTH_SECRET boot-gate`);
   });
 
   it("README's stack table + file hierarchy + testing table carry the live counts (the F-204a sites)", () => {
@@ -126,6 +139,7 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   it("the PAD's ADR-006 gate chain + §7.4 pre-push checklist carry the live counts (the F-204a sites)", () => {
     const p = norm(doc("Project_Architecture_Document.md"));
     expect(p).toContain(`→ vitest (${UNIT_TOTAL}) →`);
+    expect(p).toContain(`Playwright e2e (${E2E_TOTAL}) against a pinned`);
     expect(p).toContain(`\`bun run test\` → ${UNIT_TOTAL}/${UNIT_TOTAL} (counts re-pinned if tests added/removed)`);
     expect(p).toContain(`→ ${SMOKE_TOTAL}/${SMOKE_TOTAL} (incl. boot-gate + hygiene)`);
     expect(p).toContain(`\`CI=1 bun run test:e2e\` → ${E2E_TOTAL}/${E2E_TOTAL}`);

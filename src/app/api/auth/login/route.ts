@@ -34,6 +34,11 @@ export async function POST(req: Request) {
   // legitimate flows. Fired BEFORE any account-existence check: the
   // 429 is identical for known and unknown emails (no enumeration
   // oracle).
+  // Session-224 (F-224k): the accepted trade-off's OTHER half — a
+  // caller who KNOWS an email can burn its 30-slot bucket (rotating
+  // IPs / headers) and force every legitimate login for that
+  // account to 429 for the window (a 15-min targeted login-DoS).
+  // Availability-for-integrity: recorded as the designed posture.
   const acctLimit = rateLimit(
     `login-acct:${email}`,
     30,

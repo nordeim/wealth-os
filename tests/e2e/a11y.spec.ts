@@ -313,6 +313,31 @@ test.describe("a11y two-gate (WealthOS)", () => {
     });
   }
 
+  // Session-224 (R-21, F-224r): the coverage quadrature's missing
+  // cell — phone×dark. Dark is the fresh-visitor DEFAULT and mobile
+  // the majority posture, yet the section interiors were never
+  // axe-checked at 390×844 under .dark (light×desktop ×9, light×phone
+  // ×9, dark×desktop ×9 — the family's own history says this gap-class
+  // ships real defects: F-217n, F-220o). The mobile-only arms (the
+  // lg:hidden header, the stacked grids) are the blind spot closed.
+  for (const section of DARK_SECTIONS) {
+    test(`phone ${section} DARK — structural zero + sanctioned citations (F-224r)`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.addInitScript(() => {
+        try {
+          localStorage.setItem("wealthos-theme", "dark");
+        } catch {
+          /* the storage sandbox — the light fallback still runs the gate */
+        }
+      });
+      await page.goto(section);
+      await page.waitForLoadState("networkidle");
+      expect(await page.evaluate(() => document.documentElement.className)).toContain("dark");
+      await scrollThrough(page);
+      assertTwoGate(await runAxe(page));
+    });
+  }
+
   test("desktop /Accounts DARK with the Add dialog OPEN — the F-217c cure pinned (F-217n)", async ({
     page,
   }) => {

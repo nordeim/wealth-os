@@ -155,17 +155,20 @@ export function parseCsv(text: string): string[][] {
  * The contract, FORM-BRANCHED: the bare ISO form stages the LITERAL
  * date it writes (the identity with the dateField contract — never an
  * instant to zone-shift); ISO forms carrying ANY zone designator (Z/z
- * case-insensitive, or ±HH:MM / ±HHMM / ±HH) stage the WRITTEN date
- * literal — the designator's own wall-clock date, never the viewer's
- * (a +09:00 cell is Nov 1 in +09:00 regardless of who imports it);
- * every other parseable form (the locale formats — MM/DD/YYYY with
- * the documented US-MDY assumption) keeps the local accessors (the
- * parsed LOCAL calendar date's UTC midnight). Partial ISO forms
- * (yyyy, yyyy-mm) carry no day the user chose — unparseable. A
- * ROLLED calendar date is unparseable on every literal-staging
- * branch (the round-trip must land on the day the digits wrote).
- * Unparseable text returns null; the caller surfaces the skip in the
- * preview instead of dropping silently.
+ * case-insensitive, or ±HH:MM / ±HHMM — the ±HH bare form is
+ * regex-tolerated but V8-REJECTED, so the row skips, never stages)
+ * stage the WRITTEN date literal — the designator's own wall-clock
+ * date, never the viewer's (a +09:00 cell is Nov 1 in +09:00
+ * regardless of who imports it); every other parseable form (the
+ * locale formats — MM/DD/YYYY with the documented US-MDY assumption)
+ * keeps the local accessors (the parsed LOCAL calendar date's UTC
+ * midnight). Partial ISO forms (yyyy, yyyy-mm) and month-year named
+ * forms (forward AND reversed, with or without a trailing time)
+ * carry no day the user chose — unparseable. A ROLLED calendar date
+ * is unparseable on every literal-staging branch (the round-trip
+ * must land on the day the digits wrote). Unparseable text returns
+ * null; the caller surfaces the skip in the preview instead of
+ * dropping silently.
  *
  * Session-222 (R-19, F-222a/b/c/d): the R-18 branch's completion.
  * The UTC_DESIGNATED test was case-sensitive (RFC-3339-legal
@@ -192,37 +195,67 @@ const ZONE_DESIGNATED =
 const PARTIAL_ISO = /^\d{4}(-\d{2})?$/;
 // The 3-group numeric locale forms (the documented US-MDY assumption,
 // the YMD-slash shape, and the dotted-MDY read): the rollover guard's
-// match arm. Two-digit-year forms skip the guard (V8's remap boundary
-// is engine-internal). Session-223 (R-20, F-223d): the anchor is a
+// match arm. The separators are NON-LETTER runs — a letter in the
+// separator means a NAMED form, which never rides the numeric guard
+// (session-224, F-224a's decode: the old \D+ matched " Nov ", so
+// "2026 Nov 15 10:00" matched as a=2026/b=15/c=10 and the widened
+// year gate failed a form the guard was never meant to judge).
+// Two-digit-year forms skip the guard (V8's remap boundary is
+// engine-internal). Session-223 (R-20, F-223d): the anchor is a
 // `(?![0-9])` lookahead, not `$` — a trailing TIME ("02/30/2026
 // 10:00", the common US bank-datetime shape) must still reach the
 // guard, which the `$`-anchored form could not match (the rolled day
 // staged silently, live-reproduced TZ-independent).
-const NUMERIC_LOCALE = /^(\d{1,4})\D+(\d{1,2})\D+(\d{2,4})(?!\d)/;
-// Month-only named forms ("Nov 2026", "January 2026"): no day was
-// chosen — the named twins of the PARTIAL_ISO doctrine (F-223e;
-// V8 silently stages day 1 otherwise, live-reproduced).
-const MONTH_ONLY = /^[A-Za-z]{3,9}\s+\d{4}$/;
+const NUMERIC_LOCALE = /^(\d{1,4})[^\dA-Za-z]+(\d{1,2})[^\dA-Za-z]+(\d{2,4})(?!\d)/;
+// Month-only named forms, forward and reversed, with an optional
+// trailing TIME (the F-223d anchor lesson: a bare `$` cannot see
+// "Nov 2026 10:00", and a bare lookahead would reject the
+// day-carrying "Nov 2026 15" — the tail is TIME-shaped or nothing).
+// Session-223 (R-20, F-223e) covered the bare forward form; session
+// 224 (R-21, F-224c) completed the family: separators [\s.-], the
+// time tail, and the REVERSED twin ("2026 Nov" / "2026-Nov" —
+// live-probed, V8 reads 2026-11-01 — no day was chosen in any of
+// them; the day-carrying named forms keep staging through the
+// locale fallback).
+const MONTH_YEAR_TIME =
+  "(?:\\s+\\d{1,2}:\\d{2}(?::\\d{2})?\\s*(?:[APap][Mm])?)?$";
+const MONTH_ONLY = new RegExp(
+  `^[A-Za-z]{3,9}[\\s.-]+\\d{4}${MONTH_YEAR_TIME}`,
+);
+const REV_MONTH_ONLY = new RegExp(
+  `^\\d{4}[\\s.-]+[A-Za-z]{3,9}${MONTH_YEAR_TIME}`,
+);
 
 /** F-222d: the numeric locale rollover guard — a 4-digit-year numeric
- *  form must round-trip under the MDY or YMD interpretation of its
- *  digits, else it is unparseable (V8's lenient parser rolls 02/30 to
- *  Mar 2; the bare branch's guard doctrine extended to the locale
- *  arm). Pure: no Date construction, decision only. */
+ * form must round-trip under the MDY or YMD interpretation of its
+ * digits, else it is unparseable (V8's lenient parser rolls 02/30 to
+ * Mar 2; the bare branch's guard doctrine extended to the locale
+ * arm). Pure: no Date construction, decision only.
+ *
+ * Session-224 (R-21, F-224a): the year-length gate reads the group
+ * that HOLDS the year per shape — pre-cure it read group c
+ * unconditionally (the year for MDY, the DAY for YMD), so every
+ * YMD-slash rolled date ("2026/02/30" → Mar 2, "2026/02/29" in the
+ * non-leap 2026 → Mar 1) skipped the guard and staged silently
+ * while the MDY twins nulled — live-reproduced, TZ-independent. */
 function localeRollover(
   a: string,
   b: string,
   c: string,
   parsed: Date,
 ): boolean {
-  // The guard round-trips only four-digit-year forms — the
-  // two-digit-year remap (V8: "26" → 2026, "68" → 1968) is
-  // engine-internal and not worth replicating.
-  if (c.length !== 4) return true;
+  // The shape decides which group holds the year: YMD (a >= 1000)
+  // reads the year from group a; MDY reads it from group c. The
+  // guard round-trips only four-digit-year forms — the two-digit-year
+  // remap (V8: "26" → 2026, "68" → 1968) is engine-internal and not
+  // worth replicating.
+  const ymd = Number(a) >= 1000;
+  const yearGroup = ymd ? a : c;
+  if (yearGroup.length !== 4) return true;
   const month = parsed.getMonth() + 1;
   const day = parsed.getDate();
   const year = parsed.getFullYear();
-  if (Number(a) >= 1000) {
+  if (ymd) {
     // YMD shape (2026/11/01): year-month-day.
     return year === Number(a) && month === Number(b) && day === Number(c);
   }
@@ -236,8 +269,9 @@ export function stageCsvDate(raw: string): string | null {
   if (!trimmed) return null;
   // Partial ISO forms carry no day — unparseable (F-222c).
   if (PARTIAL_ISO.test(trimmed)) return null;
-  // Month-only named forms carry no day either (F-223e).
-  if (MONTH_ONLY.test(trimmed)) return null;
+  // Month-only named forms carry no day either (F-223e/F-224c) —
+  // forward and reversed, time-suffixed or bare.
+  if (MONTH_ONLY.test(trimmed) || REV_MONTH_ONLY.test(trimmed)) return null;
   // The literal-staging branches: the bare form and every
   // zone-designated datetime stage the date the digits wrote (the
   // identity; never parsed as an instant, so no zone can shift it).

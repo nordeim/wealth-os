@@ -341,10 +341,15 @@ test("the signup 4xx negatives: the duplicate surfaces in the card + the API qua
 // leg must consolidate.
 test("the signin 403 lands the verify view and the Resend re-arms (F-218a)", async ({ page }) => {
   const email = `e2e-recovery-${Date.now()}@example.com`;
-  // A hash-present account (an unverified signup) via the API.
-  await page.request.post("/api/auth/signup", {
+  // A hash-present account (an unverified signup) via the API. The
+  // in-app delivery (pinned ON for e2e) returns the code — captured
+  // so the F-224b wrong-code probe below can never collide with the
+  // real one (deterministic, zero-flake).
+  const signupRes = await page.request.post("/api/auth/signup", {
     data: { email, password: "TestPass123" },
   });
+  const signupBody = (await signupRes.json()) as { data?: { verificationCode?: string | null } };
+  const realCode = signupBody.data?.verificationCode ?? null;
 
   // The UI signin — the 403 arm must land the verify view, never the
   // banner dead-end that locked expired-code accounts out.
@@ -363,4 +368,88 @@ test("the signin 403 lands the verify view and the Resend re-arms (F-218a)", asy
     // InfoCallout (role="status") — ErrorCallout keeps role="alert".
     page.getByRole("status").filter({ hasText: "New verification code sent to your email" }),
   ).toBeVisible();
+
+  // Session-224 (R-21, F-224b — consolidated here per the signup
+  // budget): the verify oracle's NUMERIC tell is closed. The wrong-code
+  // ladder increments BEFORE replying (reachable values 4…1), so the
+  // no-pending branch must answer the FIRST rung — the single-probe
+  // reply is byte-identical to a fresh pending code's. This account
+  // just re-armed (attempts reset), so its first wrong code answers
+  // "4 attempts remaining"; the demo account (seeded with NO pending
+  // code) must answer the SAME body.
+  const wrongCode = !realCode || realCode === "000000" ? "000001" : "000000";
+  const pendingProbe = await page.request.post("/api/auth/verify", {
+    data: { email, code: wrongCode },
+  });
+  const pendingBody = (await pendingProbe.json()) as { error?: { message?: string } };
+  const noPendingProbe = await page.request.post("/api/auth/verify", {
+    data: { email: "sepnetflix2023@outlook.com", code: "000000" },
+  });
+  const noPendingBody = (await noPendingProbe.json()) as { error?: { message?: string } };
+  expect(pendingProbe.status()).toBe(400);
+  expect(noPendingProbe.status()).toBe(400);
+  expect(pendingBody.error?.message).toBe("Invalid verification code. 4 attempts remaining.");
+  expect(noPendingBody.error?.message).toBe(pendingBody.error?.message);
+});
+
+// Session-224 (R-21, F-224d): the logout REVOCATION's first behavioral
+// pin. The smoke leg replays the CLEARED jar — it proves the cookie is
+// gone from the client, not that the server REJECTS the pre-logout
+// cookie. This leg mints a session, captures the cookie value, logs
+// out, then REPLAYS the captured cookie against /api/auth/me — the
+// tokenVersion bump (F-223k) must reject it server-side.
+//
+// The mint rides a SCRATCH user (the data-import doctrine — the demo
+// corpus is never touched): the F-223k bump is USER-level, so a
+// demo-account logout here would evict the shared auth.setup
+// storageState (its cookie embeds the pre-bump version) and every
+// later shared-state spec would land on the login wall. The pin is
+// user-agnostic — a scratch account exercises the identical
+// mint/capture/logout/replay path without the order coupling.
+test("logout revokes the session server-side — a replayed pre-logout cookie is dead (F-224d)", async ({
+  request,
+}) => {
+  // -- the scratch user comes to be (in-app OTP by default in e2e)
+  const email = `e2e-revoke-${Date.now()}@example.com`;
+  const signup = await request.post("/api/auth/signup", {
+    data: { email, password: "TestPass123" },
+  });
+  expect(signup.ok()).toBe(true);
+  const signupBody = (await signup.json()) as {
+    data: { verificationCode: string | null };
+  };
+  expect(signupBody.data.verificationCode).toMatch(/^\d{6}$/);
+  const verify = await request.post("/api/auth/verify", {
+    data: { email, code: signupBody.data.verificationCode },
+  });
+  expect(verify.ok()).toBe(true);
+
+  // The mint: a genuine login for the now-verified scratch account.
+  const login = await request.post("/api/auth/login", {
+    data: { email, password: "TestPass123" },
+  });
+  expect(login.ok()).toBe(true);
+  const setCookie = login.headers()["set-cookie"];
+  const sessionCookie = (Array.isArray(setCookie) ? setCookie : [setCookie])
+    .find((c) => c.startsWith("neo_session="));
+  expect(sessionCookie).toBeTruthy();
+  const cookieValue = sessionCookie!.split(";")[0];
+
+  // F-218p: the logout route gates on the JSON content-type — the
+  // request must carry it (an empty data object makes Playwright set
+  // application/json).
+  const logout = await request.post("/api/auth/logout", {
+    headers: { cookie: cookieValue },
+    data: {},
+  });
+  expect(logout.ok()).toBe(true);
+
+  // The replay: the cookie the client HELD at logout time — the
+  // server must treat it as dead (data:null, NOT the session record).
+  const replay = await request.get("/api/auth/me", {
+    headers: { cookie: cookieValue },
+  });
+  expect(replay.ok()).toBe(true);
+  const body = (await replay.json()) as { data: unknown };
+  expect(body.data).toBeNull();
 });

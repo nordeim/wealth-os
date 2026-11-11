@@ -53,17 +53,28 @@ export async function POST(req: Request) {
       // Session-223 (R-20, F-223l): the remaining-message form — the
       // old lockout-shaped answer was a pending-state enumeration
       // oracle (a known+live code answered the LADDER text while
-      // every other case answered the lockout text); the unified form
-      // makes the two 400 bodies identical for any email.
+      // every other case answered the lockout text).
+      // Session-224 (R-21, F-224b): the FIRST RUNG — the wrong-code
+      // branch increments BEFORE replying, so its reachable values
+      // are 4…1 (then 429); answering MAX left a numeric tell (a
+      // single probe read "5 attempts remaining" ⟺ no pending code).
+      // The residual two-probe differential (4,4 vs 4,3) is
+      // documented: full closure needs per-email state on this
+      // stateless branch, and a mimic counter would diverge from the
+      // real ladder on restart and on fresh signups — rejected.
       return fail(
         "VERIFICATION_INVALID",
-        verificationRemainingMessage(VERIFICATION_MAX_ATTEMPTS),
+        verificationRemainingMessage(VERIFICATION_MAX_ATTEMPTS - 1),
         400,
       );
     }
 
     // The lockout check rides BEFORE the code compare (the reference's
     // ladder: five wrong submissions, then the lockout message repeats).
+    // Session-224 (F-224l): this 429 is the attempt-COUNTER response,
+    // not the limiter's — it carries no Retry-After because the
+    // lockout lifts only on a RESEND (no deterministic retry instant
+    // exists; the code is VERIFICATION_LOCKED, not RATE_LIMITED).
     if (isVerificationLockedOut(user.verificationAttempts)) {
       return fail("VERIFICATION_LOCKED", verificationLockoutMessage(), 429);
     }

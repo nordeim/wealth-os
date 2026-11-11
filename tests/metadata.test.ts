@@ -13,9 +13,10 @@ import { describe, expect, it } from "vitest";
 //   - the reference ships a PNG favicon; ours is the app-router file
 //     convention (src/app/icon.png → <link rel=icon> injected by Next);
 //   - the reference serves /sitemap.xml (9 URLs, weekly, 1.0/0.8) and a
-//     robots.txt with a Sitemap line. OUR sitemap lists the real lowercase
-//     routes (the reference's capitalized locs only resolve on its
-//     case-insensitive platform — fixing that defect per the house rule);
+//     robots.txt with a Sitemap line. OUR sitemap lists the CAPITAL
+//     locs (F-217f, session 217: the reference's own casing — the
+//     lowercase twins self-canonicalize to the homepage, so the
+//     metadata-rich Capital routes are the crawlable truth);
 //   - the reference's og:image/favicon URLs are its platform's CDN assets —
 //     the self-hosted expression is OUR public/og-image.png (1200×630).
 //

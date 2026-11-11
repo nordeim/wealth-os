@@ -138,7 +138,10 @@ function DrawerNav({ onNavigate }: { onNavigate?: () => void }) {
 
   const signOut = async () => {
     onNavigate?.();
-    await logout();
+    // Session-224 (R-21, F-224e): navigate only on a completed
+    // sign-out — a failed POST leaves the session honest (the
+    // store-error banner carries the failure).
+    if (!(await logout())) return;
     router.push("/login");
     router.refresh();
   };

@@ -6,7 +6,6 @@
 import * as React from "react";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
 import { CARD, EMPTY_STATE, KPI_TONES, PAGE_HEADER } from "@/lib/page-layout";
 import type { LucideIcon } from "lucide-react";
 
@@ -211,10 +210,16 @@ export function PeriodSegment({
   );
 }
 
-/** Loading skeleton block. */
+/** Loading skeleton block. Session-224 (R-21, F-224aa): the polite
+ * live region — the loading gate announces itself to SR users (the
+ * banner and toasts already carry their own announcements). */
 export function LoadingBlock({ label = "Loading…" }: { label?: string }) {
   return (
-    <div className="flex min-h-40 items-center justify-center p-8">
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex min-h-40 items-center justify-center p-8"
+    >
       <p className="text-sm text-stone-500 dark:text-stone-400">{label}</p>
     </div>
   );
