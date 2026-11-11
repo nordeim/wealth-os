@@ -23,8 +23,14 @@ const read = (p: string) => readFileSync(p, "utf8");
 describe("F-222a/b — every zone-designated ISO datetime stages the WRITTEN literal", () => {
   it("the designator family: Z/z case-insensitive, ±HH:MM, ±HHMM, ±HH — and the retired case-sensitive UTC_DESIGNATED", () => {
     const src = read("src/lib/csv.ts");
+    // Session-225 (R-22, F-225b): the tail widened — the optional
+    // leading \s* (a space before the designator) and the named
+    // UTC/GMT tails joined the family; the underlying Z/±HH:MM/±HHMM
+    // alternation is unchanged. Legitimate recalibration: the
+    // designated-tail contract grew, and the new arms carry their own
+    // pins in tests/parity-225.test.ts + the csv.test.ts TZ battery.
     expect(src).toContain(
-      "(?:[Zz]|[+-]\\d{2}(?::?\\d{2})?)",
+      "(?:[Zz]|UTC|GMT|[+-]\\\\d{2}(?::?\\\\d{2})?)",
     );
     expect(src).not.toContain("const UTC_DESIGNATED");
   });

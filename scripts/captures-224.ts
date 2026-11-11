@@ -34,9 +34,10 @@
 // convention (delete the platform DATABASE_URL override guard, wait
 // on /login) — and kills only what it spawned.
 import { chromium, type Page } from "@playwright/test";
-import { statSync } from "node:fs";
-import { spawn } from "node:child_process";
+import { statSync, unlinkSync } from "node:fs";
+import { spawn, spawnSync } from "node:child_process";
 import * as path from "node:path";
+import { join } from "node:path";
 
 // Double-execution guard (the repo idiom, the exact-basename form).
 if (path.basename(process.argv[1] ?? "") !== "captures-224.ts") process.exit(0);
@@ -80,16 +81,43 @@ async function waitOnUrl(url: string, ms: number): Promise<boolean> {
 }
 
 async function main() {
-  // 0. the dev server: reuse :3000 or boot one (the sweep convention).
+  // 0. the dev server — Session-225 (R-22, F-225e): the own-database
+  // retrofit. The R-21 form reused :3000 if it answered — a reused
+  // server's database is unknowable, and this set's face 115 signs up
+  // a scratch account (the verify first-rung): the scratch user
+  // survived the owner-scoped reseed and the census MISMATCHed at
+  // users=2 (live, session 225's intake). The family now rides
+  // db/captures.db: seeded per run, the spawned server carries
+  // DATABASE_URL=file:../db/captures.db (the F-123a1 guard, upgraded
+  // to an explicit SET), and a census tripwire guards the exit.
   let spawned: ReturnType<typeof spawn> | null = null;
-  if (await waitOnUrl(`${BASE}/login`, 5000)) {
-    console.log(`[captures-224] reusing the dev server on ${BASE}`);
+  if (process.env.OUR_URL) {
+    console.log(`[captures-224] riding the operator server at ${process.env.OUR_URL} (the documented override; the census tripwire still guards)`);
   } else {
-    console.log("[captures-224] booting the dev server (bun run dev)…");
-    // The F-123a1 guard: the platform shell may export a STALE absolute
-    // DATABASE_URL; unset it so .env's file:../db/custom.db rides.
-    const devEnv: NodeJS.ProcessEnv = { ...process.env };
-    delete devEnv.DATABASE_URL;
+    if (await waitOnUrl(`${BASE}/login`, 2500)) {
+      console.error(
+        "[captures-224] a server is already on :3000 — stop it first. The capture family must spawn its own server on db/captures.db (F-225e); a reused server's database is unknowable.",
+      );
+      process.exit(1);
+    }
+    console.log("[captures-224] seeding db/captures.db + booting the dev server on it…");
+    try {
+      unlinkSync(join(process.cwd(), "db", "captures.db"));
+    } catch {
+      /* absent — a fresh run */
+    }
+    for (const cmd of [["run", "db:push"], ["run", "db:seed"]] as const) {
+      const r = spawnSync("bun", [...cmd], {
+        cwd: process.cwd(),
+        env: { ...process.env, DATABASE_URL: "file:../db/captures.db" },
+        stdio: "ignore",
+      });
+      if (r.status !== 0) {
+        console.error(`[captures-224] the captures db: bun ${cmd.join(" ")} failed (${r.status})`);
+        process.exit(1);
+      }
+    }
+    const devEnv: NodeJS.ProcessEnv = { ...process.env, DATABASE_URL: "file:../db/captures.db" };
     spawned = spawn("bun", ["run", "dev"], {
       cwd: process.cwd(),
       env: devEnv,
@@ -97,10 +125,10 @@ async function main() {
       detached: true,
     });
     if (!(await waitOnUrl(`${BASE}/login`, 90_000))) {
-      console.error("[captures-224] the dev server never came up on :3000");
+      console.error("[captures-224] the captures dev server never came up on :3000");
       process.exit(1);
     }
-    console.log("[captures-224] dev server up");
+    console.log("[captures-224] the captures dev server up (db/captures.db)");
   }
 
   try {
@@ -321,6 +349,19 @@ async function main() {
         /* already gone */
       }
     }
+    // The census tripwire: custom.db must MATCH at exit (F-225e).
+    const censusEnv: NodeJS.ProcessEnv = { ...process.env };
+    delete censusEnv.DATABASE_URL; // .env's file:../db/custom.db rides (the F-123a1 guard)
+    const census = spawnSync("bun", ["run", "db:census"], {
+      cwd: process.cwd(),
+      env: censusEnv,
+      stdio: "ignore",
+    });
+    if (census.status !== 0) {
+      console.error("[captures-224] the census tripwire FAILED — custom.db is not at its contract state (reseed with bun run db:seed)");
+      process.exit(1);
+    }
+    console.log("[captures-224] the census tripwire: custom.db MATCH");
   }
 }
 

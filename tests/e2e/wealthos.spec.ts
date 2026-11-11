@@ -420,3 +420,88 @@ test.describe("the per-account login bucket (F-222n — the rotating-header boun
     expect(body.error.code).toBe("RATE_LIMITED");
   });
 });
+
+// Session-225 (R-22, F-225c): the F-222n email-keyed mirror extended
+// to verify/resend. The e2e legs ride rotating XFF exactly as the
+// F-222n leg does (per-IP caps never fire); the buckets are keyed on
+// the submitted email, fired after the Zod parse and before any
+// account-existence check — sized above the IP caps so single-IP
+// flows are unchanged.
+test.describe("the per-account verify/resend buckets (F-225c — the F-222n mirror)", () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
+  const ORIGIN = `http://localhost:${e2ePort()}`;
+
+  test("61 rotating-XFF verify probes on one email: the IP buckets never fire, the account bucket caps the 61st", async ({ request }) => {
+    // A no-pending account (signed up, never verified): every probe
+    // answers the F-224b first-rung reply — no ladder progression,
+    // no lockout interference with the bucket's assertions.
+    const email = `verify-acct-${Date.now()}@example.com`;
+    await request.post(`${ORIGIN}/api/auth/signup`, {
+      data: { email, password: "TestPass123" },
+    });
+    const codes: string[] = [];
+    for (let i = 0; i < 61; i++) {
+      const res = await request.post(`${ORIGIN}/api/auth/verify`, {
+        headers: { "x-forwarded-for": `198.51.100.${i}` },
+        data: { email, code: "000000" },
+      });
+      codes.push(String(res.status()));
+    }
+    // Attempts 1..60 pass the per-IP caps (400 first-rung replies);
+    // the 61st trips the per-account 429 while every per-IP bucket
+    // has seen exactly one request.
+    expect(codes.filter((c) => c === "400")).toHaveLength(60);
+    expect(codes[60]).toBe("429");
+    const body = (await request
+      .post(`${ORIGIN}/api/auth/verify`, {
+        headers: { "x-forwarded-for": "198.51.100.250" },
+        data: { email, code: "000000" },
+      })
+      .then((r) => r.json())) as { ok: boolean; error: { code: string } };
+    expect(body.ok).toBe(false);
+    expect(body.error.code).toBe("RATE_LIMITED");
+  });
+
+  test("11 rotating-XFF resends on one email: the IP buckets never fire, the account bucket caps the 11th", async ({ request }) => {
+    const email = `resend-acct-${Date.now()}@example.com`;
+    await request.post(`${ORIGIN}/api/auth/signup`, {
+      data: { email, password: "TestPass123" },
+    });
+    const statuses: number[] = [];
+    for (let i = 0; i < 11; i++) {
+      const res = await request.post(`${ORIGIN}/api/auth/resend`, {
+        headers: { "x-forwarded-for": `198.51.100.${i}` },
+        data: { email },
+      });
+      statuses.push(res.status());
+    }
+    // Attempts 1..10 pass the per-IP caps (200 + a fresh in-app code);
+    // the 11th trips the per-account 429.
+    expect(statuses.filter((s) => s === 200)).toHaveLength(10);
+    expect(statuses[10]).toBe(429);
+  });
+});
+
+// Session-225 (R-22, F-225h): the route-level search strip pin — the
+// end-to-end seam the sanitizer-only pin cannot see. A literal "%"
+// query is stripped to the empty string and the route's length gate
+// answers an empty result for every family (never every row); a real
+// term finds the seeded corpus. Rides the injected session.
+test.describe("the search LIKE strip, end-to-end (F-225h)", () => {
+  const ORIGIN = `http://localhost:${e2ePort()}`;
+
+  test('q="%" returns every family empty; q="Whole" finds the seeded corpus', async ({ request }) => {
+    const pct = (await request.get(`${ORIGIN}/api/search?q=%`).then((r) => r.json())) as {
+      data: { transactions?: unknown[]; incomeSources?: unknown[]; bankAccounts?: unknown[]; investments?: unknown[] };
+    };
+    expect(pct.data.transactions ?? []).toHaveLength(0);
+    expect(pct.data.incomeSources ?? []).toHaveLength(0);
+    expect(pct.data.bankAccounts ?? []).toHaveLength(0);
+    expect(pct.data.investments ?? []).toHaveLength(0);
+
+    const real = (await request.get(`${ORIGIN}/api/search?q=Whole`).then((r) => r.json())) as {
+      data: { transactions?: { description?: string }[] };
+    };
+    expect((real.data.transactions ?? []).some((t) => /Whole Foods/i.test(t.description ?? ""))).toBe(true);
+  });
+});

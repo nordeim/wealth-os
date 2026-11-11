@@ -162,7 +162,7 @@ function DrawerNav({ onNavigate }: { onNavigate?: () => void }) {
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
               )}
             >
-              <item.icon className="w-6 h-6 shrink-0" strokeWidth={2} />
+              <item.icon className="w-6 h-6 shrink-0" strokeWidth={2} aria-hidden="true" />
               <span className={MOBILE_NAV_SHEET.label}>{item.label}</span>
             </Link>
           );
@@ -174,7 +174,7 @@ function DrawerNav({ onNavigate }: { onNavigate?: () => void }) {
           className={MOBILE_NAV_SHEET.signOut}
           onClick={() => void signOut()}
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4" aria-hidden="true" />
           Sign Out
         </button>
       </div>

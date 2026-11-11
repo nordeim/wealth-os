@@ -277,6 +277,33 @@ test.describe("mobile navigation drawer", () => {
     expect(active).toBe("main-content");
   });
 
+  // Session-225 (R-22, F-225d): the paint-order half of the bypass —
+  // the F-224s reveal positioned the focused pill exactly where the
+  // sticky mobile header sits; both z-50 in the same stacking context,
+  // the header later in DOM — the header won the paint order and the
+  // focused link was INVISIBLE below lg (the 1280 leg above and axe
+  // cannot see paint order, which is why 122/122 stayed green). The
+  // cure raises the focused link above the header layer; this leg
+  // asserts the honest form of "the revealed link is visible": the
+  // link itself is the topmost element at its own center.
+  test("the skip link, focused at 390, is the topmost element at its own center (F-225d)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/Dashboard");
+
+    const skip = page.getByRole("link", { name: "Skip to main content" });
+    await page.keyboard.press("Tab");
+    await expect(skip).toBeFocused();
+
+    const topmost = await skip.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+      return hit ? (hit === el ? "self" : hit.tagName.toLowerCase()) : "none";
+    });
+    expect(topmost).toBe("self");
+  });
+
   // Session-224 (R-21, F-224g): the sign-out family gets its OWN
   // nested describe so the re-mint hook fires for exactly these legs
   // (the outer describe's non-sign-out tests must not burn logins).

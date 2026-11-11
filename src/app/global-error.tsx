@@ -42,7 +42,12 @@ export default function GlobalError({
     // class) — world-robust either way.
     <html lang="en">
       <body className="min-h-screen bg-slate-50 font-sans text-slate-900 dark:bg-[#0a0a0a] dark:text-stone-100">
-        <div className="min-h-screen flex items-center justify-center p-6">
+        {/* Session-225 (R-22, F-225j): the <main> landmark — the
+            F-224aa rationale's third face. This boundary replaces the
+            ENTIRE document (the segment boundary's error.tsx got its
+            <main> in R-21); leaving the root-crash face landmark-less
+            while the sibling carries one was the half-cure. */}
+        <main className="min-h-screen flex items-center justify-center p-6">
           <div className="max-w-md w-full">
             <div className="text-center space-y-6">
               <div className="space-y-2">
@@ -70,7 +75,7 @@ export default function GlobalError({
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </body>
     </html>
   );

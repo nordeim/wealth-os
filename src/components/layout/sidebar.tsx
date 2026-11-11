@@ -71,7 +71,7 @@ function SidebarNav() {
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
             )}
           >
-            <item.icon className="h-5 w-5 shrink-0" strokeWidth={2} />
+            <item.icon className="h-5 w-5 shrink-0" strokeWidth={2} aria-hidden="true" />
             <span className="truncate">{item.label}</span>
           </Link>
         );
@@ -133,7 +133,7 @@ function SidebarFooter({ user }: { user: User }) {
         </MenuTrigger>
         <MenuContent align="start" side="top" className="w-52">
           <MenuItem onSelect={() => toggle()} className="gap-2">
-            <Moon className="h-4 w-4" />
+            <Moon className="h-4 w-4" aria-hidden="true" />
             Dark Mode
           </MenuItem>
           <MenuItem
@@ -144,7 +144,7 @@ function SidebarFooter({ user }: { user: User }) {
             onSelect={() => void signOut()}
             className="gap-2 text-red-600 focus:text-red-600 dark:text-red-400"
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="h-4 w-4" aria-hidden="true" />
             Sign Out
           </MenuItem>
         </MenuContent>

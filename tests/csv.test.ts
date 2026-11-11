@@ -471,3 +471,88 @@ describe("stageCsvDate month-year family completion (F-224c)", () => {
     expect(stageCsvDate("15 Nov 2026")).toBe("2026-11-15T00:00:00.000Z");
   });
 });
+
+describe("stageCsvDate R-22 completion (F-225a/b — the numeric partials and the designated tails)", () => {
+  afterEach(() => {
+    process.env.TZ = "UTC";
+  });
+
+  // ---- F-225a: the numeric year-month partials (a skip, never an invented day)
+  it("the numeric year-month partials null — slash/dot/space separators, 1- or 2-digit months", () => {
+    for (const zone of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("2026/11")).toBeNull();
+      expect(stageCsvDate("2026.11")).toBeNull();
+      expect(stageCsvDate("2026 11")).toBeNull();
+      expect(stageCsvDate("2026/1")).toBeNull();
+    }
+  });
+
+  it("the three-group numeric forms keep staging (the null-arm is $-anchored — a partial is exactly two groups)", () => {
+    process.env.TZ = "UTC";
+    expect(stageCsvDate("2026/11/01")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("2026 11 01")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("11/1/26")).toBe("2026-11-01T00:00:00.000Z");
+  });
+
+  // ---- F-225b: the designated tails stage the WRITTEN day in every zone
+  it("the named UTC/GMT tails stage the written day — New York and Tokyo agree (pre-cure: the viewer's calendar, a wrong day west of the designation)", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("Nov 1, 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("Jan 1, 2026 UTC")).toBe("2026-01-01T00:00:00.000Z");
+    expect(stageCsvDate("Nov 1, 2026 GMT")).toBe("2026-11-01T00:00:00.000Z");
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("Nov 1, 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("Jan 1, 2026 UTC")).toBe("2026-01-01T00:00:00.000Z");
+  });
+
+  it("a space before the offset is a designated form — the named and ISO twins stage the written day in every zone (pre-cure: the viewer's calendar)", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("Nov 1, 2026 10:00 +09:00")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("2026-11-01 10:00 +09:00")).toBe("2026-11-01T00:00:00.000Z");
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("Nov 1, 2026 10:00 +09:00")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("2026-11-01 10:00 +09:00")).toBe("2026-11-01T00:00:00.000Z");
+  });
+
+  it("the 4-digit numeric designated forms stage the written day in every zone (pre-cure: null west of the designation, staged east — the zone split)", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("2026/11/01 UTC")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("11/01/2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("2026/11/01 10:00 -05:00")).toBe("2026-11-01T00:00:00.000Z");
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("2026/11/01 UTC")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("11/01/2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("2026/11/01 10:00 -05:00")).toBe("2026-11-01T00:00:00.000Z");
+  });
+
+  it("a rolled designated calendar nulls (the round-trip doctrine on the new arms)", () => {
+    process.env.TZ = "UTC";
+    expect(stageCsvDate("Nov 31, 2026 UTC")).toBeNull();
+    expect(stageCsvDate("02/30/2026 UTC")).toBeNull();
+    expect(stageCsvDate("2026/02/30 UTC")).toBeNull();
+  });
+
+  it("an unknown month name nulls (V8 NaN parity on the named designated arm)", () => {
+    process.env.TZ = "UTC";
+    expect(stageCsvDate("Foo 1, 2026 UTC")).toBeNull();
+  });
+
+  it("the two-digit-year designated numerics SKIP (the remap boundary is engine-internal — a visible skip beats a silent wrong day)", () => {
+    for (const zone of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("11/01/26 UTC")).toBeNull();
+      expect(stageCsvDate("11/01/26 10:00 +09:00")).toBeNull();
+      expect(stageCsvDate("Nov 1, 26 UTC")).toBeNull();
+      expect(stageCsvDate("15 Nov 26 UTC")).toBeNull();
+    }
+  });
+
+  // ---- F-225g: the two-digit-year rolled numeric residual, recorded
+  it("the two-digit-year rolled numeric date stages the roll (the recorded residual — pinned, not cured)", () => {
+    for (const zone of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("02/30/26")).toBe("2026-03-02T00:00:00.000Z");
+    }
+  });
+});

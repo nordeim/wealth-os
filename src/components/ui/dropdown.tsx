@@ -61,6 +61,15 @@ function DropdownItem({
         type="button"
         className={cn(
           "flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none transition-colors hover:bg-line-soft focus-visible:bg-line-soft",
+          // Session-225 (R-22, F-225l): the latent destructive ink's
+          // measured value, cited where the next consumer will read
+          // it — text-danger is --color-danger #ef4444, 3.76:1 on
+          // white (the F-218j measurement the KPI delta darkened to
+          // red-600 for); the dark arm passes (~5.3:1). Zero live
+          // consumers today (the N-56e KEEP): a future menu going
+          // live on this line should pin a --color-danger-ink
+          // (red-600/red-400 pair) for its text, as the live sidebar
+          // menu does.
           destructive ? "text-danger hover:bg-danger-soft" : "text-foreground",
           className,
         )}

@@ -117,7 +117,10 @@
   /* Feedback / finance semantics — RESERVED-BUT-UNWIRED families
      (session-224, F-224t): success/warning/info/-soft and danger-soft
      are pin-enumerated contract tokens (palette-pins) with zero live
-     consumers today; chart-* mirror CHART_COLORS but the charts read
+     RENDERED consumers today (F-225l, session 225: the word covers
+     what the browser paints — the vendored DropdownItem REFERENCES
+     the danger-soft token without any page rendering it; see
+     dropdown.tsx's measured-value note); chart-* mirror CHART_COLORS but the charts read
      the src/lib/constants.ts hexes — do NOT "fix" a chart to
      var(--color-chart-*) or it silently diverges from the constants.
      danger (no -soft) IS live (the destructive buttons). */

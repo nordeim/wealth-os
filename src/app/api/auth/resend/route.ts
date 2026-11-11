@@ -32,6 +32,17 @@ export async function POST(req: Request) {
   if (!parsed.ok) return parsed.response;
   const { email } = parsed.data;
 
+  // Session-225 (R-22, F-225c): the email-keyed secondary bucket —
+  // the F-222n mirror. Resend re-arms ANY hash-present account and
+  // RESETS the attempts ladder, so a rotating caller could cycle
+  // resend -> 5 verify guesses -> resend indefinitely under the
+  // per-IP caps alone (the old F-222p citation's "5/IP" bound is
+  // the exact voidable cap F-222n documented). Sized above the
+  // per-IP cap (10 vs 5) so single-IP flows are unchanged; fired
+  // BEFORE any account-existence check (no oracle added).
+  const acctLimit = rateLimit(`resend-acct:${email}`, 10, 15 * 60 * 1000);
+  if (!acctLimit.allowed) return ERR.RATE_LIMITED(acctLimit.retryAfterSec);
+
   // Session-37 (S37-P1): the auth family joins the envelope — the
   // findUnique/update failures stay inside { ok, error }.
   try {

@@ -40,6 +40,20 @@ export async function POST(req: Request) {
   if (!parsed.ok) return parsed.response;
   const { email, code } = parsed.data;
 
+  // Session-225 (R-22, F-225c): the email-keyed secondary bucket —
+  // the F-222n mirror this route never received. The per-IP 20/15
+  // above is voidable by a rotating XFF (the login route's own
+  // decode), and this route's success path SIGNS THE CALLER IN, so
+  // the OTP-guessing surface needs the bound the IP cap cannot
+  // give. Sized above the per-IP cap (60 vs 20) so single-IP flows
+  // are unchanged; fired BEFORE any account-existence check (a
+  // per-email key adds no oracle). This supersedes the old F-222p
+  // mitigation citation ("bounded by 6-digit entropy + 5/IP" on
+  // resend — the same voidable bound F-222n proved); the honest
+  // bound is the email-keyed bucket on BOTH routes.
+  const acctLimit = rateLimit(`verify-acct:${email}`, 60, 15 * 60 * 1000);
+  if (!acctLimit.allowed) return ERR.RATE_LIMITED(acctLimit.retryAfterSec);
+
   // Session-37 (S37-P1): the whole DB tail joins the envelope — the
   // findUnique and both user.update failures stay inside { ok, error }.
   // The 4xx returns inside the try bypass the catch by construction

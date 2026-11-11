@@ -3,6 +3,7 @@ import { join } from "path";
 import { NextResponse } from "next/server";
 import { fail } from "@/lib/api";
 import { CONTENT_TYPES, UPLOAD_NAME_RE, uploadsDir } from "@/lib/uploads";
+import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -20,7 +21,18 @@ type Params = { params: Promise<{ name: string }> };
  * Names are content-random and never rewritten, so the bytes are served
  * with immutable caching.
  */
-export async function GET(_req: Request, { params }: Params) {
+export async function GET(req: Request, { params }: Params) {
+  // Session-225 (R-22, F-225i): the light per-IP bucket — the export
+  // precedent (240/15). The health route's F-221t note claimed this
+  // was the only unthrottled public family; now every public family
+  // carries a bucket. The name charset is pinned below (no traversal),
+  // immutable caching rides the 200s, and no seeded upload files
+  // exist — the bucket cannot trip any test battery.
+  const limit = rateLimit(`uploads:${clientKey(req)}`, 240, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) {
+    return fail("RATE_LIMITED", "Too many requests, please try again later", 429);
+  }
   const { name } = await params;
   if (!UPLOAD_NAME_RE.test(name)) {
     return fail("NOT_FOUND", "File not found", 404);

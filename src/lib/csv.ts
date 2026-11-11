@@ -170,6 +170,19 @@ export function parseCsv(text: string): string[][] {
  * null; the caller surfaces the skip in the preview instead of
  * dropping silently.
  *
+ * Session-225 (R-22, F-225a/b): the partial and designated-tail
+ * completion. The partial family gains the NUMERIC year-month twins
+ * ("2026/11" / "2026.11" / "2026 11" / "2026/1" — the hyphen partials
+ * already nulled); the designated family widens to EVERY designated
+ * tail on EVERY shape — the ISO arm tolerates a space before the
+ * designator and the named UTC/GMT tails, and the locale-designated
+ * arms (named MDY, day-first named, numeric MDY/YMD by the a≥1000
+ * shape convention) stage the WRITTEN calendar, whole-parse-guarded
+ * and round-trip-guarded. The two-digit-year designated numerics
+ * SKIP (the remap boundary is engine-internal — a visible skip beats
+ * a silent wrong day). Recorded residual: nothing — every designated
+ * tail this seam has observed is covered.
+ *
  * Session-222 (R-19, F-222a/b/c/d): the R-18 branch's completion.
  * The UTC_DESIGNATED test was case-sensitive (RFC-3339-legal
  * lowercase z fell to the locale branch — a day off on both zone
@@ -187,12 +200,32 @@ const BARE_ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 // Any zone-designated ISO datetime: the date groups before the T are
 // the designator's own wall-clock date — the literal IS the staged
 // day (never an instant to zone-shift).
+// Session-225 (R-22, F-225b): the tail widens — an optional SPACE
+// before the designator ("2026-11-01 10:00 +09:00") and the named
+// UTC/GMT tails (a named zone IS +00:00; its written wall clock is
+// the date portion before the tail). V8 accepts both; the R-19
+// taxonomy missed them and the forms fell to the locale arm, which
+// staged the VIEWER's calendar — a wrong day west of the designation
+// (live-reproduced session 225; see the locale-designated family
+// below for the non-ISO shapes).
 const ZONE_DESIGNATED =
-  /^(\d{4})-(\d{2})-(\d{2})[Tt ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?(?:[Zz]|[+-]\d{2}(?::?\d{2})?)$/;
+  /^(\d{4})-(\d{2})-(\d{2})[Tt ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?\s*(?:[Zz]|UTC|GMT|[+-]\d{2}(?::?\d{2})?)$/;
 // Partial ISO forms (year / year-month): V8 parses them as UTC day 1
 // of the written period, but no day was chosen — a skip, never an
 // invented day.
 const PARTIAL_ISO = /^\d{4}(-\d{2})?$/;
+// Session-225 (R-22, F-225a): the NUMERIC year-month partials —
+// "2026/11", "2026.11", "2026 11", "2026/1" — the statement-period
+// shapes the month-year family's own rationale cites. The hyphen
+// partials ride PARTIAL_ISO above; these slash/dot/space twins
+// escaped every arm (NUMERIC_LOCALE needs three digit groups) and
+// V8's day-1 default staged the invented day. `$`-anchored ON
+// PURPOSE (the F-223d lesson inverted): a partial IS a two-group
+// form — the three-group "2026/11/01" / "2026 11 01" carry two
+// separators and never match. The separator class is NON-LETTER
+// (the NUMERIC_LOCALE convention): a named form never rides a
+// numeric arm.
+const NUMERIC_MONTH_YEAR_PARTIAL = /^\d{4}[^\dA-Za-z]+\d{1,2}$/;
 // The 3-group numeric locale forms (the documented US-MDY assumption,
 // the YMD-slash shape, and the dotted-MDY read): the rollover guard's
 // match arm. The separators are NON-LETTER runs — a letter in the
@@ -226,6 +259,78 @@ const REV_MONTH_ONLY = new RegExp(
   `^\\d{4}[\\s.-]+[A-Za-z]{3,9}${MONTH_YEAR_TIME}`,
 );
 
+// Session-225 (R-22, F-225b): the designated-tail completion, the
+// locale half. V8 accepts designators the R-19 taxonomy missed — a
+// space before the offset and the named UTC/GMT tails — on non-ISO
+// shapes too. Those forms fell to the locale fallback below, which
+// stages the VIEWER's local calendar (New York read "Nov 1, 2026
+// UTC" as 2026-10-31 — a wrong day; "Jan 1, 2026 UTC" as
+// 2025-12-31 — a wrong day AND year — while Tokyo staged the written
+// day: the identical file imported different books for different
+// users, the exact F-222a/b class surviving inside the taxonomy),
+// and the 4-digit NUMERIC designated forms null-or-staged by zone
+// (the guard converted the shift to a skip west of the designation).
+// The doctrine for EVERY designated tail: stage the date the digits
+// WROTE — the designator's own wall-clock calendar, never the
+// viewer's zone, never a zone-shifted instant. Each arm below
+// whole-parses through V8 first (an invalid TIME invalidates the
+// string even when the written date is fine — the designated-arm
+// parity) and round-trips the written calendar (a rolled date is
+// unparseable — the standing doctrine).
+// The shared tail — an optional space, then Z/z, UTC, GMT, or
+// ±HH:MM/±HHMM (the ±HH bare form is regex-tolerated but V8-rejected
+// on these shapes, so the row skips — consistent with the ISO arm).
+const DESIGNATED_TAIL = "\\s*(?:[Zz]|UTC|GMT|[+-]\\d{2}(?::?\\d{2})?)";
+// The optional TIME before the tail (the MONTH_YEAR_TIME convention):
+const OPT_TIME = "(?:\\s+\\d{1,2}:\\d{2}(?::\\d{2})?(?:\\.\\d+)?)?";
+// Month-name → index (case-insensitive; 3–9 letters covers V8's
+// accepted set — "Sept" and "September" both included). An unknown
+// name is a NaN in V8 — the arms null it.
+const MONTH_NAMES: Record<string, number> = {
+  jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3,
+  apr: 4, april: 4, may: 5, jun: 6, june: 6, jul: 7, july: 7,
+  aug: 8, august: 8, sep: 9, sept: 9, september: 9,
+  oct: 10, october: 10, nov: 11, november: 11, dec: 12, december: 12,
+};
+// "Nov 1, 2026 UTC" / "Nov 1, 2026 10:00 +09:00" (the comma and the
+// name/day separator are optional-form tolerant — "Nov 1 2026",
+// "Nov. 1, 2026" both live). The year group is two-digit-TOLERANT so
+// the arm CATCHES "Nov 1, 26 UTC" (V8 remaps it — the locale arm
+// would stage the viewer's calendar) and the length check inside
+// skips it (the remap doctrine, the named half):
+const NAMED_MDY_DESIGNATED = new RegExp(
+  `^([A-Za-z]{3,9})[^\\dA-Za-z]?(\\d{1,2}),?\\s+(\\d{2,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+);
+// "15 Nov 2026 UTC" — the day-first named twin (V8 parses it; the
+// family would be incomplete without it). Two-digit-tolerant year
+// group + the length check, as above:
+const DAY_FIRST_NAMED_DESIGNATED = new RegExp(
+  `^(\\d{1,2})[\\s.-]+([A-Za-z]{3,9}),?\\s+(\\d{2,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+);
+// "11/01/2026 UTC" / "2026/11/01 10:00 -05:00" — the numeric twin,
+// three digit groups with NON-LETTER separators (the NUMERIC_LOCALE
+// convention), shape-resolved by the a≥1000 convention below (YMD
+// reads the year from group a; MDY from group c). Four-digit years
+// only — the two-digit-year designated numerics SKIP ("11/01/26
+// UTC"): the remap boundary is engine-internal (the standing
+// two-digit doctrine), and a visible skip beats a silent wrong day.
+const NUMERIC_DESIGNATED = new RegExp(
+  `^(\\d{1,4})[^\\dA-Za-z]+(\\d{1,2})[^\\dA-Za-z]+(\\d{1,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+);
+
+/** F-225b: stage the WRITTEN calendar — the designator's own
+ * wall-clock date — as UTC midnight, round-trip-guarded (a rolled
+ * date is unparseable: the round-trip must land on the day the
+ * digits wrote). Pure: decision + one construction. */
+function stageWrittenLiteral(year: number, month: number, day: number): string | null {
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return d.getUTCFullYear() === year &&
+    d.getUTCMonth() === month - 1 &&
+    d.getUTCDate() === day
+    ? d.toISOString()
+    : null;
+}
+
 /** F-222d: the numeric locale rollover guard — a 4-digit-year numeric
  * form must round-trip under the MDY or YMD interpretation of its
  * digits, else it is unparseable (V8's lenient parser rolls 02/30 to
@@ -249,6 +354,10 @@ function localeRollover(
   // guard round-trips only four-digit-year forms — the two-digit-year
   // remap (V8: "26" → 2026, "68" → 1968) is engine-internal and not
   // worth replicating.
+  // NB (session 225, F-225n): with `a` captured by \d{1,4}, `a` is
+  // ALWAYS exactly 4 digits when ymd is true — so the year-length
+  // check below can only fire in the MDY arm. It stays as defense
+  // against future regex edits; there is no YMD skip path to hunt.
   const ymd = Number(a) >= 1000;
   const yearGroup = ymd ? a : c;
   if (yearGroup.length !== 4) return true;
@@ -267,8 +376,11 @@ function localeRollover(
 export function stageCsvDate(raw: string): string | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
-  // Partial ISO forms carry no day — unparseable (F-222c).
+  // Partial ISO forms carry no day — unparseable (F-222c). The
+  // numeric year-month partials join them (F-225a): a two-group
+  // numeric form chose no day either.
   if (PARTIAL_ISO.test(trimmed)) return null;
+  if (NUMERIC_MONTH_YEAR_PARTIAL.test(trimmed)) return null;
   // Month-only named forms carry no day either (F-223e/F-224c) —
   // forward and reversed, time-suffixed or bare.
   if (MONTH_ONLY.test(trimmed) || REV_MONTH_ONLY.test(trimmed)) return null;
@@ -295,6 +407,39 @@ export function stageCsvDate(raw: string): string | null {
       d.getUTCDate() === Number(literal[3])
       ? d.toISOString()
       : null;
+  }
+  // Session-225 (R-22, F-225b): the locale designated family — every
+  // designated tail stages the date the digits WROTE. Each arm
+  // whole-parses through V8 first (an invalid TIME invalidates the
+  // string); an unknown month name is V8's NaN and nulls; the
+  // numeric arm skips two-digit years (the remap doctrine).
+  const namedDesig = NAMED_MDY_DESIGNATED.exec(trimmed);
+  if (namedDesig) {
+    if (Number.isNaN(new Date(trimmed).getTime())) return null;
+    if (namedDesig[3].length !== 4) return null; // two-digit year: the remap doctrine — skip
+    const month = MONTH_NAMES[namedDesig[1].toLowerCase()];
+    if (!month) return null;
+    return stageWrittenLiteral(Number(namedDesig[3]), month, Number(namedDesig[2]));
+  }
+  const dayFirstDesig = DAY_FIRST_NAMED_DESIGNATED.exec(trimmed);
+  if (dayFirstDesig) {
+    if (Number.isNaN(new Date(trimmed).getTime())) return null;
+    if (dayFirstDesig[3].length !== 4) return null; // two-digit year: the remap doctrine — skip
+    const month = MONTH_NAMES[dayFirstDesig[2].toLowerCase()];
+    if (!month) return null;
+    return stageWrittenLiteral(Number(dayFirstDesig[3]), month, Number(dayFirstDesig[1]));
+  }
+  const numericDesig = NUMERIC_DESIGNATED.exec(trimmed);
+  if (numericDesig) {
+    if (Number.isNaN(new Date(trimmed).getTime())) return null;
+    const a = numericDesig[1];
+    const desigYmd = Number(a) >= 1000;
+    const yearGroup = desigYmd ? a : numericDesig[3];
+    if (yearGroup.length !== 4) return null;
+    const year = Number(yearGroup);
+    const month = desigYmd ? Number(numericDesig[2]) : Number(numericDesig[1]);
+    const day = desigYmd ? Number(numericDesig[3]) : Number(numericDesig[2]);
+    return stageWrittenLiteral(year, month, day);
   }
   const parsed = new Date(trimmed);
   if (Number.isNaN(parsed.getTime())) return null;

@@ -72,7 +72,7 @@ export function KpiCard({
           {delta != null ? (
             <p className={cn("mt-1 flex items-center gap-1 text-xs font-semibold", deltaTone)}>
               {deltaDirection === "up" ? (
-                <TrendingUp className="h-3.5 w-3.5" />
+                <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
               ) : deltaDirection === "down" ? (
                 <TrendingDown className="h-3.5 w-3.5" />
               ) : null}

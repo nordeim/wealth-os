@@ -44,59 +44,66 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
 
   return (
     <div className={SHELL_LAYOUT.root}>
-        {/* Session-224 (R-21, F-224s): the skip-to-content bypass
-            (WCAG 2.4.1) — visually hidden until focus, FIRST in the
-            tab order (before the sidebar's ~10 controls), jumping to
-            the main scroller. Outside <main> on purpose: the interior
-            census is main-scoped and the pixel sweeps never see an
-            sr-only element. */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-stone-900"
-        >
-          Skip to main content
-        </a>
-        {/* Desktop sidebar — in-flow flex child, visible from lg. */}
-        <Sidebar user={user} />
+      {/* Session-224 (R-21, F-224s): the skip-to-content bypass
+        (WCAG 2.4.1) — visually hidden until focus, FIRST in the
+        tab order (before the sidebar's ~10 controls), jumping to
+        the main scroller. Outside <main> on purpose: the interior
+        census is main-scoped and the pixel sweeps never see an
+        sr-only element.
+        Session-225 (R-22, F-225d): the focused link rises ABOVE the
+        header layer (z-[60] over the z-50 header/drawer/dialog
+        family, under the toasts) — the F-224s reveal painted the
+        pill exactly where the sticky mobile header sits, and the
+        equal z-50 + later-DOM header won the paint order: the
+        focused link was invisible below lg (keyboard users at phone
+        widths; the 1280-only leg and axe could not see it). */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-stone-900"
+      >
+        Skip to main content
+      </a>
+      {/* Desktop sidebar — in-flow flex child, visible from lg. */}
+      <Sidebar user={user} />
 
-        {/* Mobile drawer (< lg) — the reference's full-screen gradient. */}
-        <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
+      {/* Mobile drawer (< lg) — the reference's full-screen gradient. */}
+      <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
 
-        {/* Main column: mobile header (below lg) + main scroller. Pages
-            own their padding — no blanket wrapper. */}
-        <div className={SHELL_LAYOUT.mainColumn}>
-          <MobileHeader
-            drawerOpen={mobileNavOpen}
-            onDrawerOpenChange={setMobileNavOpen}
-          />
-          <main id="main-content" tabIndex={-1} className={SHELL_LAYOUT.main}>
-            {storeError ? (
-              <div
-                role="alert"
-                className="mx-auto mt-4 flex max-w-2xl flex-col gap-2 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/40"
+      {/* Main column: mobile header (below lg) + main scroller. Pages
+          own their padding — no blanket wrapper. */}
+      <div className={SHELL_LAYOUT.mainColumn}>
+        <MobileHeader
+          drawerOpen={mobileNavOpen}
+          onDrawerOpenChange={setMobileNavOpen}
+        />
+        <main id="main-content" tabIndex={-1} className={SHELL_LAYOUT.main}>
+          {storeError ? (
+            <div
+              role="alert"
+              className="mx-auto mt-4 flex max-w-2xl flex-col gap-2 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/40"
+            >
+              <p className="text-sm font-medium text-red-800 dark:text-red-200">
+                Couldn't load your data — {storeError}
+              </p>
+              <button
+                type="button"
+                onClick={() => void hydrate()}
+                className="self-start rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-800 transition-colors hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-red-800 dark:text-red-200 dark:hover:bg-red-900/40"
               >
-                <p className="text-sm font-medium text-red-800 dark:text-red-200">
-                  Couldn't load your data — {storeError}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => void hydrate()}
-                  className="self-start rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-800 transition-colors hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-red-800 dark:text-red-200 dark:hover:bg-red-900/40"
-                >
-                  Try again
-                </button>
-              </div>
-            ) : null}
-            {!hydrated || loading ? (
-              <LoadingBlock label="Loading your workspace…" />
-            ) : (
-              children
-            )}
-            <footer className={APP_FOOTER.footer}>
-              <span>{APP_FOOTER.copyright}</span>
-            </footer>
-          </main>
-        </div>
+                Try again
+              </button>
+            </div>
+          ) : null}
+          {!hydrated || loading ? (
+            <LoadingBlock label="Loading your workspace…" />
+          ) : (
+            children
+          )}
+          <footer className={APP_FOOTER.footer}>
+            <span>{APP_FOOTER.copyright}</span>
+          </footer>
+        </main>
       </div>
+    </div>
   );
 }

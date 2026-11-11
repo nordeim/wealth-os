@@ -52,7 +52,7 @@ export const MOBILE_NAV_SHEET = {
   // (the readable superset — the reference's sheet is a transparent
   // veil whose light mode ships stone-300-on-light text) and adopt the
   // tint via the mobile-drawer-sheen utility (globals.css).
-  content: "lg:hidden fixed inset-0 z-40 mobile-drawer-sheen focus:outline-none",
+  content: "lg:hidden fixed inset-0 z-40 mobile-drawer-sheen",
   // Session-219 (R-16, F-219h): overflow-y-auto — the sheet scrolls
   // internally below ~800px viewport height (Sign Out live-measured
   // UNREACHABLE at 390×667 before; the reference clips too — this is
