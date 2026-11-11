@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1088) | `bun run test` |
+| Unit tests (1136) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 126) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 135) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -319,6 +319,39 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   and each re-auth lands in the same per-IP login bucket (10/15min)
   the setup login rides, so count the suite's logins before adding
   more.
+- **A STRICT-REGEX ALLOWLIST can never outrun the V8 date parser —
+  probe the engine's ACTUAL acceptance set before claiming a family
+  closed** (session 226, F-226a): R-22's designated-tail completion
+  claimed "recorded residual: nothing" while seven escape families
+  (case-insensitive utc/gmt, the RFC-822 weekday prefix, separator
+  lenience, the meridiem, V8's named zones, compound UTC±/GMT±
+  tails, month-year + tail) still staged the viewer's calendar —
+  "Dec 31, 2026 8:00 PM EST" staged 2027-01-01 (a wrong YEAR).
+  The doctrine: probe `new Date(form)` for every form you intend to
+  cover AND the neighbors you don't (V8 accepts UT/EST/EDT/CST/CDT/
+  MST/MDT/PST/PDT but rejects CET/JST/BST/AEST — the rejected ones
+  null safely through the whole-parse guard), and never write
+  "no residual" — write the PROBED residual.
+- **A SIBLING REPO'S RETIREMENT DOCTRINE DOES NOT TRANSFER — probe
+  THIS reference before porting a class retirement** (session 226,
+  F-226i): the neo-crm F-129c1 lesson retired `ring-offset-background`
+  because THAT reference's background token was the divergent value;
+  here the class string was byte-extracted from THIS reference, whose
+  own triggers carry it (live-probed: the reference's Analytics tabs
+  compute the offset to its --background). The audit's "retire it
+  here too" claim was INVERTED — our TABS_SEGMENTED lacked the class
+  and painted a WHITE focus halo on dark pages. The F-207c
+  withdrawal pattern exists for exactly this: re-probe, then record
+  the adjudication.
+- **A bare-offset tail on a two-group rejector EATS THE MOST COMMON
+  FORM** (session 226, F-226a's design hazard): extending the numeric
+  month-year partial rejector ("2026/11") with the full designated
+  tail would make every ISO date match it — "2026-11-01" reads as
+  year / 11 / -01-offset and NULLS. The rejection family carries the
+  named zones and compound suffixes ONLY; the bare-offset partials
+  ("Nov 2026 +09:00") are V8-NaN and null through the locale arm's
+  whole-parse check. Enumerate what a widened tail can ALSO match
+  before widening it.
 - **A capture tool that signs up scratch accounts must NOT ride the
   dev database** (session 225, F-225e): a scratch user created against
   `db/custom.db` SURVIVES `db:seed` (the reseed's deletes are
