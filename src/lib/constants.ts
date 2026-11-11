@@ -107,12 +107,16 @@ export const INVESTMENT_TYPES = [
   // chip — the 500-level `color` renders 2.1–3.7:1 as text-xs on its own
   // 10% tint; the 600/700-level steps carry 4.5:1+ while the tint keeps
   // the type's hue.
-  { value: "stock", label: "Stock", color: "#3b82f6", text: "#1d4ed8" },
-  { value: "etf", label: "ETF", color: "#10b981", text: "#047857" },
-  { value: "bond", label: "Bond", color: "#f59e0b", text: "#b45309" },
-  { value: "crypto", label: "Crypto", color: "#a855f7", text: "#6d28d9" },
-  { value: "realestate", label: "Real Estate", color: "#f43f5e", text: "#be123c" },
-  { value: "other", label: "Other", color: "#78716c", text: "#57534e" },
+  // Session-223 (R-20, F-223g): `textDark` is the dark-surface ink —
+  // the 10% tint over a dark card is near-black, where the 600/700
+  // steps compute ≈2:1; the 400-level steps pass on the same tint
+  // (the page selects via isDark).
+  { value: "stock", label: "Stock", color: "#3b82f6", text: "#1d4ed8", textDark: "#93c5fd" },
+  { value: "etf", label: "ETF", color: "#10b981", text: "#047857", textDark: "#6ee7b7" },
+  { value: "bond", label: "Bond", color: "#f59e0b", text: "#b45309", textDark: "#fcd34d" },
+  { value: "crypto", label: "Crypto", color: "#a855f7", text: "#6d28d9", textDark: "#d8b4fe" },
+  { value: "realestate", label: "Real Estate", color: "#f43f5e", text: "#be123c", textDark: "#fda4af" },
+  { value: "other", label: "Other", color: "#78716c", text: "#57534e", textDark: "#d6d3d1" },
 ] as const;
 
 export const GOAL_CATEGORIES = [

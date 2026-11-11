@@ -28,6 +28,7 @@ import {
 import { formatMoney, relativeDays, toDate, totalMonthlyIncome } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
 import { CARD, GLASS_CARD, PAGE_ROOT, CTA } from "@/lib/page-layout";
+import { useIsDark } from "@/components/layout/theme";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { IncomeSource } from "@/types";
@@ -43,6 +44,10 @@ const TYPE_STYLES: Record<string, { color: string; soft: string }> = {
 
 export default function IncomePage() {
   const store = useWealthOs();
+  // Session-223 (R-20, F-223i): the icon-tile tint needs the theme —
+  // the hex pastel renders a bright chip on dark cards; the 10%-alpha
+  // form (the accounts genus) adapts to both surfaces.
+  const isDark = useIsDark();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<IncomeSource | null>(null);
   // Session-221 (R-18, F-221q): the card-level busy rider — a rapid
@@ -130,7 +135,11 @@ export default function IncomePage() {
                     <div className="flex items-center gap-3">
                       <span
                         className="flex h-10 w-10 items-center justify-center rounded-lg"
-                        style={{ backgroundColor: style.soft, color: style.color }}
+                        /* Session-223 (R-20, F-223i): the hex pastel renders
+                           a bright chip on dark cards — the 10%-alpha form
+                           (the accounts genus) adapts to both surfaces; the
+                           light rendering is unchanged. */
+                        style={{ backgroundColor: isDark ? `${style.color}1a` : style.soft, color: style.color }}
                       >
                         <Briefcase className="h-5 w-5" />
                       </span>

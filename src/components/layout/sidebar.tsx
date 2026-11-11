@@ -132,7 +132,11 @@ function SidebarFooter({ user }: { user: User }) {
             Dark Mode
           </MenuItem>
           <MenuItem
-            onSelect={() => void logout()}
+            // Session-223 (R-20, F-223a): the navigating helper, not the
+            // bare store logout — logout() alone clears the store to
+            // hydrated:false/loading:true and nothing re-renders the
+            // server layout, dead-ending on the loading gate.
+            onSelect={() => void signOut()}
             className="gap-2 text-red-600 focus:text-red-600 dark:text-red-400"
           >
             <LogOut className="h-4 w-4" />

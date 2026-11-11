@@ -193,8 +193,16 @@ const PARTIAL_ISO = /^\d{4}(-\d{2})?$/;
 // The 3-group numeric locale forms (the documented US-MDY assumption,
 // the YMD-slash shape, and the dotted-MDY read): the rollover guard's
 // match arm. Two-digit-year forms skip the guard (V8's remap boundary
-// is engine-internal).
-const NUMERIC_LOCALE = /^(\d{1,4})\D+(\d{1,2})\D+(\d{2,4})$/;
+// is engine-internal). Session-223 (R-20, F-223d): the anchor is a
+// `(?![0-9])` lookahead, not `$` — a trailing TIME ("02/30/2026
+// 10:00", the common US bank-datetime shape) must still reach the
+// guard, which the `$`-anchored form could not match (the rolled day
+// staged silently, live-reproduced TZ-independent).
+const NUMERIC_LOCALE = /^(\d{1,4})\D+(\d{1,2})\D+(\d{2,4})(?!\d)/;
+// Month-only named forms ("Nov 2026", "January 2026"): no day was
+// chosen — the named twins of the PARTIAL_ISO doctrine (F-223e;
+// V8 silently stages day 1 otherwise, live-reproduced).
+const MONTH_ONLY = /^[A-Za-z]{3,9}\s+\d{4}$/;
 
 /** F-222d: the numeric locale rollover guard — a 4-digit-year numeric
  *  form must round-trip under the MDY or YMD interpretation of its
@@ -228,6 +236,8 @@ export function stageCsvDate(raw: string): string | null {
   if (!trimmed) return null;
   // Partial ISO forms carry no day — unparseable (F-222c).
   if (PARTIAL_ISO.test(trimmed)) return null;
+  // Month-only named forms carry no day either (F-223e).
+  if (MONTH_ONLY.test(trimmed)) return null;
   // The literal-staging branches: the bare form and every
   // zone-designated datetime stage the date the digits wrote (the
   // identity; never parsed as an instant, so no zone can shift it).

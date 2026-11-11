@@ -180,7 +180,10 @@ export function ResetPasswordScreen() {
 
                 <button
                   type="button"
-                  className="w-full text-sm text-slate-600 hover:text-slate-900"
+                  /* Session-223 (R-20, F-223h): the amber ring genus —
+                     the last bare back on the auth faces joins the
+                     F-222g family (rounded-md so the ring renders). */
+                  className="w-full rounded-md text-sm text-slate-600 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
                   onClick={() => router.push("/login")}
                 >
                   Back to login

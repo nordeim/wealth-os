@@ -30,6 +30,7 @@ import {
 import { Tabs, TabsPanel } from "@/components/ui/tabs";
 import { EmptyState, PageHeader } from "@/components/shared/page-parts";
 import { useWealthOs } from "@/stores/wealthos-store";
+import { useIsDark } from "@/components/layout/theme";
 import {
   BUDGET_CATEGORY_META,
   EXPENSE_CATEGORIES,
@@ -46,6 +47,10 @@ const QUICK_ADDS = [1, 5, 10, 50, 100, 500];
 
 export default function ExpensesPage() {
   const store = useWealthOs();
+  // Session-223 (R-20, F-223i): the icon-tile tint needs the theme —
+  // the hex pastel renders a bright chip on dark cards; the 10%-alpha
+  // form (the accounts genus) adapts to both surfaces.
+  const isDark = useIsDark();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<Transaction | null>(null);
   const [search, setSearch] = React.useState("");
@@ -164,7 +169,7 @@ export default function ExpensesPage() {
             <div className="flex min-w-0 items-center gap-3">
               <span
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                style={{ backgroundColor: meta.soft, color: meta.color }}
+                style={{ backgroundColor: isDark ? `${meta.color}1a` : meta.soft, color: meta.color }}
               >
                 <Receipt className="h-4 w-4" />
               </span>

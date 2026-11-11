@@ -27,12 +27,14 @@ export const NAV_LAYOUT = {
   footer: "p-4 space-y-3 border-t border-amber-500/20 relative z-10",
   // Session-207 (F-207h): the Synced badge genus, live-extracted from
   // the reference's sidebar footer — the SAME badge the mobile topbar
-  // carries (rounded-md, semibold, green + the wifi glyph). One AA
-  // superset: green-700 in light mode (the reference's green-600
-  // measures 3.16:1 on the light wash — one step darker, per the
-  // AGENTS.md contrast-fix rule).
+  // carries (rounded-md, semibold, green + the wifi glyph). Session-223
+  // (R-20, F-223f): the DESKTOP pairing is unconditional — the sidebar
+  // gradient is near-black in BOTH themes, so the mobile twin's light
+  // arm (green-700, correct on the topbar's light wash) computed
+  // 3.49:1 here in light mode; green-400/green-600 compute 10.04:1.
+  // The mobile pill keeps its light/dark arms (MOBILE_HEADER below).
   syncedPill:
-    "inline-flex items-center gap-1 rounded-md border px-2.5 py-0.5 text-xs font-semibold text-green-700 border-green-300 dark:text-green-400 dark:border-green-600",
+    "inline-flex items-center gap-1 rounded-md border px-2.5 py-0.5 text-xs font-semibold text-green-400 border-green-600",
 } as const;
 
 /** The mobile drawer — the reference's construction: a FULL-SCREEN

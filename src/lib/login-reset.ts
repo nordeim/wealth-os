@@ -135,9 +135,12 @@ export const LOGIN_RESET_LAYOUT = {
     "relative w-full border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground text-foreground bg-green-50/70 border-green-200 rounded-xl",
   /** The callout's text (leading-relaxed green-700 14px). */
   sentCalloutText: "[&_p]:leading-relaxed text-green-700 text-sm",
-  /** The sent view's full-width centered Back to sign in. */
+  /** The sent view's full-width centered Back to sign in. Session-223
+   *  (R-20, F-223h): the amber ring genus — the fourth back in the same
+   *  funnel joins its three ringed siblings (rounded-md so the ring
+   *  renders on the inline-flex row). */
   sentBack:
-    "w-full flex items-center justify-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors",
+    "w-full flex items-center justify-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2",
 } as const;
 
 /**

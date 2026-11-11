@@ -352,3 +352,61 @@ describe("stageCsvDate zone-designator completion (F-222a/b/c/d)", () => {
     );
   });
 });
+
+// Session-223 (R-20, F-223d): the F-222d rollover guard's `$`-anchored
+// NUMERIC_LOCALE cannot match a trailing time, so the common US
+// bank-datetime shape staged the rolled day silently (live-reproduced,
+// TZ-independent: "02/30/2026 10:00" → Mar 2 while the date-only form
+// nulls; "02/29/2026 12:00 AM" → Mar 1 on the non-leap year). The
+// anchor widens to a `(?!\d)` prefix match — the guard fires on the
+// rolled digits while VALID time-suffixed forms keep staging (both
+// pinned below, TZ-switched per the house doctrine).
+describe("stageCsvDate time-suffixed rollover guard (F-223d)", () => {
+  it("a ROLLED numeric date with a trailing time is unparseable (the guard fires through the time)", () => {
+    for (const tz of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = tz;
+      expect(stageCsvDate("02/30/2026 10:00")).toBeNull();
+      expect(stageCsvDate("02/30/2026 10:00 AM")).toBeNull();
+      expect(stageCsvDate("2/30/2026 10:00 AM")).toBeNull();
+      expect(stageCsvDate("02/29/2026 12:00 AM")).toBeNull();
+    }
+  });
+
+  it("a VALID numeric date with a trailing time keeps staging its written day", () => {
+    for (const tz of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = tz;
+      expect(stageCsvDate("11/01/2026 10:00")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("11/01/2026 10:00 AM")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("2026/11/01 10:00")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+
+  it("the date-only forms keep their standing contract (the anchor change is invisible to them)", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("02/30/2026")).toBeNull();
+    expect(stageCsvDate("11/01/2026")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("2026/11/01")).toBe("2026-11-01T00:00:00.000Z");
+  });
+});
+
+// Session-223 (R-20, F-223e): month-only named forms invented day 1
+// ("Nov 2026" → 2026-11-01, live-reproduced TZ-independent) while the
+// ISO partials "2026"/"2026-11" correctly null — the F-222c doctrine
+// ("a skip beats an invented day") never covered the named twins. A
+// month-year CSV cell (statement periods) carries no day the user
+// chose.
+describe("stageCsvDate month-only named rejection (F-223e)", () => {
+  it("month-year named forms are unparseable (no day was chosen)", () => {
+    for (const tz of ["UTC", "America/New_York", "Asia/Tokyo"]) {
+      process.env.TZ = tz;
+      expect(stageCsvDate("Nov 2026")).toBeNull();
+      expect(stageCsvDate("January 2026")).toBeNull();
+    }
+  });
+
+  it("named forms WITH a day keep staging (the rejection is month-only)", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("Nov 1, 2026")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("November 15, 2026")).toBe("2026-11-15T00:00:00.000Z");
+  });
+});

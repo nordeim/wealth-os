@@ -247,6 +247,22 @@ test.describe("mobile navigation drawer", () => {
     await expect(menu.getByRole("menuitem", { name: "Sign Out" })).toBeVisible();
   });
 
+  // Shared helper for the sign-out legs: the F-223k tokenVersion
+  // eviction ("sign out" means revoke) bumps the USER's version — the
+  // suite's static storageState cookie (tests/e2e/.auth/user.json,
+  // minted once by auth.setup.ts) embeds the pre-bump version and dies
+  // at every later test's getSessionUser comparison. Each sign-out leg
+  // re-authenticates and OVERWRITES the state file so the next test's
+  // fresh context carries the re-minted cookie (the login lands in the
+  // same per-IP budget the setup login rides — 7 total against 10).
+  async function reMintSharedAuth(page: import("@playwright/test").Page) {
+    await page.getByLabel("Email").fill("sepnetflix2023@outlook.com");
+    await page.getByLabel("Password").fill("$Abcd1234");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.waitForURL("/");
+    await page.context().storageState({ path: "tests/e2e/.auth/user.json" });
+  }
+
   test("Sign Out from the drawer returns to the login wall", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/Dashboard");
@@ -256,5 +272,30 @@ test.describe("mobile navigation drawer", () => {
 
     await page.waitForURL("**/login**");
     await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
+
+    // F-223k: restore the shared auth state the eviction just killed.
+    await reMintSharedAuth(page);
+  });
+
+  // Session-223 (R-20, F-223a): the DESKTOP Sign Out dead-ended on the
+  // loading gate — the MenuItem called bare logout() (store cleared to
+  // hydrated:false/loading:true, no navigation, no router.refresh: the
+  // server layout's guest wall never re-rendered) while the navigating
+  // signOut helper sat dead beside it. The drawer leg above covered the
+  // mobile path only; this leg pins the desktop one.
+  test("Sign Out from the DESKTOP sidebar user menu returns to the login wall (F-223a)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/Dashboard");
+
+    await page.getByRole("button", { name: /sepnetflix2023/ }).click();
+    await page.getByRole("menuitem", { name: "Sign Out" }).click();
+
+    await page.waitForURL("**/login**");
+    await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
+
+    // F-223k: restore the shared auth state the eviction just killed.
+    await reMintSharedAuth(page);
   });
 });

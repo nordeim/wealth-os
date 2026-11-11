@@ -146,7 +146,10 @@ export function AiCoachDialog({
                 type="button"
                 disabled={busy}
                 onClick={() => void send(question)}
-                className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:border-amber-300 hover:text-amber-700 disabled:opacity-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 dark:hover:border-amber-500/40 dark:hover:text-amber-300"
+                /* Session-223 (R-20, F-223h): the house ring — the chips
+                   and the Send button were the F-222g sweep's tail (the
+                   dialog's most-used controls rode the UA outline). */
+                className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:border-amber-300 hover:text-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 dark:hover:border-amber-500/40 dark:hover:text-amber-300"
               >
                 {question}
               </button>
@@ -170,7 +173,7 @@ export function AiCoachDialog({
               type="submit"
               disabled={busy || input.trim().length === 0}
               aria-label="Send question"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 text-stone-900 shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 disabled:opacity-50"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 text-stone-900 shadow-md shadow-amber-500/25 transition-all hover:from-amber-600 hover:to-yellow-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
             </button>

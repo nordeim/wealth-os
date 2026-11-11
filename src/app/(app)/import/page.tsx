@@ -203,7 +203,9 @@ export default function ImportPage() {
             />
           </label>
           {error ? (
-            <p role="alert" className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-500/10 dark:text-red-400">
+            <p role="alert" className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400">
+              {/* Session-223 (R-20, F-223j): red-700 — red-600 measured
+                  4.41:1 on red-50 (the sibling error surfaces' step). */}
               {error}
             </p>
           ) : null}

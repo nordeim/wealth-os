@@ -50,7 +50,16 @@ export async function POST(req: Request) {
     if (!user || !user.verificationCodeHash || !isVerificationPending(user.verificationExpiresAt)) {
       // No pending code: behave like the reference's generic failure (the
       // banner family) without leaking whether the account exists.
-      return fail("VERIFICATION_INVALID", verificationLockoutMessage(), 400);
+      // Session-223 (R-20, F-223l): the remaining-message form — the
+      // old lockout-shaped answer was a pending-state enumeration
+      // oracle (a known+live code answered the LADDER text while
+      // every other case answered the lockout text); the unified form
+      // makes the two 400 bodies identical for any email.
+      return fail(
+        "VERIFICATION_INVALID",
+        verificationRemainingMessage(VERIFICATION_MAX_ATTEMPTS),
+        400,
+      );
     }
 
     // The lockout check rides BEFORE the code compare (the reference's

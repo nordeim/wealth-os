@@ -57,7 +57,13 @@ export default function ErrorPage({
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-stone-900 bg-primary rounded-lg hover:bg-primary-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring dark:text-stone-50"
+              // Session-223 (R-20, F-223b): no dark ink arm — bg-primary
+              // (amber #f59e0b) does not flip in .dark, so the R-19
+              // round's stone-50 dark arm painted 2.06:1 ink on the
+              // unflipped fill (the light arm computes 8.14:1). The
+              // F-219a genus: stone-900 on amber in both modes, like
+              // every other amber CTA in the tree.
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-stone-900 bg-primary rounded-lg hover:bg-primary-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
             >
               <RotateCcw className="h-4 w-4 mr-2" aria-hidden="true" />
               Try again

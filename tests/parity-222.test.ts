@@ -99,7 +99,10 @@ describe("F-222f — the 404 and segment-error faces render dark under the dark 
     expect(src).toContain("bg-slate-200 mx-auto dark:bg-stone-800");
     expect(src).toContain("text-slate-800 dark:text-stone-100");
     expect(src).toContain("text-slate-600 dark:text-stone-400");
-    expect(src).toContain("dark:text-stone-50");
+    // Session-223 (R-20, F-223b): recalibrated to the NEGATIVE form —
+    // the R-19 pin enshrined the 2.06:1 dark arm on the unflipped
+    // amber; the F-219a genus is stone-900 in both modes.
+    expect(src).not.toContain("dark:text-stone-50");
   });
 });
 
@@ -141,8 +144,8 @@ describe("F-222g — the hand-rolled interactives carry the house focus ring", (
     const src = read("src/lib/login-reset.ts");
     const ring =
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2";
-    // three back constants + the resend button
-    expect(src.match(new RegExp(ring.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"))?.length).toBe(4);
+    // three back constants + the sent back (F-223h) + the resend button
+    expect(src.match(new RegExp(ring.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"))?.length).toBe(5);
   });
 
   it("the Expenses chips (filters-close, quick-category, back-to-form, quick-amount): the ring", () => {

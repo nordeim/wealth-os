@@ -120,7 +120,10 @@ export default function DashboardPage() {
   // Session-222 (R-19, F-222i): the tooltip panel joins the isDark
   // family — the axes/grid flipped but the tooltip rendered a white
   // chip over dark cards. The stone-900 panel + stone-100 ink mirror
-  // the card surfaces; the swatch keeps the series color.
+  // the card surfaces. (Session-223, R-20: the docblock's old "the
+  // swatch keeps the series color" claim was wrong — recharts 3.10's
+  // DefaultTooltipContent has no swatch element; the per-series
+  // color cue rides the legend.)
   const tooltipInk = isDark ? "#f5f5f4" : "#1c1917";
   const tooltipStyle = {
     borderRadius: 12,
@@ -331,7 +334,16 @@ export default function DashboardPage() {
                           <Cell key={slice.category} fill={slice.color} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value, name) => [formatMoney(Number(value)), name]} />
+                      <Tooltip
+                        formatter={(value, name) => [formatMoney(Number(value)), name]}
+                        // Session-223 (R-20, F-223c): this donut was one of
+                        // the two bare sites the F-222i round missed (the
+                        // presence-only pin could not see it) — the sibling
+                        // form lands here too.
+                        labelStyle={{ color: tooltipInk, fontWeight: 600 }}
+                        itemStyle={{ color: tooltipInk }}
+                        contentStyle={tooltipStyle}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>

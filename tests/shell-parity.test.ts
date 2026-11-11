@@ -326,7 +326,13 @@ describe("session-207: the sidebar footer pill joins the badge family (F-207h)",
     const pill = L.NAV_LAYOUT.syncedPill;
     expect(pill).toContain("rounded-md");
     expect(pill).toContain("text-xs font-semibold");
-    expect(pill).toContain("text-green-700");
+    // Session-223 (R-20, F-223f): the DESKTOP pairing is unconditional
+    // green-400/green-600 — the sidebar gradient is near-black in both
+    // themes (green-700 computed 3.49:1 in light mode). The mobile
+    // twin keeps the light/dark arms.
+    expect(pill).toContain("text-green-400");
+    expect(pill).toContain("border-green-600");
+    expect(pill).not.toContain("text-green-700");
     expect(pill).not.toContain("rounded-full");
     expect(pill).not.toContain("emerald");
   });

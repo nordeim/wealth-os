@@ -143,8 +143,10 @@ describe("login reset flow — reference class vocabulary", () => {
     // DOM: <button class="w-full flex items-center justify-center gap-2
     // text-sm text-slate-500 hover:text-slate-700 font-medium
     // transition-colors"> — unlike the reset view's left-aligned -mb-2 one.
+    // Session-223 (R-20, F-223h): + the amber ring genus + rounded-md
+    // (the fourth back joins its three ringed siblings).
     expect(LOGIN_RESET_LAYOUT.sentBack).toBe(
-      "w-full flex items-center justify-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors",
+      "w-full flex items-center justify-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2",
     );
   });
 
