@@ -16,6 +16,61 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.19.0 (session 222, R-19 — the zone-designator completion
+  and focus-affordance round): the fresh-eyes audit found the R-18
+  form-branch carrying its target class twice more — the
+  `UTC_DESIGNATED` regex was CASE-SENSITIVE, so RFC-3339-legal
+  lowercase `z` fell into the locale branch and staged one day off
+  on both zone edges (live-reproduced: New York
+  "2026-11-01T01:30:00z" → 2026-10-31; Tokyo
+  "2026-11-01T18:30:00z" → Nov 2; the year boundary → 2027-01-01),
+  and it recognized only ±00:00, so NON-UTC offsets staged the
+  VIEWER's calendar date — the identical file imported different
+  books for different users ("+09:00" in New York → Oct 31;
+  "-05:00" in Tokyo → Nov 2, the year boundary → 2027-01-01, all
+  live). THE ZONE-DESIGNATOR CURE (F-222a/b Medium): the designated
+  branch widens to every zone-designated ISO datetime (`[Zz]`,
+  ±HH:MM/±HHMM) and stages the WRITTEN date literal — the offset's
+  own wall-clock date, never the viewer's (for the Z/±00:00 forms
+  observationally identical to the R-18 cure, so those pins stand);
+  the partial-ISO rejection (F-222c: "2026"/"2026-11" → null — V8
+  parses them as UTC day-1, and a skip beats an invented day); the
+  rollover guard extends to every literal-staging branch (F-222d:
+  "02/30/2026" rolled to Mar 2 while the bare branch nulled — now
+  the locale numeric forms round-trip the MDY/YMD read of their
+  digits). THE FOCUS-AFFORDANCE FAMILY (F-222g Medium): the
+  hand-rolled interactives (PeriodSegment, the toast ✕, the
+  app-shell Try-again, the auth face's Google/footer/back/resend
+  buttons, the Expenses chips) carried no house focus ring — the UA
+  default outline (≈3:1 under the globals tint) was their only
+  affordance; the shared constants now carry the ring (the amber
+  genus on the auth face). THE PERCEIVABLE TAIL (F-222e/f/h/i/j/k):
+  the import-preview income ink's dark arm (3.15:1 → emerald-400);
+  the 404 + segment-error DARK ARMS — the theme seam resolves DARK
+  for any non-auth path, so the fresh-visitor 404 rendered light
+  under html.dark (the reference's SPA serves its 404 inside the
+  dark shell — dark arms are the parity-correct genus); DIALOG_CLOSE's
+  dark hover mirror; the recharts tooltips joined the isDark family
+  on all three chart pages; the accounts red pair; the tabs/badge
+  latent arms (+ the `--color-neutral-800` pin — the v4 inert-token
+  trap closed at the source). THE SECURITY HARDENING (F-222n/o):
+  email-keyed per-account secondary buckets on login (30/15) and
+  forgot-password (20/15) — the default proxy posture (unset
+  NEO_PROXY_HOPS) keys clientKey on client-suppliable
+  XFF/x-real-ip, so a header-rotating caller voided every per-IP
+  cap on a direct-exposure deploy; the caps sit ABOVE the IP caps
+  (10/15) so the smoke ladder, the e2e battery, and the capture
+  toolchain never trip them first (a rotating-XFF e2e leg proves
+  the bound); the P2025 seam — a record that vanishes between the
+  ownership findFirst and the mutation answers NOT_FOUND, never
+  INTERNAL, across all five `[id]` families. THE INTERACTION TAIL
+  (F-222l/m): the F-221q busy rider's last two surfaces (the
+  Expenses row-delete; the Settings budget-delete, which also
+  discarded its result — it now toasts) and the import skip copy.
+  The suite: 1005 unit (67 files, +44) · 110 e2e (+2: the dark-404
+  leg, the rotating-header bound) · smoke 14/14; all six parity
+  drift gates CLEAN; census MATCH; audit unchanged (the standing
+  minimatch moderate, dev-chain).
 - [SR] v2.18.0 (session 221, R-18 — the date-staging correctness
   and perceivable-controls round): the fresh-eyes audit's headline
   was the R-17 seam reintroducing its own target class —
@@ -428,7 +483,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (961) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (1005) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (88) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -849,9 +904,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 66 | 961 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 67 | 1005 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 40 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221) | `tests/` | source-scanning contracts |
+| — architecture pins | 41 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222) | `tests/` | source-scanning contracts |
 | — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 7 | 99 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -884,10 +939,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 961/961 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1005/1005 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 108/108
+- [ ] `CI=1 bun run test:e2e` → 110/110
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -954,7 +1009,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 961 unit / 108 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1005 unit / 110 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -988,8 +1043,8 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 961 unit · build · smoke 14/14 ·
-108 e2e).
+the time of writing (lint 0/0 · tsc 0 · 1005 unit · build · smoke 14/14 ·
+110 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
 advisory is cured same-session, never deferred; dev-toolchain bumps stay

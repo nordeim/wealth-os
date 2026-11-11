@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (961) | `bun run test` |
+| Unit tests (1005) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 108) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 110) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -270,6 +270,20 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   the lesson generalizes: EVERY date-taking seam gets TZ-switching
   behavioral pins over EACH accepted form — a pin that runs only
   under the runner's ambient UTC proves nothing about the zone edges.
+  Session-222 (F-222a/b): the form-branch ITSELF carried the class
+  twice more — the designator regex was CASE-SENSITIVE (RFC-3339
+  lowercase `z` fell to the locale branch: a day off on both zone
+  edges, live-reproduced) and it recognized only ±00:00 (a +09:00
+  cell staged the VIEWER's calendar date — the identical file
+  imported different books for different users). The completed
+  doctrine: a zone-designated ISO datetime stages its WRITTEN date
+  LITERAL (the offset's own wall-clock — never an instant to
+  zone-shift, never the viewer's zone); partial ISO forms (yyyy,
+  yyyy-mm) are REJECTED (V8 parses them as UTC day-1 — a skip beats
+  an invented day); and EVERY literal-staging branch round-trips its
+  calendar (02/30 rolls to Mar 2 in V8's lenient parser — null it).
+  When you enumerate "the forms this seam accepts", ENUMERATE THE
+  DESIGNATORS TOO: `[Zz]`, `±HH:MM`, `±HHMM` — and pin each.
 - **The a11y two-gate must SCROLL before `axe.run()`** (session-221,
   F-221f): axe evaluates only what is (or can be) rendered in view —
   at the fixed 1280×800 / 390×844 viewports, every below-the-fold

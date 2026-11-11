@@ -1,3 +1,31 @@
+Task ID: 222
+Agent: main (Z.ai)
+Task: The session-222 R-19 zone-designator completion and focus-affordance round — the owner's standing directive (refresh → review → validate → audit → parity iteration → remediation plan → TDD execution → captures → docs lockstep → commit → push), with the mobile navigation menu named and the standing repo-hygiene asks (the .env/db contract, the vitest+playwright suites, the sitemap/SEO family, the .env.example, the screenshots, the SSH-wrapper push).
+
+Work Log:
+- The intake: the workspace reset (a fresh sandbox), the repo re-cloned at bedea88; the doc set reviewed in full (AGENTS · CLAUDE · README · PAD · wealth-os_SKILL.md · the plan v2.18.0 · the worklog · docs/session_25.md — the session-221 record); the environment rebuilt (bun install, .env from .env.example with DATABASE_URL="file:../db/custom.db", db:push + db:seed — census MATCH; the Playwright chromium 1254 reinstalled after the sandbox reset)
+- The cold baseline gates at bedea88 BEFORE any edit: lint 0/0 · tsc 0 · unit 961/961 (66 files) · build · smoke 14/14 · e2e 108/108 (7 specs) · census MATCH — the documented v2.18.0 state standing exactly; `bun audit` re-triaged: the standing 1 moderate (minimatch, dev-chain, range-unreachable) — no new runtime-chain advisory
+- The standing deliverables verified: the .env contract (DATABASE_URL=file:../db/custom.db, db/ at the repo root, gitignored) · the .env.example parity · the SEO family (the sitemap's Capital locs + robots + manifest — smoke leg 12) · the vitest + playwright configs standing · the Tailwind v4 audit clean (no phantom breakpoints, no inert tokens — re-verified in the audit passes)
+- The reference-stability drift probe: STABLE on all four standing layers (bundle fingerprint index-BMU57229 · the ZERO demo census · the 256px/9-link desktop sidebar · the TRUE-390 functional mobile menu — opens with 9 destinations, the owner's named focus verified live again) — no parity event
+- The fresh-eyes audit (three parallel Mode-C passes: the R-18 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer): **0 Critical / 5 Medium / 8 Low / ~12 Informational** raw, every material claim re-verified at file:line by the driving session. The headline live-reproduced under TZ-switching probes on BOTH zone edges + the year boundary: the R-18 `UTC_DESIGNATED` regex is CASE-SENSITIVE (RFC-3339-legal lowercase `z` staged Oct 31 in New York / Nov 2 in Tokyo / 2027-01-01 at the Tokyo year boundary) and recognizes only ±00:00 (a +09:00 cell staged the VIEWER's calendar date — Oct 31 in New York; the -05:00 year boundary staged 2027-01-01 in Tokyo — the identical file imports different books for different users)
+- The plan → v2.19.0 (the F-222 findings ledger + the R-19 program), validated against the tree before execution
+- TDD: the pins born RED (csv.test.ts +16 behavioral TZ-switching · parity-222.test.ts new 28 · the e2e +2) → the cures → GREEN with three in-commit recalibrations (the login-reset exact-string family, the docs-counts lockstep, the V8 hour-only-offset pin corrected to the probed reality)
+- The verification: the full gate (lint 0/0 · tsc 0 · 1005/1005 unit (67 files) · build · smoke 14/14 · 110/110 e2e) + ALL SIX parity drift gates CLEAN (the four sweep classes + the fullpage sweep + the interior census at 0-event margin) + census MATCH + audit unchanged
+- The captures: five faces (98–102) committed under docs/screenshots/, each asserted in-DOM before the shot (the dark 404 wash; the dark import-preview income ink + the lowercase-z/offset staging + the partial-ISO skip; the dark chart tooltip panel; the keyboard-focused Google ring; the TRUE-390 mobile drawer with 9 destinations)
+- The docs lockstep: the plan (header → v2.19.0, the F-222 ledger, the R-19 section Done, the §5 execution row) · README (badge 1115, counts, the Project Status row) · AGENTS (counts + the zone-designator gotcha — "ENUMERATE THE DESIGNATORS TOO") · CLAUDE (the gate contract) · PAD (the v2.19.0 revision block + counts) · SKILL (counts) · docs-counts GREEN
+- The delivery: three atomic commits on main, the SSH-wrapper push (the paramiko shim deployed, the remote ref verified post-push, the key shredded)
+
+Verified:
+- Full gate: lint 0/0 · tsc 0 · 1005/1005 unit (67 files, +44) · build · smoke 14/14 · 110/110 e2e (+2)
+- All six parity drift gates CLEAN (4 sweeps · fullpage · interior census — 0-event margin, standing baselines)
+- Census MATCH before and after every sweep/capture run; audit unchanged (1 moderate minimatch, dev-chain)
+- The reference probe STABLE on all four layers; the TRUE-390 mobile menu functional (opens, 9 destinations)
+- The five capture faces committed with in-DOM assertions (docs/screenshots/98–102)
+
+Remains:
+- No open R-item by default (findings-led iterations); the recorded-not-cured tail lives in F-222p (the family-GET posture documented, the security Info-tier residuals recorded)
+- The dotted-DMY ambiguity and the two-digit-year remap guard documented as engine-internal residuals (csv.ts docblock + the pins)
+
 Task ID: 221
 Agent: main (Z.ai)
 Task: The session-221 R-18 date-staging correctness and perceivable-controls round — the owner's standing directive (refresh → review → validate → audit → parity iteration → remediation plan → TDD execution → captures → docs lockstep → commit → push), with the mobile navigation menu named and the standing repo-hygiene asks (the .env/db contract, the vitest+playwright suites, the sitemap/SEO family, the .env.example, the screenshots, the SSH-wrapper push).
