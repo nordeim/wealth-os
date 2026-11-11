@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-1115%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-1140%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,8 +59,8 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1005 checks incl. property tests |
-| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 110 checks; chromium; seeded `db/e2e.db` |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1029 checks incl. property tests |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 111 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
 ```mermaid
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 67 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 68 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,8 +166,8 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1005 checks / 67 files |
-| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 110 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
+| Unit (Vitest) | `bun run test` | 1029 checks / 68 files |
+| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 111 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
 | Parity sweeps | `bun run gate:full` | **active** (re-activated v2.8.0 / R-4.5): the standing gate + six WealthOS-native drift gates — the four sweep classes (1440×900 · 390×844 · 768×1024 · 1024×768, theme-matched zero-data baselines), the fullpage sweep (the 11-page below-the-fold axis with the zero-data sentinel), and the interior census (four-axis standing allowances at margin 0) — green end-to-end from cold at v2.8.0; run it when parity surfaces changed or per the standing cadence (the pre-push bar stays `bun run gate`; the sweep legs need the live reference, so `gate` remains the offline gate) |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1005 unit · 110 e2e · 14 smoke · full gate green |
+| Verification layer | ✅ Complete | 1029 unit · 111 e2e · 14 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 222: **R-19 shipped — the zone-designator completion and focus-affordance round**: the R-18 `UTC_DESIGNATED` regex was case-sensitive — RFC-3339-legal lowercase `z` staged a day off on both zone edges (New York `2026-11-01T01:30:00z` → Oct 31, Tokyo `18:30:00z` → Nov 2, the year boundary → 2027 — live-reproduced) — and it recognized only ±00:00, so NON-UTC offsets staged the VIEWER's calendar date (the identical file imported different books for different users; the year boundary in Tokyo staged 2027-01-01 — live); the cure stages the WRITTEN date literal for every zone-designated ISO datetime (the offset's own wall-clock — for Z-forms observationally identical to the R-18 cure, so those pins stand) with the calendar round-trip guard extended to the designated branch, the partial-ISO rejection (`2026`/`2026-11` → a skip, never an invented day), and the locale rollover guard (`02/30/2026` → null, matching the bare branch); the FOCUS-AFFORDANCE family (the hand-rolled interactives — PeriodSegment, the toast ✕, the app-shell Try-again, the auth face's Google/footer/back/resend buttons, the Expenses chips — gained the house ring; the UA default outline was their only affordance); the perceivable tail (the import-preview income ink's dark arm — 3.15:1 → emerald-400; the 404 + segment-error dark arms — the theme seam resolves DARK for any non-auth path, so the fresh-visitor 404 rendered light under html.dark (the reference's SPA serves its 404 inside the dark shell — dark arms are the parity-correct genus); DIALOG_CLOSE's dark hover; the recharts tooltips joined the isDark family on all three chart pages; the accounts red pair; the tabs/badge latent arms); the security hardening (email-keyed per-account secondary buckets on login (30/15) + forgot-password (20/15) — the default proxy posture keys clientKey on client-suppliable XFF/x-real-ip, so a header-rotating caller voided every per-IP cap on a direct-exposure deploy; the caps sit ABOVE the IP caps so no legitimate flow changes; the P2025 seam — a vanished record between the ownership findFirst and the mutation answers NOT_FOUND, never INTERNAL, across all five `[id]` families); the interaction tail (the F-221q busy rider's last two surfaces — the Expenses row-delete and the Settings budget-delete (which also discarded its result); the import skip copy). Session 221: **R-18 shipped — the date-staging correctness and perceivable-controls round**: `stageCsvDate` form-branch + TZ-switching pins; SelectItem dark focus wash (1.18:1 → 13.9:1); Settings Export ink; the a11y two-gate scrollThrough; the null-clear rider on seven page forms; the low tail. Next: findings-led iterations (no open R-item by default) |
+| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 223: **R-20 shipped — the dead-signout and dark-surface completion round**: the desktop sidebar's Sign Out dead-ended on the infinite "Loading your workspace…" gate — the MenuItem called bare `logout()` while the navigating `signOut` helper sat dead beside it (the store cleared, nothing re-rendered the server layout; the mobile drawer's own signOut worked — the e2e battery covered the drawer path only); the R-19 round's own `dark:text-stone-50` painted 2.06:1 ink on the UNFLIPPED amber Try-again (the F-219a genus restored — stone-900 in both modes, the pin recalibrated to the negative form); the two missed donut Tooltips (dashboard Expense-Breakdown, investments Asset-Allocation — the only bare sites repo-wide) joined the isDark family with per-page site-count pins; the csv guard completion (the F-222d rollover guard's `$`-anchor missed time-suffixed numeric dates — "02/30/2026 10:00" staged the rolled Mar 2 while the date-only form nulls, live-reproduced TZ-independent — the `(?!\d)` anchor; month-only named forms "Nov 2026" invented day 1 — the MONTH_ONLY rejection joins the partial-ISO doctrine); the dark-surface family (the desktop synced pill's green-700 light arm rendered 3.49:1 on the ALWAYS-DARK sidebar gradient — the unconditional green-400 pairing, the mobile twin keeps its arms; the investments type chips' 600/700 inks computed 2.02:1 over dark cards — the `textDark` 400-level steps; the income/expenses pastel icon tiles rendered bright chips on dark cards — the isDark alpha-tint ternaries); the focus-ring tail (the sent view's Back, the AI-coach chips + Send, the reset-password Back-to-login); the low tail (the import alert's light ink 4.41:1 → red-700; **logout now revokes** — the tokenVersion bump makes "sign out" mean revoke, an exfiltrated cookie no longer survives it; the verify route's no-pending message unified — no pending-state enumeration oracle). Session 222: **R-19 shipped** — the zone-designator completion and focus-affordance round. Next: findings-led iterations (no open R-item by default) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

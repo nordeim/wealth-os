@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1005) | `bun run test` |
+| Unit tests (1029) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 110) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 111) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -284,6 +284,16 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   calendar (02/30 rolls to Mar 2 in V8's lenient parser — null it).
   When you enumerate "the forms this seam accepts", ENUMERATE THE
   DESIGNATORS TOO: `[Zz]`, `±HH:MM`, `±HHMM` — and pin each.
+- **A logout that REVOKES poisons the e2e suite's shared storageState**
+  (session-223, F-223k): the tokenVersion bump is per-USER — the
+  static cookie `tests/e2e/.auth/user.json` (minted once by
+  auth.setup.ts) embeds the pre-bump version and dies at every later
+  test's getSessionUser comparison. Every sign-out leg must
+  RE-AUTHENTICATE and overwrite the state file before it ends
+  (the `reMintSharedAuth` helper in mobile-navigation.spec.ts) —
+  and each re-auth lands in the same per-IP login bucket (10/15min)
+  the setup login rides, so count the suite's logins before adding
+  more.
 - **The a11y two-gate must SCROLL before `axe.run()`** (session-221,
   F-221f): axe evaluates only what is (or can be) rendered in view —
   at the fixed 1280×800 / 390×844 viewports, every below-the-fold
