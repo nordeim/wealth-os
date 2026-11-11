@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (924) | `bun run test` |
+| Unit tests (961) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 107) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 108) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -261,4 +261,22 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   that doesn't match the caller's input FORM is a no-op (the F-219e
   analytics "cure" routed date-INPUT values through a pattern that
   matched only the stored `.000Z` form; live-reproduced). Pin the
-  FORM, not just the call site.
+  FORM, not just the call site. Session-221 (F-221a/c): the SAME
+  class shipped INSIDE the F-220m cure — `stageCsvDate` read LOCAL
+  accessors off every parse, so the bare bank-CSV form (UTC-midnight
+  parse) staged a day early west of UTC and the Z-form a day late
+  east of UTC. The seam is now FORM-BRANCHED (bare ISO → the literal
+  groups; UTC-designated → UTC accessors; locale forms → local), and
+  the lesson generalizes: EVERY date-taking seam gets TZ-switching
+  behavioral pins over EACH accepted form — a pin that runs only
+  under the runner's ambient UTC proves nothing about the zone edges.
+- **The a11y two-gate must SCROLL before `axe.run()`** (session-221,
+  F-221f): axe evaluates only what is (or can be) rendered in view —
+  at the fixed 1280×800 / 390×844 viewports, every below-the-fold
+  contrast failure passed every gate (the Settings Export card's
+  3.38:1 ink shipped at session 208 and survived 13 sessions of
+  green two-gates; live A/B: 0 violations unscrolled, the failure
+  scrolled into view). The `scrollThrough()` helper in
+  `tests/e2e/a11y.spec.ts` steps `<main>` to the bottom before every
+  assertion — new below-the-fold surfaces are the gate's blind spot
+  no longer.

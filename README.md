@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-1031%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-1069%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,8 +59,8 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 924 checks incl. property tests |
-| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 107 checks; chromium; seeded `db/e2e.db` |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 961 checks incl. property tests |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 108 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
 ```mermaid
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 65 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 66 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,8 +166,8 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 924 checks / 65 files |
-| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 107 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
+| Unit (Vitest) | `bun run test` | 961 checks / 66 files |
+| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 108 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 14 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
 | Parity sweeps | `bun run gate:full` | **active** (re-activated v2.8.0 / R-4.5): the standing gate + six WealthOS-native drift gates — the four sweep classes (1440×900 · 390×844 · 768×1024 · 1024×768, theme-matched zero-data baselines), the fullpage sweep (the 11-page below-the-fold axis with the zero-data sentinel), and the interior census (four-axis standing allowances at margin 0) — green end-to-end from cold at v2.8.0; run it when parity surfaces changed or per the standing cadence (the pre-push bar stays `bun run gate`; the sweep legs need the live reference, so `gate` remains the offline gate) |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 924 unit · 107 e2e · 14 smoke · full gate green |
+| Verification layer | ✅ Complete | 961 unit · 108 e2e · 14 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 220: **R-17 shipped — the date-seam completion and dark-surface round**: `toDate()` takes the bare `yyyy-mm-dd` form (the F-219e analytics cure was a verified no-op — 1st-of-month buckets keyed the prior month west of UTC, live-reproduced); the import page stages dates through a pure `stageCsvDate` seam (UTC-midnight of the parsed calendar date) + previews through `toDate` + surfaces skipped rows; ~14 dark-arm contrast sites completed (dark is the fresh-visitor default); `--color-background` flips in `.dark` (the F-217c trap class, background edition — the dead base-layer rule deleted, the settings thumb to `bg-white`); the writes bucket on EVERY mutating handler (the `[id]` PUT/DELETE family, budgets DELETE, settings PUT, users PATCH); the error pages' focus rings; the toast dismiss ink; the theme mirrors agree on invalid stored values + the OS-flip listener gates on the exact storage read; the accountId null-clear contract; the store's error-code plumbing (`UNAUTHORIZED`, not message substrings); forgot-password's read path 503s the transient-abort family; the refreshAll sequence guard; the dark a11y legs on all 9 sections; the register's stale arms retired. Session 219: **R-16 shipped — the parity-default and perceivability round**: the fresh-visitor app shell defaults DARK (the reference's own posture — F-205a's deferral superseded by the owner's parity directive; the auth faces force light, the stored choice still wins); the CTA genus converged (the reference's amber CTAs carry stone-900 ink — the old white was 2.15:1 AND a parity break; the per-page gradients: emerald→teal Income/Investments, rose→red Expenses); the mobile drawer scrolls internally below ~800px (Sign Out was unreachable — the reference clips too, the cure is the functional superset); the date-seam completion (the investments purchaseDate walk-back, the analytics mixed-mode regression); the rate buckets (the reset-key collision, the CRUD writes family); the perceivability tail (the dark metadata family, the coach's announcements, the display-text cluster). Next: findings-led iterations (no open R-item by default) |
+| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 221: **R-18 shipped — the date-staging correctness and perceivable-controls round**: the R-17 `stageCsvDate` seam itself reintroduced the F-218d/F-220a class — a bare `yyyy-mm-dd` CSV cell staged one day EARLY west of UTC (live-reproduced: New York "2026-11-01" → 2026-10-31) and the Z-form one day LATE east of UTC (Tokyo year-boundary → 2027-01-01); the cure is a FORM-BRANCH (bare ISO → the literal groups, Z-forms → UTC accessors, locale forms keep local) with TZ-switching pins; the Radix `SelectItem` focus wash gained its dark arms (the highlighted option computed **1.18:1** in the fresh-visitor default mode — every Select unreadable at the highlight moment, live-verified); the Settings "Export All Data" ink → white on blue-600 (stone-900 measured 3.38:1, live + axe); the a11y two-gate now SCROLLS before `axe.run()` (below-the-fold contrast was structurally invisible — the 3.38:1 finding passed every gate unscrolled); the F-219q/F-220i null-clear contract gained its UI rider (seven page forms stopped collapsing emptied optional fields to `undefined` — clearing Notes/purchaseDate/targetDate/institution/nextDate now actually clears); the low tail: the reset-password read-path 503s (the F-220k sibling), the `shares` update cap, the cross-user `[id]` behavioral e2e legs, the ExpenseDialog label associations, the goals Paused light arm, the DIALOG_CLOSE ink, the toast variant icons, the switch-track boundary, the reset-submit pending affordance, the OS-flip auth-face gate, the card-level busy-disable on four pages, the logout bucket, the GDPR export's settings/photoUrl/createdAt completeness, and the hygiene tail (the dead 403 arm retired, the budgets static import, the boot warning naming `x-real-ip`, the import skip-counter covering every dropped-row class, the underline tab's AA steps). Session 220: **R-17 shipped — the date-seam completion and dark-surface round**: `toDate()` takes the bare `yyyy-mm-dd` form (the F-219e analytics cure was a verified no-op — 1st-of-month buckets keyed the prior month west of UTC, live-reproduced); the import staging seam + `toDate` preview + skipped-row surfacing; ~14 dark-arm contrast sites; the `--color-background` dark flip; the writes bucket on the mutating handlers; the error rings; the toast ink; the theme-mirror agreement; the store plumbing; the nine-section dark a11y legs. Next: findings-led iterations (no open R-item by default) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

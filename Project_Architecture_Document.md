@@ -3,7 +3,7 @@
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** `docs/implementation-plan-session-199-wealthos.md` (the transformation plan)
-**Last Updated:** 2026-11-10
+**Last Updated:** 2026-11-11
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
 Nothing is here "because it's popular."
@@ -16,6 +16,49 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.18.0 (session 221, R-18 — the date-staging correctness
+  and perceivable-controls round): the fresh-eyes audit's headline
+  was the R-17 seam reintroducing its own target class —
+  `stageCsvDate` read LOCAL accessors off every parse, so the bare
+  `yyyy-mm-dd` bank-CSV form staged one day EARLY west of UTC
+  (live-reproduced: New York "2026-11-01" → 2026-10-31) and the
+  Z-suffixed form one day LATE east of UTC (Tokyo year boundary →
+  2027-01-01). THE FORM-BRANCH CURE (F-221a/c High/Medium): bare
+  ISO → `Date.UTC` of the literal groups (the `dateField` identity),
+  UTC-designated forms → UTC accessors, locale forms keep the local
+  accessors — with per-assertion TZ-switching behavioral pins (the
+  F-220a doctrine applied to the seam it missed). THE DARK SELECT
+  WASH (F-221b High): the `SelectItem` focus pair
+  `focus:bg-line-soft focus:text-neutral-900` carried no dark arms —
+  the highlighted option computed 1.18:1 (neutral-900 on line-soft's
+  #262626 flip), live-verified on the dark-mode Income combobox;
+  the MENU_ITEM precedent's arms landed (stone-100 on stone-800,
+  13.9:1) + a dark-mode e2e highlight leg. THE PERCEIVABLE-TAIL:
+  the Settings Export CTA ink → white on blue-600 (F-221e —
+  stone-900 measured 3.38:1, live + axe; the F-219a genus was
+  measured on amber, never on this saturated blue); the a11y
+  two-gate now SCROLLS before every `axe.run()` (F-221f — live A/B:
+  0 violations unscrolled vs the 3.38:1 failure scrolled into
+  view; the below-the-fold class was structurally invisible to
+  every gate); the null-clear UI rider (F-221d — seven page forms
+  stopped collapsing emptied optional fields; date fields send
+  explicit null on edit, string fields ride the raw value); the
+  low tail (the reset-password read-path 503s — the F-220k sibling
+  the R-17 round missed; the `shares` update cap — unbounded
+  shares × the currentValue cap overflowed to Infinity inside
+  portfolioStats; the cross-user `[id]` 404 behavioral legs in the
+  multi-user spec; the ExpenseDialog htmlFor/id associations; the
+  goals Paused light arm stone-600; the DIALOG_CLOSE ink; the toast
+  variant icons' one-step-darker light arms; the switch-track
+  stone-500 boundary; the reset-submit pending affordance; the
+  OS-flip listener's auth-face gate; the card-level busy-disable on
+  four pages (income/accounts/goals/investments); auth/logout
+  joining the writes family; the GDPR export's settings row +
+  photoUrl/createdAt; the hygiene tail — the dead `ERR.FORBIDDEN`
+  403 arm retired, the budgets static import, the boot warning
+  naming the `x-real-ip` fallback, the import skip-counter covering
+  every dropped-row class, the unused underline tab's AA steps, the
+  health route's unthrottled posture documented).
 - [SR] v2.16.0 (session 219, R-16 — the parity-default and
   perceivability round): the owner's explicit parity directive drove
   the round. THE DEFAULT-THEME PARITY (F-219c High): the reference's
@@ -385,7 +428,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (924) → `next build` → the 14-assertion smoke ladder on the
+  → vitest (961) → `next build` → the 14-assertion smoke ladder on the
   standalone artifact → Playwright e2e (88) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -806,9 +849,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 65 | 924 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 66 | 961 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 39 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220) | `tests/` | source-scanning contracts |
+| — architecture pins | 40 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221) | `tests/` | source-scanning contracts |
 | — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
 | E2E | 7 | 99 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -841,10 +884,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 924/924 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 961/961 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 107/107
+- [ ] `CI=1 bun run test:e2e` → 108/108
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -911,7 +954,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 924 unit / 107 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 961 unit / 108 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -945,8 +988,8 @@ comments explain why.
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 924 unit · build · smoke 14/14 ·
-107 e2e).
+the time of writing (lint 0/0 · tsc 0 · 961 unit · build · smoke 14/14 ·
+108 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
 advisory is cured same-session, never deferred; dev-toolchain bumps stay

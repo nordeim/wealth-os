@@ -7,7 +7,54 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.17.0** (session 220 — the date-seam completion
+> **Current version: v2.18.0** (session 221 — the date-staging
+> correctness and perceivable-controls round R-18: the owner's standing
+> directive — refresh → review → validate → audit → parity iteration →
+> remediation plan → TDD execution → captures → docs lockstep →
+> commit → push, with the mobile navigation menu named and the live
+> reference STABLE on all four standing drift layers this session).
+> The session-221 fresh-eyes audit (three parallel Mode-C passes: the
+> R-17 cure surfaces, the API/auth/security layer, the UI/a11y/shell
+> layer — 0 Critical / 2 High / 4 Medium / ~12 Low / ~10 Informational
+> raw, every material claim re-verified at file:line by the driving
+> session, the headline live-reproduced under TZ-switching probes).
+> The round cures: the DATE-STAGING CORRECTNESS (F-221a High: the
+> R-17 `stageCsvDate` seam itself reintroduced the F-218d/F-220a class
+> — a bare `yyyy-mm-dd` CSV cell parses as UTC midnight, then the
+> seam's LOCAL accessors read the prior day west of UTC:
+> `stageCsvDate("2026-11-01")` in New York stages
+> `2026-10-31T00:00:00.000Z`, live-reproduced — the most common
+> bank-CSV date form silently stores every transaction one day early
+> for the Americas; F-221c: the Z-suffixed form stages one day LATE
+> east of UTC incl. the year boundary — Tokyo `2026-12-31T23:30:00Z`
+> stages `2027-01-01`; the cure is a form-branch: bare ISO → the
+> literal UTC groups, Z-forms → UTC accessors, locale forms keep the
+> local accessors); the PERCEIVABLE-CONTROLS cluster (F-221b High:
+> the Radix `SelectItem` focus wash carries no dark arms — the
+> highlighted option computes neutral-900 on line-soft's `#262626`
+> dark flip = **1.18:1**, live-verified on the dark-mode Income
+> combobox, every Select in the app unreadable at the moment of
+> highlight/selection in the fresh-visitor default mode; F-221e: the
+> Settings "Export All Data" stone-900 ink on blue-600 = 3.38:1,
+> live + axe-verified — the F-219a genus assumption (stone-900 on
+> saturated fills) applied to a saturated BLUE it never measured;
+> F-221f: the a11y two-gate never scrolls — below-the-fold contrast
+> failures are structurally invisible, live A/B-verified on /Settings:
+> 0 violations unscrolled vs the 3.38:1 finding scrolled); the
+> null-clear UI rider (F-221d: the F-219q/F-220i API contract is
+> unreachable from the app's own forms — seven page submit transforms
+> collapse emptied optional fields to `undefined`, so clearing Notes/
+> purchaseDate/targetDate/institution/nextDate is a silent no-op);
+> the low tail (the reset-password read-path 503s — the F-220k
+> sibling; the `shares` update cap; the cross-user `[id]` behavioral
+> legs; the ExpenseDialog label associations; the goals Paused light
+> arm; the DIALOG_CLOSE ink; the toast variant icons; the switch
+> track boundary; the reset-submit pending affordance; the OS-flip
+> auth-face gate; the card-level busy-disable; the logout bucket;
+> the export's settings completeness; the informational hygiene
+> tail). §5 carries the execution history.)
+>
+> **Previous version: v2.17.0** (session 220 — the date-seam completion
 > and dark-surface round R-17: the owner's standing directive — refresh →
 > review → validate → audit → parity iteration → remediation plan → TDD
 > execution → captures → docs lockstep → commit → push, with the mobile
@@ -376,6 +423,26 @@ this table. Severity per the house taxonomy (Critical/High/Medium/Low/Info).
 | F-220n | Low | **The hygiene tail.** `theme-default.ts:23` claims "the AppShell calls it on shell entry" (no such call — the ThemeProvider pathname effect is the third mirror) while `routeDefaultsToDark`/`routeIsAuthFace` are dead exports; `format.ts`'s `formatDateByPattern` is a dead export; `api.ts:81-84` still enumerates CRM routes (activities/contacts/events/leads) that don't exist here; login/signup/not-found docblocks still describe "NEO CRM" titles. | `src/lib/theme-default.ts:23,58-65`; `src/lib/format.ts:51`; `src/lib/api.ts:81-84`; `src/app/{login,signup}/page.tsx`, `src/app/not-found.tsx` docblocks | **R-17** |
 | F-220o | Low | **The dark a11y legs cover only 2 of 9 sections** — /Dashboard + /Accounts-dialog; Expenses/Income/Goals/Analytics/Investments/Import/Settings never run the two-gate in the mode that is the fresh-visitor default (F-220b is exactly the class these legs would catch). | `tests/e2e/a11y.spec.ts:216-249` | **R-17** |
 | F-220p | Informational | **Register + deviation documentation.** The a11y register's `text-amber-500` arm (zero live consumers since F-219k) and the `bg-primary`/`button[type="submit"]` residual-submit arm (all migrated to the per-page constants) are stale sanctions — a future white-on-amber regression would ride them; the CHART_COLORS strokes (teal #14b8a6 ≈2.49:1, amber #f59e0b ≈2.15:1 on white cards — WCAG 1.4.11 graphical objects) are the reference's live-observed palette (parity-mandated) but carry NO register citation, unlike the text-side sanctions; the recharts tooltips hardcode light `labelStyle`/border in both themes (readable, inconsistent on dark); `h-screen` (100vh) can extend under iOS Safari's collapsed toolbar (`h-dvh` is the robust form — reference construction unknown). | `tests/e2e/a11y.spec.ts:29,48-59`; `src/lib/constants.ts:162-166`; `src/app/(app)/dashboard/page.tsx:229-234`; `src/lib/page-layout.ts:7` | **R-17** |
+| F-221a | High | **`stageCsvDate` stages bare `yyyy-mm-dd` CSV cells one day EARLY for every UTC-negative user — the R-17 seam reintroduced the exact F-218d/F-220a class at the site its own commit called "the last raw `new Date(<user text>)` site".** V8 parses a bare ISO date as UTC midnight; the seam then reads the LOCAL Y/M/D of that instant and re-stages `Date.UTC(localParts)` — in `TZ=America/New_York`, `stageCsvDate("2026-11-01")` returns `2026-10-31T00:00:00.000Z` (live-reproduced). The wrong day survives the full round trip (`dateField` accepts the Z-form, Prisma stores it, `toDate` re-anchors it faithfully) — the most common bank-CSV date form silently stores every transaction one day early for the Americas. The round's own doctrine ("pin the FORM with TZ-switching tests") was applied to `toDate` but NOT to this seam: the bare-ISO pin runs under the runner's ambient UTC. | `src/lib/csv.ts:153-161` (impl), `:146-151` (docblock); consumer `src/app/(app)/import/page.tsx:114,131`; `tests/csv.test.ts:90-93` (ambient-TZ pin); live TZ repro (session 221) | **R-18** |
+| F-221b | High | **The Radix `SelectItem` focus/highlight wash has no dark arms — the highlighted option is 1.18:1 (invisible) in dark mode, the fresh-visitor default.** The item classes are `focus:bg-line-soft focus:text-neutral-900` with no `dark:` arms; Radix moves real DOM focus to options on both keyboard and mouse, so the highlighted option in dark mode computes `rgb(23,23,23)` (neutral-900) on `rgb(38,38,38)` (line-soft's `#262626` dark flip) — live-verified on the dark-mode Income combobox (initial + ArrowDown states both 1.18:1). Every Select in the app (the section dialogs, the Expenses filters, Settings currency/date-format, Analytics period) is unreadable at the moment of highlight/selection. The sibling `MENU_ITEM` constant carries the correct dark arms (`dark:focus:bg-stone-800 dark:focus:text-stone-100`) — the F-217c dark-token round fixed the listbox panel, not the item wash. No call-site `<SelectItem className>` overrides exist. | `src/components/ui/select.tsx:121-125`; the token flips `src/app/globals.css:343,370`; the precedent `src/lib/page-layout.ts:311` (MENU_ITEM); live computed-style probe (session 221) | **R-18** |
+| F-221c | Medium | **`stageCsvDate` stages Z-suffixed timestamps one day LATE for every UTC-positive user (year boundary included) — same root cause as F-221a, opposite direction.** Live-reproduced under `TZ=Asia/Tokyo`: `stageCsvDate("2026-11-01T18:30:00.000Z")` returns `2026-11-02T00:00:00.000Z`; `stageCsvDate("2026-12-31T23:30:00Z")` returns `2027-01-01T00:00:00.000Z`. The existing pin's own name claims "UTC midnight of its UTC calendar date (zoneless zone-safety)" — true only at UTC; the implementation reads local accessors, so the pin and the code disagree for every non-UTC zone. | `src/lib/csv.ts:158-160`; `tests/csv.test.ts:106-108`; live TZ repro (session 221) | **R-18** |
+| F-221d | Medium | **The F-219q/F-220i null-clear API contract is unreachable from the app's own forms — seven page submit transforms collapse emptied optional fields to `undefined`.** The API layer honors clears (`notes`/`accountId`/`institution`/`targetDate`/`purchaseDate`/`nextDate`: `"" → null`, null survives, routes spread on `!== undefined`), but `field \|\| undefined` drops the key from the JSON body, so the clear arm can never fire: edit a record, empty an optional field (Notes, purchase/target date, institution, next-payment date, recurring nextDate), save → success toast → after `refreshAll` the old value is back. Exactly the class the F-219q/F-220i docblocks describe ("no payload could ever clear these fields once set") — still true for every first-party form. | `src/app/(app)/expenses/page.tsx:435,438`; `src/app/(app)/income/page.tsx:229,231`; `src/app/(app)/investments/page.tsx:388`; `src/app/(app)/goals/page.tsx:221`; `src/app/(app)/accounts/page.tsx:218` | **R-18** |
+| F-221e | Medium | **The Settings "Export All Data" button renders stone-900 ink on blue-600 = 3.38:1 — WCAG 1.4.3 failure, live + axe-verified.** `<Button asChild className="w-full bg-blue-600 hover:bg-blue-700">` rides the default variant's `text-primary-foreground` (#1c1917); `cn()`/twMerge strips the conflicting `bg-primary` but keeps the ink → rgb(28,25,23) on #2563eb. White on blue-600 = 5.17:1. The F-219a round retired the stone-900-on-saturated-fill assumption for amber (measured); the blue button — the F-205b settings-navy genus — was never measured and silently kept the assumption. | `src/app/(app)/settings/page.tsx:295`; `src/components/ui/button.tsx:42`; live axe probe (session 221) | **R-18** |
+| F-221f | Medium | **The a11y two-gate never scrolls — below-the-fold contrast failures are structurally invisible to it.** The SECTIONS loops run `goto → waitForLoadState("networkidle") → axe.run()` with no scroll at fixed 1280×800 / 390×844 viewports; axe only evaluates what is (or can be) rendered in view. Live A/B on /Settings light, identical page state: **0** color-contrast violations unscrolled vs the F-221e 3.38:1 finding surfaced once the Export section scrolled into view. A whole class of real AA failures (anything below the first viewport — the Export card since session 208) passes every gate; the same "surfaces the gates structurally cannot see" genus as F-217c/F-217n. | `tests/e2e/a11y.spec.ts:153-173` (light loops), `:244-261` (dark loops); live A/B probe (session 221) | **R-18** |
+| F-221g | Low | **reset-password's read path swallows ALL DB failures into the invalid-token 400 — the F-220k sibling the R-17 cure missed.** The blanket `.catch(() => null)` maps P2024/P2028 (pool/transaction timeout) to `user = null` → `400 "Invalid or expired reset token"`: during a transient DB outage a user holding a VALID single-use reset link is told the token is invalid (they may discard it); the operator gets no signal. The identical class was cured in forgot-password's read path (F-220k) and in this very route's update path (F-218q) — the read path kept the swallow, and the route's own docblock claims the "no-bare-throw discipline". | `src/app/api/auth/reset-password/route.ts:54` vs `src/app/api/auth/forgot-password/route.ts:78-88` | **R-18** |
+| F-221h | Low | **`investmentUpdateSchema.shares` lacks the upper bound its create twin enforces.** Create: `.max(1_000_000_000, "Shares is too large")`; update: finite+positive only — `PUT /api/investments/[id]` with `{"shares": 1e15}` passes and stores; shares × currentValue (cap 1e9) overflows to `Infinity`, propagating into `portfolioStats`, the health score, and AI-coach text until re-edited. The single asymmetric money-field cap in the schema family (every other update field keeps its cap). | `src/lib/schemas.ts:406-410` vs `:372-376` | **R-18** |
+| F-221i | Low | **Cross-user `[id]` mutation posture has no behavioral test.** The multi-user spec drives B's collection-GET isolation + reset, but never B's PUT/DELETE against a demo-owned `[id]`. The correct `findFirst({ id, ownerId }) → 404` posture is pinned only by source-string containment — the exact limitation F-215c recorded for the reset family before its behavioral spec landed ("a future regression scoping to any other variable passes the pin"). Code verified correct today across all five resource families. | `tests/e2e/multi-user.spec.ts` (whole file) vs `tests/owner-scoping.test.ts:71-77,122-133` | **R-18** |
+| F-221j | Low | **ExpenseDialog's two Select labels are not programmatically associated** — bare `<label className>` with no `htmlFor`; the SelectTriggers carry `aria-label` but no `id`. Clicking the visible label doesn't focus the combobox. Every other surface uses the F-218u `htmlFor` + trigger-id pattern (income:270-272, accounts:258-260, goals:294-296, settings:126-130). | `src/app/(app)/expenses/page.tsx:542,555` | **R-18** |
+| F-221k | Low | **Goals "Paused" badge computes 4.40:1 in light mode** (stone-500 #78716c on stone-100 #f5f5f4, 11px semibold — needs 4.5). The income page's sibling badge uses `text-stone-600` (6.99:1) — the F-220b fix landed the dark arm but goals' light arm kept stone-500. | `src/app/(app)/goals/page.tsx:102` vs `src/app/(app)/income/page.tsx:142` | **R-18** |
+| F-221l | Low | **`DIALOG_CLOSE` ✕ computes ≈1.85:1 at rest in light mode** — `text-stone-400 opacity-70` over white blends below the 3:1 non-text bar (full-opacity stone-400 is 2.52:1). Stock-shadcn parity, but the repo cured the identical class on the toast ✕ in F-220f and the family doctrine is one-step-darker. | `src/lib/page-layout.ts:279-280`; consumer `src/components/ui/dialog.tsx:60` | **R-18** |
+| F-221m | Low | **Toast variant icons compute below 3:1 in light mode** — success `text-success` (#10b981) = 2.54:1, info `text-primary` (#f59e0b) = 2.15:1 on the white card (error 3.76 passes; dark passes ~7:1). The success/error distinction is icon+color-only, so the icons are arguably informative, not decorative. | `src/components/ui/toast.tsx:66-70` | **R-18** |
+| F-221n | Low | **Settings switch: the unchecked track/thumb boundary computes below 3:1** — unchecked `bg-stone-300` track on the white/80 glass card = 1.49:1; white thumb vs stone-300 track = 1.63:1 (WCAG 1.4.11 on the state boundary; the thumb's `shadow-lg` partially compensates). The R-17 note recorded the thumb's `bg-white` move but not the tracks. | `src/app/(app)/settings/page.tsx:398-408` | **R-18** |
+| F-221o | Low | **The reset view's "Send reset link" submit lacks `disabled={pending}`** — the only auth submit without the busy affordance (signin:748, signup:483, verify:570 all carry it). The `if (pending) return` guard prevents the double send; this is affordance-only. | `src/components/layout/login-card.tsx:392-394` | **R-18** |
+| F-221p | Low | **The OS theme-flip listener can break the auth faces' forced light when the stored theme is `"system"`.** The F-220h gate reads the storage key but performs no auth-face check: a visitor on `/login` with stored `"system"` whose OS flips to dark mid-page gets `applyTheme("system")` → a dark auth face, violating the F-219t always-light genus the pathname effect enforces. Narrow trigger, cosmetic, self-heals on navigation — but the gate is one `isAuthFacePath` check from complete. | `src/components/layout/theme.tsx:96` vs `src/lib/theme-default.ts:57` | **R-18** |
+| F-221q | Low | **Card-level mutation buttons are not disabled during async** — income Pause/Activate, accounts Remove, goals Delete/contribute, investments Delete: a rapid double-click fires two requests (e.g. two DELETEs → the second 404s → a spurious "Delete failed" toast). All dialog submits are guarded; the inline card buttons are not. The store's seq/write-token guards keep the data safe — feedback noise only. | `src/app/(app)/income/page.tsx:164-170`; `accounts/page.tsx:168-174`; `goals/page.tsx:156-166`; `investments/page.tsx:309-317` | **R-18** |
+| F-221r | Low | **`auth/logout` POST is the one mutating handler with no bucket** (cookie-clear only, content-type CSRF-gated, no DB write — low abuse value). The R-17 "14 handlers" enumeration was also off by one (5×2 [id] + budgets DELETE + settings PUT + users PATCH = 13 new + 6 collection POSTs = 19 total in the writes family; the material claim "every sessioned mutating handler" was TRUE except logout). | `src/app/api/auth/logout/route.ts:16-23`; grep census (session 221) | **R-18** |
+| F-221s | Low | **The "GDPR-compliant full export" omits the user's settings row and profile metadata.** The per-user `Setting` row (defaultCurrency, dateFormat, four notification booleans, theme — owner-keyed since R-10) and the user's `photoUrl`/`createdAt` are absent from the dump; the Settings page copy promises "Download all your data in JSON format". A user re-importing into a fresh account loses their preferences. | `src/app/api/export/route.ts:36-48` | **R-18** |
+| F-221t | Informational | **The informational tail (recorded; the cheap arms cured in-commit).** `ERR.FORBIDDEN` is exported but dead (the 404-never-403 posture holds everywhere — the dead arm is a drift hazard); budgets DELETE loads its schema via a request-time dynamic import while the file already statically imports from `@/lib/schemas`; the boot warning names only X-Forwarded-For while the rate-limit fallback's `x-real-ip` is equally client-suppliable at the default proxy depth (the I-4b documentation gap); the import preview still drops invalid-amount/empty-description rows silently (the F-220m skip counter covers the date class only); the unused `variant="underline"` tab carries a latent 2.15:1 active state (zero consumers — the F-220p stale-genus class); `/api/health` is an unthrottled public DB probe (monitoring posture — documented, not cured); the forgot-password WRITE-path 503 is an account-existence oracle under partial outage (pre-existing, within the declared threat model — recorded); `hydrate()` does not participate in the `refreshSeq` protocol (benign — no observable divergence reachable); the investments table's Edit/Delete target the first row with a matching symbol (duplicate-symbol edge); pages subscribe to the whole store without selectors (sanctioned by the one-store doctrine). | `src/lib/api.ts:32`; `src/app/api/budgets/route.ts:75`; `src/lib/rate-limit.ts:87` + `src/lib/boot-env.ts:126-130`; `src/app/(app)/import/page.tsx:115`; `src/components/ui/tabs.tsx:162`; `src/app/api/health/route.ts:14-21`; `src/app/api/auth/forgot-password/route.ts:113-124`; `src/stores/wealthos-store.ts:173-207`; `src/app/(app)/investments/page.tsx:259` | **R-18** |
 
 ## 3. The remediation program (R-items)
 
@@ -1432,6 +1499,134 @@ Adjudications recorded before execution:
   import preview + the surfaced skip, the 390 drawer with 9
   scrollable destinations, the 61st [id] PUT 429 with Retry-After).
 
+### R-18 — The date-staging correctness and perceivable-controls round (session 221) — Status: Done(v2.18.0)
+
+The session-221 fresh-eyes audit (three parallel Mode-C passes over the
+R-17 cure surfaces, the API/auth/security layer, and the UI/a11y/shell
+layer — 0 Critical / 2 High / 4 Medium / ~12 Low / ~10 Informational
+raw, adjudicated to the F-221 ledger after the driving session
+re-verified every material claim at file:line; the headline
+live-reproduced under TZ-switching probes: the R-17 `stageCsvDate`
+seam stages the bare `yyyy-mm-dd` form one day early west of UTC and
+the Z-suffixed form one day late east of UTC — the exact F-218d/F-220a
+class reintroduced at the seam the round shipped to cure it; the
+SelectItem dark wash measured live at 1.18:1; the Export-button and
+a11y-gate findings live + axe-verified). The reference-stability
+probe ran first: STABLE on all four standing layers — no parity
+event, the R-16/R-17 baselines stand. The cold baseline was verified
+green at the documented v2.17.0 state before any edit (lint 0/0 ·
+tsc 0 · 924/924 unit · build · smoke 14/14 · 107/107 e2e · census
+MATCH · audit unchanged).
+
+Design decisions (settled before the cures, validated against the tree):
+
+- F-221a/c's fix shape: a FORM-BRANCH inside `stageCsvDate` — the
+  bare `^\d{4}-\d{2}-\d{2}$` form takes `Date.UTC` of the literal
+  groups (the identity with the `dateField` contract); ISO forms
+  carrying the UTC designator (`T…Z` / `…+00:00`) take the UTC
+  accessors; every other parseable form (the locale formats — MDY
+  with the documented US assumption) keeps the LOCAL accessors.
+  The behavioral pins flip `process.env.TZ` per-assertion (the
+  `tests/finance.test.ts` F-220a doctrine applied to the seam the
+  doctrine missed).
+- F-221b's fix shape: `dark:focus:bg-stone-800 dark:focus:text-stone-100`
+  on the SelectItem — the `MENU_ITEM` precedent (stone-100 on
+  stone-800 = 13.9:1), zero call-site changes (no `<SelectItem
+  className>` overrides exist).
+- F-221d's fix shape: the seven page transforms send the RAW string
+  (empty string included) — the schemas' `"" → null` normalization
+  already implements the clear semantics at the boundary, so the
+  forms stop collapsing (`notes: notes` not `notes: notes || undefined`);
+  the conditional arms (`if (recurring)…`, `if (nextPaymentDate)…`)
+  become unconditional sends. Both create and edit paths ride the
+  same schemas (verified), so one form serves both.
+- F-221f's fix shape: a `scrollThrough(page)` helper (the app's
+  `main` scroller stepped to the bottom in 600px increments with a
+  settle between steps, then back to top) applied before every
+  `axe.run()` in BOTH the light and dark loops. The gate may surface
+  new below-the-fold findings on its maiden scrolled run — each gets
+  cured or register-cited in-commit (that is the point of the gate
+  cure).
+- F-221n's fix shape: the unchecked track darkens one step
+  (`bg-stone-400`) AND gains a `border-stone-500` boundary — computed
+  ≥3:1 for the track-vs-card boundary while keeping the visual genus
+  (the checked state is untouched).
+- F-221r's fix shape: `auth/logout` POST JOINS the `writes:` family
+  (uniformity closes the class; the cookie-clear is cheap) — the
+  route's docblock documents the membership.
+- F-221s's fix shape: the export payload gains `data.settings` (the
+  owner-scoped `readSettings` shape) + `user.photoUrl`/`createdAt`.
+- The informational tail's cheap arms cured in-commit: `ERR.FORBIDDEN`
+  deleted (the dead-code doctrine), `budgetDeleteSchema` folded into
+  budgets' static import, the boot warning names the `x-real-ip`
+  fallback, the import skip-counter extends to the amount/description
+  classes, the unused `underline` tab variant retired. Recorded NOT
+  cured: the health-probe throttle posture (documented in the route
+  docblock), the forgot-password write-path oracle (declared threat
+  model), the hydrate seq non-participation (benign), the investments
+  duplicate-symbol edge, the whole-store subscription (sanctioned).
+
+- **R-18.1 The pins (TDD, born RED)**
+  - `tests/csv.test.ts` extension: the BEHAVIORAL TZ-switching pins —
+    `stageCsvDate("2026-11-01")` under `TZ=America/New_York` returns
+    `2026-11-01T00:00:00.000Z` (the exact live repro); under
+    `TZ=Asia/Tokyo` the Z-suffixed forms keep their UTC calendar day
+    (`2026-11-01T18:30:00Z` → Nov 1; the year boundary
+    `2026-12-31T23:30:00Z` → Dec 31); the MDY control keeps the local
+    accessors under both zones. RED before the cure (verified
+    against the live repro).
+  - `tests/parity-221.test.ts` (new): the SelectItem dark arms; the
+    Export button's `text-white`; the seven null-clear sites send the
+    raw field (no `|| undefined` collapse, no conditional guard); the
+    a11y spec scrolls before `axe.run()` in both loops; the
+    reset-password read-path 503 arm; the `shares` update cap; the
+    ExpenseDialog `htmlFor`/`id` associations; the goals Paused
+    light arm; the DIALOG_CLOSE ink; the toast icon steps; the
+    switch track boundary; the reset-submit pending affordance; the
+    OS-flip auth-face gate; the logout bucket; the export settings
+    completeness; the hygiene tail (no `ERR.FORBIDDEN`, the static
+    budgets import, the boot-warning `x-real-ip` naming, the import
+    skip-count classes, the retired underline variant).
+  - `tests/schemas-finance.test.ts` extension: the `shares` update
+    `.max` behavioral pin (both arms — create and update reject
+    >1e9).
+  - `tests/auth-reset.test.ts` extension: the reset-password
+    read-path 503 for P2024/P2028 (the F-220k mirror pin).
+  - `tests/e2e/multi-user.spec.ts` extension: the cross-user `[id]`
+    behavioral legs — B's PUT and DELETE against a demo-owned
+    transaction id answer 404 with the demo row intact.
+  - `tests/e2e/a11y.spec.ts` extension: the `scrollThrough` helper +
+    its application in both loops (the F-221f gate cure).
+  - `tests/e2e/wealthos.spec.ts` extension: the dark-mode Select
+    highlight leg (open the Income type combobox in dark, ArrowDown,
+    assert the highlighted option's computed text ≠ 1.18:1 genus —
+    the F-221b behavioral face).
+
+- **R-18.2 The cures**
+  - A. The date-staging form-branch (F-221a/c) in `src/lib/csv.ts`.
+  - B. The SelectItem dark arms (F-221b) in `src/components/ui/select.tsx`.
+  - C. The null-clear rider (F-221d): the seven page transforms.
+  - D. The Export button ink (F-221e) + the a11y gate scroll (F-221f).
+  - E. The low tail: the reset-password read 503s (F-221g); the
+    `shares` cap (F-221h); the multi-user `[id]` legs (F-221i); the
+    ExpenseDialog labels (F-221j); the goals badge light arm
+    (F-221k); the DIALOG_CLOSE ink (F-221l); the toast icon steps
+    (F-221m); the switch track boundary (F-221n); the reset-submit
+    pending (F-221o); the OS-flip auth-face gate (F-221p); the
+    card-level busy-disable (F-221q); the logout bucket (F-221r);
+    the export completeness (F-221s); the informational cheap arms
+    (F-221t).
+  - F. The docs lockstep: the plan's v2.18.0 record; the worklog
+    entry; the README/AGENTS/CLAUDE/PAD/SKILL count + behavior rows;
+    `tests/docs-counts.test.ts` constants in the same commit.
+
+- **R-18.3 The verification**: the full offline gate (lint → tsc →
+  unit → build → smoke → e2e) + the census + the `bun audit`
+  re-triage + the six parity drift gates (perceivable surfaces
+  changed: the SelectItem wash, the Export ink, the badge/close/toast/
+  switch inks ride inside the standing allowances — if any leg moves
+  beyond them, re-derive per the R-4 doctrine and document).
+
 ### R-16 — The parity-default and perceivability round (session 219) — Status: Done(v2.16.0)
 
 The session-219 fresh-eyes audit (three parallel Mode-C passes over the
@@ -1604,8 +1799,9 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | v2.15.0 | 218 | **R-15** (the recovery-loop and perceivability round: F-218a the signin 403 → verify view · F-218b the trigger-scoped popover guard · F-218c the export no-store · F-218d the toDate UTC-midnight re-anchor · F-218e the updateSettings guard · F-218f the upload stream bound · F-218g the import/coach/reset buckets · F-218h the toast live region · F-218i the ring-token dark flip + the light-surface rings · F-218j the red-600 steps · F-218k the badge dark-steps · F-218l the muted/subtle flips · F-218m HealthGauge role · F-218n the avatar seam · F-218o the tabs' four panels · F-218p the logout gate · F-218q the fallthroughs · F-218r the P2002 arm · F-218s the 1MB AI cap · F-218t the proxy-hops warning · F-218u the labels + accent · F-218v the message-stability pin) | lint 0/0 · tsc 0 · **817 unit (62 files; +50)** · build · smoke 14/14 · **e2e 97/97 (7 specs; +2)** · all six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.16.0 | 219 | **R-16** (the parity-default and perceivability round — the owner's explicit parity directive) + the in-commit refinements (the reads-bucket design decode; the auth-face three-seam force-light; the coach send-button straggler). The audit round first: the cold baseline gates green at the documented v2.15.0 ship state (lint 0/0 · tsc 0 · 817/817 · build · smoke 14/14 · e2e 97/97 · census MATCH; the browser reinstalled after the sandbox reset); the ledger re-triaged (1 moderate minimatch — unchanged); the LIVE REFERENCE deeply probed per the directive: the drift-probe STABLE on all four standing layers; the theme posture decoded END-TO-END (fresh login → html.dark + body #0a0a0a, NO localStorage key, the choice persists SERVER-SIDE per user — the toggle round-trip proved it, then the standing DARK posture restored after the probe mutated it); the per-page CTA genus measured (amber+stone-900 on Dashboard/Accounts/Goals/Settings; emerald→teal+white Income/Investments; rose→red+white Expenses — the dialog submits carry the same families); the mobile drawer measured on both apps (Sign Out unreachable below ~800px on BOTH — the reference shares the clip); the fresh-eyes audit (Mode C ×3: the R-15 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 3 High / 11 Medium / 16 Low / 17 Informational raw, every material claim re-verified at file:line, three live-repro classes). Shipped: **R-16.1** the pins born RED 39+ (theme-default · parity-219 · rate-limit disjointness · the schemas null-clear contract change) → **R-16.2** the cures (the theme-default seam + the bootstrap mirror + the provider pathname effect; --color-primary-foreground #1c1917 + BUTTONS.primary stone-900 + the CTA constants + the 15 section button sites + the coach/error/period/filter-badge tails; the drawer overflow-y-auto; the four date-seam sites; the AA constants + the 25-site dark metadata sweep + the display-text cluster + the ring leftovers; the coach live region; the rate buckets (data-reset:/pw-reset: + the writes family + export/search); the low tail) → **R-16.3** the verification (lint 0/0 · tsc 0 · **869/869** · build · smoke 14/14 · **e2e 99/99** · the six drift gates CLEAN on the RE-DERIVED tables · census MATCH · the captures 82-87) | lint 0/0 · tsc 0 · **869 unit** (64 files; +52) · build · smoke 14/14 · **e2e 99/99** · census MATCH · six drift gates CLEAN (re-derived tables) | (this session's execution commit) |
 | v2.17.0 | 220 | **R-17** (the date-seam completion and dark-surface round — findings-led, the standing directive with the reference STABLE on all four drift layers). The audit round first: the cold baseline gates green at the documented v2.16.0 ship state (lint 0/0 · tsc 0 · 869/869 · build · smoke 14/14 · e2e 99/99 · census MATCH; the browser reinstalled after the sandbox reset); the ledger re-triaged (1 moderate minimatch — unchanged); the drift probe STABLE (no parity event); the fresh-eyes audit (Mode C ×3: the R-16 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 1 High / 5 Medium / 10 Low / 12 Informational raw, every material claim re-verified at file:line, the headline live-reproduced under TZ=America/New_York). Shipped: **R-17.1** the pins born RED 46+9 (parity-220 new · finance +4 behavioral · csv +5 · the dark-tokens window refinement in-commit) → **R-17.2** the cures (the toDate bare-form re-anchor; the stageCsvDate import seam + the toDate preview + the skipped-count; the ~14 dark arms; the --color-background flip + the dead-rule deletion + the bg-white thumb; the writes bucket on all 14 mutating handlers; the error rings; the toast ink; the bootstrap/listener theme-mirror agreement; the accountId clear; the call() code plumbing; the forgot-password read 503s; the refreshAll sequence guard; the nine-section dark legs; the register retirements + the chart-stroke citation) → **R-17.3** the verification (the full gate + ALL SIX drift gates CLEAN without re-derivation + the captures 88-92 + the docs lockstep incl. the docs-counts constants) | lint 0/0 · tsc 0 · **924 unit** (65 files; +55) · build · smoke 14/14 · **e2e 107/107** (+8) · census MATCH · six drift gates CLEAN (standing baselines) | (this session's execution commit) |
+| v2.18.0 | 221 | **R-18** (the date-staging correctness and perceivable-controls round — findings-led, the standing directive with the reference STABLE on all four drift layers). The audit round first: the cold baseline gates green at the documented v2.17.0 ship state (lint 0/0 · tsc 0 · 924/924 · build · smoke 14/14 · e2e 107/107 · census MATCH; the browser reinstalled after the sandbox reset); the ledger re-triaged (1 moderate minimatch — unchanged); the drift probe STABLE (no parity event); the fresh-eyes audit (Mode C ×3: the R-17 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 2 High / 4 Medium / ~12 Low / ~10 Informational raw, every material claim re-verified at file:line, the headline live-reproduced under TZ-switching probes — the R-17 stageCsvDate seam stages the bare form a day early west of UTC and the Z-form a day late east of UTC, the F-218d/F-220a class reintroduced at its own cure site; the SelectItem dark wash live-measured 1.18:1; the Export ink live + axe 3.38:1; the a11y gate's scroll blind spot live A/B-verified). Shipped: **R-18.1** the pins born RED 31+ (csv +7 TZ-switching — 3 RED on the live-reproduced legs · parity-221 new 30 · schemas-finance +1 · auth-reset +1) + the e2e legs (+1 spec test: the dark-mode Select highlight; the multi-user [id] 404 legs; the scrollThrough in both a11y loops) → **R-18.2** the cures (the stageCsvDate FORM-BRANCH; the SelectItem dark arms; the seven-site null-clear rider; the Export text-white; the a11y scrollThrough; the reset-password read 503s; the shares cap; the cross-user [id] legs; the ExpenseDialog labels; the goals badge light arm; the DIALOG_CLOSE ink; the toast icons; the switch boundary; the reset-submit pending; the OS-flip auth-face gate; the busyId card busy-disable ×4; the logout bucket; the export settings/photoUrl/createdAt; the hygiene tail) with the in-commit pin refinements (parity-220's badge pin, toast-anatomy's icon pins, three comment-literal collisions) → **R-18.3** the verification (the full gate + ALL SIX drift gates CLEAN on the standing baselines + the captures 93-97 + the docs lockstep incl. the docs-counts constants) | lint 0/0 · tsc 0 · **961 unit** (66 files; +37) · build · smoke 14/14 · **e2e 108/108** (+1) · census MATCH · six drift gates CLEAN (standing baselines) | (this session's execution commit) |
 
-> The next iteration session (218) has **no open R-item by default** —
+> The next iteration session (222) has **no open R-item by default** —
 > the R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8
 > dependency round at v2.9.0, the R-9 prisma major at v2.10.0, the
 > session-214 rounds (R-10 owner-scoping + R-11 palette-completion) at
@@ -1613,7 +1809,10 @@ tree before shipping (the plan-validation pass the task spec mandates):
 > the session-216 verification-gap convergence (R-13) at v2.13.0, and
 > the session-217 parity-completion round (R-14) at v2.14.0, and
 > the session-218 recovery-loop and perceivability round (R-15)
-> at v2.15.0
+> at v2.15.0, the session-219 parity-default round (R-16) at
+> v2.16.0, the session-220 date-seam completion and dark-surface
+> round (R-17) at v2.17.0, and the session-221 date-staging
+> correctness and perceivable-controls round (R-18) at v2.18.0
 > (the advisory census still 1 — minimatch alone, range-unreachable
 > until typescript-estree moves; the re-triage duty stays). A fresh
 > audit's findings always pre-empt (Critical/High first); the natural
