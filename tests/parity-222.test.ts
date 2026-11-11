@@ -320,7 +320,10 @@ describe("F-222o — the [id] vanish race answers NOT_FOUND, never INTERNAL", ()
     ];
     for (const route of routes) {
       const src = read(route);
-      expect(src).toContain('import { db, isRecordNotFound } from "@/lib/db";');
+      // Session-227 (R-24, F-227c): the transactions family also imports
+      // the F-227l FK seam — the import-line pin flexes to the set form
+      // (isRecordNotFound still present; the contract grew, not moved).
+      expect(src).toMatch(/import \{ db,(?: isForeignKeyViolation,)? isRecordNotFound \} from "@\/lib\/db";/);
       const seams = src.split("if (isRecordNotFound(e)) return ERR.NOT_FOUND();").length - 1;
       expect(seams).toBe(2);
       expect(src).not.toMatch(/\} catch \{\n\s*return ERR\.INTERNAL\(\);\n\s*\}/);

@@ -66,6 +66,12 @@ const buttonVariants = cva(
         // rgba(239,68,68,0.9) — its destructive at 90% ALPHA. The M-80c1
         // genus (the s80 Save precedent: the reference's hovers are the
         // /90 alpha form, never the solid darker step).
+        // Session-227 (R-24, F-227f — the F-225l/F-226m register):
+        // LATENT sub-AA arm — zero consumers today. Measured: text-white
+        // on --color-danger #ef4444 = 3.76:1 at text-sm (the F-218j
+        // measurement) — below the 4.5:1 AA bar. A live consumer should
+        // pin a --color-danger-ink pair (red-600/red-400) or darken the
+        // fill, never inherit this silently.
         destructive: "bg-danger text-white shadow-sm hover:bg-danger/90",
         sidebar: "bg-white/10 text-white hover:bg-white/20",
         // Session-129 (F-129c3): the outline variant gains the hover TEXT

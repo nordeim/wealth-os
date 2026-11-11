@@ -1,4 +1,4 @@
-import { db, isRecordNotFound } from "@/lib/db";
+import { db, isForeignKeyViolation, isRecordNotFound } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { transactionUpdateSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -24,11 +24,6 @@ export async function PUT(req: Request, { params }: Params) {
   const body = parsed.data;
 
   try {
-    const existing = await db.transaction.findFirst({
-      where: { id, ownerId: guard.user.id },
-    });
-    if (!existing) return ERR.NOT_FOUND();
-
     if (body.accountId) {
       const account = await db.bankAccount.findFirst({
         where: { id: body.accountId, ownerId: guard.user.id },
@@ -36,8 +31,13 @@ export async function PUT(req: Request, { params }: Params) {
       if (!account) return ERR.BAD_REQUEST("Selected account does not exist");
     }
 
-    const transaction = await db.transaction.update({
-      where: { id },
+    // Session-227 (R-24, F-227c): the atomic conditional form — ownerId
+    // rides the mutation's WHERE (the reset-password precedent), closing
+    // the guard-then-mutate TOCTOU. count===0 answers NOT_FOUND and a
+    // fresh re-read feeds the envelope (the store refreshes after every
+    // mutation and never consumes the stale record).
+    const result = await db.transaction.updateMany({
+      where: { id, ownerId: guard.user.id },
       data: {
         ...(body.description !== undefined && { description: body.description }),
         ...(body.amount !== undefined && { amount: body.amount }),
@@ -53,11 +53,17 @@ export async function PUT(req: Request, { params }: Params) {
         ...(body.accountId !== undefined && { accountId: body.accountId ?? null }),
       },
     });
+    if (result.count === 0) return ERR.NOT_FOUND();
+    const transaction = await db.transaction.findFirst({
+      where: { id, ownerId: guard.user.id },
+    });
+    if (!transaction) return ERR.NOT_FOUND();
     return ok(transaction);
   } catch (e) {
     logApiError("transactions/:id PUT", e);
     // Session-222 (R-19, F-222o): a record that vanished between the
-    // findFirst and the mutation is NOT_FOUND, never INTERNAL.
+    // guard and the mutation is NOT_FOUND, never INTERNAL.
+    if (isForeignKeyViolation(e)) return ERR.BAD_REQUEST("Selected account does not exist");
     if (isRecordNotFound(e)) return ERR.NOT_FOUND();
     return ERR.INTERNAL();
   }
@@ -75,16 +81,17 @@ export async function DELETE(req: Request, { params }: Params) {
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
   const { id } = await params;
   try {
-    const existing = await db.transaction.findFirst({
+    // Session-227 (R-24, F-227c): the atomic conditional form — ownerId
+    // rides the mutation's WHERE (the reset-password precedent).
+    const result = await db.transaction.deleteMany({
       where: { id, ownerId: guard.user.id },
     });
-    if (!existing) return ERR.NOT_FOUND();
-    await db.transaction.delete({ where: { id } });
+    if (result.count === 0) return ERR.NOT_FOUND();
     return ok({ id });
   } catch (e) {
     logApiError("transactions/:id DELETE", e);
     // Session-222 (R-19, F-222o): a record that vanished between the
-    // findFirst and the mutation is NOT_FOUND, never INTERNAL.
+    // guard and the mutation is NOT_FOUND, never INTERNAL.
     if (isRecordNotFound(e)) return ERR.NOT_FOUND();
     return ERR.INTERNAL();
   }

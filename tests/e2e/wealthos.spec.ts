@@ -212,6 +212,41 @@ test.describe("Income / Goals / Accounts surfaces", () => {
     }
   });
 
+  // Session-227 (R-24, F-227b): two same-symbol lots are normal portfolio
+  // state; the table's row actions must resolve their target by ID. Born
+  // RED on the pre-cure tree (the symbol-keyed form opened the FIRST
+  // lot's record from the SECOND lot's row — live-reproduced).
+  test("two same-symbol holdings keep their identities — Edit on the second prefills the SECOND record (F-227b)", async ({ page }) => {
+    const lot = (name: string) => ({
+      symbol: "DUPL",
+      name,
+      type: "stock",
+      shares: 10,
+      avgCost: 100,
+      currentValue: 110,
+    });
+    const first = await page.request.post("/api/investments", { data: lot("First Duplicate Lot") });
+    const second = await page.request.post("/api/investments", { data: lot("Second Duplicate Lot") });
+    expect(first.ok()).toBe(true);
+    expect(second.ok()).toBe(true);
+    const firstId = ((await first.json()) as { data: { id: string } }).data.id;
+    const secondId = ((await second.json()) as { data: { id: string } }).data.id;
+
+    try {
+      await page.goto("/Investments");
+      const secondRow = page.getByRole("row", { name: /Second Duplicate Lot/ });
+      await expect(secondRow).toBeVisible();
+      await secondRow.getByRole("button", { name: /^Edit/ }).click();
+      // The dialog prefills the SECOND lot's own record (pre-cure: the
+      // first-match symbol find opened "First Duplicate Lot").
+      await expect(page.getByLabel("Name")).toHaveValue("Second Duplicate Lot");
+      await page.keyboard.press("Escape");
+    } finally {
+      await page.request.delete(`/api/investments/${firstId}`);
+      await page.request.delete(`/api/investments/${secondId}`);
+    }
+  });
+
   test("the Analytics page renders the four tabs", async ({ page }) => {
     await page.goto("/Analytics");
     for (const tab of ["Overview", "Expenses", "Income", "Investments"]) {

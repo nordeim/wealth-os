@@ -442,6 +442,7 @@ export interface PortfolioStats {
   gainLoss: number;
   returnPct: number;
   holdings: Array<{
+    id: string;
     symbol: string;
     name: string;
     type: string;
@@ -454,7 +455,14 @@ export interface PortfolioStats {
 }
 
 export function portfolioStats(investments: InvestmentLike[]): PortfolioStats {
+  // Session-227 (R-24, F-227b): rows carry the id — the investments
+  // table's row actions resolve their target by ID, never by symbol
+  // (two same-symbol lots are normal multi-lot state; the symbol-keyed
+  // form edited/deleted the WRONG lot — live-reproduced). Id-less
+  // inputs (pure-math callers) answer "" and the row's buttons go
+  // inert rather than act on the wrong record.
   const rows = investments.map((i) => ({
+    id: i.id ?? "",
     symbol: i.symbol,
     name: i.name,
     type: i.type,

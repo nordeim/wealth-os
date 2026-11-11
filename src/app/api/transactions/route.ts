@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isForeignKeyViolation } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { transactionCreateSchema } from "@/lib/schemas";
@@ -68,6 +68,12 @@ export async function POST(req: Request) {
     return ok(transaction);
   } catch (error) {
     logApiError("transactions POST", error);
+    // Session-227 (R-24, F-227l): the account deleted between the
+    // ownership check and the create violates the FK (P2003) — the
+    // honest 400, never an anonymous 500.
+    if (isForeignKeyViolation(error)) {
+      return ERR.BAD_REQUEST("Selected account does not exist");
+    }
     return ERR.INTERNAL();
   }
 }

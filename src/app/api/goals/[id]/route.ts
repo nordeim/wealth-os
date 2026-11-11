@@ -24,13 +24,13 @@ export async function PUT(req: Request, { params }: Params) {
   const body = parsed.data;
 
   try {
-    const existing = await db.goal.findFirst({
+    // Session-227 (R-24, F-227c): the atomic conditional form — ownerId
+    // rides the mutation's WHERE (the reset-password precedent), closing
+    // the guard-then-mutate TOCTOU. count===0 answers NOT_FOUND and a
+    // fresh re-read feeds the envelope (the store refreshes after every
+    // mutation and never consumes the stale record).
+    const result = await db.goal.updateMany({
       where: { id, ownerId: guard.user.id },
-    });
-    if (!existing) return ERR.NOT_FOUND();
-
-    const goal = await db.goal.update({
-      where: { id },
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.targetAmount !== undefined && { targetAmount: body.targetAmount }),
@@ -43,6 +43,11 @@ export async function PUT(req: Request, { params }: Params) {
         ...(body.icon !== undefined && { icon: body.icon ?? null }),
       },
     });
+    if (result.count === 0) return ERR.NOT_FOUND();
+    const goal = await db.goal.findFirst({
+      where: { id, ownerId: guard.user.id },
+    });
+    if (!goal) return ERR.NOT_FOUND();
     return ok(goal);
   } catch (e) {
     logApiError("goals/:id PUT", e);
@@ -65,11 +70,12 @@ export async function DELETE(req: Request, { params }: Params) {
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
   const { id } = await params;
   try {
-    const existing = await db.goal.findFirst({
+    // Session-227 (R-24, F-227c): the atomic conditional form — ownerId
+    // rides the mutation's WHERE (the reset-password precedent).
+    const result = await db.goal.deleteMany({
       where: { id, ownerId: guard.user.id },
     });
-    if (!existing) return ERR.NOT_FOUND();
-    await db.goal.delete({ where: { id } });
+    if (result.count === 0) return ERR.NOT_FOUND();
     return ok({ id });
   } catch (e) {
     logApiError("goals/:id DELETE", e);

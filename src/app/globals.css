@@ -142,10 +142,10 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji";
 
-  /* Radius scale */
-  --radius-card: 0.75rem;
-  --radius-button: 0.5rem;
-  --radius-pill: 9999px;
+  /* Session-227 (R-24, F-227n): the radius-scale tokens retired —
+     three dead definitions with zero consumers repo-wide (every
+     radius rides the literal rounded-* utilities); the retirement
+     ends their re-litigation at every token sweep. */
 
   /* Chart palette — the reference's cash-flow legend genus:
      Income teal, Expenses rose, Net Savings amber (live-observed). */

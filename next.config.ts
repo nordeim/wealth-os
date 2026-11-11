@@ -58,6 +58,9 @@ const nextConfig: NextConfig = {
       "README.md",
       "Project_Architecture_Document.md",
       "neo-crm_SKILL.md",
+      // Session-227 (R-24, F-227d): the repo's own skill doc — the one
+      // root-level member of the set the F-170a list missed.
+      "wealth-os_SKILL.md",
       "worklog.md",
       "neo-crm-homepage.png",
       "dev.log",

@@ -86,20 +86,25 @@ export default function AnalyticsPage() {
   const n = Number(months);
 
   const txs = store.transactions;
+  // Session-227 (R-24, F-227m): all three parses route through toDate
+  // (the F-218d doctrine — NEVER a raw new Date() on stored dates; the
+  // F-219e mixed-mode regression is one single-side edit away).
+  // Behavior-identical here: both sides resolved to the same calendar
+  // date either way — the tidy buys doctrine uniformity at the seam.
   const inRange = React.useMemo(
     () =>
       txs.filter((t) => {
-        const d = new Date(t.date).getTime();
-        return d >= new Date(from).getTime() && d <= new Date(to).getTime() + 86_399_000;
+        const d = toDate(t.date).getTime();
+        return d >= toDate(from).getTime() && d <= toDate(to).getTime() + 86_399_000;
       }),
     [txs, from, to],
   );
 
   // Session-219 (R-16, F-219e): the refs ride toDate — the same local-
-  // midnight re-anchor the seams apply to rows. The raw new Date(to) was
-  // the mixed-mode regression the F-218d cure itself introduced: on a
-  // 1st-of-month `to` a UTC-negative user's trailing bucket keyed on the
-  // previous month for a full day.
+  // midnight re-anchor the seams apply to rows. The raw parse of `to`
+  // was the mixed-mode regression the F-218d cure itself introduced: on
+  // a 1st-of-month `to` a UTC-negative user's trailing bucket keyed on
+  // the previous month for a full day.
   const refDate = React.useMemo(() => toDate(to), [to]);
   const trend = React.useMemo(() => cashFlowSeries(inRange, n, refDate), [inRange, n, refDate]);
   const avg = React.useMemo(() => monthlyAverages(trend), [trend]);

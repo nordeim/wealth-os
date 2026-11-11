@@ -279,10 +279,16 @@ export default function InvestmentsPage() {
                 </thead>
                 <tbody className="divide-y divide-stone-200/70 dark:divide-stone-800">
                   {stats.holdings.map((row) => {
-                    const inv = investments.find((i) => i.symbol === row.symbol);
+                    // Session-227 (R-24, F-227b): resolve by ID, never by
+                    // symbol — two same-symbol lots are normal multi-lot
+                    // state and the symbol-keyed form edited/deleted the
+                    // WRONG lot (live-reproduced). An id-less row's buttons
+                    // go inert (strictly better than acting on the wrong
+                    // record).
+                    const inv = investments.find((i) => i.id === row.id);
                     const meta = INVESTMENT_TYPES.find((t) => t.value === row.type);
                     return (
-                      <tr key={row.symbol} className="group">
+                      <tr key={row.id} className="group">
                         <td className="py-3 pr-4">
                           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-stone-100 text-xs font-bold text-stone-600 dark:bg-stone-800 dark:text-stone-300">
                             {row.symbol.slice(0, 3)}
@@ -332,6 +338,7 @@ export default function InvestmentsPage() {
                               }}
                             >
                               Edit
+                              <span className="sr-only">{row.symbol}</span>
                             </Button>
                             <Button
                               variant="ghost"

@@ -46,3 +46,17 @@ export function isRecordNotFound(error: unknown): boolean {
     error.code === "P2025"
   );
 }
+
+/**
+ * Session-227 (R-24, F-227l): the P2003 seam — a foreign-key violation
+ * on the transactions account link (the account deleted in the window
+ * between the ownership check and the write) answers BAD_REQUEST with
+ * the account message, never an anonymous INTERNAL. The ms-window
+ * race's honest 400.
+ */
+export function isForeignKeyViolation(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2003"
+  );
+}

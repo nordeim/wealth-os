@@ -270,6 +270,45 @@ describe("portfolio", () => {
     expect(stats.returnPct).toBe(0);
     expect(stats.value).toBe(0);
   });
+
+  // Session-227 (R-24, F-227b): the holdings rows carry the id — the
+  // investments table's row actions resolve their target by ID, never
+  // by symbol (two same-symbol lots are normal portfolio state; the
+  // symbol-keyed form edited/deleted the WRONG lot — live-reproduced).
+  it("carries each holding's id onto its stats row (the F-227b identity seam)", () => {
+    const withIds = [
+      { id: "inv-1", symbol: "AAPL", name: "First lot", type: "stock", shares: 10, avgCost: 100, currentValue: 150 },
+      { id: "inv-2", symbol: "BND", name: "Bond", type: "bond", shares: 10, avgCost: 100, currentValue: 90 },
+    ];
+    const stats = portfolioStats(withIds);
+    for (const row of stats.holdings) {
+      const source = withIds.find((i) => i.id === row.id)!;
+      expect(source).toBeDefined();
+      expect(row.symbol).toBe(source.symbol);
+    }
+  });
+
+  it("keeps two same-symbol holdings as two distinct rows with distinct ids (the multi-lot case)", () => {
+    const lots = [
+      { id: "lot-a", symbol: "AAPL", name: "First lot", type: "stock", shares: 10, avgCost: 100, currentValue: 150 },
+      { id: "lot-b", symbol: "AAPL", name: "Second lot", type: "stock", shares: 5, avgCost: 120, currentValue: 150 },
+    ];
+    const stats = portfolioStats(lots);
+    expect(stats.holdings).toHaveLength(2);
+    expect(new Set(stats.holdings.map((h) => h.id))).toEqual(new Set(["lot-a", "lot-b"]));
+    // Each row maps back to its OWN record — the wrong-row cure's seam.
+    for (const row of stats.holdings) {
+      const own = lots.find((i) => i.id === row.id)!;
+      expect(row.invested).toBe(round2(own.shares * own.avgCost));
+    }
+  });
+
+  it("answers an empty-string id for id-less inputs (the inert-buttons contract)", () => {
+    const stats = portfolioStats(holdings);
+    for (const row of stats.holdings) {
+      expect(row.id).toBe("");
+    }
+  });
 });
 
 describe("goals", () => {
