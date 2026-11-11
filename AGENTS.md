@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1060) | `bun run test` |
+| Unit tests (1088) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 122) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 126) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -319,6 +319,27 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   and each re-auth lands in the same per-IP login bucket (10/15min)
   the setup login rides, so count the suite's logins before adding
   more.
+- **A capture tool that signs up scratch accounts must NOT ride the
+  dev database** (session 225, F-225e): a scratch user created against
+  `db/custom.db` SURVIVES `db:seed` (the reseed's deletes are
+  owner-scoped) and `db:census` MISMATCHes at users=2 — the R-21
+  capture set shipped that state silently (its gates verified the
+  census BEFORE the captures ran). The e2e doctrine now covers the
+  capture family: `db/captures.db` recreated + seeded per run, the
+  spawned dev server carries `DATABASE_URL=file:../db/captures.db`
+  explicitly (an upgrade of the F-123a1 unset guard), a census
+  tripwire fails the run at exit, and a server already on :3000 is a
+  REFUSAL, not a reuse — a reused server's database is unknowable.
+  `db/captures.db` is gitignored with the other dbs.
+- **An equal z-index paint order is decided by DOM order — the LATER
+  element wins** (session 225, F-225d): the skip link's focused reveal
+  (z-50) painted UNDER the sticky mobile header (z-50, later in DOM)
+  — the focused link was invisible below lg while every gate stayed
+  green (the e2e leg ran 1280-only; axe cannot model paint order).
+  `elementFromPoint` at the element's own center is the honest form
+  of "is the focused element visible"; when raising a surface above a
+  layer family, clear the whole family (z-[60] over the z-50
+  header/drawer/dialog set) and stay under the toasts.
 - **The a11y two-gate must SCROLL before `axe.run()`** (session-221,
   F-221f): axe evaluates only what is (or can be) rendered in view —
   at the fixed 1280×800 / 390×844 viewports, every below-the-fold
