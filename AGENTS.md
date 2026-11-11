@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1029) | `bun run test` |
+| Unit tests (1060) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 111) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 122) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -146,6 +146,31 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   (`globals.css` + the `.dark` runtime flip). Copying a reference class
   string means porting its tokens too. Pinned in
   `tests/parity-209.test.ts`.
+- **`@source not` prose carriers can bite back three ways** (session
+  224, F-224v — the `@source not` family): (a) a CSS BLOCK COMMENT
+  containing a glob (`skills/**/html-tailwind.csv`) terminates at the
+  `*/` INSIDE the glob — the comment ends early and PostCSS fails;
+  never put a `*/`-bearing glob inside a CSS comment. (b) root-level
+  markdown (`neo-crm_SKILL.md` at the repo root) is NOT covered by
+  directory excludes (`@source not "../../skills"` etc.) — it needs
+  its own root-level glob. (c) comments carrying class-like strings
+  (`text-success` in a docblock) get content-scanned and emit dead
+  CSS — reword the comment; don't add a glob for it (the F-220
+  lesson). The before/after build probe (a dead sentinel disappears,
+  a live utility stays) is the verification pattern.
+- **The F-223k logout bump is USER-level — it poisons e2e order**
+  (session 224, F-224d): `POST /api/auth/logout` increments the USER's
+  `tokenVersion`, evicting EVERY live cookie for that user. An e2e leg
+  that logs out the DEMO account kills the shared `auth.setup`
+  storageState (its cookie embeds the pre-bump version) for every
+  later shared-state spec — they all land on the login wall. Revocation
+  legs ride a SCRATCH user (the data-import doctrine); the sign-out
+  family re-mints the shared state in `afterEach` (mobile-navigation
+  spec). Symptom signature: every spec after the logout leg fails with
+  login-wall redirects while each passes in isolation.
+- **Tailwind v4's `rounded-full` emits the infinity-form radius**
+  (`border-radius: 2147483647px`, not `9999px`) — smoke leg 15 pins it;
+  don't "fix" it to 9999px.
 - **Bun absolutizes relative `file:` DATABASE_URL** against the `.env`
   file's directory when running scripts — `src/lib/db-path.ts` re-anchors;
   don't bypass the `db` singleton.

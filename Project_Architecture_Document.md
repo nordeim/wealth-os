@@ -16,6 +16,61 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.21.0 (session 224, R-21 — the date-guard completion and
+  resilience-surface round): the fresh-eyes audit (three parallel
+  Mode-C passes — the R-20 cure surfaces, the API/auth/security layer,
+  the UI/a11y/shell layer; 0 Critical / 0 High / 2 Medium / 11 Low /
+  14 Informational raw, every material claim re-verified at file:line,
+  the two Mediums live-reproduced: the YMD-slash rollover bypass
+  staged "2026/02/30" as Mar 2 under probes on all three zones, the
+  verify oracle's numeric tell read off the post-increment ladder).
+  THE DATE-GUARD COMPLETION (F-224a Medium): `localeRollover`'s
+  year-length gate read the MDY year position only (`c.length !== 4`
+  gates the DAY for YMD) — the shape-aware year gate resolves
+  YMD-vs-MDY first (`Number(a) >= 1000`), the round-trip comparison
+  now fires for the shapes it exists to check; the month-year family
+  (F-224c): the rejection family became form-precise (separator
+  class `[\s.-]`, an optional TIME tail, the reversed twin
+  `^\d{4}[\s.-]+[A-Za-z]{3,9}(time)?$`) so the day-carrying forms
+  ("Nov 2026 15", "2026 Nov 15 10:00") keep staging while the no-day
+  forms ("2026 Nov 10:00", "Nov 2026 10:00") skip — the F-223d
+  lesson (a bare lookahead would reject the day-carrying forms) held.
+  THE VERIFY ORACLE (F-224b Medium): the no-pending branch answered
+  "5 attempts remaining" — a value the genuine ladder can never
+  produce (post-increment yields 4…1, then 429); it now answers the
+  first rung 4, the single-probe reply byte-identical to a fresh
+  pending code's (the residual two-probe differential documented in
+  the route docblock — full closure needs per-email state on a
+  stateless branch: rejected). THE LOGOUT HONESTY PAIR (F-224d/e):
+  the revocation's first behavioral pin (mint → logout → replay the
+  pre-logout cookie → `data:null`) — the leg rides a SCRATCH user
+  (the F-223k bump is USER-level; a demo-account logout in any leg
+  evicts the shared storageState for every later spec — the
+  order-poisoning lesson, caught when the fixed leg poisoned the
+  e2e run); the store's `logout()` now checks the `call()` result,
+  surfaces failure through the store-error banner, and returns a
+  boolean both signOut helpers gate navigation on. THE RESILIENCE
+  SURFACES (F-224p/aa): global-error takes the error.tsx dark genus
+  (world-robust under either activation reading), LoadingBlock gains
+  `role="status" aria-live="polite"`, error.tsx regains its `<main>`
+  landmark; the skip-to-content link (F-224s) — the shell's first
+  child, sr-only until the first Tab reveals it, `href="#main-content"`
+  with the main scroller carrying `id` + `tabIndex -1` (placement
+  outside `main` keeps every drift gate green). The password set-time
+  bound (F-224h: `passwordSchema.max(200)` — the reset flow's own
+  contract unified; login stays unbounded, compare-only); the search
+  LIKE strip (F-224j: `sanitizeSearchQuery` — a literal `%`/`_` no
+  longer acts as a wildcard); the `@source not` family (F-224v —
+  prose carriers can no longer emit production CSS, the built CSS
+  shrank 48%, verified by before/after sentinel probes); the nine
+  phone×dark a11y legs (F-224r) + the smoke leg 15 (rounded-full's
+  infinity-form radius); the vendored-stock KEEP precedent (F-224q —
+  N-56e respected, the dead import retired, `--color-danger-soft`
+  flips in `.dark`); the demo-seed register row + the production
+  warning (F-224i — §10 + DEPLOYMENT). Gate at ship: lint 0/0 ·
+  tsc 0 · 1060 unit / 71 files · build · smoke 15/15 · 122 e2e ·
+  all six parity drift gates CLEAN · census MATCH; the captures
+  111-116 (six faces, each asserted in-DOM before commit).
 - [SR] v2.20.0 (session 223, R-20 — the dead-signout and
   dark-surface completion round): the fresh-eyes audit (three
   parallel Mode-C passes — the R-19 cure surfaces, the API/auth/
@@ -546,8 +601,8 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1029) → `next build` → the 14-assertion smoke ladder on the
-  standalone artifact → Playwright e2e (88) against a pinned `db/e2e.db`.
+  → vitest (1060) → `next build` → the 15-assertion smoke ladder on the
+  standalone artifact → Playwright e2e (122) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
   R-4.5, session 211 — green end-to-end from cold): the sweep,
@@ -678,7 +733,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 55 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 71 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -967,12 +1022,12 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 68 | 1029 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 71 | 1060 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 42 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223) | `tests/` | source-scanning contracts |
-| — infrastructure | 23 | auth, rate-limit, csv, uploads, headers, boot-env, … | `tests/` | behavior |
-| E2E | 7 | 99 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
-| Smoke | 1 | 14 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
+| — architecture pins | 43 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224) | `tests/` | source-scanning contracts |
+| — infrastructure | 25 | auth, rate-limit, csv, uploads, headers, boot-env, search-query, store-logout, … | `tests/` | behavior |
+| E2E | 7 | 122 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
+| Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
 *docs-counts pins are re-anchored when doc/test counts change — keep them
 in lockstep with real counts.
@@ -1002,10 +1057,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1029/1029 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1060/1060 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
-- [ ] `./scripts/smoke-test.sh` → 14/14 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 111/111
+- [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
+- [ ] `CI=1 bun run test:e2e` → 122/122
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -1072,7 +1127,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1029 unit / 111 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1060 unit / 122 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -1104,10 +1159,11 @@ comments explain why.
 | LOW | AI coach is rule-based (honest labeling) | No LLM answers offline; the provider seam exists for a future engine | By design (ADR-005) |
 | INFO | `AUTH_SECRET` dev fallback exists (warn-once) | Dev-only; production fails hard | By design |
 | INFO | Social login buttons render but explain (no OAuth client) | No dead clicks; wiring a provider is additive | Documented deviation |
+| LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1029 unit · build · smoke 14/14 ·
-111 e2e).
+the time of writing (lint 0/0 · tsc 0 · 1060 unit · build · smoke 15/15 ·
+122 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
 advisory is cured same-session, never deferred; dev-toolchain bumps stay

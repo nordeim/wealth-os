@@ -77,6 +77,13 @@ bun run db:push        # apply schema (db push — no migrations folder)
 bun run db:seed        # idempotent demo workspace (scoped to the demo owner — R-12)
 ```
 
+> **Public deployments: skip `db:seed`.** The seed upserts the
+> README-documented demo account (a known email + password) so the
+> first login has data to show — on an internet-exposed instance that
+> is a guessable live account (owner-scoped, but persistent). Create
+> the first account through `/signup` instead (session-224, F-224i;
+> the PAD §10 register row).
+
 `db/*.db` is gitignored; every fresh clone recreates it from the two
 commands above.
 
