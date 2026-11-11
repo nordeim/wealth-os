@@ -29,8 +29,12 @@ describe("F-222a/b — every zone-designated ISO datetime stages the WRITTEN lit
     // alternation is unchanged. Legitimate recalibration: the
     // designated-tail contract grew, and the new arms carry their own
     // pins in tests/parity-225.test.ts + the csv.test.ts TZ battery.
+    // Session-226 (R-23, F-226a): the tail widened AGAIN — the named
+    // zones (UT/EST/EDT/CST/CDT/MST/MDT/PST/PDT) and their compound
+    // ±[H]H[:MM] suffixes joined, and the family went case-insensitive
+    // (`i`). The bare-offset alternation is still the tail's last arm.
     expect(src).toContain(
-      "(?:[Zz]|UTC|GMT|[+-]\\\\d{2}(?::?\\\\d{2})?)",
+      "|(?:UTC|GMT|UT|EST|EDT|CST|CDT|MST|MDT|PST|PDT)(?:\\\\s*[+-]\\\\d{1,2}(?::?\\\\d{2})?)?|[+-]\\\\d{2}(?::?\\\\d{2})?)",
     );
     expect(src).not.toContain("const UTC_DESIGNATED");
   });

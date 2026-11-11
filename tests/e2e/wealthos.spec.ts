@@ -184,8 +184,10 @@ test.describe("Income / Goals / Accounts surfaces", () => {
     await page.goto("/Income");
     await expect(page.getByText("Total Monthly Income")).toBeVisible();
     // The seeded salary (7800) + freelance (1200) are active.
+    // (.first(): the F-226k row-context sr-only spans now also carry the
+    // source names inside the row's Edit/Pause buttons.)
     await expect(page.getByText("From 3 active sources")).toBeVisible();
-    await expect(page.getByText("Software Engineering Salary")).toBeVisible();
+    await expect(page.getByText("Software Engineering Salary").first()).toBeVisible();
   });
 
   test("the Goals page renders the seeded goals with progress", async ({ page }) => {
@@ -197,8 +199,9 @@ test.describe("Income / Goals / Accounts surfaces", () => {
 
   test("the Accounts page lists the seeded bank accounts", async ({ page }) => {
     await page.goto("/Accounts");
-    await expect(page.getByText("Everyday Checking")).toBeVisible();
-    await expect(page.getByText("High-Yield Savings")).toBeVisible();
+    // (.first(): the F-226k row-context sr-only spans, same as Income.)
+    await expect(page.getByText("Everyday Checking").first()).toBeVisible();
+    await expect(page.getByText("High-Yield Savings").first()).toBeVisible();
     await expect(page.getByText("Net Balance")).toBeVisible();
   });
 
@@ -503,5 +506,44 @@ test.describe("the search LIKE strip, end-to-end (F-225h)", () => {
       data: { transactions?: { description?: string }[] };
     };
     expect((real.data.transactions ?? []).some((t) => /Whole Foods/i.test(t.description ?? ""))).toBe(true);
+  });
+});
+
+// Session-226 (R-23, F-226b): the per-casing metadata — the lowercase
+// section routes used to inherit the ROOT head (title "WealthOS",
+// canonical "/") while the reference serves per-casing canonicals at
+// BOTH casings (its own route-case posture, live-verified). The eight
+// lowercase segments now carry pass-through layouts exporting
+// pageMetadata at their own route; /Dashboard keeps the ROOT head (the
+// reference's own posture). This leg pins the delivered titles.
+test.describe("the per-casing route metadata (F-226b)", () => {
+  const SECTIONS: Array<[string, string]> = [
+    ["income", "Income"],
+    ["expenses", "Expenses"],
+    ["accounts", "Accounts"],
+    ["investments", "Investments"],
+    ["import", "Import"],
+    ["analytics", "Analytics"],
+    ["goals", "Goals"],
+    ["settings", "Settings"],
+  ];
+
+  for (const [dir, page] of SECTIONS) {
+    test(`/${dir} serves its own head ("${page} | WealthOS", not the root title)`, async ({ page: p }) => {
+      await p.goto(`/${dir}`);
+      await expect(p).toHaveTitle(`${page} | WealthOS`);
+      // The canonical link self-canonicalizes to the lowercase route
+      // (the reference's per-casing posture) — never "/".
+      const canonical = await p.evaluate(
+        () => document.querySelector('link[rel="canonical"]')?.getAttribute("href") ?? "",
+      );
+      expect(canonical).toContain(`/${dir}`);
+      expect(canonical.endsWith(`/${dir}`)).toBe(true);
+    });
+  }
+
+  test("/Dashboard keeps the ROOT head (the reference's own posture — the bare title)", async ({ page: p }) => {
+    await p.goto("/Dashboard");
+    await expect(p).toHaveTitle("WealthOS");
   });
 });

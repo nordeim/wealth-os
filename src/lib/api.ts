@@ -50,6 +50,17 @@ export const ERR = {
   INTERNAL: () => fail("INTERNAL", "Something went wrong. Please try again.", 500),
 };
 
+/** Session-226 (R-23, F-226c): the server-side error trace. Every
+ * handler's catch used to discard the error object entirely — a
+ * SQLITE_BUSY, an ENOSPC, or a libsql timeout left ZERO trace (the
+ * client envelope stays generic by design; the OPERATOR side was the
+ * gap). The seam prints the route scope + the error before the
+ * envelope is returned; no secrets are logged (the envelopes never
+ * carry them, and the thrown objects are driver errors). */
+export function logApiError(scope: string, error: unknown): void {
+  console.error(`[api] ${scope}`, error);
+}
+
 /** Guard: returns the session user or a 401 response (callers must return it). */
 export async function requireSession(): Promise<{ user: SessionUser } | { response: NextResponse }> {
   // Session-41 (S41-P4): the shared session read joined the envelope —
@@ -59,7 +70,8 @@ export async function requireSession(): Promise<{ user: SessionUser } | { respon
   let user: SessionUser | null;
   try {
     user = await getSessionUser();
-  } catch {
+  } catch (error) {
+    logApiError("session read", error);
     return { response: ERR.INTERNAL() };
   }
   if (!user) return { response: ERR.UNAUTHORIZED() };

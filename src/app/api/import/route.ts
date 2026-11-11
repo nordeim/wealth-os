@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession, MAX_IMPORT_BODY_BYTES } from "@/lib/api";
+import { ERR, MAX_IMPORT_BODY_BYTES, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { csvImportSchema } from "@/lib/schemas";
 import { BUDGET_CATEGORIES, EXPENSE_CATEGORIES } from "@/lib/constants";
@@ -41,7 +41,8 @@ export async function POST(req: Request) {
       })),
     });
     return ok({ imported: created.count });
-  } catch {
+  } catch (error) {
+    logApiError("import POST", error);
     return ERR.INTERNAL();
   }
 }

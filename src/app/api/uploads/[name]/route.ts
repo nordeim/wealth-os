@@ -1,7 +1,7 @@
 import { readFile } from "fs/promises";
 import { join } from "path";
 import { NextResponse } from "next/server";
-import { fail } from "@/lib/api";
+import { ERR, fail, logApiError } from "@/lib/api";
 import { CONTENT_TYPES, UPLOAD_NAME_RE, uploadsDir } from "@/lib/uploads";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
@@ -31,7 +31,10 @@ export async function GET(req: Request, { params }: Params) {
   const limit = rateLimit(`uploads:${clientKey(req)}`, 240, 15 * 60 * 1000);
   sweepRateLimits();
   if (!limit.allowed) {
-    return fail("RATE_LIMITED", "Too many requests, please try again later", 429);
+    // Session-226 (R-23, F-226e): the family contract — the ERR arm
+    // carries Retry-After and the family copy (this hand-built 429 was
+    // the one drift site among the 36).
+    return ERR.RATE_LIMITED(limit.retryAfterSec);
   }
   const { name } = await params;
   if (!UPLOAD_NAME_RE.test(name)) {
@@ -42,7 +45,8 @@ export async function GET(req: Request, { params }: Params) {
   let bytes: Buffer;
   try {
     bytes = await readFile(join(uploadsDir(), name));
-  } catch {
+  } catch (error) {
+    logApiError("uploads/:name GET", error);
     return fail("NOT_FOUND", "File not found", 404);
   }
 

@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { settingsUpdateSchema } from "@/lib/schemas";
 import { Prisma } from "@/generated/prisma/client";
@@ -50,7 +50,8 @@ export async function GET() {
   if (isGuarded(guard)) return guard.response;
   try {
     return ok(await readSettings(guard.user.id));
-  } catch {
+  } catch (error) {
+    logApiError("settings GET", error);
     return ERR.INTERNAL();
   }
 }
@@ -75,7 +76,8 @@ export async function PUT(req: Request) {
       data: parsed.data,
     });
     return ok(await readSettings(guard.user.id));
-  } catch {
+  } catch (error) {
+    logApiError("settings PUT", error);
     return ERR.INTERNAL();
   }
 }

@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { incomeSourceCreateSchema } from "@/lib/schemas";
 
@@ -14,7 +14,8 @@ export async function GET() {
       orderBy: [{ active: "desc" }, { name: "asc" }],
     });
     return ok(sources);
-  } catch {
+  } catch (error) {
+    logApiError("income-sources GET", error);
     return ERR.INTERNAL();
   }
 }
@@ -48,7 +49,8 @@ export async function POST(req: Request) {
       },
     });
     return ok(source);
-  } catch {
+  } catch (error) {
+    logApiError("income-sources POST", error);
     return ERR.INTERNAL();
   }
 }

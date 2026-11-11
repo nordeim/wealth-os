@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody } from "@/lib/api";
+import { ERR, logApiError, ok, parseBody } from "@/lib/api";
 import { resendSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { VERIFICATION_TTL_MS, verificationResentMessage } from "@/lib/verification";
@@ -40,6 +40,13 @@ export async function POST(req: Request) {
   // the exact voidable cap F-222n documented). Sized above the
   // per-IP cap (10 vs 5) so single-IP flows are unchanged; fired
   // BEFORE any account-existence check (no oracle added).
+  //
+  // Session-226 (R-23, F-226h) — the recorded trade-off: the bucket
+  // is third-party-exhaustable (10 junk resends / 15 min on a known
+  // email 429 the victim's legitimate resends for the window).
+  // Deliberate, same as verify: existence-check-first would reopen
+  // the enumeration oracle; the self-healing bounded lockout is the
+  // lesser risk.
   const acctLimit = rateLimit(`resend-acct:${email}`, 10, 15 * 60 * 1000);
   if (!acctLimit.allowed) return ERR.RATE_LIMITED(acctLimit.retryAfterSec);
 
@@ -90,7 +97,8 @@ export async function POST(req: Request) {
       message: verificationResentMessage(),
       verificationCode: inAppOtpEnabled ? code : null,
     });
-  } catch {
+  } catch (error) {
+    logApiError("auth/resend POST", error);
     return ERR.INTERNAL();
   }
 }

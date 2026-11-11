@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ERR, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 
@@ -71,7 +71,8 @@ export async function GET(req: Request) {
         "Cache-Control": "no-store",
       },
     });
-  } catch {
+  } catch (error) {
+    logApiError("export GET", error);
     return ERR.INTERNAL();
   }
 }

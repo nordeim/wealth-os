@@ -176,6 +176,7 @@ export default function IncomePage() {
                   <div className="mt-4 flex gap-2">
                     <Button variant="outline" className="h-8 flex-1 text-xs" onClick={() => openEdit(source)}>
                       Edit
+                      <span className="sr-only">{source.name}</span>
                     </Button>
                     <Button
                       variant="ghost"
@@ -184,6 +185,7 @@ export default function IncomePage() {
                       onClick={() => void toggleActive(source)}
                     >
                       {source.active ? "Pause" : "Activate"}
+                      <span className="sr-only">{source.name}</span>
                     </Button>
                   </div>
                 </div>

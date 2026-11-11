@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { budgetUpsertSchema, budgetDeleteSchema } from "@/lib/schemas";
 
@@ -15,7 +15,8 @@ export async function GET() {
       orderBy: [{ category: "asc" }],
     });
     return ok(budgets);
-  } catch {
+  } catch (error) {
+    logApiError("budgets GET", error);
     return ERR.INTERNAL();
   }
 }
@@ -57,7 +58,8 @@ export async function POST(req: Request) {
       },
     });
     return ok(budget);
-  } catch {
+  } catch (error) {
+    logApiError("budgets POST", error);
     return ERR.INTERNAL();
   }
 }
@@ -80,7 +82,8 @@ export async function DELETE(req: Request) {
       where: { ownerId: guard.user.id, category: parsed.data.category, period: "monthly" },
     });
     return ok({ category: parsed.data.category });
-  } catch {
+  } catch (error) {
+    logApiError("budgets DELETE", error);
     return ERR.INTERNAL();
   }
 }

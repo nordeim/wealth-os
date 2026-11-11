@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, asString, isGuarded, requireSession } from "@/lib/api";
+import { ERR, asString, isGuarded, logApiError, ok, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { sanitizeSearchQuery } from "@/lib/search-query";
 
@@ -77,7 +77,8 @@ export async function GET(req: Request) {
       }),
     ]);
     return ok({ transactions, accounts, investments, goals });
-  } catch {
+  } catch (error) {
+    logApiError("search GET", error);
     return ERR.INTERNAL();
   }
 }

@@ -160,6 +160,7 @@ export default function GoalsPage() {
                       }}
                     >
                       Edit
+                      <span className="sr-only">{goal.name}</span>
                     </Button>
                     <Button
                       variant="ghost"
@@ -174,6 +175,7 @@ export default function GoalsPage() {
                       }}
                     >
                       Delete
+                      <span className="sr-only">{goal.name}</span>
                     </Button>
                   </div>
                 </div>

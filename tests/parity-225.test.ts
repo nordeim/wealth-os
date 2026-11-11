@@ -42,6 +42,19 @@ describe("F-225c — the verify/resend per-account buckets (the F-222n mirror)",
     expect(src).toMatch(/resend-acct:\$\{email\}[\s\S]{0,200}?,\s*10,/);
   });
 
+  // Session-226 (R-23, F-226p): the WINDOW — a cap without its window is
+  // half a contract (a shrink to 15s passed the source pins and the e2e
+  // legs complete well inside 15s). The pins extend through the window.
+  it("the verify bucket carries the 15-minute window (F-226p)", () => {
+    const src = read("src/app/api/auth/verify/route.ts");
+    expect(src).toMatch(/verify-acct:\$\{email\}[\s\S]{0,200}?,\s*60,\s*15 \* 60 \* 1000/);
+  });
+
+  it("the resend bucket carries the 15-minute window (F-226p)", () => {
+    const src = read("src/app/api/auth/resend/route.ts");
+    expect(src).toMatch(/resend-acct:\$\{email\}[\s\S]{0,200}?,\s*10,\s*15 \* 60 \* 1000/);
+  });
+
   it("the F-222p citation is corrected (the voidable per-IP bound no longer cited as the mitigation)", () => {
     const verify = read("src/app/api/auth/verify/route.ts");
     const resend = read("src/app/api/auth/resend/route.ts");
@@ -66,6 +79,9 @@ describe("F-225e — the capture tools' own-database doctrine (the e2e conventio
     "scripts/captures-218.ts",
     "scripts/captures-219.ts",
     "scripts/captures-224.ts",
+    // Session-226 (R-23, F-226f): the round's own capture script joins
+    // the family — it was "born on the convention" but unpinned.
+    "scripts/captures-225.ts",
   ] as const;
 
   it.each(scripts)("the spawned dev server rides db/captures.db (%s)", (p) => {

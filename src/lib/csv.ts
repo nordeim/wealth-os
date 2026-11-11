@@ -180,8 +180,26 @@ export function parseCsv(text: string): string[][] {
  * shape convention) stage the WRITTEN calendar, whole-parse-guarded
  * and round-trip-guarded. The two-digit-year designated numerics
  * SKIP (the remap boundary is engine-internal — a visible skip beats
- * a silent wrong day). Recorded residual: nothing — every designated
- * tail this seam has observed is covered.
+ * a silent wrong day).
+ *
+ * Session-226 (R-23, F-226a): the escape-family completion — R-22's
+ * own "recorded residual: nothing" claim was FALSE (the session-226
+ * audit live-probed seven families this taxonomy still missed, all
+ * staging the viewer's calendar: case-insensitive utc/gmt, the
+ * leading weekday (RFC-822), separator lenience, the meridiem, V8's
+ * named zones EST/EDT/CST/CDT/MST/MDT/PST/PDT/UT, the compound
+ * UTC±/GMT± tails, and the month-year family WITH a tail). Every
+ * designated tail now routes to the written-literal doctrine: the
+ * tail regexes are case-insensitive (`i`), carry the named-zone set
+ * and compound suffixes, the weekday prefix, the meridiem, and the
+ * lenient separators; the name-YEAR-day twin ("Nov 2026 15 UTC")
+ * joins the arms; the month-year rejection family carries the
+ * designated NAMED tail (never the bare offset — see the
+ * DESIGNATED_NAMED_TAIL comment for the ISO-date hazard). Recorded
+ * residual (probed, deliberate): the two-digit-year rolled numerics
+ * ("02/30/26") still stage the roll (F-225g); V8-rejected zone names
+ * (CET/JST/BST/AEST) null through the whole-parse guard; a garbage
+ * trailing token ("UTC garbage") is V8-NaN and nulls.
  *
  * Session-222 (R-19, F-222a/b/c/d): the R-18 branch's completion.
  * The UTC_DESIGNATED test was case-sensitive (RFC-3339-legal
@@ -208,12 +226,27 @@ const BARE_ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 // staged the VIEWER's calendar — a wrong day west of the designation
 // (live-reproduced session 225; see the locale-designated family
 // below for the non-ISO shapes).
+// Session-226 (R-23, F-226a): the `i` flag — V8 accepts lowercase
+// "utc"/"gmt" on the space-separated shape ("2026-11-01 10:00 utc"),
+// and the case-sensitive tail let it fall to the locale arm (a zone
+// split at the evening hours east of UTC). The designator stays
+// REQUIRED — a bare ISO datetime is a LOCAL form, not designated.
 const ZONE_DESIGNATED =
-  /^(\d{4})-(\d{2})-(\d{2})[Tt ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?\s*(?:[Zz]|UTC|GMT|[+-]\d{2}(?::?\d{2})?)$/;
+  /^(\d{4})-(\d{2})-(\d{2})[Tt ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?\s*(?:[Zz]|UTC|GMT|[+-]\d{2}(?::?\d{2})?)$/i;
 // Partial ISO forms (year / year-month): V8 parses them as UTC day 1
 // of the written period, but no day was chosen — a skip, never an
 // invented day.
 const PARTIAL_ISO = /^\d{4}(-\d{2})?$/;
+// Session-226 (R-23, F-226a): the designated NAMED tail the rejection
+// family carries — the named zones and their compound suffixes ONLY.
+// The BARE ±HH:MM offset is deliberately EXCLUDED: a bare-offset tail
+// on the numeric partial would make every ISO date ("2026-11-01", read
+// as year/11/-01-offset) match the partial rejector and null the most
+// common form in the seam. The bare-offset partials ("Nov 2026 +09:00")
+// are V8-NaN and null through the locale arm's whole-parse check
+// (probed, session 226). The `i` flag: V8 accepts lowercase utc/gmt.
+const DESIGNATED_NAMED_TAIL =
+  "(?:\\s*(?:[Zz]|(?:UTC|GMT|UT|EST|EDT|CST|CDT|MST|MDT|PST|PDT)(?:\\s*[+-]\\d{1,2}(?::?\\d{2})?)?))?$";
 // Session-225 (R-22, F-225a): the NUMERIC year-month partials —
 // "2026/11", "2026.11", "2026 11", "2026/1" — the statement-period
 // shapes the month-year family's own rationale cites. The hyphen
@@ -224,8 +257,14 @@ const PARTIAL_ISO = /^\d{4}(-\d{2})?$/;
 // form — the three-group "2026/11/01" / "2026 11 01" carry two
 // separators and never match. The separator class is NON-LETTER
 // (the NUMERIC_LOCALE convention): a named form never rides a
-// numeric arm.
-const NUMERIC_MONTH_YEAR_PARTIAL = /^\d{4}[^\dA-Za-z]+\d{1,2}$/;
+// numeric arm. Session-226 (R-23, F-226a): the designated NAMED
+// tail joins (the same DESIGNATED_NAMED_TAIL as the named family —
+// "2026/11 UTC" invented day 1 and zone-shifted; the bare offset
+// stays excluded for the ISO-date hazard documented above).
+const NUMERIC_MONTH_YEAR_PARTIAL = new RegExp(
+  `^\\d{4}[^\\dA-Za-z]+\\d{1,2}${DESIGNATED_NAMED_TAIL}`,
+  "i",
+);
 // The 3-group numeric locale forms (the documented US-MDY assumption,
 // the YMD-slash shape, and the dotted-MDY read): the rollover guard's
 // match arm. The separators are NON-LETTER runs — a letter in the
@@ -250,13 +289,18 @@ const NUMERIC_LOCALE = /^(\d{1,4})[^\dA-Za-z]+(\d{1,2})[^\dA-Za-z]+(\d{2,4})(?!\
 // live-probed, V8 reads 2026-11-01 — no day was chosen in any of
 // them; the day-carrying named forms keep staging through the
 // locale fallback).
+// Session-226 (R-23, F-226a): the family carries DESIGNATED_NAMED_TAIL
+// too ("Nov 2026 UTC" — V8 invents day 1 AND the locale arm zone-shifts
+// it: 2026-10-31 in New York, live).
 const MONTH_YEAR_TIME =
-  "(?:\\s+\\d{1,2}:\\d{2}(?::\\d{2})?\\s*(?:[APap][Mm])?)?$";
+  "(?:\\s+\\d{1,2}:\\d{2}(?::\\d{2})?\\s*(?:[APap][Mm])?)?";
 const MONTH_ONLY = new RegExp(
-  `^[A-Za-z]{3,9}[\\s.-]+\\d{4}${MONTH_YEAR_TIME}`,
+  `^[A-Za-z]{3,9}[\\s.-]+\\d{4}${MONTH_YEAR_TIME}${DESIGNATED_NAMED_TAIL}`,
+  "i",
 );
 const REV_MONTH_ONLY = new RegExp(
-  `^\\d{4}[\\s.-]+[A-Za-z]{3,9}${MONTH_YEAR_TIME}`,
+  `^\\d{4}[\\s.-]+[A-Za-z]{3,9}${MONTH_YEAR_TIME}${DESIGNATED_NAMED_TAIL}`,
+  "i",
 );
 
 // Session-225 (R-22, F-225b): the designated-tail completion, the
@@ -277,12 +321,30 @@ const REV_MONTH_ONLY = new RegExp(
 // string even when the written date is fine — the designated-arm
 // parity) and round-trips the written calendar (a rolled date is
 // unparseable — the standing doctrine).
-// The shared tail — an optional space, then Z/z, UTC, GMT, or
-// ±HH:MM/±HHMM (the ±HH bare form is regex-tolerated but V8-rejected
-// on these shapes, so the row skips — consistent with the ISO arm).
-const DESIGNATED_TAIL = "\\s*(?:[Zz]|UTC|GMT|[+-]\\d{2}(?::?\\d{2})?)";
-// The optional TIME before the tail (the MONTH_YEAR_TIME convention):
-const OPT_TIME = "(?:\\s+\\d{1,2}:\\d{2}(?::\\d{2})?(?:\\.\\d+)?)?";
+// The shared tail — an optional space, then Z/z, UTC/GMT (case-insensitive
+// with the family's `i` flag), V8's named zones, or ±HH:MM/±HHMM offsets;
+// the named zones take an optional compound ±[H]H[:MM] suffix ("UTC+01:00",
+// "GMT+5"). The bare ±HH form stages the written day too — V8 ACCEPTS it
+// on these shapes (session 226, F-226n: "Nov 1, 2026 10:00 +09" parses and
+// the designated arm stages the written calendar; the old docblock's
+// "V8-rejected, so the row skips" claim was false for the locale arms).
+// Session-226 (R-23, F-226a): the named-zone set is V8's own empirical
+// table (UT/EST/EDT/CST/CDT/MST/MDT/PST/PDT — probe-226-v8); CET/JST/BST/
+// AEST and garbage tokens are V8-rejected and null through the whole-parse
+// guard. Every tail routes to the written-literal doctrine below.
+const DESIGNATED_TAIL =
+  "\\s*(?:[Zz]|(?:UTC|GMT|UT|EST|EDT|CST|CDT|MST|MDT|PST|PDT)(?:\\s*[+-]\\d{1,2}(?::?\\d{2})?)?|[+-]\\d{2}(?::?\\d{2})?)";
+// The optional TIME before the tail (the MONTH_YEAR_TIME convention), now
+// with the meridiem (F-226a: "11:00 PM UTC" previously escaped the family
+// and staged the viewer's calendar east of UTC):
+const OPT_TIME =
+  "(?:\\s+\\d{1,2}:\\d{2}(?::\\d{2})?(?:\\.\\d+)?\\s*(?:[APap][Mm])?)?";
+// The optional leading weekday (F-226a: RFC-822 shapes — "Thu, 01 Jan 2026
+// 00:00:00 GMT" — previously fell to the locale arm and staged the wrong
+// day AND year west of the designation). The full names ride the [A-Za-z]*
+// tail ("Sunday, Nov 1, 2026 UTC"); no month name starts with a weekday
+// prefix, so the class cannot eat a month.
+const OPT_WEEKDAY = "(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[A-Za-z]*[\\s.,]*)?";
 // Month-name → index (case-insensitive; 3–9 letters covers V8's
 // accepted set — "Sept" and "September" both included). An unknown
 // name is a NaN in V8 — the arms null it.
@@ -294,18 +356,26 @@ const MONTH_NAMES: Record<string, number> = {
 };
 // "Nov 1, 2026 UTC" / "Nov 1, 2026 10:00 +09:00" (the comma and the
 // name/day separator are optional-form tolerant — "Nov 1 2026",
-// "Nov. 1, 2026" both live). The year group is two-digit-TOLERANT so
-// the arm CATCHES "Nov 1, 26 UTC" (V8 remaps it — the locale arm
-// would stage the viewer's calendar) and the length check inside
-// skips it (the remap doctrine, the named half):
+// "Nov. 1, 2026", and since F-226a the lenient runs "Nov  1, 2026",
+// "Nov 1,2026", "Nov 1 , 2026", "Nov.1.2026" all live). The year group is
+// two-digit-TOLERANT so the arm CATCHES "Nov 1, 26 UTC" (V8 remaps it —
+// the locale arm would stage the viewer's calendar) and the length check
+// inside skips it (the remap doctrine, the named half). The `i` flag, the
+// weekday prefix, the meridiem, and the widened tail are the F-226a
+// escape-family completion (case-insensitive utc/gmt, RFC-822 shapes,
+// the named zones, the compound tails).
 const NAMED_MDY_DESIGNATED = new RegExp(
-  `^([A-Za-z]{3,9})[^\\dA-Za-z]?(\\d{1,2}),?\\s+(\\d{2,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+  `^${OPT_WEEKDAY}([A-Za-z]{3,9})[^\\dA-Za-z]*(\\d{1,2})[\\s.,]+(\\d{2,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+  "i",
 );
 // "15 Nov 2026 UTC" — the day-first named twin (V8 parses it; the
 // family would be incomplete without it). Two-digit-tolerant year
-// group + the length check, as above:
+// group + the length check, as above; the weekday prefix and the
+// lenient month-year separator are F-226a ("Thu, 01 Jan 2026 00:00:00
+// GMT" — the RFC-822 shape):
 const DAY_FIRST_NAMED_DESIGNATED = new RegExp(
-  `^(\\d{1,2})[\\s.-]+([A-Za-z]{3,9}),?\\s+(\\d{2,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+  `^${OPT_WEEKDAY}(\\d{1,2})[\\s.-]+([A-Za-z]{3,9})[\\s.,]+(\\d{2,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+  "i",
 );
 // "11/01/2026 UTC" / "2026/11/01 10:00 -05:00" — the numeric twin,
 // three digit groups with NON-LETTER separators (the NUMERIC_LOCALE
@@ -314,8 +384,20 @@ const DAY_FIRST_NAMED_DESIGNATED = new RegExp(
 // only — the two-digit-year designated numerics SKIP ("11/01/26
 // UTC"): the remap boundary is engine-internal (the standing
 // two-digit doctrine), and a visible skip beats a silent wrong day.
+// The weekday prefix is F-226a ("Sun 11/01/2026 UTC" — V8 parses it).
 const NUMERIC_DESIGNATED = new RegExp(
-  `^(\\d{1,4})[^\\dA-Za-z]+(\\d{1,2})[^\\dA-Za-z]+(\\d{1,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+  `^${OPT_WEEKDAY}(\\d{1,4})[^\\dA-Za-z]+(\\d{1,2})[^\\dA-Za-z]+(\\d{1,4})${OPT_TIME}${DESIGNATED_TAIL}$`,
+  "i",
+);
+// Session-226 (R-23, F-226a): the name-YEAR-day twin — "Nov 2026 15 UTC".
+// V8 reads the day AFTER the year on the named month-year shape (the
+// F-224c day-carrying family), so with a designated tail the locale arm
+// would read the LOCAL calendar of a designated instant — a wrong day
+// west of the designation (live: New York staged Nov 14 where 15 was
+// written). The arm stages the written calendar like its siblings.
+const NAMED_YEAR_DAY_DESIGNATED = new RegExp(
+  `^${OPT_WEEKDAY}([A-Za-z]{3,9})[\\s.,]+(\\d{2,4})[\\s.,]+(\\d{1,2})${OPT_TIME}${DESIGNATED_TAIL}$`,
+  "i",
 );
 
 /** F-225b: stage the WRITTEN calendar — the designator's own
@@ -440,6 +522,18 @@ export function stageCsvDate(raw: string): string | null {
     const month = desigYmd ? Number(numericDesig[2]) : Number(numericDesig[1]);
     const day = desigYmd ? Number(numericDesig[3]) : Number(numericDesig[2]);
     return stageWrittenLiteral(year, month, day);
+  }
+  // Session-226 (R-23, F-226a): the name-YEAR-day twin — "Nov 2026 15
+  // UTC" (V8 reads the day after the year on the named month-year
+  // shape; with a designated tail the locale arm would read the LOCAL
+  // calendar of the designated instant — a wrong day west of it).
+  const namedYearDay = NAMED_YEAR_DAY_DESIGNATED.exec(trimmed);
+  if (namedYearDay) {
+    if (Number.isNaN(new Date(trimmed).getTime())) return null;
+    if (namedYearDay[2].length !== 4) return null; // two-digit year: the remap doctrine — skip
+    const month = MONTH_NAMES[namedYearDay[1].toLowerCase()];
+    if (!month) return null;
+    return stageWrittenLiteral(Number(namedYearDay[2]), month, Number(namedYearDay[3]));
   }
   const parsed = new Date(trimmed);
   if (Number.isNaN(parsed.getTime())) return null;

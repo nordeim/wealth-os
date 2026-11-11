@@ -199,6 +199,7 @@ export default function ExpensesPage() {
                 }}
               >
                 Edit
+                <span className="sr-only">{tx.description}</span>
               </Button>
               <Button
                 variant="ghost"
@@ -545,7 +546,7 @@ export function ExpenseDialog({
                 placeholder="0.00"
                 className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
-              <div className="flex flex-wrap gap-1.5 pt-1" aria-label="Quick amount adders">
+              <div className="flex flex-wrap gap-1.5 pt-1" role="group" aria-label="Quick amount adders">
                 {QUICK_ADDS.map((n) => (
                   <button
                     key={n}

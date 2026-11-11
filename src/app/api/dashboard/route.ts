@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, requireSession } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +46,8 @@ export async function GET() {
         avatarColor: guard.user.avatarColor,
       },
     });
-  } catch {
+  } catch (error) {
+    logApiError("dashboard GET", error);
     return ERR.INTERNAL();
   }
 }

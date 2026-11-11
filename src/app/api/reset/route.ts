@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, readBoundedJson, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, readBoundedJson, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -49,7 +49,8 @@ export async function POST(req: Request) {
     ]);
 
     return ok({ reset: true });
-  } catch {
+  } catch (error) {
+    logApiError("reset POST", error);
     return ERR.INTERNAL();
   }
 }

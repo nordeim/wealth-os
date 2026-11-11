@@ -173,6 +173,7 @@ function AccountCard({
       <div className="mt-4 flex gap-2">
         <Button variant="outline" className="h-8 flex-1 text-xs" onClick={onEdit}>
           Edit
+          <span className="sr-only">{account.name}</span>
         </Button>
         <Button
           variant="ghost"
@@ -181,6 +182,7 @@ function AccountCard({
           onClick={onDelete}
         >
           Remove
+          <span className="sr-only">{account.name}</span>
         </Button>
       </div>
     </div>

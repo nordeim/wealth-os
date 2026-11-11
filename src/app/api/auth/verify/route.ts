@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, fail, ERR, parseBody } from "@/lib/api";
+import { ERR, fail, logApiError, ok, parseBody } from "@/lib/api";
 import { setSessionCookie } from "@/lib/auth";
 import { verifySchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -51,6 +51,16 @@ export async function POST(req: Request) {
   // mitigation citation ("bounded by 6-digit entropy + 5/IP" on
   // resend — the same voidable bound F-222n proved); the honest
   // bound is the email-keyed bucket on BOTH routes.
+  //
+  // Session-226 (R-23, F-226h) — the recorded trade-off: the bucket
+  // keys on the caller-supplied email and increments BEFORE any
+  // existence check, so a third party who knows a victim's email
+  // can EXHAUST it (60 junk probes / 15 min) and 429 the victim's
+  // legitimate verification for the window. Deliberate: the
+  // alternative (existence-check-first) reopens the enumeration
+  // oracle the no-leak banners exist to close; a self-healing,
+  // bounded lockout is the lesser risk. The e2e rotating legs
+  // demonstrate exactly this burn.
   const acctLimit = rateLimit(`verify-acct:${email}`, 60, 15 * 60 * 1000);
   if (!acctLimit.allowed) return ERR.RATE_LIMITED(acctLimit.retryAfterSec);
 
@@ -124,7 +134,8 @@ export async function POST(req: Request) {
     // row's tokenVersion.
     await setSessionCookie(user.id, user.tokenVersion);
     return ok({ id: user.id, email: user.email, verified: true });
-  } catch {
+  } catch (error) {
+    logApiError("auth/verify POST", error);
     return ERR.INTERNAL();
   }
 }

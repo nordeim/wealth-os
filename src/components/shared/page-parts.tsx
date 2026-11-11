@@ -93,7 +93,16 @@ export function KpiCard({
 /** The Investments KPI card — the reference's FULL-CARD gradient genus
  * (session-208, F-208a): the whole card is the gradient (`to-br`,
  * text-white, border-0, shadow-2xl) with the ghost `text-white/30` icon
- * right and the white/70 label + font-black value + white/60 sub left. */
+ * right and the white/70 label + font-black value + white/60 sub left.
+ *
+ * Session-226 (R-23, F-226m) — the WCAG exemption register (the F-224y
+ * pattern): the white-alpha labels on these gradients compute below AA
+ * — measured: text-white/70 on emerald-500 ≈ 1.9:1, text-white/60 ≈
+ * 1.6:1, the emerald-100 stat-card label ≈ 2.24:1. The genus is the
+ * reference's own (F-208a, live-extracted); the a11y two-gate
+ * sanctions the arms; the register entry keeps a future contrast
+ * sweep from "discovering" them. The large font-black values ride the
+ * large-text threshold; the labels are the registered exemption. */
 export function GradientKpiCard({
   label,
   value,

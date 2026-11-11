@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody } from "@/lib/api";
+import { ERR, logApiError, ok, parseBody } from "@/lib/api";
 import { hashPassword } from "@/lib/auth";
 import { signupSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -90,6 +90,7 @@ export async function POST(req: Request) {
         },
       });
     } catch (e) {
+      logApiError("auth/signup POST", e);
       // Session-218 (R-15, F-218r): the findUnique→create race — two
       // concurrent first-signups for one email slip past the explicit
       // duplicate check above and the unique constraint answers a raw
@@ -124,7 +125,8 @@ export async function POST(req: Request) {
       requiresVerification: true,
       verificationCode: inAppOtpEnabled ? code : null,
     });
-  } catch {
+  } catch (error) {
+    logApiError("auth/signup POST", error);
     return ERR.INTERNAL();
   }
 }

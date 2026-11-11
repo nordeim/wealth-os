@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession, MAX_AI_BODY_BYTES } from "@/lib/api";
+import { ERR, MAX_AI_BODY_BYTES, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { aiCoachSchema } from "@/lib/schemas";
 import { getAiProvider } from "@/lib/ai";
@@ -53,7 +53,8 @@ export async function POST(req: Request) {
     // context), so it is deliberately unconsumed here.
     void history;
     return ok({ answer });
-  } catch {
+  } catch (error) {
+    logApiError("ai/coach POST", error);
     return ERR.INTERNAL();
   }
 }

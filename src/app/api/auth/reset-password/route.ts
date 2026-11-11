@@ -1,7 +1,7 @@
 import { Prisma } from "@/generated/prisma/client";
 
 import { db } from "@/lib/db";
-import { ok, fail, ERR, parseBody } from "@/lib/api";
+import { ERR, fail, logApiError, ok, parseBody } from "@/lib/api";
 import { hashPassword, hashResetToken } from "@/lib/password";
 import { resetPasswordSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -62,6 +62,7 @@ export async function POST(req: Request) {
   try {
     user = await db.user.findFirst({ where: { resetToken: hashResetToken(resetToken) } });
   } catch (error) {
+    logApiError("auth/reset-password POST", error);
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       (error.code === "P2024" || error.code === "P2028")
@@ -104,6 +105,7 @@ export async function POST(req: Request) {
       return fail("VALIDATION", INVALID_TOKEN_MESSAGE, 400);
     }
   } catch (error) {
+    logApiError("auth/reset-password POST", error);
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       (error.code === "P2024" || error.code === "P2028")

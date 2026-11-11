@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { transactionCreateSchema } from "@/lib/schemas";
 
@@ -21,7 +21,8 @@ export async function GET() {
       orderBy: [{ date: "desc" }, { createdAt: "desc" }],
     });
     return ok(transactions);
-  } catch {
+  } catch (error) {
+    logApiError("transactions GET", error);
     return ERR.INTERNAL();
   }
 }
@@ -65,7 +66,8 @@ export async function POST(req: Request) {
       },
     });
     return ok(transaction);
-  } catch {
+  } catch (error) {
+    logApiError("transactions POST", error);
     return ERR.INTERNAL();
   }
 }

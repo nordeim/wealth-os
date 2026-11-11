@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { goalCreateSchema } from "@/lib/schemas";
 
@@ -14,7 +14,8 @@ export async function GET() {
       orderBy: [{ status: "asc" }, { targetDate: "asc" }],
     });
     return ok(goals);
-  } catch {
+  } catch (error) {
+    logApiError("goals GET", error);
     return ERR.INTERNAL();
   }
 }
@@ -48,7 +49,8 @@ export async function POST(req: Request) {
       },
     });
     return ok(goal);
-  } catch {
+  } catch (error) {
+    logApiError("goals POST", error);
     return ERR.INTERNAL();
   }
 }

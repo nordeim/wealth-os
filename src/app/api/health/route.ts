@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, fail } from "@/lib/api";
+import { fail, logApiError, ok } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +24,8 @@ export async function GET() {
   try {
     await db.$queryRaw`SELECT 1`;
     return ok({ status: "healthy", db: "up" });
-  } catch {
+  } catch (error) {
+    logApiError("health GET", error);
     return fail("SERVICE_UNAVAILABLE", "Database unavailable", 503);
   }
 }

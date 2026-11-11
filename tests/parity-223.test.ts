@@ -95,11 +95,15 @@ describe("F-223e — month-only named forms skip (never an invented day)", () =>
     // day-carrying "Nov 2026 15"), and the REVERSED twin. The seam
     // head contract (the rejection fires beside PARTIAL_ISO) is
     // unchanged; the behavioral pins live in tests/csv.test.ts.
+    // Session-226 (R-23, F-226a) recalibration: the family gained the
+    // DESIGNATED_NAMED_TAIL ("Nov 2026 UTC" — the invented day AND the
+    // zone shift; the bare offset stays excluded for the ISO-date
+    // hazard) and the `i` flag (lowercase utc/gmt).
     expect(src).toContain(
       "const MONTH_ONLY = new RegExp(",
     );
     expect(src).toContain(
-      "`^[A-Za-z]{3,9}[\\\\s.-]+\\\\d{4}${MONTH_YEAR_TIME}`",
+      "`^[A-Za-z]{3,9}[\\\\s.-]+\\\\d{4}${MONTH_YEAR_TIME}${DESIGNATED_NAMED_TAIL}`",
     );
     expect(src).toContain("const REV_MONTH_ONLY = new RegExp(");
     expect(src).toContain(

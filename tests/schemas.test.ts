@@ -152,11 +152,14 @@ describe("verifySchema", () => {
     }
   });
 
-  it("rejects a missing email with 'Email is required'", () => {
+  it("rejects a missing email with 'Enter a valid email address' (F-226r: the emailFormat family)", () => {
     const result = verifySchema.safeParse({ code: "123456" });
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe("Email is required");
+      // Session-226 (R-23, F-226r): verify/resend joined the emailFormat
+      // family (signup/forgot's contract) — the bare emailField's custom
+      // "Email is required" message retired with it.
+      expect(result.error.issues[0].message).toBe("Enter a valid email address");
     }
   });
 });
@@ -166,11 +169,12 @@ describe("resendSchema", () => {
     expect(resendSchema.parse({ email: " A@B.co " }).email).toBe("a@b.co");
   });
 
-  it("rejects a missing email with 'Email is required'", () => {
+  it("rejects a missing email with 'Enter a valid email address' (F-226r: the emailFormat family)", () => {
     const result = resendSchema.safeParse({});
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe("Email is required");
+      // Session-226 (R-23, F-226r): same contract change as verify.
+      expect(result.error.issues[0].message).toBe("Enter a valid email address");
     }
   });
 });

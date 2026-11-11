@@ -130,7 +130,22 @@ async function main() {
       console.error("[captures-225] the captures dev server never came up on :3000");
       process.exit(1);
     }
-    console.log("[captures-225] the captures dev server up (db/captures.db)");
+    // Session-226 (R-23, F-226g): the spawn-liveness check — a slow-booting
+    // incumbent can win the :3000 race (the 2.5s refusal probe returns
+    // "free" before it answers; our child then dies on EADDRINUSE silently
+    // with stdio ignored; the 90s wait succeeds against the INCUMBENT whose
+    // database is unknowable — the exact scenario the refusal excludes).
+    // The child must still be alive: a dead spawn means someone else's
+    // server answered the wait.
+    if (spawned.exitCode !== null || spawned.killed) {
+      console.error(
+        "[captures-225] the spawned server DIED during the wait (exitCode=" +
+          String(spawned.exitCode) +
+          ") — the URL answered by an INCUMBENT server whose database is unknowable. Stop the :3000 server and re-run.",
+      );
+      process.exit(1);
+    }
+    console.log("[captures-225] the captures dev server up (db/captures.db, the spawned child alive)");
   }
   try {
     const browser = await chromium.launch();

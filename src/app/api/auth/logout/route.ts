@@ -1,4 +1,4 @@
-import { ok, ERR } from "@/lib/api";
+import { ERR, logApiError, ok } from "@/lib/api";
 import { clearSessionCookie, getSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -48,7 +48,8 @@ export async function POST(req: Request) {
         data: { tokenVersion: { increment: 1 } },
       });
     }
-  } catch {
+  } catch (error) {
+    logApiError("auth/logout POST", error);
     return ERR.INTERNAL();
   }
   await clearSessionCookie();

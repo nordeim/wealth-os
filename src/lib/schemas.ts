@@ -68,8 +68,12 @@ export const signupSchema = z.object({
   password: passwordSchema,
 });
 
+// Session-226 (R-23, F-226r): verify/resend join the emailFormat family
+// (login's bare emailField is the deliberate don't-reveal choice; these
+// routes gain nothing from it — the lookup misses and the no-leak banners
+// hold either way, and arbitrary strings were minting acct-bucket keys).
 export const verifySchema = z.object({
-  email: emailField("Email is required").min(1, "Email is required"),
+  email: emailFormat,
   code: z
     .string()
     .transform((v) => v.replace(/\D/g, ""))
@@ -77,7 +81,7 @@ export const verifySchema = z.object({
 });
 
 export const resendSchema = z.object({
-  email: emailField("Email is required").min(1, "Email is required"),
+  email: emailFormat,
 });
 
 export const forgotPasswordSchema = z.object({

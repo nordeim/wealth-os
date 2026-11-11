@@ -106,6 +106,12 @@ model Transaction {
   @@index([type])
   @@index([category])
   @@index([budgetCategory])
+  // Session-226 (R-23, F-226d): the heavy read family's sort is
+  // index-backed — every list view orders by ownerId + date (desc),
+  // and the single-column indexes left that compound sort in-memory
+  // at scale (the import route admits 5x5000 rows / 15min; the
+  // dashboard hydrate fires on every navigation by design).
+  @@index([ownerId, date])
 }
 
 model BankAccount {

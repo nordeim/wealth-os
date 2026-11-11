@@ -239,7 +239,18 @@ export const BUTTONS = {
  *   - amber→yellow + stone-900: Dashboard/Accounts/Goals/Settings (the
  *     F-219a genus — the reference's dialog submits carry the SAME
  *     per-page families, measured inside the open dialogs).
- * Applied to both the toolbar CTA and the dialog submit per section. */
+ * Applied to both the toolbar CTA and the dialog submit per section.
+ *
+ * Session-226 (R-23, F-226m): the WCAG exemption register, the F-224y
+ * pattern. The white-on-gradient arms compute BELOW AA across most of
+ * each gradient — measured: white on emerald-500 #10b981 = 2.54:1
+ * (rising to 3.74:1 on teal-600), white on rose-500 #f43f5e = 3.67:1
+ * (4.83:1 on red-600). These are the REFERENCE'S OWN CTA genera
+ * (F-219b, live-measured per-page gradients — the amber arm carries
+ * stone-900 ink at 8.14:1 and passes); the values are registered here
+ * so a future contrast sweep does not "discover" them again. The
+ * a11y two-gate sanctions the arms (the F-219b/F-208a citations);
+ * the register entry is the honest record. */
 export const CTA = {
   amber:
     "bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-stone-900 font-semibold shadow-md",
@@ -322,8 +333,17 @@ export const BUTTON_BASE = {
   rounded: "rounded-md",
 } as const;
 
+// Session-226 (R-23, F-226l): the token family — border-line bg-surface.
+// The stone literals this constant carried measured WRONG against the
+// reference's own dark menu panel (live-probed on both apps,
+// probe-226-menu: the reference's panel computes rgb(10,10,10)/
+// rgb(38,38,38) — the flipped token family — while our stone-900/700
+// literals rendered #1c1917/#44403c in the default dark posture). The
+// light arm is byte-identical either way (#ffffff/#e7e5e4); the dark
+// arm now matches the reference AND the sibling popover families
+// (Select listbox, dialogs, Popover).
 export const MENU_CONTENT =
-  "z-50 min-w-44 overflow-hidden rounded-lg border border-stone-200 bg-white p-1 shadow-lg dark:border-stone-700 dark:bg-stone-900" as const;
+  "z-50 min-w-44 overflow-hidden rounded-lg border border-line bg-surface p-1 shadow-lg" as const;
 
 export const MENU_ITEM =
   "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-2 text-sm outline-none transition-colors focus:bg-stone-100 focus:text-stone-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-stone-800 dark:focus:text-stone-100" as const;
@@ -339,9 +359,17 @@ export const CHECKBOX = {
 export const TABS_SEGMENTED = {
   // Session-199: the inactive arm rides stone-600 (5.4:1 on the stone-100
   // track — AA; stone-500 computed 4.0:1 and failed the two-gate).
+  // Session-226 (R-23, F-226i): the trigger GAINS ring-offset-background —
+  // the reference's own class (live-probed on its Analytics tabs,
+  // probe-226-ring: its triggers carry the class and compute the offset
+  // to its --background token — #0a0a0a in the fresh-visitor dark
+  // posture). Without the class our focused tab painted the v4 DEFAULT
+  // #fff offset — a WHITE halo under the focus ring on a dark page.
+  // (SELECT_TRIGGER and TABS_PILL keep it — all three byte-extracted
+  // from the reference's own DOM strings.)
   track: "inline-flex h-10 items-center justify-center rounded-lg bg-stone-100 p-1 text-stone-600 dark:bg-stone-800 dark:text-stone-300",
   trigger:
-    "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
+    "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
 } as const;
 
 export const TABS_PILL = {

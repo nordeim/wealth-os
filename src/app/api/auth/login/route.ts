@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, fail, ERR, parseBody } from "@/lib/api";
+import { ERR, fail, logApiError, ok, parseBody } from "@/lib/api";
 import { verifyPassword, timingEqualizerHash, setSessionCookie } from "@/lib/auth";
 import { loginSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -92,7 +92,8 @@ export async function POST(req: Request) {
       avatarColor: user.avatarColor,
       role: user.role,
     });
-  } catch {
+  } catch (error) {
+    logApiError("auth/login POST", error);
     return ERR.INTERNAL();
   }
 }

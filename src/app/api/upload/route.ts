@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { writeFile } from "fs/promises";
 import { join } from "path";
-import { ERR, isGuarded, ok, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { EXT_BY_MIME, MAX_UPLOAD_BYTES, uploadsDir } from "@/lib/uploads";
 
@@ -106,7 +106,8 @@ export async function POST(request: Request) {
     await writeFile(join(uploadsDir(), name), bytes);
 
     return ok({ file_url: `/api/uploads/${name}` });
-  } catch {
+  } catch (error) {
+    logApiError("upload POST", error);
     return ERR.INTERNAL();
   }
 }

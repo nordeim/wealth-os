@@ -556,3 +556,173 @@ describe("stageCsvDate R-22 completion (F-225a/b — the numeric partials and th
     }
   });
 });
+
+// Session-226 (R-23, F-226a): the designated-tail ESCAPE families —
+// seven regex-shape classes the R-22 taxonomy missed still staged the
+// VIEWER's calendar (live-reproduced under TZ switching in three zones,
+// scripts/probe-226-csv.ts; the V8 acceptance of every form validated by
+// scripts/probe-226-v8.ts BEFORE the cure). Every escape now routes to
+// the written-literal staging doctrine; every control keeps its behavior.
+describe("stageCsvDate designated-tail escapes (F-226a — the R-22 completion)", () => {
+  const ZONES = ["UTC", "America/New_York", "Asia/Tokyo"] as const;
+  afterEach(() => {
+    process.env.TZ = "UTC";
+  });
+
+  it("case-insensitive utc/gmt tails stage the written day (pre-cure: 2026-10-31 in New York — a wrong day)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov 1, 2026 utc")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 Gmt")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("2026-11-01 10:00 utc")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+
+  it("a leading weekday is tolerated — the RFC-822 shape stages the written day in every zone (pre-cure: 'Thu, 01 Jan 2026 00:00:00 GMT' staged 2025-12-31 in New York — a wrong day AND year)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Sun, Nov 1, 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Sunday, Nov 1, 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Thu, 01 Jan 2026 00:00:00 GMT")).toBe("2026-01-01T00:00:00.000Z");
+      expect(stageCsvDate("Fri Nov 1, 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Sun 11/01/2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Thu, 01 Jan 2026 00:00:00 -0500")).toBe("2026-01-01T00:00:00.000Z");
+      expect(stageCsvDate("Thu, 01 Jan 2026 00:00:00 EST")).toBe("2026-01-01T00:00:00.000Z");
+    }
+  });
+
+  it("separator lenience — double spaces, comma-no-space, and space-before-comma all stage the written day (pre-cure: the viewer's calendar in New York)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov  1, 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1,2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1 , 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov.1.2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+
+  it("the meridiem before the designator stages the written day (pre-cure: 'Nov 1, 2026 11:00 PM UTC' staged Nov 2 in Tokyo)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov 1, 2026 11:00 PM UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("01 Nov 2026 11:00 PM GMT")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("11/01/2026 11:00 PM UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("2026-11-01 11:00 PM +09:00")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+
+  it("V8's named zones stage the written day in every zone (pre-cure: 'Nov 1, 2026 8:00 PM EST' staged Nov 2 in UTC/Tokyo; 'Dec 31, 2026 8:00 PM EST' staged 2027-01-01 — a wrong year)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM EST")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM EDT")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM CST")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM CDT")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM MST")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM MDT")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM PST")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM PDT")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM UT")).toBe("2026-11-01T00:00:00.000Z");
+      // The year boundary — the audit's wrong-year repro
+      expect(stageCsvDate("Dec 31, 2026 8:00 PM EST")).toBe("2026-12-31T00:00:00.000Z");
+      // The zone-split twin: the ISO-space form's V8 instant previously
+      // staged-by-luck in New York and nulled in Tokyo
+      expect(stageCsvDate("2026-11-01 10:00 EST")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+
+  it("V8-REJECTED named zones null safely in every zone (CET/JST/BST/AEST — V8 NaN, the whole-parse guard)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM CET")).toBeNull();
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM JST")).toBeNull();
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM BST")).toBeNull();
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM AEST")).toBeNull();
+      expect(stageCsvDate("Nov 1, 2026 8:00 PM XYZ")).toBeNull();
+    }
+  });
+
+  it("compound UTC/GMT± tails stage the written day in every zone (pre-cure: 'Nov 1, 2026 UTC+01:00' staged 2026-10-31 in two zones; 'Jan 1, 2026 GMT+05:30' staged 2025-12-31)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov 1, 2026 UTC+01:00")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 GMT+5")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 UTC -05:00")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Jan 1, 2026 GMT+05:30")).toBe("2026-01-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 UTC+1")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Nov 1, 2026 gmt+05:30")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+
+  it("the month-year family WITH a designated tail nulls — no day was written (pre-cure: 'Nov 2026 UTC' staged 2026-10-31 in New York — the invented day AND the zone shift)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov 2026 UTC")).toBeNull();
+      expect(stageCsvDate("Nov 2026 GMT")).toBeNull();
+      expect(stageCsvDate("Nov 2026 10:00 UTC")).toBeNull();
+      expect(stageCsvDate("Nov 2026 10:00 AM UTC")).toBeNull();
+      expect(stageCsvDate("Nov 2026 10:00 UTC+01:00")).toBeNull();
+      expect(stageCsvDate("2026 Nov 10:00 UTC")).toBeNull();
+      expect(stageCsvDate("2026/11 UTC")).toBeNull();
+      expect(stageCsvDate("2026/11 Z")).toBeNull();
+      expect(stageCsvDate("2026/11 GMT")).toBeNull();
+      expect(stageCsvDate("2026 11 UTC")).toBeNull();
+      expect(stageCsvDate("2026-11 UTC")).toBeNull();
+    }
+  });
+
+  it("the day-carrying month-year form WITH a designated tail stages the WRITTEN day (pre-cure: 'Nov 2026 15 UTC' staged Nov 14 in New York — the written day was 15)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov 2026 15 UTC")).toBe("2026-11-15T00:00:00.000Z");
+    }
+  });
+
+  it("the controls keep their standing behavior (the escape cure must not regress the covered forms)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      // The R-22 covered tails
+      expect(stageCsvDate("Nov 1, 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("Jan 1, 2026 GMT")).toBe("2026-01-01T00:00:00.000Z");
+      expect(stageCsvDate("2026-11-01 10:00 +09:00")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("11/01/2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("01 Nov 2026 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("2026-11-01T10:00:00z")).toBe("2026-11-01T00:00:00.000Z");
+      // The rejections and residuals
+      expect(stageCsvDate("2026/11")).toBeNull();
+      expect(stageCsvDate("Nov 2026")).toBeNull();
+      expect(stageCsvDate("Nov 2026 10:00")).toBeNull();
+      expect(stageCsvDate("2026 Nov")).toBeNull();
+      expect(stageCsvDate("Nov 1, 26 UTC")).toBeNull();
+      expect(stageCsvDate("11/01/26 UTC")).toBeNull();
+      expect(stageCsvDate("Nov 31, 2026 UTC")).toBeNull();
+      // The day-carrying named forms keep staging through the locale arm
+      expect(stageCsvDate("Nov 2026 15")).toBe("2026-11-15T00:00:00.000Z");
+      expect(stageCsvDate("2026 Nov 15 10:00")).toBe("2026-11-15T00:00:00.000Z");
+      // ISO dates are NOT the numeric month-year partial (the tail-design hazard)
+      expect(stageCsvDate("2026-11-01")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("2026/11/01 UTC")).toBe("2026-11-01T00:00:00.000Z");
+      // The bare ±HH forms stage the written day (the F-226n truth)
+      expect(stageCsvDate("Nov 1, 2026 10:00 +09")).toBe("2026-11-01T00:00:00.000Z");
+      expect(stageCsvDate("2026-11-01 10:00 +09")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+
+  it("the ISO end-of-day edge stages the WRITTEN day (the doctrine-consistent reading — V8 reads 24:00 as the next day; the digits wrote Nov 1)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("2026-11-01T24:00:00Z")).toBe("2026-11-01T00:00:00.000Z");
+    }
+  });
+
+  it("rolled designated calendars null on the widened arms (the round-trip doctrine extends)", () => {
+    for (const zone of ZONES) {
+      process.env.TZ = zone;
+      expect(stageCsvDate("Nov 31, 2026 utc")).toBeNull();
+      expect(stageCsvDate("Sun, Nov 31, 2026 UTC")).toBeNull();
+      expect(stageCsvDate("Nov 2026 32 UTC")).toBeNull(); // the day-after-year arm round-trips
+      expect(stageCsvDate("Xxx 1, 2026 UTC")).toBeNull(); // unknown month, weekday-shaped
+      expect(stageCsvDate("Nov 1, 2026 11:00 PM EST")).toBe("2026-11-01T00:00:00.000Z"); // the meridiem × named-zone cross
+    }
+  });
+});

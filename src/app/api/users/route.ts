@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { ok, ERR, readBoundedJson, isGuarded, requireSession } from "@/lib/api";
+import { ERR, isGuarded, logApiError, ok, readBoundedJson, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { profileUpdateSchema } from "@/lib/schemas";
 
@@ -70,7 +70,8 @@ export async function PATCH(request: Request) {
       select: { id: true, email: true, name: true, avatarColor: true, photoUrl: true, role: true },
     });
     return ok(user);
-  } catch {
+  } catch (error) {
+    logApiError("users PATCH", error);
     return ERR.INTERNAL();
   }
 }
