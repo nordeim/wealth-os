@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isRecordNotFound } from "@/lib/db";
 import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
 import { bankAccountUpdateSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -41,7 +41,10 @@ export async function PUT(req: Request, { params }: Params) {
       },
     });
     return ok(account);
-  } catch {
+  } catch (e) {
+    // Session-222 (R-19, F-222o): a record that vanished between the
+    // findFirst and the mutation is NOT_FOUND, never INTERNAL.
+    if (isRecordNotFound(e)) return ERR.NOT_FOUND();
     return ERR.INTERNAL();
   }
 }
@@ -64,7 +67,10 @@ export async function DELETE(req: Request, { params }: Params) {
     if (!existing) return ERR.NOT_FOUND();
     await db.bankAccount.delete({ where: { id } });
     return ok({ id });
-  } catch {
+  } catch (e) {
+    // Session-222 (R-19, F-222o): a record that vanished between the
+    // findFirst and the mutation is NOT_FOUND, never INTERNAL.
+    if (isRecordNotFound(e)) return ERR.NOT_FOUND();
     return ERR.INTERNAL();
   }
 }

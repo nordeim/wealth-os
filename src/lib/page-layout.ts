@@ -281,7 +281,10 @@ export const DIALOG_CLOSE =
   // the old stone-400 at 70% blended to ≈1.85:1 on white (below the 3:1
   // non-text bar; full-opacity stone-400 was 2.52:1). The F-220f toast ✕
   // cure's mirror: stone-500 computes 4.95:1.
-  "absolute right-4 top-4 rounded-md text-stone-500 transition-colors hover:text-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none" as const;
+  // Session-222 (R-19, F-222h): the dark arms — the hover pair stepped
+  // DOWN to 2.47:1 in dark (stone-600 on the flipped surface); the 400
+  // resting / 300 hover mirror keeps the affordance rising in both modes.
+  "absolute right-4 top-4 rounded-md text-stone-500 transition-colors hover:text-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none dark:text-stone-400 dark:hover:text-stone-300" as const;
 
 export const INPUT_BASE = {
   size: "text-base md:text-sm",
@@ -363,7 +366,11 @@ export const LOGIN_LAYOUT = {
   title: "text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight",
   subtitle: "text-slate-500 text-sm sm:text-base font-medium",
   google:
-    "flex w-full items-center justify-center gap-3 rounded-xl border border-[#e3e7ee] bg-white px-5 py-3 font-medium text-[#1b2437] text-[15px] transition-all duration-200 hover:border-slate-300 hover:bg-slate-50",
+    // Session-222 (R-19, F-222g): the house focus ring joins the auth
+    // face's hand-rolled buttons (the submit already carried it; the
+    // UA-default outline was the only affordance here, tinted ≈3:1 by
+    // the globals outline-color).
+    "flex w-full items-center justify-center gap-3 rounded-xl border border-[#e3e7ee] bg-white px-5 py-3 font-medium text-[#1b2437] text-[15px] transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2",
   googleIcon: "shrink-0",
   divider: "relative my-6",
   dividerLine: "shrink-0 h-[1px] w-full bg-[#e3e7ee]",
@@ -380,23 +387,34 @@ export const LOGIN_LAYOUT = {
   submit:
     "flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-[#131b33] font-medium text-white shadow-sm transition-all duration-200 hover:bg-[#0f1630] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 text-sm",
   footer: "flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0",
-  footerLink: "text-sm text-[#6b7688] transition-colors hover:text-[#1b2437]",
+  footerLink:
+    // Session-222 (R-19, F-222g): the house focus ring (the auth-face
+    // amber genus, matching the submit/google pair).
+    "text-sm text-[#6b7688] transition-colors hover:text-[#1b2437] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-sm",
   footerLinkStrong: "font-semibold text-[#1b2437]",
 } as const;
 export const NOT_FOUND_LAYOUT = {
-  page: "min-h-screen flex items-center justify-center p-6 bg-slate-50",
+  // Session-222 (R-19, F-222f): the dark arms — the theme seam resolves
+  // DARK for any non-auth path with no stored choice, so a fresh dark
+  // visitor's 404 rendered a light page under html.dark (the whiplash
+  // defect). The reference (a client SPA) serves its 404 INSIDE the
+  // authenticated shell — dark for fresh visitors — so dark arms are
+  // the parity-correct genus; light mode is untouched.
+  page: "min-h-screen flex items-center justify-center p-6 bg-slate-50 dark:bg-[#0a0a0a]",
   card: "max-w-md w-full",
   center: "text-center space-y-6",
   headingGroup: "space-y-2",
-  h1: "text-7xl font-light text-slate-500",
-  divider: "h-0.5 w-16 bg-slate-200 mx-auto",
+  h1: "text-7xl font-light text-slate-500 dark:text-stone-400",
+  divider: "h-0.5 w-16 bg-slate-200 mx-auto dark:bg-stone-800",
   textGroup: "space-y-3",
-  h2: "text-2xl font-medium text-slate-800",
-  p: "text-slate-600 leading-relaxed",
-  pathSpan: "font-medium text-slate-700",
+  h2: "text-2xl font-medium text-slate-800 dark:text-stone-100",
+  p: "text-slate-600 dark:text-stone-400 leading-relaxed",
+  pathSpan: "font-medium text-slate-700 dark:text-stone-300",
   buttonGroup: "pt-6",
   homeButton:
-    "inline-flex items-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500",
+    // Session-222 (R-19, F-222g): the house focus ring (focus-visible,
+    // not the legacy focus:) + the dark arms.
+    "inline-flex items-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:text-stone-200 dark:bg-stone-900 dark:border-stone-700 dark:hover:bg-stone-800 dark:hover:border-stone-600",
   homeIcon: "w-4 h-4 mr-2",
   homeHref: "/",
 } as const;

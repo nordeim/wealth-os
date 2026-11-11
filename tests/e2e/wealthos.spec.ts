@@ -377,3 +377,46 @@ test.describe("the API auth wall (N-69g probe — the 401 seam)", () => {
     expect(res.status()).toBe(200);
   });
 });
+
+// Session-222 (R-19, F-222n): the per-account login bucket's behavioral
+// leg. The default proxy posture (unset NEO_PROXY_HOPS = depth 1) keys
+// clientKey on client-suppliable XFF — rotating the header hands every
+// attempt a fresh per-IP bucket, the exact direct-exposure void the
+// finding describes. The email-keyed secondary bucket (30/15min, fired
+// after the Zod parse and before any account-existence check) bounds
+// the attack where the IP cap cannot — and returns the SAME 429 for
+// known and unknown emails (no enumeration oracle).
+test.describe("the per-account login bucket (F-222n — the rotating-header bound)", () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
+  const ORIGIN = `http://localhost:${e2ePort()}`;
+
+  test("31 rotating-XFF attempts on one email: the IP buckets never fire, the account bucket caps the 31st", async ({ request }) => {
+    const statuses: number[] = [];
+    for (let i = 0; i < 31; i++) {
+      const res = await request.post(`${ORIGIN}/api/auth/login`, {
+        headers: { "x-forwarded-for": `198.51.100.${i}` },
+        data: {
+          email: "acct-bucket-probe@example.com",
+          password: "wrong-password-probe",
+        },
+      });
+      statuses.push(res.status());
+    }
+    // Attempts 1..30 pass both buckets (401 — the timing-equalized
+    // unknown-email miss); the 31st trips the per-account 429 while
+    // every per-IP bucket has seen exactly one request.
+    expect(statuses.filter((s) => s === 401)).toHaveLength(30);
+    expect(statuses[30]).toBe(429);
+    const body = (await request
+      .post(`${ORIGIN}/api/auth/login`, {
+        headers: { "x-forwarded-for": "198.51.100.250" },
+        data: {
+          email: "acct-bucket-probe@example.com",
+          password: "wrong-password-probe",
+        },
+      })
+      .then((r) => r.json())) as { ok: boolean; error: { code: string } };
+    expect(body.ok).toBe(false);
+    expect(body.error.code).toBe("RATE_LIMITED");
+  });
+});

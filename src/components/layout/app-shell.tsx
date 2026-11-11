@@ -69,7 +69,7 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
                 <button
                   type="button"
                   onClick={() => void hydrate()}
-                  className="self-start rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-800 transition-colors hover:bg-red-100 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-900/40"
+                  className="self-start rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-800 transition-colors hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-red-800 dark:text-red-200 dark:hover:bg-red-900/40"
                 >
                   Try again
                 </button>

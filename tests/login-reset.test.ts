@@ -62,7 +62,10 @@ describe("login reset flow — reference class vocabulary", () => {
     // directly. (Session-11 VLM round: the clone rendered -8px until the
     // re-pin; session-79: the flat mb-4 was 8px too tall at phones.)
     expect(LOGIN_RESET_LAYOUT.back).toBe(
-      "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 sm:mb-4",
+      // Session-222 (R-19, F-222g): the focus-ring arm joins the constant
+      // (the house amber genus — a legitimate contract change, updated
+      // in the same commit as the cure).
+      "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 sm:mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-md",
     );
     expect(LOGIN_RESET_LAYOUT.backIcon).toBe("h-4 w-4");
   });

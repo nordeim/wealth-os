@@ -72,6 +72,17 @@ export default function AnalyticsPage() {
 
   const axisColor = isDark ? "#a8a29e" : "#78716c";
   const gridColor = isDark ? "#292524" : "#e7e5e4";
+  // Session-222 (R-19, F-222i): every analytics tooltip joins the
+  // isDark family — the bare <Tooltip /> sites rendered recharts'
+  // default white chip over dark cards.
+  const tooltipInk = isDark ? "#f5f5f4" : "#1c1917";
+  const tooltipStyle = {
+    borderRadius: 12,
+    border: `1px solid ${isDark ? "#44403c" : "#e7e5e4"}`,
+    background: isDark ? "#1c1917" : undefined,
+  } as const;
+  const tooltipLabelStyle = { color: tooltipInk, fontWeight: 600 } as const;
+  const tooltipItemStyle = { color: tooltipInk } as const;
   const n = Number(months);
 
   const txs = store.transactions;
@@ -230,7 +241,12 @@ export default function AnalyticsPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                       <XAxis dataKey="label" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={formatAxisMoney} tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} width={56} />
-                      <Tooltip formatter={(v) => formatMoney(Number(v))} />
+                      <Tooltip
+                        formatter={(v) => formatMoney(Number(v))}
+                        labelStyle={tooltipLabelStyle}
+                        itemStyle={tooltipItemStyle}
+                        contentStyle={tooltipStyle}
+                      />
                       {/* Session-208 (F-208f): recharts v3 sorts the
                           legend payload alphabetically by default
                           (itemSorter: 'value' → Expenses, Income, Net)
@@ -259,7 +275,12 @@ export default function AnalyticsPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                       <XAxis dataKey="day" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={formatAxisMoney} tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} width={56} />
-                      <Tooltip formatter={(v) => formatMoney(Number(v))} />
+                      <Tooltip
+                        formatter={(v) => formatMoney(Number(v))}
+                        labelStyle={tooltipLabelStyle}
+                        itemStyle={tooltipItemStyle}
+                        contentStyle={tooltipStyle}
+                      />
                       <Bar dataKey="value" name="Spending" radius={[6, 6, 0, 0]} fill={CHART_COLORS.net} />
                     </BarChart>
                   </ResponsiveContainer>
@@ -283,7 +304,12 @@ export default function AnalyticsPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                       <XAxis dataKey="name" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={formatAxisMoney} tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} width={56} />
-                      <Tooltip formatter={(v) => formatMoney(Number(v))} />
+                      <Tooltip
+                        formatter={(v) => formatMoney(Number(v))}
+                        labelStyle={tooltipLabelStyle}
+                        itemStyle={tooltipItemStyle}
+                        contentStyle={tooltipStyle}
+                      />
                       <Bar dataKey="value" name="Amount" radius={[6, 6, 0, 0]}>
                         <Cell fill="#3b82f6" />
                         <Cell fill="#a855f7" />
@@ -312,7 +338,12 @@ export default function AnalyticsPage() {
                             <Cell key={slice.category} fill={slice.color} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(v) => formatMoney(Number(v))} />
+                        <Tooltip
+                        formatter={(v) => formatMoney(Number(v))}
+                        labelStyle={tooltipLabelStyle}
+                        itemStyle={tooltipItemStyle}
+                        contentStyle={tooltipStyle}
+                      />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
@@ -352,7 +383,12 @@ export default function AnalyticsPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                     <XAxis dataKey="label" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                     <YAxis tickFormatter={formatAxisMoney} tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} width={56} />
-                    <Tooltip formatter={(v) => formatMoney(Number(v))} />
+                    <Tooltip
+                      formatter={(v) => formatMoney(Number(v))}
+                      labelStyle={tooltipLabelStyle}
+                      itemStyle={tooltipItemStyle}
+                      contentStyle={tooltipStyle}
+                    />
                     <Area type="monotone" dataKey="value" name="Income" stroke={CHART_COLORS.income} strokeWidth={2.5} fill="url(#incFill)" />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -377,7 +413,12 @@ export default function AnalyticsPage() {
                           return <Cell key={slice.type} fill={meta?.color ?? "#78716c"} />;
                         })}
                       </Pie>
-                      <Tooltip formatter={(v) => formatMoney(Number(v))} />
+                      <Tooltip
+                        formatter={(v) => formatMoney(Number(v))}
+                        labelStyle={tooltipLabelStyle}
+                        itemStyle={tooltipItemStyle}
+                        contentStyle={tooltipStyle}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -394,7 +435,12 @@ export default function AnalyticsPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                       <XAxis dataKey="symbol" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={formatAxisMoney} tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} width={56} />
-                      <Tooltip formatter={(v) => formatMoney(Number(v))} />
+                      <Tooltip
+                        formatter={(v) => formatMoney(Number(v))}
+                        labelStyle={tooltipLabelStyle}
+                        itemStyle={tooltipItemStyle}
+                        contentStyle={tooltipStyle}
+                      />
                       <Bar dataKey="gain" name="Gain/Loss" radius={[6, 6, 0, 0]}>
                         {stats.holdings.map((h) => (
                           <Cell key={h.symbol} fill={h.gainLoss >= 0 ? "#10b981" : "#f43f5e"} />

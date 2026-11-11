@@ -153,7 +153,10 @@ function ToastCard({ item }: { item: ToastItem }) {
         // token flips dark — bg-white would strand light text on white)
         // and the hover pair gains its dark arm (neutral-900 on the
         // #262626 hover wash is dark-on-dark).
-        className="shrink-0 rounded-md p-1 text-muted transition-colors hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50"
+        // Session-222 (R-19, F-222g): the house focus ring joins the
+        // dismiss control (the UA default outline was its only
+        // affordance — the globals outline-color tints it ≈3:1).
+        className="shrink-0 rounded-md p-1 text-muted transition-colors hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label="Dismiss notification"
       >
         <X className="h-3.5 w-3.5" />

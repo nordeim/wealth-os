@@ -54,6 +54,17 @@ export async function POST(req: Request) {
   if (!parsed.ok) return parsed.response;
   const email = parsed.data.email;
 
+  // Session-222 (R-19, F-222n): the per-account secondary bucket —
+  // the login route's mirror (the F-222n decode): the default proxy
+  // posture keys clientKey on client-suppliable headers, so a
+  // rotating caller voids the per-IP cap on a direct-exposure
+  // deploy. 20/15min sits ABOVE the per-IP cap (10/15) so every
+  // single-IP flow trips the IP bucket first. Fired BEFORE the
+  // no-enumeration branch — the 429 is identical for known and
+  // unknown emails (the contract holds).
+  const acctLimit = rateLimit(`forgot-acct:${email}`, 20, 15 * 60 * 1000);
+  if (!acctLimit.allowed) return ERR.RATE_LIMITED(acctLimit.retryAfterSec);
+
   // The no-enumeration contract: the same 200 + message whether or not the
   // account exists. The known-email branch performs randomBytes + a SQLite
   // user.update (with fsync) before answering while the unknown-email

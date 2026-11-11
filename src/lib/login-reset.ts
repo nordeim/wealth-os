@@ -86,8 +86,9 @@ export const LOGIN_RESET_LAYOUT = {
    *  specificity fight — so `mb-2 sm:mb-4` expresses the SAME computed
    *  ladder directly. (Session-11 VLM round: the clone rendered -8px
    *  until the re-pin; session-79: the flat mb-4 was 8px too tall at
-   *  phones.) */
-  back: "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 sm:mb-4",
+   *  phones.) Session-222 (R-19, F-222g): the house focus ring joins
+   *  the auth funnel's hand-rolled buttons (the amber genus). */
+  back: "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 sm:mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-md",
   /** The reset view's mail icon — the LIGHTER slate-400 family (the
    *  reference's reset/signup views ride slate-400 icons where the
    *  signin view rides slate-500; session-79 L-79c10, live-extracted). */
@@ -156,8 +157,9 @@ export const LOGIN_SIGNUP_LAYOUT = {
    *  collapses under v3 space-y-4 at ALL widths; session-79 M-79c2
    *  LIVE-falsified the s21 "verbatim -mb-2" claim: under our v4 the
    *  own class WINS the :where() fight and computed an 8px OVERLAP —
-   *  `mb-2` is the v4-correct direct expression). */
-  back: "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2",
+   *  `mb-2` is the v4-correct direct expression). Session-222 (R-19,
+   *  F-222g): the house focus ring (the amber genus). */
+  back: "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-md",
   /** The back button's ArrowLeft icon size (the s11 pin). */
   backIcon: "h-4 w-4",
   /** The view's h2 — the s11 title family. */
@@ -206,8 +208,9 @@ export const LOGIN_VERIFY_LAYOUT = {
    *  twin; session-111 [D4]: the reference's verify back->heading gap
    *  computes 16 at >=640 [its -mb-2 collapses with the v3 mt 24;
    *  LIVE-measured on the s111 re-walk] — the flat mb-2 rode 8px at
-   *  all widths, 8px short at desktop). */
-  back: "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 sm:mb-4",
+   *  all widths, 8px short at desktop). Session-222 (R-19, F-222g):
+   *  the house focus ring (the amber genus). */
+  back: "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 sm:mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-md",
   backIcon: "h-4 w-4",
   /** The centered heading stack — session-111 [D2, inert]: the
    *  reference's own class is text-center space-y-2 (the s21 "the sent
@@ -246,8 +249,9 @@ export const LOGIN_VERIFY_LAYOUT = {
   resendLine: "text-sm text-slate-600",
   /** The resend line's centered wrapper (DOM: div.text-center > p). */
   resendWrap: "text-center",
-  /** The Resend button inside the line. */
-  resendButton: "font-medium text-slate-700 hover:text-slate-900 disabled:opacity-50 transition-colors",
+  /** The Resend button inside the line. Session-222 (R-19, F-222g):
+   *  the house focus ring (the amber genus). */
+  resendButton: "font-medium text-slate-700 hover:text-slate-900 disabled:opacity-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-sm",
   /** The form's buttons group (DOM: div.space-y-3 holding the submit +
    *  the resend line — the verify view's own bottom-of-form family). */
   buttonsGroup: "space-y-3",

@@ -88,7 +88,7 @@ export default function AccountsPage() {
                 <p
                   className={cn(
                     "text-2xl font-bold",
-                    totalBalance >= 0 ? "text-stone-900 dark:text-stone-50" : "text-red-500",
+                    totalBalance >= 0 ? "text-stone-900 dark:text-stone-50" : "text-red-600 dark:text-red-400",
                   )}
                 >
                   {formatMoney(totalBalance)}
@@ -161,7 +161,7 @@ function AccountCard({
       <p
         className={cn(
           "mt-4 text-2xl font-bold",
-          account.balance >= 0 ? "text-stone-900 dark:text-stone-50" : "text-red-500",
+          account.balance >= 0 ? "text-stone-900 dark:text-stone-50" : "text-red-600 dark:text-red-400",
         )}
       >
         {formatMoney(account.balance)}

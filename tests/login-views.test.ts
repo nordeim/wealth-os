@@ -179,7 +179,8 @@ describe("session-21: the signup view vocabulary (S21-P4)", () => {
     // v3 margin-TOP space-y-4 collapses 16-8). `mb-2` expresses the SAME
     // computed 8px gap directly.
     expect(L.back).toBe(
-      "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2",
+      // Session-222 (R-19, F-222g): the focus-ring arm joins the constant.
+      "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-md",
     );
     expect(L.backIcon).toBe(LOGIN_RESET_LAYOUT.backIcon);
   });
@@ -250,7 +251,8 @@ describe("session-21: the verify view vocabulary (S21-P5)", () => {
     const L = await verifyLayout();
     expect(L.resendLine).toBe("text-sm text-slate-600");
     expect(L.resendButton).toBe(
-      "font-medium text-slate-700 hover:text-slate-900 disabled:opacity-50 transition-colors",
+      // Session-222 (R-19, F-222g): the focus-ring arm joins the constant.
+      "font-medium text-slate-700 hover:text-slate-900 disabled:opacity-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-sm",
     );
   });
 

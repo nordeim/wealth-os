@@ -51,6 +51,11 @@ export default function ExpensesPage() {
   const [search, setSearch] = React.useState("");
   const [tab, setTab] = React.useState("all");
   const [filtersOpen, setFiltersOpen] = React.useState(false);
+  // Session-222 (R-19, F-222l): the row-delete busy rider — the
+  // F-221q round covered the four card-button surfaces but missed
+  // the app's highest-traffic delete (a rapid double-click fired two
+  // DELETEs; the second 404s and toasts a spurious "Delete failed").
+  const [busyId, setBusyId] = React.useState<string | null>(null);
   // Session-218 (R-15, F-218b): the trigger's own ref — the R-14 cure
   // removed the bare `button[aria-expanded]` outside-close guard but
   // never landed the scoped replacement its comment claimed (the
@@ -193,6 +198,7 @@ export default function ExpensesPage() {
               <Button
                 variant="ghost"
                 className="h-8 px-2 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                disabled={busyId === tx.id}
                 onClick={() => void deleteExpense(tx)}
               >
                 <X className="h-3.5 w-3.5" />
@@ -206,7 +212,9 @@ export default function ExpensesPage() {
   );
 
   const deleteExpense = async (tx: Transaction) => {
+    setBusyId(tx.id);
     const res = await store.deleteTransaction(tx.id);
+    setBusyId(null);
     if (res.ok) toast.success("Expense deleted");
     else toast.error("Delete failed", res.error);
   };
@@ -291,7 +299,7 @@ export default function ExpensesPage() {
                     type="button"
                     aria-label="Close filters"
                     onClick={() => setFiltersOpen(false)}
-                    className="rounded-md p-1 text-stone-500 hover:text-stone-600 dark:text-stone-400 dark:hover:text-stone-200"
+                    className="rounded-md p-1 text-stone-500 hover:text-stone-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:text-stone-400 dark:hover:text-stone-200"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -485,7 +493,7 @@ export function ExpenseDialog({
                   key={c.label}
                   type="button"
                   onClick={() => pickQuick(c.label, c.budgetCategory)}
-                  className="flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-700 shadow-sm transition-all hover:border-amber-300 hover:bg-amber-50/50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:border-amber-500/40 dark:hover:bg-amber-500/5"
+                  className="flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-700 shadow-sm transition-all hover:border-amber-300 hover:bg-amber-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:border-amber-500/40 dark:hover:bg-amber-500/5"
                 >
                   <span aria-hidden="true">{c.emoji}</span>
                   {c.label}
@@ -495,7 +503,7 @@ export function ExpenseDialog({
             <button
               type="button"
               onClick={() => setStep("form")}
-              className="mt-4 w-full text-center text-sm font-medium text-stone-500 underline-offset-4 hover:text-amber-600 hover:underline dark:text-stone-400"
+              className="mt-4 w-full text-center text-sm font-medium text-stone-500 underline-offset-4 hover:text-amber-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm dark:text-stone-400"
             >
               Or fill manually
             </button>
@@ -538,7 +546,7 @@ export function ExpenseDialog({
                     key={n}
                     type="button"
                     onClick={() => bump(n)}
-                    className="rounded-md border border-stone-200 bg-white px-2 py-1 text-xs font-semibold text-stone-600 transition-colors hover:border-amber-300 hover:text-amber-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300"
+                    className="rounded-md border border-stone-200 bg-white px-2 py-1 text-xs font-semibold text-stone-600 transition-colors hover:border-amber-300 hover:text-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300"
                   >
                     +${n}
                   </button>

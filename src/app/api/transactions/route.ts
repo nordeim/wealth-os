@@ -5,6 +5,13 @@ import { transactionCreateSchema } from "@/lib/schemas";
 
 export const dynamic = "force-dynamic";
 
+// Session-222 (R-19, F-222p — recorded, not cured): the family GETs
+// ride unbucketed BY DESIGN — the same F-219m per-navigation class as
+// /api/dashboard (the store's refreshAll fires this family on every
+// hydrate; capping it re-trips the e2e battery, the sweep toolchain,
+// and any fast-navigating user inside one window). The dashboard
+// route's docblock carries the original decode; this note extends the
+// documented posture to the whole authenticated light-read family.
 export async function GET() {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;

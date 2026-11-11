@@ -202,6 +202,10 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/login");
     await page.waitForLoadState("networkidle");
+    // Session-222 (R-19): the F-221f completion — the anon faces join
+    // the scroll-before-axe contract (short single-card pages today;
+    // the class stays closed if they ever grow).
+    await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
 
@@ -209,6 +213,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/signup");
     await page.waitForLoadState("networkidle");
+    await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
 
@@ -222,6 +227,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/reset-password");
     await page.waitForLoadState("networkidle");
+    await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
 
@@ -229,12 +235,32 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/login");
     await page.waitForLoadState("networkidle");
+    await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
 
   test("desktop 404 (anon) — structural zero + sanctioned citations", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/this-page-does-not-exist");
+    await scrollThrough(page);
+    assertTwoGate(await runAxe(page));
+  });
+
+  // Session-222 (R-19, F-222f): the 404's dark arms — the theme seam
+  // resolves DARK for any non-auth path with no stored choice, so the
+  // fresh-visitor 404 previously rendered its light design under
+  // html.dark (the whiplash defect; the reference's SPA serves its 404
+  // inside the dark shell). The dark face now asserts its wash AND its
+  // axe cleanliness.
+  test("desktop 404 (fresh-visitor DARK) — the F-222f dark arms + axe-clean", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/this-page-does-not-exist");
+    await expect(page.locator("html")).toHaveClass(/(^| )dark( |$)/);
+    const wash = await page.evaluate(() =>
+      getComputedStyle(document.querySelector("main.min-h-screen")!).backgroundColor,
+    );
+    expect(wash).toBe("rgb(10, 10, 10)");
+    await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
 

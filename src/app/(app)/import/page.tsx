@@ -224,7 +224,7 @@ export default function ImportPage() {
                 <p className={CARD.subtitle}>
                   {rows.length} transaction{rows.length === 1 ? "" : "s"} detected — sign and
                   categories inferred.
-                  {skipped > 0 ? ` ${skipped} row${skipped === 1 ? "" : "s"} skipped (unparseable date).` : ""}
+                  {skipped > 0 ? ` ${skipped} row${skipped === 1 ? "" : "s"} skipped (unparseable date, amount, or missing description).` : ""}
                 </p>
               </div>
               <Button
@@ -267,7 +267,14 @@ export default function ImportPage() {
                       <td
                         className={cn(
                           "p-2.5 text-right font-semibold",
-                          row.type === "income" ? "text-emerald-700" : "text-stone-900 dark:text-stone-100",
+                          // Session-222 (R-19, F-222e): the income arm gains
+                          // its dark mirror — emerald-700 on the dark
+                          // stone-900 tbody computed 3.15:1 (the F-220b
+                          // class's last content-surface miss; every
+                          // sibling income site already paired the 400).
+                          row.type === "income"
+                            ? "text-emerald-700 dark:text-emerald-400"
+                            : "text-stone-900 dark:text-stone-100",
                         )}
                       >
                         {row.type === "income" ? "+" : "−"}$

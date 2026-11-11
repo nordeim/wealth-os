@@ -194,7 +194,11 @@ export function PeriodSegment({
           onClick={() => onChange(option)}
           aria-pressed={value === option}
           className={cn(
-            "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200",
+            // Session-222 (R-19, F-222g): the house focus ring — the
+            // primitives all carry it; this raw <button> rode the UA
+            // default outline (tinted ≈3:1 by the globals
+            // outline-color) as its only affordance.
+            "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             value === option
               ? "bg-gradient-to-r from-amber-500 to-yellow-600 text-stone-900 shadow-sm"
               : "text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100",

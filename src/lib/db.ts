@@ -14,7 +14,7 @@
 // transport moved.
 
 import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaClient, Prisma } from "@/generated/prisma/client";
 import { runtimeDatabaseUrl } from "./db-path";
 
 const globalForPrisma = globalThis as unknown as { __neoCrmPrisma?: PrismaClient };
@@ -30,4 +30,19 @@ export const db = globalForPrisma.__neoCrmPrisma ?? createClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.__neoCrmPrisma = db;
+}
+
+/**
+ * Session-222 (R-19, F-222o): the P2025 seam — a record that vanished
+ * between the ownership `findFirst` and the mutation answers NOT_FOUND,
+ * never INTERNAL (the reset-password route's conditional-updateMany form
+ * is the in-repo precedent; this is its catch-side mirror for the `[id]`
+ * update/delete families — the defense-in-depth arm, the findFirst
+ * remains the primary ownership guard).
+ */
+export function isRecordNotFound(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2025"
+  );
 }

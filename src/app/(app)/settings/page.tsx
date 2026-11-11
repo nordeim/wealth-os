@@ -53,6 +53,21 @@ export default function SettingsPage() {
   const [busy, setBusy] = React.useState(false);
   const [budgetCategory, setBudgetCategory] = React.useState("");
   const [budgetAmount, setBudgetAmount] = React.useState("");
+  // Session-222 (R-19, F-222l): the budget-delete busy rider — the
+  // F-221q round's last uncovered surface (the void-discarded result
+  // also meant failures were fully silent; the result now toasts).
+  const [busyBudget, setBusyBudget] = React.useState<string | null>(null);
+
+  const deleteBudget = async (category: string) => {
+    setBusyBudget(category);
+    const res = await store.deleteBudget(category);
+    setBusyBudget(null);
+    if (res.ok) {
+      toast.success("Budget deleted");
+    } else {
+      toast.error("Delete failed", res.error);
+    }
+  };
 
   // Sync the form when the store's settings identity changes —
   // RENDER-TIME adjustment (no setState inside an effect).
@@ -254,7 +269,8 @@ export default function SettingsPage() {
                         variant="ghost"
                         className="h-7 px-2 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                         aria-label={`Delete ${budget.category} budget`}
-                        onClick={() => void store.deleteBudget(budget.category)}
+                        disabled={busyBudget === budget.category}
+                        onClick={() => void deleteBudget(budget.category)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>

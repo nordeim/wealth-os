@@ -165,7 +165,7 @@ function Tabs({ tabs, value, onValueChange, className, variant = "underline", co
                   // consumers render this variant today, but a latent
                   // sub-3:1 arm invites regression). amber-600 border
                   // 3.21:1, amber-700 ink 4.83:1.
-                  underline && (isActive ? "border-amber-600 text-amber-700" : "border-transparent text-muted hover:border-line hover:text-foreground"),
+                  underline && (isActive ? "border-amber-600 text-amber-700 dark:border-amber-500 dark:text-amber-400" : "border-transparent text-muted hover:border-line hover:text-foreground"),
                 )}
               >
                 {tab.label}
@@ -176,7 +176,7 @@ function Tabs({ tabs, value, onValueChange, className, variant = "underline", co
                   // text-xs bg-red-100 text-red-800 rounded-full">). Always the
                   // red tint, active or not; the >0 guard lives at the call
                   // site exactly like the reference's `>0 &&`.
-                  <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-800 rounded-full">
+                  <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-800 rounded-full dark:bg-red-950 dark:text-red-300">
                     {tab.count}
                   </span>
                 )}

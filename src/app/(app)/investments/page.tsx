@@ -70,6 +70,15 @@ export default function InvestmentsPage() {
 
   const axisColor = isDark ? "#a8a29e" : "#78716c";
   const gridColor = isDark ? "#292524" : "#e7e5e4";
+  // Session-222 (R-19, F-222i): the tooltip panel joins the isDark
+  // family (the dashboard's mirror — a white chip over dark cards
+  // was the one chart seam the flip work missed).
+  const tooltipInk = isDark ? "#f5f5f4" : "#1c1917";
+  const tooltipStyle = {
+    borderRadius: 12,
+    border: `1px solid ${isDark ? "#44403c" : "#e7e5e4"}`,
+    background: isDark ? "#1c1917" : undefined,
+  } as const;
 
   // The performance chart: a deterministic value path from the invested
   // basis to today's value across the period (linear interpolation —
@@ -165,7 +174,9 @@ export default function InvestmentsPage() {
                     />
                     <Tooltip
                       formatter={(value) => [formatMoney(Number(value)), "Value"]}
-                      contentStyle={{ borderRadius: 12, border: "1px solid #e7e5e4" }}
+                      labelStyle={{ color: tooltipInk, fontWeight: 600 }}
+                      itemStyle={{ color: tooltipInk }}
+                      contentStyle={tooltipStyle}
                     />
                     <Area
                       type="monotone"

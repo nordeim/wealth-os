@@ -154,44 +154,113 @@ export function parseCsv(text: string): string[][] {
  *
  * The contract, FORM-BRANCHED: the bare ISO form stages the LITERAL
  * date it writes (the identity with the dateField contract — never an
- * instant to zone-shift); ISO forms carrying the UTC designator stage
- * the UTC MIDNIGHT of their UTC calendar date (UTC accessors); every
- * other parseable form (the locale formats — MM/DD/YYYY with the
- * documented US-MDY assumption) keeps the local accessors (the parsed
- * LOCAL calendar date's UTC midnight). Unparseable text returns null;
- * the caller surfaces the skip in the preview instead of dropping
- * silently.
+ * instant to zone-shift); ISO forms carrying ANY zone designator (Z/z
+ * case-insensitive, or ±HH:MM / ±HHMM / ±HH) stage the WRITTEN date
+ * literal — the designator's own wall-clock date, never the viewer's
+ * (a +09:00 cell is Nov 1 in +09:00 regardless of who imports it);
+ * every other parseable form (the locale formats — MM/DD/YYYY with
+ * the documented US-MDY assumption) keeps the local accessors (the
+ * parsed LOCAL calendar date's UTC midnight). Partial ISO forms
+ * (yyyy, yyyy-mm) carry no day the user chose — unparseable. A
+ * ROLLED calendar date is unparseable on every literal-staging
+ * branch (the round-trip must land on the day the digits wrote).
+ * Unparseable text returns null; the caller surfaces the skip in the
+ * preview instead of dropping silently.
+ *
+ * Session-222 (R-19, F-222a/b/c/d): the R-18 branch's completion.
+ * The UTC_DESIGNATED test was case-sensitive (RFC-3339-legal
+ * lowercase z fell to the locale branch — a day off on both zone
+ * edges, live-reproduced) and it recognized only ±00:00 (a +09:00
+ * cell staged the VIEWER's calendar date — the identical file
+ * imported different books for different users, live-reproduced at
+ * the year boundary); "2026"/"2026-11" escaped every branch and
+ * staged a rolled day west of UTC; and the rollover guard covered
+ * the bare branch only (02/30/2026 staged Mar 2). The designated
+ * branch now stages the written literal — for the Z/±00:00 forms
+ * this is observationally identical to the R-18 UTC-accessor cure
+ * (the written date IS the UTC date), so those pins stand unchanged.
  */
 const BARE_ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
-const UTC_DESIGNATED = /(?:Z|[+-]00:00)$/;
+// Any zone-designated ISO datetime: the date groups before the T are
+// the designator's own wall-clock date — the literal IS the staged
+// day (never an instant to zone-shift).
+const ZONE_DESIGNATED =
+  /^(\d{4})-(\d{2})-(\d{2})[Tt ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?(?:[Zz]|[+-]\d{2}(?::?\d{2})?)$/;
+// Partial ISO forms (year / year-month): V8 parses them as UTC day 1
+// of the written period, but no day was chosen — a skip, never an
+// invented day.
+const PARTIAL_ISO = /^\d{4}(-\d{2})?$/;
+// The 3-group numeric locale forms (the documented US-MDY assumption,
+// the YMD-slash shape, and the dotted-MDY read): the rollover guard's
+// match arm. Two-digit-year forms skip the guard (V8's remap boundary
+// is engine-internal).
+const NUMERIC_LOCALE = /^(\d{1,4})\D+(\d{1,2})\D+(\d{2,4})$/;
+
+/** F-222d: the numeric locale rollover guard — a 4-digit-year numeric
+ *  form must round-trip under the MDY or YMD interpretation of its
+ *  digits, else it is unparseable (V8's lenient parser rolls 02/30 to
+ *  Mar 2; the bare branch's guard doctrine extended to the locale
+ *  arm). Pure: no Date construction, decision only. */
+function localeRollover(
+  a: string,
+  b: string,
+  c: string,
+  parsed: Date,
+): boolean {
+  // The guard round-trips only four-digit-year forms — the
+  // two-digit-year remap (V8: "26" → 2026, "68" → 1968) is
+  // engine-internal and not worth replicating.
+  if (c.length !== 4) return true;
+  const month = parsed.getMonth() + 1;
+  const day = parsed.getDate();
+  const year = parsed.getFullYear();
+  if (Number(a) >= 1000) {
+    // YMD shape (2026/11/01): year-month-day.
+    return year === Number(a) && month === Number(b) && day === Number(c);
+  }
+  // MDY shape (11/01/2026, and the dotted-MDY read 01.11.2026 → Jan
+  // 11 — the documented ambiguity): month-day-year.
+  return month === Number(a) && day === Number(b) && year === Number(c);
+}
 
 export function stageCsvDate(raw: string): string | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
-  // The bare form is a calendar DATE under the F-218d doctrine — the
-  // literal groups ARE the staged day (the identity; never parsed as
-  // an instant, so no zone can shift it).
+  // Partial ISO forms carry no day — unparseable (F-222c).
+  if (PARTIAL_ISO.test(trimmed)) return null;
+  // The literal-staging branches: the bare form and every
+  // zone-designated datetime stage the date the digits wrote (the
+  // identity; never parsed as an instant, so no zone can shift it).
   const bare = BARE_ISO_DATE.exec(trimmed);
-  if (bare) {
+  const designated = bare ? null : ZONE_DESIGNATED.exec(trimmed);
+  const literal = bare ?? designated;
+  if (literal) {
+    // The designated form must still parse as a whole (V8 parity —
+    // an invalid TIME invalidates the string even when the written
+    // date is fine).
+    if (designated && Number.isNaN(new Date(trimmed).getTime())) {
+      return null;
+    }
     const d = new Date(
-      Date.UTC(Number(bare[1]), Number(bare[2]) - 1, Number(bare[3])),
+      Date.UTC(Number(literal[1]), Number(literal[2]) - 1, Number(literal[3])),
     );
     // A rolled/invalid calendar date (2026-02-30) is unparseable —
     // the round-trip must land on the day the user wrote.
-    return d.getUTCFullYear() === Number(bare[1]) &&
-      d.getUTCMonth() === Number(bare[2]) - 1 &&
-      d.getUTCDate() === Number(bare[3])
+    return d.getUTCFullYear() === Number(literal[1]) &&
+      d.getUTCMonth() === Number(literal[2]) - 1 &&
+      d.getUTCDate() === Number(literal[3])
       ? d.toISOString()
       : null;
   }
   const parsed = new Date(trimmed);
   if (Number.isNaN(parsed.getTime())) return null;
-  // UTC-designated instants key on their UTC calendar parts (local
-  // accessors would read the next/previous day off the zone edges —
-  // F-221c); everything else (the locale forms) keeps the local
-  // calendar parts (the F-220m contract).
-  const ymd = UTC_DESIGNATED.test(trimmed)
-    ? [parsed.getUTCFullYear(), parsed.getUTCMonth(), parsed.getUTCDate()]
-    : [parsed.getFullYear(), parsed.getMonth(), parsed.getDate()];
-  return new Date(Date.UTC(ymd[0], ymd[1], ymd[2])).toISOString();
+  // The locale forms keep the local calendar parts (the F-220m
+  // contract) — under the rollover guard for the numeric shapes.
+  const numeric = NUMERIC_LOCALE.exec(trimmed);
+  if (numeric && !localeRollover(numeric[1], numeric[2], numeric[3], parsed)) {
+    return null;
+  }
+  return new Date(
+    Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()),
+  ).toISOString();
 }

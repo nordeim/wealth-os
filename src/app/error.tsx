@@ -35,16 +35,20 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+    // Session-222 (R-19, F-222f): the dark arms — the theme seam resolves
+    // DARK for any non-auth path with no stored choice, so a fresh dark
+    // visitor's error card rendered light under html.dark (the NOT_FOUND
+    // twin; the reference's SPA serves these faces inside the dark shell).
+    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50 dark:bg-[#0a0a0a]">
       <div className="max-w-md w-full">
         <div className="text-center space-y-6">
           <div className="space-y-2">
-            <h1 className="text-4xl font-light text-slate-500">Something went wrong</h1>
-            <div className="h-0.5 w-16 bg-slate-200 mx-auto" aria-hidden="true" />
+            <h1 className="text-4xl font-light text-slate-500 dark:text-stone-400">Something went wrong</h1>
+            <div className="h-0.5 w-16 bg-slate-200 mx-auto dark:bg-stone-800" aria-hidden="true" />
           </div>
           <div className="space-y-3">
-            <h2 className="text-2xl font-medium text-slate-800">An unexpected error occurred</h2>
-            <p className="text-slate-600 leading-relaxed">
+            <h2 className="text-2xl font-medium text-slate-800 dark:text-stone-100">An unexpected error occurred</h2>
+            <p className="text-slate-600 dark:text-stone-400 leading-relaxed">
               We have logged the issue{error.digest ? ` (ref: ${error.digest})` : ""}. Please
               try again.
             </p>
@@ -53,7 +57,7 @@ export default function ErrorPage({
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-stone-900 bg-primary rounded-lg hover:bg-primary-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-stone-900 bg-primary rounded-lg hover:bg-primary-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring dark:text-stone-50"
             >
               <RotateCcw className="h-4 w-4 mr-2" aria-hidden="true" />
               Try again

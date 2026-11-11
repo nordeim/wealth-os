@@ -177,3 +177,178 @@ describe("stageCsvDate TZ-switching (F-221a/F-221c — the form-branch contract)
     expect(stageCsvDate("05/03/2026")).toBe("2026-05-03T00:00:00.000Z");
   });
 });
+
+// Session-222 (R-19, F-222a/b/c/d): the zone-designator completion.
+// The R-18 form-branch left three escape hatches open, all
+// live-reproduced under TZ-switching probes: (a) the UTC_DESIGNATED
+// regex is case-sensitive, so RFC-3339-legal lowercase `z` falls into
+// the locale branch and stages one day off on both zone edges (New
+// York "2026-11-01T01:30:00z" → 2026-10-31; Tokyo
+// "2026-11-01T18:30:00z" → Nov 2; the year boundary → 2027-01-01);
+// (b) NON-UTC offsets (+09:00, -05:00) staged the VIEWER's calendar
+// date — the identical file imported different books for different
+// users (+09:00 in New York → Oct 31; -05:00 in Tokyo → Nov 2; the
+// year boundary -05:00 in Tokyo → 2027-01-01); (c) partial ISO forms
+// ("2026", "2026-11") escaped every branch and staged a rolled day
+// west of UTC (New York "2026-11" → 2026-10-31, "2026" → 2025-12-31);
+// (d) the calendar-rollover guard covered the bare branch only
+// ("02/30/2026" staged Mar 2 while "2026-02-30" correctly nulled).
+// The completed contract: EVERY zone-designated ISO datetime (Z/z or
+// ±HH:MM/±HHMM/±HH) stages the WRITTEN date literal — the offset's
+// own wall-clock date, never the viewer's; partial ISO forms skip
+// (null — never an invented day); every literal-staging branch
+// round-trips its calendar.
+describe("stageCsvDate zone-designator completion (F-222a/b/c/d)", () => {
+  afterEach(() => {
+    process.env.TZ = "UTC";
+  });
+
+  it("F-222a: lowercase-z is a UTC designator — stages its UTC calendar day west of UTC (New York)", () => {
+    process.env.TZ = "America/New_York";
+    // Pre-cure (live-reproduced): 2026-10-31T00:00:00.000Z — the
+    // locale branch's local accessors read Oct 31 off the 01:30z
+    // instant.
+    expect(stageCsvDate("2026-11-01T01:30:00z")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+  });
+
+  it("F-222a: lowercase-z stages its UTC calendar day east of UTC (Tokyo)", () => {
+    process.env.TZ = "Asia/Tokyo";
+    // Pre-cure (live-reproduced): 2026-11-02T00:00:00.000Z.
+    expect(stageCsvDate("2026-11-01T18:30:00z")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+  });
+
+  it("F-222a: the lowercase-z year boundary stages its UTC calendar day (Tokyo, Dec 31 23:30z)", () => {
+    process.env.TZ = "Asia/Tokyo";
+    // Pre-cure (live-reproduced): 2027-01-01T00:00:00.000Z.
+    expect(stageCsvDate("2026-12-31T23:30:00z")).toBe(
+      "2026-12-31T00:00:00.000Z",
+    );
+  });
+
+  it("F-222b: a non-UTC offset stages the WRITTEN date west of UTC (New York reading +09:00)", () => {
+    process.env.TZ = "America/New_York";
+    // The written date is Nov 1 in +09:00. Pre-cure
+    // (live-reproduced): 2026-10-31T00:00:00.000Z — the local
+    // accessors read the New York calendar day off the instant.
+    expect(stageCsvDate("2026-11-01T08:30:00+09:00")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+  });
+
+  it("F-222b: a non-UTC offset stages the WRITTEN date east of UTC (Tokyo reading -05:00)", () => {
+    process.env.TZ = "Asia/Tokyo";
+    // The written date is Nov 1 in -05:00. Pre-cure
+    // (live-reproduced): 2026-11-02T00:00:00.000Z.
+    expect(stageCsvDate("2026-11-01T18:30:00-05:00")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+  });
+
+  it("F-222b: the non-UTC-offset year boundary stages the WRITTEN date (Tokyo, Dec 31 23:30 -05:00)", () => {
+    process.env.TZ = "Asia/Tokyo";
+    // Pre-cure (live-reproduced): 2027-01-01T00:00:00.000Z.
+    expect(stageCsvDate("2026-12-31T23:30:00-05:00")).toBe(
+      "2026-12-31T00:00:00.000Z",
+    );
+  });
+
+  it("F-222b: the offset family is zone-invariant — the same cell stages identically in both zones", () => {
+    process.env.TZ = "America/New_York";
+    const ny = stageCsvDate("2026-11-01T08:30:00+09:00");
+    process.env.TZ = "Asia/Tokyo";
+    const tokyo = stageCsvDate("2026-11-01T08:30:00+09:00");
+    expect(ny).toBe("2026-11-01T00:00:00.000Z");
+    expect(tokyo).toBe(ny);
+  });
+
+  it("F-222b: the compact offset form (+0900) stages the written date; the hour-only form (+09) is V8-invalid (null)", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("2026-11-01T08:30:00+0900")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+    // V8 rejects the hour-only offset outright (NaN — probed live):
+    // the whole-string parity check nulls it (unparseable, the skip
+    // path), never an invented day.
+    expect(stageCsvDate("2026-11-01T08:30:00+09")).toBeNull();
+  });
+
+  it("F-222b: ±00:00 keeps staging its written (UTC) calendar day under both zones", () => {
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("2026-11-01T18:30:00+00:00")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("2026-12-31T23:30:00-00:00")).toBe(
+      "2026-12-31T00:00:00.000Z",
+    );
+  });
+
+  it("F-222c: partial ISO forms skip (null) — never an invented day", () => {
+    // V8 parses these as UTC day 1 of the written period; the locale
+    // branch's local accessors then read the PRIOR day west of UTC
+    // (pre-cure, live-reproduced: "2026-11" → 2026-10-31 and "2026" →
+    // 2025-12-31 in New York).
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("2026-11")).toBeNull();
+    expect(stageCsvDate("2026")).toBeNull();
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("2026-11")).toBeNull();
+    expect(stageCsvDate("2026")).toBeNull();
+  });
+
+  it("F-222d: a rolled locale date (02/30/2026) is unparseable — the round-trip guard's locale arm", () => {
+    // Pre-cure (live-reproduced): 2026-03-02T00:00:00.000Z — V8's
+    // lenient parser rolled Feb 30 to Mar 2 and the locale branch
+    // staged it (the bare branch already nulled "2026-02-30").
+    expect(stageCsvDate("02/30/2026")).toBeNull();
+    expect(stageCsvDate("02/29/2027")).toBeNull(); // 2027 is not a leap year
+  });
+
+  it("F-222d: a rolled zone-designated date is unparseable (the designated branch inherits the guard)", () => {
+    expect(stageCsvDate("2026-02-30T00:00:00Z")).toBeNull();
+    expect(stageCsvDate("2026-02-30T00:00:00+09:00")).toBeNull();
+  });
+
+  it("F-222d: an invalid TIME with a valid written date is unparseable (V8 parity — the whole string must parse)", () => {
+    expect(stageCsvDate("2026-11-01T25:00:00Z")).toBeNull();
+    expect(stageCsvDate("2026-11-01T12:99:00+09:00")).toBeNull();
+  });
+
+  it("the numeric locale controls keep staging under the guard (MDY, YMD-slash, dotted-MDY, two-digit year)", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("11/01/2026")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("2026/11/01")).toBe("2026-11-01T00:00:00.000Z");
+    // The documented dotted-form ambiguity: V8 reads dots as MDY, so
+    // "01.11.2026" is January 11 (the MDY round-trip holds — this is
+    // the recorded DMY-ambiguity residual, not a cure target).
+    expect(stageCsvDate("01.11.2026")).toBe("2026-01-11T00:00:00.000Z");
+    // Two-digit years keep V8's remap ("26" → 2026); the guard only
+    // round-trips four-digit-year forms (the remap boundary is
+    // engine-internal — documented residual).
+    expect(stageCsvDate("11/1/26")).toBe("2026-11-01T00:00:00.000Z");
+  });
+
+  it("F-222d: the DMY slash form stays unparseable (the US-MDY assumption, documented)", () => {
+    // V8 rejects month > 12 in slash forms outright (NaN) — day-first
+    // exports never parsed; recorded so the guard is not blamed.
+    expect(stageCsvDate("25/12/2026")).toBeNull();
+  });
+
+  it("the offset-less ISO datetime keeps the LOCAL wall-clock staging (the ES-spec form)", () => {
+    // "2026-11-01T18:30:00" carries no designator — the ES spec
+    // parses it as a local wall-clock, so the local accessors are
+    // the correct staging arm (unchanged by R-19).
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("2026-11-01T18:30:00")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("2026-11-01T01:30:00")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+  });
+});

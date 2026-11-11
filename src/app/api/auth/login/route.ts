@@ -22,6 +22,25 @@ export async function POST(req: Request) {
   if (!parsed.ok) return parsed.response;
   const { email, password } = parsed.data;
 
+  // Session-222 (R-19, F-222n): the per-account secondary bucket —
+  // the default proxy posture (unset NEO_PROXY_HOPS = depth 1) keys
+  // clientKey on client-suppliable XFF/x-real-ip, so a
+  // header-rotating caller voids every per-IP cap on a
+  // direct-exposure deploy. The email-keyed bucket bounds the
+  // distributed credential attack regardless of IP keying: 30/15min
+  // sits ABOVE the per-IP cap (10/15) so every single-IP flow (the
+  // smoke ladder's 10-then-429, the e2e battery, the capture
+  // toolchain) trips the IP bucket first — zero behavior change for
+  // legitimate flows. Fired BEFORE any account-existence check: the
+  // 429 is identical for known and unknown emails (no enumeration
+  // oracle).
+  const acctLimit = rateLimit(
+    `login-acct:${email}`,
+    30,
+    15 * 60 * 1000,
+  );
+  if (!acctLimit.allowed) return ERR.RATE_LIMITED(acctLimit.retryAfterSec);
+
   // Session-40 (S40-P5): the read + verification + cookie-set tail
   // joins the envelope — this was the ONLY auth-route DB read left
   // unwrapped (a SQLITE_BUSY-class failure answered a raw non-JSON

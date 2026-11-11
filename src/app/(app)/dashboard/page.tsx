@@ -117,6 +117,17 @@ export default function DashboardPage() {
   const isDark = useIsDark();
   const axisColor = isDark ? "#a8a29e" : "#78716c";
   const gridColor = isDark ? "#292524" : "#e7e5e4";
+  // Session-222 (R-19, F-222i): the tooltip panel joins the isDark
+  // family — the axes/grid flipped but the tooltip rendered a white
+  // chip over dark cards. The stone-900 panel + stone-100 ink mirror
+  // the card surfaces; the swatch keeps the series color.
+  const tooltipInk = isDark ? "#f5f5f4" : "#1c1917";
+  const tooltipStyle = {
+    borderRadius: 12,
+    border: `1px solid ${isDark ? "#44403c" : "#e7e5e4"}`,
+    background: isDark ? "#1c1917" : undefined,
+    boxShadow: isDark ? "0 4px 12px rgba(0,0,0,0.4)" : "0 4px 12px rgba(0,0,0,0.08)",
+  } as const;
 
   // Session-216 (R-13, F-216d): a failed refresh is no longer a silent
   // no-op — the Result rides back (refreshAll returns it) and the
@@ -226,12 +237,9 @@ export default function DashboardPage() {
                 />
                 <Tooltip
                   formatter={(value, name) => [formatMoney(Number(value)), name]}
-                  labelStyle={{ color: "#1c1917", fontWeight: 600 }}
-                  contentStyle={{
-                    borderRadius: 12,
-                    border: "1px solid #e7e5e4",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                  }}
+                  labelStyle={{ color: tooltipInk, fontWeight: 600 }}
+                  itemStyle={{ color: tooltipInk }}
+                  contentStyle={tooltipStyle}
                 />
                 <Area
                   type="monotone"
