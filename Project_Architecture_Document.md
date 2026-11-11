@@ -3,7 +3,7 @@
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** `docs/implementation-plan-session-199-wealthos.md` (the transformation plan)
-**Last Updated:** 2026-11-11
+**Last Updated:** 2026-11-12
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
 Nothing is here "because it's popular."
@@ -16,6 +16,56 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.24.0 (session 227, R-24 — the build-gate repair and
+  wrong-row identity round): the fresh-eyes audit (three parallel
+  Mode-C passes — the R-23 cure surfaces, the API/auth/security
+  layer, the UI/a11y/shell layer; 0 Critical / 1 High / 1 Medium /
+  6 Low / 8 Informational raw, every material claim re-verified at
+  file:line — the High was the driving session's own cold-baseline
+  discovery: the owner's post-226 session-log commit created
+  `docs/worklog.md` as a relative symlink targeting `worklog.md`,
+  which resolves from docs/ to ITSELF — an infinite loop — and
+  `bun run build` FAILED at HEAD (Turbopack's DirAssetReference
+  walked the loop through the upload routes' file tracing); the
+  Medium — the investments holdings table resolving rows by SYMBOL —
+  was live-reproduced (two same-symbol lots: duplicate React keys;
+  Edit on the second lot's row opened the FIRST lot's record — and
+  Delete silently removed the wrong row). THE SYMLINK-LOOP BUILD
+  REPAIR (F-227a High): the alias repointed to `../worklog.md` (the
+  owner's intent preserved — legacy docs/worklog.md references
+  resolve to the canonical root log); pinned by a
+  resolves-and-matches test (parity-227). THE HOLDINGS IDENTITY CURE
+  (F-227b Medium): the portfolioStats seam carries each holding's id
+  onto its stats row (id-less pure-math inputs answer ""); the
+  holdings table keys and resolves by row.id — an id-less row's
+  action buttons go inert (strictly better than acting on the wrong
+  record); e2e-verified: Edit on the second same-symbol lot prefills
+  the SECOND record. THE CONDITIONAL-MUTATION REFACTOR (F-227c Low +
+  F-227l): all ten [id] PUT/DELETE sites across the five resource
+  families (transactions, accounts, income-sources, investments,
+  goals) moved to the atomic conditional form — updateMany/deleteMany
+  with ownerId in the WHERE (the reset-password precedent), count===0
+  answering NOT_FOUND, a fresh re-read feeding the PUT envelope —
+  closing the guard-then-mutate TOCTOU; the transactions account-link
+  FK race answers BAD_REQUEST via the new isForeignKeyViolation P2003
+  seam in db.ts (never an anonymous 500). THE LOW TAIL: F-227d
+  wealth-os_SKILL.md joins the outputFileTracingExcludes list (the
+  F-170a gap); F-227e the investments Edit button gains the
+  row-context sr-only tail (the F-226k miss — its own Delete already
+  carried it); F-227f the Button/Badge destructive variants gain
+  measured-value contrast citations (the F-225l/F-226m register —
+  both are latent sub-AA arms with zero live consumers); F-227m the
+  Analytics range filter routes its three parses through toDate
+  (behavior-identical, doctrine-uniform at the seam); F-227n the
+  three dead radius tokens retire from @theme. The verification:
+  lint 0/0 · tsc 0 · 1162 unit (74 files) · build · smoke 15/15 ·
+  136 e2e · ALL SIX parity drift gates CLEAN · census MATCH ·
+  `bun audit` unchanged; the capture set 122-124 (the duplicate-
+  symbol identity dialog, the mobile drawer at 390 with the 9
+  destinations, the row-context Edit buttons on the seeded corpus);
+  docs lockstep everywhere (the counts 1136→1162 / 73→74 /
+  135→136 / the badge 1271→1298 / the pins row 45→46 with
+  parity-227).
 - [SR] v2.23.0 (session 226, R-23 — the escape-family completion and
   per-casing metadata round): the fresh-eyes audit (three parallel
   Mode-C passes — the R-22 cure surfaces, the API/auth/security
@@ -62,7 +112,7 @@ Every change is tagged with its source: `[RES]` = validated by web research,
   pattern (F-226m); the ±HH comment truth (F-226n); the 24:00 edge
   pin (F-226o); the bucket-window pin extension (F-226p); the
   verify/resend email format (F-226r). Gate at ship: lint 0/0 ·
-  tsc 0 · 1136 unit (73 files) · build · smoke 15/15 · 135 e2e ·
+  tsc 0 · 1162 unit (74 files) · build · smoke 15/15 · 136 e2e ·
   six drift gates CLEAN · census MATCH · bun audit unchanged.
 - [SR] v2.22.0 (session 225, R-22 — the designated-tail completion and
   tooling-hygiene round): the numeric year-month partials joined the
@@ -667,8 +717,8 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1136) → `next build` → the 15-assertion smoke ladder on the
-  standalone artifact → Playwright e2e (135) against a pinned `db/e2e.db`.
+  → vitest (1162) → `next build` → the 15-assertion smoke ladder on the
+  standalone artifact → Playwright e2e (136) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
   R-4.5, session 211 — green end-to-end from cold): the sweep,
@@ -1088,11 +1138,11 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 73 | 1136 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 74 | 1162 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 45 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226) | `tests/` | source-scanning contracts |
+| — architecture pins | 46 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227) | `tests/` | source-scanning contracts |
 | — infrastructure | 25 | auth, rate-limit, csv, uploads, headers, boot-env, search-query, store-logout, … | `tests/` | behavior |
-| E2E | 7 | 135 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
+| E2E | 7 | 136 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
 *docs-counts pins are re-anchored when doc/test counts change — keep them
@@ -1123,10 +1173,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1136/1136 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1162/1162 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 135/135
+- [ ] `CI=1 bun run test:e2e` → 136/136
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -1193,7 +1243,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1136 unit / 135 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1162 unit / 136 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -1228,8 +1278,8 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1136 unit · build · smoke 15/15 ·
-135 e2e).
+the time of writing (lint 0/0 · tsc 0 · 1162 unit · build · smoke 15/15 ·
+136 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
 advisory is cured same-session, never deferred; dev-toolchain bumps stay

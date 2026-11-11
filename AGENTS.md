@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1136) | `bun run test` |
+| Unit tests (1162) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 135) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 136) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -383,3 +383,15 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   `tests/e2e/a11y.spec.ts` steps `<main>` to the bottom before every
   assertion — new below-the-fold surfaces are the gate's blind spot
   no longer.
+- **A relative symlink target resolves from the LINK'S OWN DIRECTORY —
+  a root-targeted alias inside docs/ must carry `../`** (session 227,
+  F-227a): an owner commit created `docs/worklog.md → worklog.md`
+  intending the ROOT log, but from docs/ the target resolves to
+  `docs/worklog.md` itself — an infinite loop. Nothing in lint/tsc/
+  unit/e2e walks it; only `bun run build` does (Turbopack's
+  DirAssetReference, via the upload routes' file tracing) and it
+  FAILED the build at HEAD. The honest form is
+  `docs/worklog.md → ../worklog.md`; `tests/parity-227.test.ts` pins
+  the alias resolves AND matches the canonical content. When adding
+  any symlink to the tree, resolve it from its own directory and run
+  the build leg — the loop shape passes every other gate.
