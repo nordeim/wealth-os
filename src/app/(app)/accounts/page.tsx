@@ -35,6 +35,10 @@ export default function AccountsPage() {
   const store = useWealthOs();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<BankAccount | null>(null);
+  // Session-221 (R-18, F-221q): the card-level busy rider — a rapid
+  // double-click on Remove fired two requests (the second 404s and
+  // toasts a spurious "Delete failed").
+  const [busyId, setBusyId] = React.useState<string | null>(null);
 
   const accounts = store.accounts;
   const totalBalance = accounts.reduce((s, a) => s + a.balance, 0);
@@ -97,12 +101,15 @@ export default function AccountsPage() {
                 <AccountCard
                   key={account.id}
                   account={account}
+                  busy={busyId === account.id}
                   onEdit={() => {
                     setEditing(account);
                     setDialogOpen(true);
                   }}
                   onDelete={async () => {
+                    setBusyId(account.id);
                     const res = await store.deleteAccount(account.id);
+                    setBusyId(null);
                     if (res.ok) toast.success("Account deleted");
                     else toast.error("Delete failed", res.error);
                   }}
@@ -120,10 +127,12 @@ export default function AccountsPage() {
 
 function AccountCard({
   account,
+  busy,
   onEdit,
   onDelete,
 }: {
   account: BankAccount;
+  busy: boolean;
   onEdit: () => void;
   onDelete: () => void;
 }) {
@@ -168,6 +177,7 @@ function AccountCard({
         <Button
           variant="ghost"
           className="h-8 flex-1 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+          disabled={busy}
           onClick={onDelete}
         >
           Remove
@@ -215,7 +225,11 @@ function AccountDialog({
       name,
       type,
       balance: Number(balance),
-      institution: institution || undefined,
+      // Session-221 (R-18, F-221d): the raw string, not the || undefined
+      // collapse — the create schema normalizes "" to undefined and the
+      // update schema to null (the F-219q clear contract), so an
+      // emptied Institution actually clears on edit.
+      institution,
     };
     const res = editing
       ? await store.updateAccount(editing.id, body)

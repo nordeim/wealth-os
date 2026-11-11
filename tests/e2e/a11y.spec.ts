@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 
 // Session-199: THE A11Y TWO-GATE, recast onto the WealthOS surfaces.
@@ -150,6 +150,30 @@ const DARK_SECTIONS = [
 // contrast, so no register arm is needed — this note IS the citation.
 // The dark-mode legs pass (~5.9-6.8:1 on #0a0a0a).
 
+// Session-221 (R-18, F-221f): the two-gate's SCROLL cure — axe only
+// evaluates what is (or can be) rendered in view, and the loops' fixed
+// 1280×800 / 390×844 viewports never moved: the Settings Export card
+// (below the fold since session 208) passed every gate with its 3.38:1
+// ink — live A/B on the identical page state: 0 violations unscrolled,
+// the failure surfaced once the section scrolled into view. The helper
+// steps the app's scroll container (SHELL_LAYOUT.main — <main> carries
+// overflow-y-auto) to the bottom in 600px increments with a settle
+// between steps (lazy content mounts), then returns to the top so the
+// assertion evaluates the WHOLE page.
+async function scrollThrough(page: Page) {
+  await page.evaluate(async () => {
+    const scroller =
+      document.querySelector("main") ?? document.scrollingElement;
+    if (!scroller) return;
+    const step = 600;
+    for (let y = 0; y < scroller.scrollHeight; y += step) {
+      scroller.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 60));
+    }
+    scroller.scrollTo(0, 0);
+  });
+}
+
 test.describe("a11y two-gate (WealthOS)", () => {
   for (const section of SECTIONS) {
     test(`desktop ${section} — structural zero + sanctioned citations`, async ({ page }) => {
@@ -160,6 +184,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
       await page.addInitScript(() => localStorage.setItem("wealthos-theme", "light"));
       await page.goto(section);
       await page.waitForLoadState("networkidle");
+      await scrollThrough(page);
       assertTwoGate(await runAxe(page));
     });
 
@@ -168,6 +193,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
       await page.addInitScript(() => localStorage.setItem("wealthos-theme", "light"));
       await page.goto(section);
       await page.waitForLoadState("networkidle");
+      await scrollThrough(page);
       assertTwoGate(await runAxe(page));
     });
   }
@@ -256,6 +282,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
       await page.goto(section);
       await page.waitForLoadState("networkidle");
       expect(await page.evaluate(() => document.documentElement.className)).toContain("dark");
+      await scrollThrough(page);
       assertTwoGate(await runAxe(page));
     });
   }

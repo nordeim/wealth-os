@@ -159,7 +159,13 @@ function Tabs({ tabs, value, onValueChange, className, variant = "underline", co
                   triggerClass,
                   underline &&
                     "-mb-px whitespace-nowrap rounded-t-md border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                  underline && (isActive ? "border-primary text-primary" : "border-transparent text-muted hover:border-line hover:text-foreground"),
+                  // Session-221 (R-18, F-221t): the active arm's amber
+                  // steps — the old border-primary/text-primary computed
+                  // 2.15:1 on light (the F-220p stale-genus class: zero
+                  // consumers render this variant today, but a latent
+                  // sub-3:1 arm invites regression). amber-600 border
+                  // 3.21:1, amber-700 ink 4.83:1.
+                  underline && (isActive ? "border-amber-600 text-amber-700" : "border-transparent text-muted hover:border-line hover:text-foreground"),
                 )}
               >
                 {tab.label}

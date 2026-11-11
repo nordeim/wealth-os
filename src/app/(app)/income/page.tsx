@@ -45,6 +45,11 @@ export default function IncomePage() {
   const store = useWealthOs();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<IncomeSource | null>(null);
+  // Session-221 (R-18, F-221q): the card-level busy rider — a rapid
+  // double-click on Pause/Activate fired two requests (the second
+  // toasting a spurious failure). The dialog submits were already
+  // guarded; this covers the inline card buttons.
+  const [busyId, setBusyId] = React.useState<string | null>(null);
 
   const sources = store.incomeSources;
   const active = sources.filter((s) => s.active);
@@ -60,7 +65,9 @@ export default function IncomePage() {
   };
 
   const toggleActive = async (source: IncomeSource) => {
+    setBusyId(source.id);
     const res = await store.updateIncomeSource(source.id, { active: !source.active });
+    setBusyId(null);
     if (res.ok) {
       toast.success(source.active ? "Income source paused" : "Income source activated");
     } else {
@@ -164,6 +171,7 @@ export default function IncomePage() {
                     <Button
                       variant="ghost"
                       className="h-8 flex-1 text-xs"
+                      disabled={busyId === source.id}
                       onClick={() => void toggleActive(source)}
                     >
                       {source.active ? "Pause" : "Activate"}
@@ -226,9 +234,18 @@ function IncomeSourceDialog({
       type,
       amount: Number(amount),
       frequency,
-      notes: notes || undefined,
+      // Session-221 (R-18, F-221d): the raw string, not the || undefined
+      // collapse — the schemas normalize "" per mode (create →
+      // undefined, update → null), so an emptied Notes actually
+      // clears on edit (the F-219q contract).
+      notes,
     };
-    if (nextPaymentDate) body.nextPaymentDate = nextPaymentDate;
+    // Session-221 (R-18, F-221d): the null-clear rider — an emptied
+    // next-payment date must CLEAR the stored value on edit (the
+    // update schema's null contract), not silently keep the card
+    // rendering "next in N days". The create arm keeps the omit form.
+    if (editing) body.nextPaymentDate = nextPaymentDate || null;
+    else if (nextPaymentDate) body.nextPaymentDate = nextPaymentDate;
     const res = editing
       ? await store.updateIncomeSource(editing.id, body)
       : await store.createIncomeSource(body);

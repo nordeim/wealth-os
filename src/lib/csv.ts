@@ -143,19 +143,55 @@ export function parseCsv(text: string): string[][] {
  * terms, inconsistent with every dateField-created row and a different
  * bucketing genus in cross-timezone views).
  *
- * The contract: parse the raw cell (V8's format rules — bare ISO dates
- * as UTC midnight, locale formats like MM/DD/YYYY as LOCAL midnight,
- * the US-MDY assumption documented), then stage the UTC MIDNIGHT of
- * the parsed LOCAL calendar date — the exact serialized form Prisma
- * returns for dateField rows. Unparseable text returns null; the
- * caller surfaces the skip in the preview instead of dropping silently.
+ * Session-221 (R-18, F-221a/F-221c): the original implementation read
+ * LOCAL accessors off every parse — correct for the locale forms but
+ * WRONG for both ISO forms, reintroducing the exact F-218d/F-220a class
+ * at this seam: a bare yyyy-mm-dd cell parses as UTC MIDNIGHT, so west
+ * of UTC the local parts read the PRIOR day (New York "2026-11-01"
+ * staged 2026-10-31 — live-reproduced); a Z-suffixed timestamp east of
+ * UTC reads the NEXT day (Tokyo "2026-11-01T18:30:00Z" staged Nov 2;
+ * the year boundary "2026-12-31T23:30:00Z" staged 2027-01-01).
+ *
+ * The contract, FORM-BRANCHED: the bare ISO form stages the LITERAL
+ * date it writes (the identity with the dateField contract — never an
+ * instant to zone-shift); ISO forms carrying the UTC designator stage
+ * the UTC MIDNIGHT of their UTC calendar date (UTC accessors); every
+ * other parseable form (the locale formats — MM/DD/YYYY with the
+ * documented US-MDY assumption) keeps the local accessors (the parsed
+ * LOCAL calendar date's UTC midnight). Unparseable text returns null;
+ * the caller surfaces the skip in the preview instead of dropping
+ * silently.
  */
+const BARE_ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+const UTC_DESIGNATED = /(?:Z|[+-]00:00)$/;
+
 export function stageCsvDate(raw: string): string | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
+  // The bare form is a calendar DATE under the F-218d doctrine — the
+  // literal groups ARE the staged day (the identity; never parsed as
+  // an instant, so no zone can shift it).
+  const bare = BARE_ISO_DATE.exec(trimmed);
+  if (bare) {
+    const d = new Date(
+      Date.UTC(Number(bare[1]), Number(bare[2]) - 1, Number(bare[3])),
+    );
+    // A rolled/invalid calendar date (2026-02-30) is unparseable —
+    // the round-trip must land on the day the user wrote.
+    return d.getUTCFullYear() === Number(bare[1]) &&
+      d.getUTCMonth() === Number(bare[2]) - 1 &&
+      d.getUTCDate() === Number(bare[3])
+      ? d.toISOString()
+      : null;
+  }
   const parsed = new Date(trimmed);
   if (Number.isNaN(parsed.getTime())) return null;
-  return new Date(
-    Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()),
-  ).toISOString();
+  // UTC-designated instants key on their UTC calendar parts (local
+  // accessors would read the next/previous day off the zone edges —
+  // F-221c); everything else (the locale forms) keeps the local
+  // calendar parts (the F-220m contract).
+  const ymd = UTC_DESIGNATED.test(trimmed)
+    ? [parsed.getUTCFullYear(), parsed.getUTCMonth(), parsed.getUTCDate()]
+    : [parsed.getFullYear(), parsed.getMonth(), parsed.getDate()];
+  return new Date(Date.UTC(ymd[0], ymd[1], ymd[2])).toISOString();
 }

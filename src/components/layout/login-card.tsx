@@ -389,8 +389,13 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                               />
                             </div>
                           </div>
-                          <button type="submit" className={LOGIN_RESET_LAYOUT.send}>
-                            Send reset link
+                          {/* Session-221 (R-18, F-221o): the busy affordance
+                              every sibling submit already carries (signin/
+                              signup/verify) — the pending guard prevented
+                              the double send, but the button never showed
+                              it. */}
+                          <button type="submit" disabled={pending} className={LOGIN_RESET_LAYOUT.send}>
+                            {pending ? "Please wait…" : "Send reset link"}
                           </button>
                         </form>
                       </>

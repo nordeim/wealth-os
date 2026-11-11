@@ -112,7 +112,15 @@ export default function ImportPage() {
         const rawAmount = Number((line[amountCol] ?? "").replace(/[$,]/g, ""));
         const rawDate = (line[dateCol] ?? "").trim();
         const stagedDate = stageCsvDate(rawDate);
-        if (!description || !Number.isFinite(rawAmount) || rawAmount === 0) continue;
+        // Session-221 (R-18, F-221t): the skip counter covers EVERY
+        // dropped-row class, not just dates — the F-220m surfacing
+        // silently dropped invalid-amount/empty-description rows
+        // without counting them (the preview count was the only
+        // signal, and it under-reported).
+        if (!description || !Number.isFinite(rawAmount) || rawAmount === 0) {
+          skippedRows += 1;
+          continue;
+        }
         if (!stagedDate) {
           skippedRows += 1;
           continue;

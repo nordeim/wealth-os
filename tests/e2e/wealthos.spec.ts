@@ -298,6 +298,36 @@ test.describe("the Expenses tabs + search", () => {
     await expect(popover).toHaveCount(0);
   });
 
+  test("the DARK-mode Select highlight stays readable (F-221b — the 1.18:1 wash)", async ({ page }) => {
+    // Session-221 (R-18): the SelectItem's focus wash carried no dark
+    // arms — the highlighted option computed neutral-900 rgb(23,23,23)
+    // on line-soft's #262626 dark flip = 1.18:1 (live-verified on this
+    // exact combobox), unreadable for keyboard AND mouse in the
+    // fresh-visitor default mode. The cure: the MENU_ITEM precedent's
+    // dark arms. This leg asserts the highlighted option's computed
+    // INK differs from the pre-cure near-black wash.
+    await page.addInitScript(() => {
+      try {
+        localStorage.setItem("wealthos-theme", "dark");
+      } catch {
+        /* the storage sandbox */
+      }
+    });
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    await expect(page.getByRole("group", { name: "Expense filters" })).toBeVisible();
+    await page.locator("#expense-category-filter").click();
+    const option = page.getByRole("option").first();
+    await expect(option).toBeVisible();
+    await page.keyboard.press("ArrowDown");
+    const highlighted = page.getByRole("option").nth(1);
+    await expect(highlighted).toBeFocused();
+    const ink = await highlighted.evaluate((el) => getComputedStyle(el).color);
+    // The pre-cure wash computed rgb(23, 23, 23) (neutral-900); the
+    // cure's dark arm computes stone-100 rgb(245, 245, 244).
+    expect(ink).toBe("rgb(245, 245, 244)");
+  });
+
   test("the filters TRIGGER toggles the popover closed (F-218b — the R-14 regression's own face)", async ({ page }) => {
     // Session-218 (R-15): the R-14 popover cure removed the bare
     // button[aria-expanded] outside-close guard without landing the

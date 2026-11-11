@@ -71,12 +71,15 @@ describe("F-220b — the muted-text sites carry dark arms", () => {
     });
   }
 
-  it("the two Paused badges flip their ink with the chip (stone-600/500 → stone-300)", () => {
+  it("the two Paused badges flip their ink with the chip (both light arms stone-600 since F-221k)", () => {
     expect(read("src/app/(app)/income/page.tsx")).toMatch(
       /bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300/,
     );
+    // Session-221 (R-18, F-221k) — in-commit refinement: the goals light
+    // arm darkened one step (stone-500 on stone-100 measured 4.40:1 at
+    // 11px semibold; stone-600 = 6.99:1, the income precedent).
     expect(read("src/app/(app)/goals/page.tsx")).toMatch(
-      /bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-300/,
+      /bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300/,
     );
   });
 

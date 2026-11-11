@@ -118,8 +118,14 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
       // focus:bg-line-soft (#f5f5f5 = its accent) +
       // focus:text-neutral-900 (#171717 — the s80 badge precedent for
       // expressing its accent-foreground).
+      // Session-221 (R-18, F-221b): the dark arms join the pair — the
+      // light-only form computed neutral-900 on line-soft's #262626
+      // dark flip = 1.18:1 (live-verified on the dark-mode Income
+      // combobox; every Select unreadable at the highlight moment in
+      // the fresh-visitor default mode). The MENU_ITEM precedent:
+      // stone-100 on stone-800 = 13.9:1.
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-line-soft focus:text-neutral-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-line-soft focus:text-neutral-900 dark:focus:bg-stone-800 dark:focus:text-stone-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
       {...props}

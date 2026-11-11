@@ -292,7 +292,12 @@ export default function SettingsPage() {
             {/* A real anchor: the endpoint answers with
                 Content-Disposition: attachment — the browser download flow,
                 not a client-side navigation. */}
-            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+            {/* Session-221 (R-18, F-221e): text-white — the default
+                variant's text-primary-foreground (stone-900) on blue-600
+                measured 3.38:1 (live + axe); white computes 5.17:1. The
+                F-219a stone-900 genus was measured on AMBER fills, never
+                on this saturated blue. */}
+            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white">
               <a href="/api/export" download>
                 <Download className="h-4 w-4" />
                 Export All Data
@@ -397,7 +402,12 @@ function NotificationRow({
         onClick={() => onChange(!checked)}
         className={cn(
           "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          checked ? "bg-emerald-600" : "bg-stone-300 dark:bg-stone-700",
+          // Session-221 (R-18, F-221n): the unchecked track darkens one
+          // step AND gains a visible border — the old stone-300 track on
+          // the white/80 card measured 1.49:1 (the white thumb vs it
+          // 1.63:1); the stone-500 border computes 4.95:1 for the state
+          // boundary while the checked emerald arm is untouched.
+          checked ? "bg-emerald-600" : "bg-stone-400 border-stone-500 dark:bg-stone-700 dark:border-stone-600",
         )}
       >
         <span

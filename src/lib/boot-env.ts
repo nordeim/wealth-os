@@ -125,7 +125,12 @@ export function bootEnvCheck(env: Record<string, string | undefined>): BootEnvRe
   // knob so a direct-exposure operator sets it explicitly.
   if (isProduction && (hops === undefined || hops === "")) {
     warnings.push(
-      "[boot] NEO_PROXY_HOPS is unset — the rate limiter assumes ONE trusted proxy and keys on the last X-Forwarded-For hop. On a DIRECT-exposure deployment (no reverse proxy) a client can rotate that header to bypass every rate limit: set NEO_PROXY_HOPS=0 (one honest shared bucket). Behind a proxy, set the hop depth explicitly.",
+      // Session-221 (R-18, F-221t): the warning names BOTH client-
+      // suppliable headers — the limiter falls back to X-Real-IP when
+      // X-Forwarded-For is absent, so omitting XFF and rotating
+      // X-Real-IP rotates the buckets exactly the same way (the
+      // unnamed half of F-218t).
+      "[boot] NEO_PROXY_HOPS is unset — the rate limiter assumes ONE trusted proxy and keys on the last X-Forwarded-For hop (falling back to X-Real-IP when XFF is absent — both are client-suppliable without a proxy). On a DIRECT-exposure deployment (no reverse proxy) a client can rotate those headers to bypass every rate limit: set NEO_PROXY_HOPS=0 (one honest shared bucket). Behind a proxy, set the hop depth explicitly.",
     );
   }
 

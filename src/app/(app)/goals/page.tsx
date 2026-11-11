@@ -32,6 +32,10 @@ export default function GoalsPage() {
   const store = useWealthOs();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<Goal | null>(null);
+  // Session-221 (R-18, F-221q): the card-level busy rider — a rapid
+  // double-click on Delete fired two requests (the second 404s and
+  // toasts a spurious "Delete failed").
+  const [busyId, setBusyId] = React.useState<string | null>(null);
 
   const goals = store.goals;
   const now = new Date();
@@ -99,7 +103,11 @@ export default function GoalsPage() {
                         goal.status === "completed" || done
                           ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
                           : goal.status === "paused"
-                            ? "bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-300"
+                            // Session-221 (R-18, F-221k): the light arm
+                            // darkens one step — stone-500 on stone-100
+                            // measured 4.40:1 (11px semibold needs 4.5);
+                            // the income sibling's stone-600 = 6.99:1.
+                            ? "bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300"
                             : "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
                       )}
                     >
@@ -156,8 +164,11 @@ export default function GoalsPage() {
                     <Button
                       variant="ghost"
                       className="h-8 flex-1 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                      disabled={busyId === goal.id}
                       onClick={async () => {
+                        setBusyId(goal.id);
                         const res = await store.deleteGoal(goal.id);
+                        setBusyId(null);
                         if (res.ok) toast.success("Goal deleted");
                         else toast.error("Delete failed", res.error);
                       }}
@@ -220,6 +231,11 @@ function GoalDialog({
       category,
       targetDate: targetDate || undefined,
     };
+    // Session-221 (R-18, F-221d): the null-clear rider — an emptied
+    // target date must CLEAR the stored value on edit (the update
+    // schema's null contract), not silently restore it after
+    // refreshAll. The create arm keeps the omit form (not nullable).
+    if (editing) body.targetDate = targetDate || null;
     const res = editing
       ? await store.updateGoal(editing.id, body)
       : await store.createGoal(body);

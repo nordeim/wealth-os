@@ -118,6 +118,25 @@ describe("reset-password route contract (session-163, digma S67-A/S76-A/S124-A)"
     expect(src).toContain("findFirst({ where: { resetToken: hashResetToken(resetToken) } })");
   });
 
+  it("read path surfaces P2024/P2028 as 503 — the F-220k sibling the R-17 cure missed (F-221g)", () => {
+    // The blanket `.catch(() => null)` on the token lookup maps a
+    // pool/transaction timeout to "invalid token" — a user holding a
+    // VALID single-use link is told it expired during a DB outage.
+    // The forgot-password read path (F-220k) and THIS route's update
+    // path (F-218q) both cure the class; the read path must mirror.
+    // The pin asserts the POSITIVE form (the guard exists), not
+    // merely the catch's absence — the F-218b lesson.
+    const src = resetRoute();
+    expect(src).not.toMatch(/findFirst\([\s\S]*?\)\.catch\(\(\) => null\)/);
+    // The read arm carries its own transient-abort 503 BEFORE the
+    // invalid-token 400 fires (the same P2024/P2028 family the
+    // update path answers).
+    const readArm = src.slice(0, src.indexOf("updateMany"));
+    expect(readArm).toContain('"P2024"');
+    expect(readArm).toContain("503");
+    expect(readArm.indexOf('"P2024"')).toBeGreaterThan(readArm.indexOf("findFirst"));
+  });
+
   it("answers the invalid-token 400 when the conditional write lands count 0 (the racing replay)", () => {
     const src = resetRoute();
     expect(src).toContain("result.count === 0");

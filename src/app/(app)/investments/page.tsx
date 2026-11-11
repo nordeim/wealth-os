@@ -58,6 +58,10 @@ export default function InvestmentsPage() {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<Investment | null>(null);
   const [period, setPeriod] = React.useState("6M");
+  // Session-221 (R-18, F-221q): the card-level busy rider — a rapid
+  // double-click on the row Delete fired two requests (the second
+  // 404s and toasts a spurious "Delete failed").
+  const [busyId, setBusyId] = React.useState<string | null>(null);
   const isDark = useIsDark();
 
   const investments = store.investments;
@@ -309,9 +313,12 @@ export default function InvestmentsPage() {
                             <Button
                               variant="ghost"
                               className="h-7 px-2 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                              disabled={inv ? busyId === inv.id : false}
                               onClick={async () => {
                                 if (!inv) return;
+                                setBusyId(inv.id);
                                 const res = await store.deleteInvestment(inv.id);
+                                setBusyId(null);
                                 if (res.ok) toast.success("Investment removed");
                                 else toast.error("Delete failed", res.error);
                               }}
@@ -387,6 +394,11 @@ function InvestmentDialog({
       currentValue: Number(currentValue),
       purchaseDate: purchaseDate || undefined,
     };
+    // Session-221 (R-18, F-221d): the null-clear rider — an emptied
+    // purchase date must CLEAR the stored value on edit (the update
+    // schema's null contract), not silently restore it after
+    // refreshAll. The create arm keeps the omit form (not nullable).
+    if (editing) body.purchaseDate = purchaseDate || null;
     const res = editing
       ? await store.updateInvestment(editing.id, body)
       : await store.createInvestment(body);

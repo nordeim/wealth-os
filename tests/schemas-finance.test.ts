@@ -7,6 +7,7 @@ import {
   goalCreateSchema,
   incomeSourceCreateSchema,
   investmentCreateSchema,
+  investmentUpdateSchema,
   settingsUpdateSchema,
   transactionCreateSchema,
   transactionUpdateSchema,
@@ -203,6 +204,21 @@ describe("investmentCreateSchema", () => {
         currentValue: 1,
       }).success,
     ).toBe(false);
+  });
+});
+
+// Session-221 (R-18, F-221h): the update twin's shares cap — the
+// create arm capped at 1e9 while the update arm accepted any finite
+// positive, so PUT /api/investments/[id] with shares=1e15 stored and
+// shares×currentValue overflowed to Infinity inside portfolioStats.
+describe("investmentUpdateSchema (F-221h — the shares cap parity)", () => {
+  it("rejects shares above 1e9 on BOTH arms (the create cap, the update gap)", () => {
+    const base = { symbol: "aapl", name: "x", shares: 10, avgCost: 100, currentValue: 150 };
+    expect(investmentCreateSchema.safeParse({ ...base, shares: 1e15 }).success).toBe(false);
+    // Pre-cure: the update arm accepted 1e15 (finite, positive).
+    expect(investmentUpdateSchema.safeParse({ shares: 1e15 }).success).toBe(false);
+    expect(investmentUpdateSchema.safeParse({ shares: 10 }).success).toBe(true);
+    expect(investmentUpdateSchema.safeParse({ shares: 0 }).success).toBe(false);
   });
 });
 

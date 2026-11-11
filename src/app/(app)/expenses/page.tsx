@@ -432,10 +432,19 @@ export function ExpenseDialog({
       category,
       budgetCategory,
       date,
-      notes: notes || undefined,
+      // Session-221 (R-18, F-221d): the raw string, not the || undefined
+      // collapse — the create schema normalizes "" to undefined and the
+      // update schema to null (the F-219q clear contract), so one form
+      // serves both modes AND an emptied Notes actually clears on edit.
+      notes,
       recurring,
     };
-    if (recurring) body.nextDate = date;
+    // Session-221 (R-18, F-221d): the null-clear rider — unchecking
+    // recurring must CLEAR the stored nextDate on edit (the update
+    // schema's null contract), not leave the stale date riding. The
+    // create arm keeps the omit form (its dateField is not nullable).
+    if (editing) body.nextDate = recurring ? date : null;
+    else if (recurring) body.nextDate = date;
     const res = editing
       ? await store.updateTransaction(editing.id, body)
       : await store.createTransaction(body);
@@ -539,9 +548,12 @@ export function ExpenseDialog({
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Budget Category</label>
+                {/* Session-221 (R-18, F-221j): the htmlFor/id association —
+                    the F-218u pattern every sibling surface already uses
+                    (clicking the label now focuses the combobox). */}
+                <label htmlFor="expense-budget-category" className="text-sm font-medium text-stone-700 dark:text-stone-300">Budget Category</label>
                 <Select value={budgetCategory} onValueChange={setBudgetCategory}>
-                  <SelectTrigger aria-label="Budget category">
+                  <SelectTrigger id="expense-budget-category" aria-label="Budget category">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -552,9 +564,9 @@ export function ExpenseDialog({
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Category</label>
+                <label htmlFor="expense-category" className="text-sm font-medium text-stone-700 dark:text-stone-300">Category</label>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger aria-label="Expense category">
+                  <SelectTrigger id="expense-category" aria-label="Expense category">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="max-h-64">

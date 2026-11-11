@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { toCsv, parseCsv, csvFilename, stageCsvDate, type CsvColumn } from "@/lib/csv";
 
 interface Row {
@@ -115,5 +115,65 @@ describe("stageCsvDate (F-220m)", () => {
 
   it("returns null for empty/absent input", () => {
     expect(stageCsvDate("   ")).toBeNull();
+  });
+});
+
+// Session-221 (R-18, F-221a/F-221c): the F-220a doctrine ("pin the
+// FORM with TZ-switching tests") applied to the seam the doctrine
+// missed. The R-17 implementation read LOCAL accessors off every
+// parse: a bare yyyy-mm-dd cell parses as UTC midnight, so west of
+// UTC the local parts read the PRIOR day (New York "2026-11-01" →
+// 2026-10-31 — live-reproduced); a Z-suffixed timestamp east of UTC
+// reads the NEXT day (Tokyo "2026-11-01T18:30:00Z" → Nov 2, and the
+// year boundary "2026-12-31T23:30:00Z" → 2027-01-01). The pins flip
+// TZ per-assertion exactly like tests/finance.test.ts's F-220a rows.
+describe("stageCsvDate TZ-switching (F-221a/F-221c — the form-branch contract)", () => {
+  afterEach(() => {
+    process.env.TZ = "UTC";
+  });
+
+  it("F-221a: a bare yyyy-mm-dd cell stages ITS OWN day west of UTC (New York)", () => {
+    process.env.TZ = "America/New_York";
+    // Pre-cure (live-reproduced): 2026-10-31T00:00:00.000Z — the
+    // most common bank-CSV date form stored one day early for the
+    // Americas.
+    expect(stageCsvDate("2026-11-01")).toBe("2026-11-01T00:00:00.000Z");
+    expect(stageCsvDate("2026-01-01")).toBe("2026-01-01T00:00:00.000Z");
+  });
+
+  it("F-221a: a bare yyyy-mm-dd cell stages its own day east of UTC (Tokyo)", () => {
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("2026-11-01")).toBe("2026-11-01T00:00:00.000Z");
+  });
+
+  it("F-221c: a Z-suffixed timestamp stages the UTC calendar day east of UTC (Tokyo)", () => {
+    process.env.TZ = "Asia/Tokyo";
+    // Pre-cure (live-reproduced): 2026-11-02T00:00:00.000Z — the
+    // local accessors read Nov 2 off the Nov-1 18:30Z instant.
+    expect(stageCsvDate("2026-11-01T18:30:00.000Z")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+  });
+
+  it("F-221c: the year boundary stages the UTC calendar day (Tokyo, Dec 31 23:30Z)", () => {
+    process.env.TZ = "Asia/Tokyo";
+    // Pre-cure (live-reproduced): 2027-01-01T00:00:00.000Z.
+    expect(stageCsvDate("2026-12-31T23:30:00Z")).toBe(
+      "2026-12-31T00:00:00.000Z",
+    );
+  });
+
+  it("F-221c: a Z-suffixed timestamp stages the UTC calendar day west of UTC (New York)", () => {
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("2026-11-01T18:30:00.000Z")).toBe(
+      "2026-11-01T00:00:00.000Z",
+    );
+  });
+
+  it("the locale forms KEEP the local-accessor staging under both zones (the F-220m contract stands)", () => {
+    process.env.TZ = "Asia/Tokyo";
+    expect(stageCsvDate("05/03/2026")).toBe("2026-05-03T00:00:00.000Z");
+    process.env.TZ = "America/New_York";
+    expect(stageCsvDate("05/03/2026")).toBe("2026-05-03T00:00:00.000Z");
   });
 });

@@ -29,7 +29,11 @@ export function fail(code: string, message: string, status = 400): NextResponse 
 
 export const ERR = {
   UNAUTHORIZED: () => fail("UNAUTHORIZED", "Sign in required", 401),
-  FORBIDDEN: () => fail("FORBIDDEN", "Not allowed", 403),
+  // Session-221 (R-18, F-221t): the 403 arm retired — zero consumers
+  // repo-wide, and the 404-never-403 posture (resource-existence
+  // hiding) means a dead 403 arm is a drift hazard: a future
+  // contributor reaching for it would reintroduce existence-leaking
+  // 403s. NOT_FOUND is the family's answer for other users' rows.
   NOT_FOUND: (what = "Record") => fail("NOT_FOUND", `${what} not found`, 404),
   BAD_REQUEST: (msg: string) => fail("BAD_REQUEST", msg, 400),
   // Session-67 (N-67h): the 429 family carries Retry-After consistently —

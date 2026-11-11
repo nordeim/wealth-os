@@ -64,9 +64,13 @@ function useToasts(): ToastItem[] {
 }
 
 const ICONS: Record<ToastVariant, React.ReactNode> = {
-  success: <CheckCircle2 className="h-4.5 w-4.5 text-success" />,
+  // Session-221 (R-18, F-221m): the success/info icons darken one step
+  // on light (emerald-600 = 3.66:1, amber-700 = 4.83:1 — the old
+  // emerald-500/amber-500 computed 2.54:1/2.15:1) with dark arms
+  // keeping the bright steps; error already passed at 3.76:1.
+  success: <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />,
   error: <AlertCircle className="h-4.5 w-4.5 text-danger" />,
-  info: <Info className="h-4.5 w-4.5 text-primary" />,
+  info: <Info className="h-4.5 w-4.5 text-amber-700 dark:text-amber-400" />,
 };
 
 function Toaster() {

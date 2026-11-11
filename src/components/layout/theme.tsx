@@ -93,7 +93,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       // stored choice, the DARK default) would follow the OS on flip,
       // contradicting the no-choice→dark invariant until the next
       // route change.
-      if (window.localStorage.getItem(STORAGE_KEY) === "system") applyTheme("system");
+      // Session-221 (R-18, F-221p): AND on the seam's auth-face
+      // resolution — a visitor on /login (or signup/reset) with
+      // stored "system" whose OS flips mid-page would get
+      // applyTheme("system") → a DARK auth face, violating the
+      // F-219t force-light genus the pathname effect enforces.
+      // defaultThemeForPath resolves "light" on the auth faces
+      // regardless of the stored choice, so the follow fires only
+      // where "system" is actually the live posture.
+      if (
+        window.localStorage.getItem(STORAGE_KEY) === "system" &&
+        defaultThemeForPath(window.location.pathname, "system") === "system"
+      ) applyTheme("system");
     };
     mql.addEventListener("change", onChange);
     return () => mql.removeEventListener("change", onChange);

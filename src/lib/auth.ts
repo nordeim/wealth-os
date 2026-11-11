@@ -156,6 +156,9 @@ export interface SessionUser {
   // uploaded photo (the reference's profile_picture).
   photoUrl: string | null;
   role: string;
+  // Session-221 (R-18, F-221s): the profile-metadata field the GDPR
+  // export carries in its user block (the account's creation date).
+  createdAt: Date;
 }
 
 /** Resolve the signed-in user from the request cookie, or null. */
@@ -180,5 +183,6 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     avatarColor: user.avatarColor,
     photoUrl: user.photoUrl,
     role: user.role,
+    createdAt: user.createdAt,
   };
 }

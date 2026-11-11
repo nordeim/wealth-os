@@ -51,7 +51,25 @@ export async function POST(req: Request) {
   // Session-164 (the skill §12 hashed-at-rest compliance): the row stores
   // the token's SHA-256 hex, so BOTH lookups key on the hash — the raw
   // token arrives from the URL and never touches the query.
-  const user = await db.user.findFirst({ where: { resetToken: hashResetToken(resetToken) } }).catch(() => null);
+  // Session-221 (R-18, F-221g): the read path joins the honest-failure
+  // family — the old blanket `.catch(() => null)` mapped a P2024/P2028
+  // (pool/transaction timeout) to "invalid token", telling a user
+  // holding a VALID single-use link that it expired during a DB outage
+  // (the F-220k class forgot-password's read path cured; this route's
+  // own update path cured it in F-218q). A MISSING row is not an error;
+  // a broken DB is a 503, never a token verdict.
+  let user: Awaited<ReturnType<typeof db.user.findFirst>> = null;
+  try {
+    user = await db.user.findFirst({ where: { resetToken: hashResetToken(resetToken) } });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      (error.code === "P2024" || error.code === "P2028")
+    ) {
+      return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
+    }
+    return ERR.INTERNAL();
+  }
   const alive =
     user?.resetTokenExpiresAt instanceof Date && user.resetTokenExpiresAt.getTime() > Date.now();
   if (!user || !alive) {

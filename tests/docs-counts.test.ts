@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 924;
-const E2E_TOTAL = 107;
+const UNIT_TOTAL = 961;
+const E2E_TOTAL = 108;
 const SMOKE_TOTAL = 14;
-const TEST_FILES = 65;
+const TEST_FILES = 66;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -60,9 +60,10 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // and the four files took the suite to 51; session-218 (R-15) added
     // login-recovery + parity-218 (25 → 27 pins, 34 → 36 rows; session-219:
     // theme-default + parity-219, 36 → 38 rows — the arithmetic
-    // 3 + 39 + 23 = 65 now closes; session-220 added parity-220).
+    // 3 + 39 + 23 = 65 now closes; session-220 added parity-220;
+    // session-221 added parity-221 — 40 rows).
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 39 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220) |",
+      "| — architecture pins | 40 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221) |",
     );
   });
 

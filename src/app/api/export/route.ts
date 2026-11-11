@@ -20,7 +20,13 @@ export async function GET(req: Request) {
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
   try {
-    const [transactions, incomeSources, accounts, investments, goals, budgets] =
+    // Session-221 (R-18, F-221s): the settings row joins the dump — the
+    // Settings page's own copy promises "Download all your data in JSON
+    // format", and the per-user preferences (currency, date format,
+    // notification booleans, theme — owner-keyed since R-10) were
+    // absent, so a re-import into a fresh account silently lost them.
+    // The profile metadata (photoUrl/createdAt) rides the user block.
+    const [transactions, incomeSources, accounts, investments, goals, budgets, settings] =
       await Promise.all([
         db.transaction.findMany({
           where: { ownerId: guard.user.id },
@@ -31,12 +37,18 @@ export async function GET(req: Request) {
         db.investment.findMany({ where: { ownerId: guard.user.id } }),
         db.goal.findMany({ where: { ownerId: guard.user.id } }),
         db.budget.findMany({ where: { ownerId: guard.user.id } }),
+        db.setting.findFirst({ where: { ownerId: guard.user.id } }),
       ]);
 
     const payload = {
       exportedAt: new Date().toISOString(),
       format: "wealthos-export-v1",
-      user: { email: guard.user.email, name: guard.user.name },
+      user: {
+        email: guard.user.email,
+        name: guard.user.name,
+        photoUrl: guard.user.photoUrl,
+        createdAt: guard.user.createdAt,
+      },
       data: {
         transactions,
         incomeSources,
@@ -44,6 +56,7 @@ export async function GET(req: Request) {
         investments,
         goals,
         budgets,
+        settings,
       },
     };
     return new NextResponse(JSON.stringify(payload, null, 2), {

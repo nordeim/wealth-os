@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { ok, ERR, parseBody, isGuarded, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
-import { budgetUpsertSchema } from "@/lib/schemas";
+import { budgetUpsertSchema, budgetDeleteSchema } from "@/lib/schemas";
 
 export const dynamic = "force-dynamic";
 
@@ -72,7 +72,7 @@ export async function DELETE(req: Request) {
   sweepRateLimits();
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
 
-  const parsed = await parseBody(req, (await import("@/lib/schemas")).budgetDeleteSchema);
+  const parsed = await parseBody(req, budgetDeleteSchema);
   if (!parsed.ok) return parsed.response;
 
   try {

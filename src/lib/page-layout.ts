@@ -277,7 +277,11 @@ export const DIALOG_FOOTER_WIDE =
   "flex flex-col-reverse gap-2 sm:flex-row sm:justify-between" as const;
 
 export const DIALOG_CLOSE =
-  "absolute right-4 top-4 rounded-md text-stone-400 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none" as const;
+  // Session-221 (R-18, F-221l): stone-500 at full opacity, no dimming —
+  // the old stone-400 at 70% blended to ≈1.85:1 on white (below the 3:1
+  // non-text bar; full-opacity stone-400 was 2.52:1). The F-220f toast ✕
+  // cure's mirror: stone-500 computes 4.95:1.
+  "absolute right-4 top-4 rounded-md text-stone-500 transition-colors hover:text-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none" as const;
 
 export const INPUT_BASE = {
   size: "text-base md:text-sm",

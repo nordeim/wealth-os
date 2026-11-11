@@ -11,6 +11,12 @@ export const dynamic = "force-dynamic";
 // succeeds on the empty file — verified by the fresh-boot e2e run); the
 // 503 only fires when SELECT 1 actually fails, exactly the state where
 // monitoring needs the signal.
+// Session-221 (R-18, F-221t): the deliberately unthrottled posture,
+// recorded — every public route family carries a bucket except this
+// one (an unauthenticated flood contends the SQLite pool), because a
+// monitoring endpoint that rate-limits fails health checks under
+// normal probe cadence. A deployment exposed to the open internet may
+// front it with a proxy-level limit; the app-level knob stays off.
 export async function GET() {
   try {
     await db.$queryRaw`SELECT 1`;

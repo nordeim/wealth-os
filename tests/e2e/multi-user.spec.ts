@@ -95,6 +95,30 @@ test("a second user's data is invisible to the demo user and survives their rese
     expect(demoTx.data.length).toBeGreaterThanOrEqual(50);
     expect(demoTx.data.some((t) => t.description === "B's private expense")).toBe(false);
 
+    // -- Isolation, direction 3 (Session-221, R-18, F-221i): B's [id]
+    //    MUTATIONS against a demo-owned row answer 404 with the demo
+    //    row intact. The correct findFirst({ id, ownerId }) posture
+    //    was pinned only by source-string containment before — the
+    //    exact limitation F-215c recorded ("a future regression
+    //    scoping to any other variable passes the pin"); these legs
+    //    pin the BEHAVIOR.
+    const demoTxId = demoTx.data[0] && (demoTx.data[0] as { id?: string }).id;
+    expect(demoTxId).toBeTruthy();
+    const bPutForeign = await b.put(`/api/transactions/${demoTxId}`, {
+      data: { description: "hijacked", amount: 1, type: "expense", category: "X", budgetCategory: "needs", date: "2026-11-05" },
+    });
+    expect(bPutForeign.status()).toBe(404);
+    const bDeleteForeign = await b.delete(`/api/transactions/${demoTxId}`);
+    expect(bDeleteForeign.status()).toBe(404);
+    // The demo row survived both attempts untouched.
+    const demoTxGuard = (await (await request.get("/api/transactions")).json()) as {
+      ok: boolean;
+      data: Array<{ description: string }>;
+    };
+    expect(demoTxGuard.ok).toBe(true);
+    expect(demoTxGuard.data.length).toBeGreaterThanOrEqual(50);
+    expect(demoTxGuard.data.some((t) => t.description === "hijacked")).toBe(false);
+
     // -- B resets: B's rows vanish, the DEMO corpus SURVIVES (the
     //    F-214a/F-215c behavioral contract). The route's confirm gate
     //    rides the body ({ confirm: "RESET" } — the CSRF content-type

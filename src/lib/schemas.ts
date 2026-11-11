@@ -407,6 +407,11 @@ export const investmentUpdateSchema = z.object({
     .number()
     .finite()
     .positive("Shares must be greater than zero")
+    // Session-221 (R-18, F-221h): the create twin's cap joins the
+    // update arm — an unbounded shares × the currentValue cap (1e9)
+    // overflowed to Infinity inside portfolioStats, the health score,
+    // and the coach text until re-edited.
+    .max(1_000_000_000, "Shares is too large")
     .optional(),
   avgCost: moneyField("Cost per share is required").optional(),
   currentValue: moneyField("Current price is required").optional(),

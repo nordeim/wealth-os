@@ -120,9 +120,13 @@ describe("session-131 parity pins (the toast family walk — F-131c1: the refere
   });
 
   it("the icon family (h-4.5 w-4.5 + the three token rides — live-censused 18px rgb(16,185,129) success)", () => {
-    expect(src).toContain("h-4.5 w-4.5 text-success");
+    // Session-221 (R-18, F-221m) — in-commit refinement: the success/info
+    // icons darkened one step on light with dark arms (emerald-600 3.66:1,
+    // amber-700 4.83:1 — the old emerald-500/amber-500 computed
+    // 2.54:1/2.15:1 on the white card); error keeps text-danger (3.76:1).
+    expect(src).toContain("h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400");
     expect(src).toContain("h-4.5 w-4.5 text-danger");
-    expect(src).toContain("h-4.5 w-4.5 text-primary");
+    expect(src).toContain("h-4.5 w-4.5 text-amber-700 dark:text-amber-400");
   });
 
   it("the hover-pause seam (the onMouseEnter/Leave pair — live-proven: holds at 6.5s, dismisses ~4.1s after the unpause)", () => {
