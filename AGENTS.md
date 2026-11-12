@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1211) | `bun run test` |
+| Unit tests (1218) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 138) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -444,3 +444,15 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   login-budget lesson's signup edition. When a leg needs an
   empty-data state, prefer a from/to range outside the corpus on the
   DEMO session over a fresh scratch account.
+- **A render-time id mint cannot read a ref — react-hooks/refs
+  rejects ref access during render** (session 230, F-230e): the
+  ai-coach greeting seeds state during render (the sanctioned
+  adjust-during-render idiom), so an id mint consumed there must NOT
+  be a `useRef` counter — `idRef.current` during render trips
+  `react-hooks/refs` (a hard lint error, correctly). The sanctioned
+  form is a MODULE-LEVEL counter (`let n = 0; const nextId = () =>
+  ++n`) — refs are for values render does not need; the mint is
+  needed BY render. Corollary: keys for a frozen slice or fixed
+  slots (the import preview rows, the OTP boxes) may stay
+  index-keyed — the index IS the identity there; mint ids only for
+  lists a future edit might reorder or splice mid-array.

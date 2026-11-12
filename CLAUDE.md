@@ -45,7 +45,7 @@ Follow this six-phase workflow for all implementation tasks:
   functionality.
 - **Determinism everywhere**: the seed, the AI coach, and the test data
   are all deterministic — no `Math.random()` in seeded paths.
-- **The gate is the contract**: lint 0/0 · tsc 0 · 1211 unit · build ·
+- **The gate is the contract**: lint 0/0 · tsc 0 · 1218 unit · build ·
   smoke 15/15 · 138 e2e. A green gate achieved by weakening a guardrail is
   not a fix.
 - **Offline-capable by default**: no runtime third-party calls (fonts,
@@ -108,7 +108,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 | `bun run dev` | Dev server (:3000) |
 | `bun run build` | Production standalone build |
 | `bun run start` | Serve the standalone artifact (needs build) |
-| `bun run test` | Unit suite (Vitest, 1211 checks) |
+| `bun run test` | Unit suite (Vitest, 1218 checks) |
 | `CI=1 bun run test:e2e` | E2E suite (Playwright, 138 checks, own db + :3100) |
 | `bun run lint` | ESLint, fails on warnings |
 | `bun run typecheck` | `tsc --noEmit` |
@@ -121,7 +121,7 @@ Demo login: `sepnetflix2023@outlook.com` / `$Abcd1234`.
 
 - **Unit (Vitest)**: domain math, schemas, AI engine, auth contract,
   architecture pins (`gate-script`, `db-census`, `route-case`…), property
-  tests via fast-check. 1211 checks / 76 files.
+  tests via fast-check. 1218 checks / 77 files.
 - **E2E (Playwright, chromium)**: journeys per section, mobile drawer at
   390×844 (incl. the short-viewport scroll leg), the fresh-visitor dark
   default, dialogs, route-alias equivalence, the 401 auth-wall probe.
