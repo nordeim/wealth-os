@@ -16,6 +16,77 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.28.0 (session 231, R-28 — the a11y-tail,
+  logging-grain, and dead-family round): the fresh-eyes audit
+  (three Mode-C passes — the R-27 cure surfaces driven by the
+  session, the API/auth/security layer, and the UI/a11y/shell
+  layer; 0 Critical / 0 High / 0 Medium / 8 Low / 12
+  Informational raw, every material claim re-verified at
+  file:line, ONE claim adjudicated by live probes plus a bundle
+  grep — the Analytics "Spending by Day of Week" card is OUR
+  OWN SUPERSET (probe-231/b/c walked the reference's four
+  Analytics tabs at its standing zero demo data: no day-of-week
+  card on any tab, and the reference's 1.4 MB JS bundle carries
+  no such string — the amber fill was never reference parity
+  but our own palette mis-assignment); the two Pass-B "Lows"
+  were adjudicated as AUDIT-BRIEF CONTRACT-TEXT ERRORS (the
+  uploads GET is public capability-URL serving per its own
+  docblock + the recorded F-225i/F-217g posture, and
+  forgot-password is 10/15 per the F-222n ledger — the code
+  matches the repo's documented contracts; the brief misstated
+  both); the cold baseline GREEN at HEAD — the v2.27.0 ship
+  state reproduced exactly, no discovery this round; the
+  reference STABLE on all standing layers with the TRUE-390
+  mobile menu re-verified by probe:ref; `bun audit` unchanged;
+  neo-crm upstream unchanged). THE EXPENSES DIALOG GLYPH
+  HIDING (F-231a Low): the amber "$" tile in the Add/Edit
+  Expense title carried no aria-hidden — the F-225k family's
+  one miss; screen readers announced a stray "dollar sign"
+  before every dialog title. THE AUTH-CARD VIEW-SWAP FOCUS
+  (F-231b Low): four of five in-place view transitions dropped
+  focus to body with no announcement (the verify view's box-1
+  focus proved the pattern in-tree); every transition now lands
+  focus on the new view's heading via the value-comparison
+  guard — the first boolean mountedRef design fell to the dev
+  server's StrictMode double-invoke (live-caught by the
+  captures face: the second invoke saw the flag set and fired
+  the focus on the INITIAL load; the production-build e2e
+  passed — a dev-only failure class now in AGENTS). THE
+  DROPDOWNCONTENT Z-PIN (F-231c Low): the dead vendored
+  Popover family's content re-pinned from the skip-link's
+  dedicated 60-level to the menu family's 50-level — and the
+  re-pin orphaned two comments citing the old token as live
+  code, caught by the parity-229 whole-tree carrier invariant
+  (the recursive genus a third time). THE ICONS.TSX RETIREMENT
+  (F-231d Low): the CRM-era hand-rolled FilterPolygon glyph —
+  zero consumers, a "Used by the dashboard Filter, leads
+  Filters and contacts Filters" citation naming surfaces that
+  do not exist in WealthOS, and no polygon glyph in the
+  reference's bundle — retired per the F-229f re-entry rule;
+  the N-89c6 lucide-injection note relocated to the KpiCard
+  delta icons. THE DAY-OF-WEEK FILL (F-231e Low): the bar rides
+  CHART_COLORS.expenses (the spending rose) per the palette
+  doctrine — drift-inert by construction (the sweep baselines
+  are zero-data; the card renders its EmptyState at zero
+  data). THE UPLOAD MULTIPART LOG (F-231f Low): the formData
+  catch swallowed the parse error — the one F-226c-genus site
+  outside the logging retrofit; it logs before the 400 now. THE
+  UPLOADS GET ENOENT GATE (F-231g Low): a 404 on a capability
+  URL is the normal miss, not a server fault — ENOENT stays
+  out of the error log; real I/O failures still log. THE
+  CRM-ERA DEAD-FAMILY RETIREMENT (F-231h Low): the wide-footer
+  component + the wide geometry arm + the wide footer constant
+  + the initials-avatar family (five zero-consumer CRM-era
+  constructs in live files) retire; the two "Event/Activity"
+  citations reworded to the historical record; the shadcn-stock
+  arms (button variants/sizes, the Dialog primitive
+  re-exports) stay registered per the F-227f doctrine. The low
+  tail: the TrendingDown aria-hidden symmetry + the N-89c6
+  note's new home (F-231i); the expenses memo on the stable
+  store identity (F-231j); the vestigial peer class retired
+  (F-231k); the trailing docblock rot folded (F-231l). The
+  counts: 1218→1235 / 77→78 / 138→139 e2e / the badge
+  1356→1374 / the pins row 49→50 with parity-231.
 - [SR] v2.27.0 (session 230, R-27 — the register-and-hygiene
   round): the fresh-eyes audit (three Mode-C passes — the R-26
   cure surfaces driven by the session, the API/auth/security
@@ -883,8 +954,8 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1218) → `next build` → the 15-assertion smoke ladder on the
-  standalone artifact → Playwright e2e (138) against a pinned `db/e2e.db`.
+  → vitest (1235) → `next build` → the 15-assertion smoke ladder on the
+  standalone artifact → Playwright e2e (139) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
   R-4.5, session 211 — green end-to-end from cold): the sweep,
@@ -1304,11 +1375,11 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 77 | 1218 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 78 | 1235 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 49 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230) | `tests/` | source-scanning contracts |
+| — architecture pins | 50 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231) | `tests/` | source-scanning contracts |
 | — infrastructure | 25 | auth, rate-limit, csv, uploads, headers, boot-env, search-query, store-logout, … | `tests/` | behavior |
-| E2E | 7 | 138 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
+| E2E | 7 | 139 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
 *docs-counts pins are re-anchored when doc/test counts change — keep them
@@ -1339,10 +1410,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1218/1218 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1235/1235 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 138/138
+- [ ] `CI=1 bun run test:e2e` → 139/139
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -1409,7 +1480,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1218 unit / 138 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1235 unit / 139 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -1444,7 +1515,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1218 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1235 unit · build · smoke 15/15 ·
 138 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

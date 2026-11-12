@@ -7,7 +7,81 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.27.0** (session 230 — the register
+> **Current version: v2.28.0** (session 231 — the a11y-tail,
+> logging-grain, and dead-family round R-28: the owner's
+> standing directive — refresh → review → validate → audit →
+> parity iteration → remediation plan → TDD execution →
+> captures → docs lockstep → commit → push, with the reference
+> STABLE on all standing drift layers and the TRUE-390 mobile
+> menu re-verified this session; the cold-baseline gate GREEN
+> at HEAD — no discovery this round, the v2.27.0 ship state
+> reproduced exactly). The session-231 fresh-eyes audit (three
+> Mode-C passes: the R-27 cure surfaces driven by the session,
+> the API/auth/security layer, and the UI/a11y/shell layer —
+> 0 Critical / 0 High / 0 Medium / 8 Low / 12 Informational
+> raw, every material claim re-verified at file:line by the
+> driving session, ONE claim adjudicated by live reference
+> probes plus a bundle grep — the Analytics "Spending by Day
+> of Week" card is OUR OWN SUPERSET (probe-231/b/c walked the
+> reference's four Analytics tabs at its standing zero demo
+> data: no day-of-week card on any tab, and the reference's
+> JS bundle carries no such string — the amber fill was never
+> reference parity but our own palette mis-assignment, spending
+> riding the Net-Savings hue); the two Pass-B "Lows" were
+> adjudicated as AUDIT-BRIEF CONTRACT-TEXT ERRORS (the uploads
+> GET is public-by-design capability-URL serving per its own
+> docblock + the recorded F-225i/F-217g posture, and
+> forgot-password is 10/15 per the F-222n ledger — the code
+> matches the repo's documented contracts; the brief misstated
+> both). The round cures: THE EXPENSES DIALOG DECORATIVE-GLYPH
+> HIDING (F-231a — the amber "$" tile in the Add/Edit Expense
+> title carried no aria-hidden, the one F-225k-family miss;
+> screen readers announced "dollar sign Add Expense"); THE
+> AUTH-CARD VIEW-SWAP FOCUS MANAGEMENT (F-231b — four of five
+> in-place view transitions dropped focus to body with no
+> announcement; the verify view's box-1 focus proved the
+> pattern in-tree; every transition now lands focus on the new
+> view's heading, mount-guarded so the initial page load keeps
+> natural focus); THE DEAD DROPDOWNCONTENT Z-PIN (F-231c — the
+> vendored Popover family's content pinned the skip-link's
+> z-60 layer instead of the menu family's z-50; re-pinned to
+> the flat scale); THE ICONS.TSX RETIREMENT (F-231d —
+> FilterPolygon, a CRM-era hand-rolled glyph with zero
+> consumers and a "Used by the dashboard Filter, leads Filters
+> and contacts Filters" citation naming surfaces that do not
+> exist in WealthOS; the file retires per the F-229f re-entry
+> rule and the N-89c6 lucide-injection note relocates to the
+> KpiCard delta icons it documents); THE DAY-OF-WEEK FILL
+> (F-231e — the bar rides CHART_COLORS.expenses now, the
+> palette doctrine's own spending hue; the sweep baselines are
+> zero-data so the change is drift-inert by construction); THE
+> UPLOAD MULTIPART LOG (F-231f — the formData catch swallowed
+> the parse error, the one F-226c-genus site outside the
+> logging retrofit; it logs before the 400 now); THE UPLOADS
+> GET ENOENT GATE (F-231g — a 404 on a capability URL is the
+> normal miss, not a server fault; ENOENT stays out of the
+> error log, real I/O failures still log); THE CRM-ERA
+> DEAD-FAMILY RETIREMENT (F-231h — DialogFooterWide +
+> DIALOG_FOOTER_WIDE + DIALOG_CONTENT.wide + the Avatar family
+> retire: five zero-consumer CRM-era constructs in live files,
+> and the two "Event/Activity dialogs" citations reworded to
+> the truth; the shadcn-stock arms stay per the F-227f
+> register); the low tail (F-231i the TrendingDown explicit
+> aria-hidden symmetry; F-231j the expenses memo defeat; F-231k
+> the vestigial peer class; F-231l the trailing docblock rot).
+> Recorded, not cured: F-231m (the button dead stock
+> variants/sizes + the Dialog primitive re-exports — the
+> N-56e/F-227f register doctrine), F-231n (the expenses filters
+> popover focus-out — the reference's own genus), F-231o (the
+> Checkbox onClick clobber — dead stock, latent), F-231p (the
+> seed's one-shot PrismaClient letter), F-231q (the
+> create/update null asymmetry), F-231r (the unbounded
+> aggregate reads — the standing architecture), F-231s (the
+> audit-brief contract-text errors, recorded so the next brief
+> quotes the repo contracts verbatim). §5 carries the execution
+> history.)
+>
+> **Previous version: v2.27.0** (session 230 — the register
 > and hygiene round R-27: the owner's standing directive —
 > refresh → review → validate → audit → parity iteration →
 > remediation plan → TDD execution → captures → docs lockstep →
@@ -44,6 +118,8 @@
 > (the pre-auth fetch standing), F-230h (the clean-surface
 > confirmations + the recorded-tail re-derivations). §5
 > carries the execution history.)
+>
+
 >
 > **Previous version: v2.26.0** (session 229 — the empty-state
 > repair and dead-carrier retirement round R-26: the owner's
@@ -693,6 +769,26 @@ passes' raw labels F-228-B1…B8 and F-228a…i folded into one series):
 | F-230f | Informational | **The card.tsx docblock cites a constant that never existed — `CARD_TITLE_OVERRIDE`.** The comment claims the bigger reference title variants "arrive via CARD_TITLE_OVERRIDE at the call sites"; grep finds the name only in this comment — the call sites pass `className` directly (the CARD.title base + per-call `cn` overrides). A documentation inaccuracy only (not class-shaped; outside the carrier genus). The cure: reword to name the real mechanism. | `src/components/ui/card.tsx:35-40` | **R-27** (the reword) |
 | F-230g | Informational | **The pre-auth faces hand-roll envelope parsing over six raw `fetch()` sites — the `call()` helper is module-private in the store by design.** login-card.tsx (×5) and reset-password-screen.tsx (×1) parse `{ok,error}` shapes inline (`res.json().catch(() => null)`, `body?.error?.message ?? fallback`). The reads were verified careful line-by-line; the authenticated surfaces all ride the store's `call()`. Recorded as a standing residual (the F-214l family): exporting `call()` would widen the client API for zero behavior gain — the envelope shape is pinned by the smoke ladder + the e2e battery, and the pre-auth faces need per-face error copy the destructive-toast helper does not model. Touch only if the envelope ever drifts (the pins would fail first). | `src/components/layout/login-card.tsx:130,177,214,243,282`; `src/components/layout/reset-password-screen.tsx:45`; `src/stores/wealthos-store.ts:39` | recorded (standing) |
 | F-230h | Informational | **The session-230 audit's clean-surface confirmations + the recorded-tail re-derivations.** The R-26 cures verified holding across all three passes: the budgets P2002 retry arm present and correct, the seed stages UTC midnights (four Date.UTC constructions, zero setHours), the dead-API surfaces stay retired (presetCategory, the constant maps, the format helpers, NAV_FOOTER_ITEMS, the pill variant family), the hasIncome gate rides the Analytics Income tab, gainBySymbol renders one bar per symbol, the whole-tree carrier scan outputs prose false-positives only, the dialog docblock records the left-aligned truth, the search route names the Postgres path, mobile-nav carries one next/navigation import. Pass B's findings re-derived the recorded tail without new information: the in-band delivery default (its Medium — the standing F-217m owner-ask, boot-warned, knob-gated, not reopened), the signup admin-role TOCTOU (role has zero authorization consumers — the F-215m inert dimension; the race mints at most a second display-only admin), the console OTP print (rides the same F-217m knob), the XFF default posture (the F-218t documented trade), the signup 409 enumeration + the per-email bucket lockout-DoS (the F-224k recorded trade-off), the P2002-recovery no-trace nit (the settings family precedent — a recovered race logging nothing is the family's shape), the uploads check-then-write window (bounded by the 256MB/4096 ceilings — the F-228f family). Pass C's clean surfaces: the z-ladder, the theme three-way seam, the plain-div drawer contract, the `.dark` token flips, the route twins, the chart zero-data policies (analytics 7/7, investments 2/2, dashboard 5/6 + the Cash Flow adjudication above), the recharts Legend sorter, the store's single-client discipline. | the three audit passes (session 230) | recorded |
+
+| F-231a | Low | **The Add/Edit Expense dialog's decorative amber "$" tile carries no aria-hidden — the F-225k family's one miss.** The DialogTitle renders `<span class="flex h-8 w-8 ... bg-amber-50 text-amber-600">$</span>` before the title text with no aria-hidden, so the dialog's accessible name computes "$ Add Expense" / "$ Edit Expense" — screen readers announce a stray "dollar sign". Every sibling decorative tile in the tree carries the attribute (the six F-225k icons, the ai-coach avatar spans, the KpiCard delta icons); this tile is the family's sole survivor, born at the session-199 transformation and invisible to every gate (axe evaluates the settled page, not the open dialog's title computation at the name level; the a11y legs never asserted the dialog's accessible name). | `src/app/(app)/expenses/page.tsx:478-483`; the family precedent `src/components/shared/ai-coach.tsx:117-127` | **R-28** (the aria-hidden) |
+| F-231b | Low | **Four of the five auth-card view transitions drop focus to body with no announcement.** The login card swaps views in place (signin↔signup, signin→reset, reset→sent) and the reset screen swaps form→done — the focused control unmounts with the old view, focus falls to `<body>`, and nothing announces the new view. The verify view proves the pattern in-tree (its effect focuses code box 1 on transition, live-measured twice at both viewports); `goto()` is pure `setView`. Not a hard WCAG 2.2 SC failure (the context change follows explicit submission) but a real gap on the app's front-door funnel for SR/keyboard users. | `src/components/layout/login-card.tsx:112-121` (the verify pattern + goto), `:357-658` (the five views); `src/components/layout/reset-password-screen.tsx:95-116` (the done swap) | **R-28** (the heading-focus technique, value-guarded — the first boolean mountedRef design fell to the dev server's StrictMode double-invoke, live-caught by the captures face: the second invoke saw the flag set and fired the focus on the INITIAL load while the production-build e2e passed; the value-comparison guard (prevViewRef.current !== view) is idempotent under double-invocation — a new AGENTS gotcha) |
+| F-231c | Low | **The dead Popover-family DropdownContent pins `z-[60]` — the skip-link's dedicated layer, off the flat z-scale.** The vendored dropdown's content class hard-codes the 60-level layer while its live MenuContent sibling rides z-50 (MENU_CONTENT). Zero rendered consumers today (the N-56e KEEP family), but a future consumer inherits a menu that paints above dialogs AND the skip-link's focused reveal — a latent violation of the documented z-ladder. | `src/components/ui/dropdown.tsx:28`; the scale `src/lib/page-layout.ts:351` (z-50) + the skip-link z-[60] (F-225d/F-224s) | **R-28** (re-pin z-50) |
+| F-231d | Low | **FilterPolygon is dead and its docblock names three consumer surfaces that do not exist in WealthOS.** The hand-rolled CRM-era glyph (S17-P2b: lucide 0.525 dropped the old polygon `filter` shape) has zero consumers repo-wide — the WealthOS dashboard imports no Filter icon at all, "leads"/"contacts" are neo-crm surfaces, and the reference's own bundle carries no polygon glyph — while the docblock asserts "Used by the dashboard `Filter`, leads `Filters` and contacts `Filters` buttons". The file's second docblock (N-89c6, the lucide aria-hidden-injection superset note) is live documentation the audits cite and must survive the retirement. | `src/components/ui/icons.tsx:1-46` (the whole file); the F-229f re-entry rule; the N-89c6 note's new home `src/components/shared/page-parts.tsx` | **R-28** (retire the file; relocate the note) |
+| F-231e | Low | **The Analytics "Spending by Day of Week" bar rides the Net-Savings hue on a spending series.** The chart paints `fill={CHART_COLORS.net}` (#f59e0b amber) while the palette doctrine assigns amber to Net Savings and rose (#f43f5e) to Expenses. ADJUDICATED by live probes (probe-231/b/c): the card is OUR OWN SUPERSET — the reference's four Analytics tabs (walked at its standing zero demo data) carry no day-of-week card on any tab, and the reference's JS bundle (1,402,874 bytes, md5-verified the standing fingerprint) contains neither the card title nor the polygon-adjacent strings; the card was born at the session-199 transformation. The amber was never reference parity — a palette mis-assignment on our own surface. The cure is drift-inert by construction: the sweep baselines are zero-data and the card renders its EmptyState at zero data (no recharts surface, no fill computed). | `src/app/(app)/analytics/page.tsx:306`; the doctrine `src/lib/constants.ts:159-165` (CHART_COLORS); scripts/probe-231.ts + probe-231b.ts + probe-231c.ts (the adjudication) | **R-28** (fill={CHART_COLORS.expenses}) |
+| F-231f | Low | **The upload POST's multipart parse failure is swallowed with zero server-side trace — the one F-226c-genus site outside the logging retrofit.** `boundedRequest.formData().catch(() => null)` discards the parse error entirely (the 400 "No file provided" answer is correct, but the operator cannot distinguish attacker garbage from a network abort — exactly the class the F-226c retrofit cured across 31 catch sites; this lambda-catch form escaped the sweep). | `src/app/api/upload/route.ts:85`; the doctrine `src/lib/api.ts:67-69` (logApiError); the F-226c precedent | **R-28** (log inside the catch) |
+| F-231g | Low | **The uploads GET logs every ENOENT miss at error level — a 404 on a capability URL is the normal case, not a fault.** The public serving route answers 404 for any unknown/unexpired name, and each miss flows through `logApiError` — up to 240 error-level lines per 15 minutes per IP from ordinary scanning, drowning the real I/O failures the seam exists to surface. | `src/app/api/uploads/[name]/route.ts:46-51` | **R-28** (gate ENOENT out of the error log) |
+| F-231h | Low | **Five CRM-era zero-consumer constructs ride live files, and two comments cite "Event/Activity dialogs" that do not exist in WealthOS.** DialogFooterWide (the max-w-2xl family footer), DIALOG_FOOTER_WIDE, DIALOG_CONTENT.wide, Avatar + initialsOf (only avatarTextColor is live — the F-218n luminance seam): all zero-consumer CRM-era constructs in live files (grep-verified; no test pins), while the ai-coach dialog passes max-w-2xl directly — the .wide arm's only story is the CRM-era citation. The two "Event/Activity dialogs" comment citations (dialog.tsx:44-45, 87) name neo-crm surfaces, the F-224q docblock-truth genus. The shadcn-STOCK dead arms (button variants link/secondary/sidebar, sizes icon/iconSm/pill; DialogTrigger/Close/Portal re-exports) are a different doctrine — the vendored-stock KEEP (N-56e/F-227f) — and stay registered, not retired. | `src/components/ui/dialog.tsx:44-45,87,93-95,125-126`; `src/lib/page-layout.ts:292` (DIALOG_CONTENT.wide); `src/components/ui/avatar.tsx` | **R-28** (retire the five; reword the two citations) |
+| F-231i | Informational | **The KpiCard TrendingDown glyph omits the explicit aria-hidden its TrendingUp twin carries.** Functionally safe — lucide-react 0.525 injects aria-hidden on any icon without an a11y prop (verified against the installed package source) — but the asymmetry invites re-litigation, and the KpiCard is the natural home for the relocated N-89c6 library-injection note. | `src/components/shared/page-parts.tsx:74-78` | **R-28** (the symmetry + the note) |
+| F-231j | Informational | **The Expenses `visible` useMemo is defeated by a per-render filter.** `store.transactions.filter(...)` mints a fresh array identity every render, so the memo's dependency `[expenses, ...]` never hits — the memoization recomputes every render for nothing. Results identical; list sizes small; pure wasted work. | `src/app/(app)/expenses/page.tsx:78,131-141` | **R-28** (memoize expenses on [store.transactions]) |
+| F-231k | Informational | **The Settings switch carries a vestigial `peer` class with no peer-* consumer.** The toggle button's class opens with `peer inline-flex...` but no sibling reads it (the label precedes the button in DOM) — a dead utility, likely a Tailwind v2-era checkbox idiom survivor. | `src/app/(app)/settings/page.tsx:421` | **R-28** (drop the class) |
+| F-231l | Informational | **A trailing docblock in login-card.tsx documents a function that no longer exists.** "The WealthOS login logo — session-208 (F-208e): ... The CSS bar-chart mark this function used to draw is retired." — no function follows the comment; the `<img>` it references sits ~850 lines above. Comment-only doc rot. | `src/components/layout/login-card.tsx:877-881` (at the audit's line numbers) | **R-28** (fold into the img's comment) |
+| F-231m | Informational | **Dead shadcn-stock arms in live vendored files — the register doctrine, not retirement.** Button variants `link`/`secondary`/`sidebar` + sizes `icon`/`iconSm`/`pill` (0 consumers; `destructive`'s deadness already registered F-227f), the DialogTrigger/DialogClose/DialogPortal re-exports (0 src consumers — every dialog opens via controlled state), and the Avatar family are stock-shaped API surface: deleting them makes the vendored file non-stock, and the F-227f pattern (register with citations, never silently inherit) governs. Recorded here so the next dead-code sweep finds the ledger row. | `src/components/ui/button.tsx:77-95`; `src/components/ui/dialog.tsx:18-20,125-126`; the F-227f/N-56e doctrine | recorded (the KEEP register) |
+| F-231n | Informational | **The Expenses filters popover leaves `aria-controls` dangling while closed and does not close on Tab-away.** The `id="expense-filters"` div unmounts when closed (the attribute references nothing while inert — harmless), and keyboard users who Tab out leave the popover open (Escape + outside-pointer close work; the F-218b/F-217a cures). The reference's own popover is the same plain-div genus — closing on focus-out would be a superset behavior, not a parity fix. | `src/app/(app)/expenses/page.tsx:287,297-332` | recorded (the reference genus; superset optional) |
+| F-231o | Informational | **The vendored Checkbox's own onClick can be silently clobbered by consumer props.** `onClick={toggle}` precedes `{...props}` on the button, so a consumer-supplied onClick replaces the toggle entirely (unlike MenuContent/DropdownContent which compose handlers). Zero consumers today (stock-file KEEP) — a latent footgun only. | `src/components/ui/label.tsx:66-83` | recorded (dead stock; compose if ever consumed) |
+| F-231p | Informational | **The seed constructs its own PrismaClient — the letter of the singleton rule vs the one-shot script.** The rule guards the Next server (CWD/bun-absolutization mirror-dbs, hot-reload handle exhaustion); the seed is a one-shot bun script whose URL flows through the same `runtimeDatabaseUrl()` seam, so the hazard cannot fire. The census pin scopes to `src/` by design. Recorded so the next audit does not re-litigate. | `prisma/seed.ts:20-27`; the rule's scope `AGENTS.md` + `tests/db-census.test.ts:44` | recorded (the one-shot exemption) |
+| F-231q | Informational | **Create schemas reject explicit null on optional fields where the update twins accept it as the clear.** Create-side optionals (`nextDate`, `nextPaymentDate`, `purchaseDate`, `targetDate`, `notes`, `institution`) fail an explicit null with 400; the update twins' `.nullable()` is the F-219q sanctioned clear. Defensible ("nothing to clear at create"); first-party UI omits the fields. Documented asymmetry, not a defect. | `src/lib/schemas.ts:187,261,387,450` vs `:227,287,426,468` | recorded (documented design) |
+| F-231r | Informational | **The aggregate read surfaces return unbounded result sets.** The dashboard route returns six full-table findManys, export seven, coach five, the family GETs one each — the documented thin-read architecture (client-side derivation through finance.ts/ai.ts), bounded per-user by the import ceiling (25k rows/15min max). A scalability ceiling on the single-node box at multi-year volumes, not a correctness bug; server-side pagination is the recorded future seam. | `src/app/api/dashboard/route.ts:22-33`; the family | recorded (standing architecture) |
+| F-231s | Informational | **The session-231 audit brief's own contract text misstated two recorded contracts — the adjudication record.** The brief claimed "uploads GET-by-name is sessioned" (the recorded contract is public capability-URL serving: the route's own docblock + F-225i + the F-217g note; names are 32-hex unguessable, MIME-allowlisted, immutable-cached) and "forgot-password 5/15" (the recorded F-222n contract is 10/IP/15min + the 20/15 forgot-acct secondary). The CODE matches the repo's documented contracts in both cases — the findings were adjudicated as brief errors, zero repo change. Recorded so the next audit brief quotes the ledger verbatim instead of memory. | `src/app/api/uploads/[name]/route.ts` (the docblock); `src/app/api/auth/forgot-password/route.ts:47`; the ledgers F-225i/F-222n | recorded (adjudication) |
 
 ## 3. The remediation program (R-items)
 
@@ -3000,6 +3096,91 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | `.env`/`.env.example` parity | key-set diff | Verified (6/6 keys) |
 | README quickstart ordering | README read | Verified (cp precedes db:push) |
 
+
+### R-28 — The a11y-tail, logging-grain, and dead-family round (session 231) — Status: Done(v2.28.0)
+
+The session-231 fresh-eyes audit (three Mode-C passes over the
+R-27 cure surfaces driven by the session, the API/auth/security
+layer, and the UI/a11y/shell layer — 0 Critical / 0 High /
+0 Medium / 8 Low / 12 Informational raw, every material claim
+re-verified at file:line by the driving session). ONE claim
+adjudicated by live reference probes plus a bundle grep: the
+Analytics "Spending by Day of Week" card is OUR OWN SUPERSET
+(probe-231 walked the reference's /Analytics at its standing
+zero demo data — no day-of-week card on any of the four tabs;
+probe-231b/c confirmed the tabs' real surfaces; the reference's
+JS bundle carries no such string) — the amber fill was never
+reference parity but our own palette mis-assignment. The two
+Pass-B Lows were adjudicated as AUDIT-BRIEF CONTRACT-TEXT
+ERRORS (F-231s — the code matches the repo's recorded
+contracts in both cases). The cold baseline GREEN at HEAD —
+the v2.27.0 ship state reproduced exactly, no discovery this
+round.
+
+**R-28.1 — the pins born RED.** The parity-231 source pins
+(fourteen): the expenses "$" glyph aria-hidden; the auth-card
+heading-focus effect (the value-comparison guard, StrictMode-safe) + the tabIndex -1 h1s; the DropdownContent
+z-50 re-pin; the icons.tsx retirement (the file gone + no
+FilterPolygon in src); the N-89c6 note relocated to
+page-parts; the TrendingDown aria-hidden; the day-of-week fill
+(CHART_COLORS.expenses); the expenses memo; the settings peer
+retirement; the login-card trailing-docblock retirement; the
+upload multipart log; the uploads GET ENOENT gate; the
+CRM-era dead-family retirement (DialogFooterWide,
+DIALOG_FOOTER_WIDE, DIALOG_CONTENT.wide, Avatar/initialsOf
+absent); the Event/Activity citation reword. Plus ONE e2e leg
+born RED (the auth-card view-swap focus — the signup link
+lands focus on the "Create your account" heading).
+
+**R-28.2 — the cures.** THE EXPENSES DIALOG GLYPH HIDING
+(F-231a — the amber "$" tile gains aria-hidden, the F-225k
+family complete); THE AUTH-CARD VIEW-SWAP FOCUS (F-231b —
+every transition lands focus on the new view's heading via the
+unified mount-guarded effect; the verify view's box-1 focus
+preserved inside the same effect; the reset screen's done swap
+gains the same technique); THE DROPDOWNCONTENT Z-PIN (F-231c —
+z-50, the menu family's layer); THE ICONS.TSX RETIREMENT
+(F-231d — the file deleted; the N-89c6 lucide-injection note
+relocated to the KpiCard delta icons); THE DAY-OF-WEEK FILL
+(F-231e — CHART_COLORS.expenses, the palette doctrine's own
+spending hue; drift-inert by construction — the sweeps are
+zero-data and the card renders its EmptyState at zero data);
+THE UPLOAD MULTIPART LOG (F-231f — the formData catch logs the
+parse error before the 400, the F-226c genus closed); THE
+UPLOADS GET ENOENT GATE (F-231g — the miss stays out of the
+error log; real I/O failures still log); THE CRM-ERA
+DEAD-FAMILY RETIREMENT (F-231h — DialogFooterWide,
+DIALOG_FOOTER_WIDE, DIALOG_CONTENT.wide, Avatar + initialsOf
+retired; the two Event/Activity citations reworded to the
+historical record; avatarTextColor — the live F-218n seam —
+stays); the low tail (F-231i the TrendingDown symmetry + the
+note's new home; F-231j the expenses memo on
+[store.transactions]; F-231k the vestigial peer dropped;
+F-231l the trailing docblock folded).
+
+**R-28.3 — the verification.** The full offline gate: lint
+0/0 · tsc 0 · **1235 unit (78 files, +17)** · build · smoke
+15/15 · **139 e2e (+1 — the view-swap focus leg)**. ALL SIX
+parity drift gates CLEAN at 0-event margin (the four sweep
+classes 1440/390/768/1024 + the fullpage sweep + the interior
+census) · census MATCH · `bun audit` unchanged. The
+parity-229 whole-tree carrier invariant caught the round's own
+recursive genus twice (the z-50 re-pin orphaned two comments
+citing the retired token as live code; the settings reword
+coined a class-shaped marker) — both reworded, the invariant
+holds. The capture set 134-136 (the own-database convention +
+the census tripwire): **134** the mobile drawer at 390×844
+with all 9 destinations + Sign Out (the standing operator
+ask); **135** the auth-card signup swap with focus landed on
+the heading (asserted: activeElement is the h1; the mount
+guard kept the initial load natural — the face that
+live-caught the StrictMode defect); **136** the Spending by
+Day of Week bars in the spending rose (asserted: #f43f5e bars
+present, zero #f59e0b). The census tripwire MATCHed at exit;
+custom.db untouched. The recorded tail (F-231m through
+F-231s) stays documented in the ledger above.
+
+
 ## 5. Execution history
 
 | Version | Session | R-items executed | Gate at ship | Commit |
@@ -3035,6 +3216,7 @@ tree before shipping (the plan-validation pass the task spec mandates):
 | v2.25.0 | 228 | **R-25** (the second holdings surface and hygiene round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD — the v2.24.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (the reference STABLE — bundle md5 unchanged, demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged — 1 moderate dev-chain, the documented deferral; neo-crm unchanged since Nov 5 — nothing to port; the SEO surface verified on the artifact). The session-228 fresh-eyes audit (three Mode-C passes: the R-24 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 0 Medium / 7 Low / 10 Informational raw, every material claim re-verified at file:line by the driving session — the chart-symbol/CSV-date/upcoming-id/equalizer/upload-lifecycle/FK-index/projection/budgets/aria/docblock/token claims all verified by read; the R-24 cures re-verified holding in both passes). Shipped: **R-25.1** the pins born RED (20 parity-228 source pins — 19 RED + 1 green-by-design, the LIVE-members-stay pin; 6 finance behavioral pins — 4 gainBySymbol + 2 upcomingAlerts id; 4 uploads-capacity seam pins on temp-dir fixtures; 1 e2e leg RED with the honest overlap failure — Expected 7 bars / Received 8) → **R-25.2** the cures: THE SECOND HOLDINGS SURFACE (F-228a — gainBySymbol joins the finance seams, the chart data + Cells ride it, one bar per symbol); THE TIMING-EQUALIZER FAMILY COMPLETION (F-228e — verify/resend burn the equalizer on their miss branches, the login S72-C pattern, the DB-write residual documented); THE UPLOAD CAPACITY CEILING (F-228f + F-228i — 256 MB / 4096 files, uploadsCapacity walk, ERR.STORAGE_FULL 507, the memoized repo root); THE SCHEMA ROUND (F-228g + F-227h — @@index([accountId]) on Transaction, @@index([resetToken]) on User, db:generate + db:push landed); the low tail (F-228b the eight dead tokens retire + eleven comment carriers reworded — two in button.tsx the audit missed — the built CSS sentinel-probed 104,409 → 103,673 bytes with the live utilities staying; F-228c the CSV Date string-slice; F-228d the upcoming id; F-228h the getSessionUser projection; F-228j the budgets NOT_FOUND alignment; F-228k the aria-controls pair; F-228l the two docblocks) → **R-25.3** the verification: the full offline gate, the CSS sentinel probe, ALL SIX drift gates CLEAN + census MATCH + `bun audit` unchanged; two legitimate pin recalibrations (the palette-pins F-214e row and the dark-tokens subtle-flip assertion — contracts that legitimately shrank). The capture set 125-127 (the aggregated chart, the mobile drawer at 390, the filters aria link) + the docs lockstep (docs-counts 1162→1192 / 74→75 / 136→137 / the badge 1298→1329 / the pins row 46→47 with parity-228; README + AGENTS (two new gotchas: the inverse-hazard tidy lesson, the whole-tree carrier grep) + CLAUDE + PAD + SKILL) | lint 0/0 · tsc 0 · **1192 unit** (75 files; +30) · build · smoke 15/15 · **137 e2e** (+1) · all six parity drift gates CLEAN · census MATCH · the CSS sentinel probe (104,409 → 103,673 bytes) · the three capture faces 125-127 committed (each asserted in-DOM) · docs lockstep everywhere | (this session's execution commit) |
 | v2.26.0 | 229 | **R-26** (the empty-state repair and dead-carrier retirement round): the cold baseline GREEN at the v2.25.0 ship state (lint 0/0 · tsc 0 · 1192/1192 unit (75 files) · build · smoke 15/15 · 137/137 e2e · census MATCH); the standing asks re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing); the fresh-eyes audit (three Mode-C passes → 0 Critical / 0 High / 1 Medium / 6 Low / 5 Informational raw, every claim re-verified; two claims ADJUDICATED INVERTED by live probes; the whole-tree scan grew the audit's nine dead carriers to thirty); the plan v2.26.0 written and validated. **R-26.1** the pins born RED (16 parity-229 source pins; the finance design-input pin green at birth; the e2e leg RED with the honest flat-chart failure) → **R-26.2** the cures (the Income-tab gate F-229a; the budgets P2002 arm F-229b; the seed UTC-midnight staging F-229c; the ~28-site carrier retirement F-229d; the dialog docblock truth F-229e; the dead-API retirement F-229f; the search note F-229h; the hygiene pass F-229j) + two legitimate pin recalibrations (parity-226's pill arm; docs-counts) → **R-26.3** the verification: lint 0/0 · tsc 0 · **1211 unit (76 files, +19)** · build · smoke 15/15 · **138 e2e (+1 — the Income empty-state leg)** · THE CSS SENTINEL PROBE (all 30 dead selectors leave the built stylesheet — 103,673 → 100,431 bytes — every live form stays) · ALL SIX drift gates CLEAN · census MATCH after the reseed (78 transactions, the today-edge inside the 54..108 bounds) · `bun audit` unchanged | lint 0/0 · tsc 0 · **1211 unit (76 files)** · build · smoke 15/15 · **138 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.27.0 | 230 | **R-27** (the register-and-hygiene round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD — the v2.26.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-230 fresh-eyes audit (three Mode-C passes: the R-26 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 2 Medium / 4 Low / 5 Informational raw, every material claim re-verified at file:line by the driving session; TWO claims adjudicated by live reference probes — the StatCard genus CONFIRMED (probe-230c: the reference's own Avg Monthly tiles carry the identical saturated gradients + minus-100 labels + white bold values) and the Cash Flow zero-data claim INVERTED (probe-230: the reference's own card renders four recharts surfaces unconditionally at its standing zero demo data — our unconditional render IS the genus); the Pass B findings re-derived the recorded tail (F-217m/F-215m/F-218t/F-224k) without new information). The plan v2.27.0 written (the F-230a-h ledger + the R-27 section) and validated against the tree. **R-27.1** the pins born RED (7 parity-230 checks — six RED: the StatCard register entry, the toDate tidy, the phantom-comment retirement, the ai-coach message-id keys ×2, the CARD_TITLE_OVERRIDE truth; one green-by-design genus guard) → **R-27.2** the cures: THE STATCARD REGISTER ENTRY (F-230a — the F-224y-form note on the analytics StatCard docblock, all three arms measured 2.24:1 / 3.08:1 / 3.01:1 + the white-value note, the genus citation probe-230c; NO visual change — a recolor would deviate from parity); THE LASTSYNCEDAT TODATE TIDY (F-230c — accounts:171 routes through toDate, behavior-identical); THE PHANTOM-BREAKPOINT COMMENT REWORDS (F-230d — the two F-207a-history quotes reworded to prose); THE AI-COACH MESSAGE-ID KEYS (F-230e — the model gains an id, a module-level counter mints at the three construction sites (a ref counter trips react-hooks/refs — the greeting consumes the mint DURING render; the module form is the sanctioned mint), the list keys by message.id; the import preview + OTP boxes documented as index-identity); THE CARD_TITLE_OVERRIDE TRUTH (F-230f) → **R-27.3** the verification: lint 0/0 · tsc 0 · **1218 unit (77 files, +7)** · build · smoke 15/15 · **138 e2e** (no new leg — every cure visually inert or comment-only by construction) · ALL SIX drift gates CLEAN · census MATCH · `bun audit` unchanged; the recorded-not-cured tail stays documented (F-230b the inverted Cash Flow adjudication, F-230g the pre-auth fetch standing, F-230h the clean-surface records) | lint 0/0 · tsc 0 · **1218 unit (77 files)** · build · smoke 15/15 · **138 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
+| v2.28.0 | 231 | **R-28** (the a11y-tail, logging-grain, and dead-family round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD — the v2.27.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-231 fresh-eyes audit (three Mode-C passes: the R-27 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 0 Medium / 8 Low / 12 Informational raw, every material claim re-verified at file:line by the driving session; ONE claim adjudicated by live probes + a bundle grep — the Analytics day-of-week card is OUR OWN SUPERSET (probe-231/b/c: no such card on any of the reference's four Analytics tabs at its standing zero demo data, and the reference bundle carries no such string — the amber fill was a palette mis-assignment, never parity); the two Pass-B Lows adjudicated as AUDIT-BRIEF CONTRACT-TEXT ERRORS (F-231s — the uploads GET public capability-URL posture and the forgot 10/15 bucket are the recorded contracts; the code matches them)). The plan v2.28.0 written (the F-231a-s ledger + the R-28 section) and validated against the tree. **R-28.1** the pins born RED (the parity-231 source pins — the glyph aria-hidden, the heading-focus effect + h1 tabIndex arms, the z-50 re-pin, the icons.tsx retirement, the N-89c6 relocation, the TrendingDown symmetry, the day-of-week fill, the expenses memo, the peer retirement, the docblock fold, the multipart log, the ENOENT gate, the dead-family absence, the citation reword; one e2e leg RED with the honest focus-failure) → **R-28.2** the cures: THE EXPENSES DIALOG GLYPH HIDING (F-231a); THE AUTH-CARD VIEW-SWAP FOCUS (F-231b — mount-guarded heading focus on every transition, the verify box-1 pattern preserved); THE DROPDOWNCONTENT Z-PIN (F-231c); THE ICONS.TSX RETIREMENT (F-231d — the N-89c6 note relocated); THE DAY-OF-WEEK FILL (F-231e — CHART_COLORS.expenses, drift-inert by construction); THE UPLOAD MULTIPART LOG (F-231f); THE UPLOADS GET ENOENT GATE (F-231g); THE CRM-ERA DEAD-FAMILY RETIREMENT (F-231h — DialogFooterWide, DIALOG_FOOTER_WIDE, DIALOG_CONTENT.wide, Avatar/initialsOf; the Event/Activity citations reworded; the F-227f register keeps the shadcn-stock arms); the low tail (F-231i-l) → **R-28.3** the verification: lint 0/0 · tsc 0 · **1235 unit (78 files, +17)** · build · smoke 15/15 · **139 e2e (+1 — the view-swap focus leg)** · ALL SIX drift gates CLEAN · census MATCH · `bun audit` unchanged; the whole-tree carrier invariant caught the round's own recursive genus twice (both reworded); the capture set 134-136 verified in-DOM with the census tripwire MATCH; the recorded tail stays documented (F-231m-s) | lint 0/0 · tsc 0 · **1235 unit (78 files)** · build · smoke 15/15 · **139 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 
 > The next iteration session (231) has **no open R-item by default** —
 > the R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8

@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1218) | `bun run test` |
+| Unit tests (1235) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 138) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 139) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -456,3 +456,16 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   slots (the import preview rows, the OTP boxes) may stay
   index-keyed — the index IS the identity there; mint ids only for
   lists a future edit might reorder or splice mid-array.
+- **A boolean "has mounted" guard on a focus/mount effect BREAKS under
+  the dev server's StrictMode double-invoke** (session 231, F-231b):
+  `next dev` double-invokes effects (App Router StrictMode default) —
+  the second invoke sees the mounted flag already true and FIRES the
+  guarded focus on the INITIAL page load (live-caught by the captures
+  face; the production-build e2e passed because prod does not
+  double-invoke — a dev-only failure class). The sanctioned guard
+  compares the PREVIOUS VALUE of the effect's dependency
+  (`prevViewRef.current !== view`) — a value guard is idempotent
+  under double-invocation. Same family as the render-time id-mint
+  gotcha above: dev-mode semantics differ from prod; verify
+  focus/mount behaviors against BOTH builds.
+
