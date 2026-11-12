@@ -46,7 +46,16 @@ export async function GET(req: Request, { params }: Params) {
   try {
     bytes = await readFile(join(uploadsDir(), name));
   } catch (error) {
-    logApiError("uploads/:name GET", error);
+    // Session-231 (R-28, F-231g): a miss on a capability URL is the 404
+    // normal case, not a server fault — ENOENT stays out of the error
+    // log (up to 240 scans/15min/IP would drown the seam); every other
+    // I/O failure still logs before the envelope.
+    const miss =
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "ENOENT";
+    if (!miss) logApiError("uploads/:name GET", error);
     return fail("NOT_FOUND", "File not found", 404);
   }
 

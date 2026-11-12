@@ -109,8 +109,29 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
   // live-measured as the 2px ring on box 1 only (box 6 rests at none),
   // reproduced twice at both viewports. A DOM focus, never setState;
   // fires only on transitions INTO verify.
+  //
+  // Session-231 (R-28, F-231b): the verify arm generalized — EVERY view
+  // transition now lands focus somewhere useful. The other four swaps
+  // (signin↔signup, signin→reset, reset→sent) replace the focused
+  // control wholesale; unmanaged, focus fell to <body> and SR/keyboard
+  // users got no signal the view changed. Each non-verify view's h1
+  // carries the shared titleRef + tabIndex -1 (the heading-focus
+  // technique). The guard compares the PREVIOUS VIEW VALUE, never a
+  // boolean "has mounted" flag — the dev server's StrictMode
+  // double-invoke sees the flag already set on its second pass and
+  // fired the focus on the INITIAL load (live-caught by the captures
+  // face; a value guard is idempotent under double-invocation).
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
+  const prevViewRef = React.useRef(view);
   React.useEffect(() => {
-    if (view === "verify") codeRefs.current[0]?.focus();
+    const changed = prevViewRef.current !== view;
+    prevViewRef.current = view;
+    if (!changed) return;
+    if (view === "verify") {
+      codeRefs.current[0]?.focus();
+    } else {
+      titleRef.current?.focus();
+    }
   }, [view]);
 
   /** Swap the card's view via the login state machine (s11 + s21). */
@@ -365,7 +386,11 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                           Back to sign in
                         </button>
                         <div className="text-center space-y-2">
-                          <h1 className={LOGIN_RESET_LAYOUT.title}>Reset your password</h1>
+                          {/* F-231b: the shared heading ref — the swap lands
+                              focus here (tabIndex -1, programmatic only). */}
+                          <h1 ref={titleRef} tabIndex={-1} className={LOGIN_RESET_LAYOUT.title}>
+                            Reset your password
+                          </h1>
                           <p className={LOGIN_RESET_LAYOUT.description}>
                             Enter your email and we'll send you a link to reset your password
                           </p>
@@ -420,7 +445,9 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                             [BUTTON, H2, FORM] — no titleStack wrapper);
                             the s21-era wrapper was an inert single-child
                             text-center space-y-2 div. */}
-                        <h1 className={LOGIN_SIGNUP_LAYOUT.title}>Create your account</h1>
+                        <h1 ref={titleRef} tabIndex={-1} className={LOGIN_SIGNUP_LAYOUT.title}>
+                          Create your account
+                        </h1>
                         <form className={LOGIN_SIGNUP_LAYOUT.form} onSubmit={onSignupSubmit} noValidate>
                           <div className={LOGIN_SIGNUP_LAYOUT.fields}>
                             <div className={LOGIN_SIGNUP_LAYOUT.field}>
@@ -598,7 +625,9 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                             <Mail className={LOGIN_RESET_LAYOUT.sentIcon} />
                           </div>
                           <div className={LOGIN_RESET_LAYOUT.sentTitleStack}>
-                            <h1 className={LOGIN_RESET_LAYOUT.title}>Check your email</h1>
+                            <h1 ref={titleRef} tabIndex={-1} className={LOGIN_RESET_LAYOUT.title}>
+                              Check your email
+                            </h1>
                             <p className={LOGIN_RESET_LAYOUT.sentEmailLine}>
                               We've sent password reset instructions to
                               <br />
@@ -655,7 +684,9 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
             </div>
 
             <div className="space-y-2">
-              <h1 className={LOGIN_LAYOUT.title}>Welcome to WealthOS</h1>
+              <h1 ref={titleRef} tabIndex={-1} className={LOGIN_LAYOUT.title}>
+                Welcome to WealthOS
+              </h1>
               <p className={LOGIN_LAYOUT.subtitle}>Sign in to continue</p>
             </div>
 
@@ -874,7 +905,3 @@ function AppleIcon() {
   );
 }
 
-/** The WealthOS login logo — session-208 (F-208e): the reference's own
- *  image asset (public/wealthos-logo.png, fetched from its bundle host),
- *  rendered by the <img> above. The CSS bar-chart mark this function
- *  used to draw is retired. */

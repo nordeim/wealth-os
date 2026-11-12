@@ -418,7 +418,10 @@ function NotificationRow({
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={cn(
-          "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          // Session-231 (R-28, F-231k): the vestigial `peer` class retired
+          // — no sibling-reading consumer exists in the row (a v2-era
+          // checkbox idiom survivor; the label precedes the button in DOM).
+          "inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           // Session-221 (R-18, F-221n): the unchecked track darkens one
           // step AND gains a visible border — the old stone-300 track on
           // the white/80 card measured 1.49:1 (the white thumb vs it

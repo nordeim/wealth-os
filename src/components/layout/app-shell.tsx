@@ -51,8 +51,8 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
         census is main-scoped and the pixel sweeps never see an
         sr-only element.
         Session-225 (R-22, F-225d): the focused link rises ABOVE the
-        header layer (z-[60] over the z-50 header/drawer/dialog
-        family, under the toasts) — the F-224s reveal painted the
+        header layer (the 60-level reveal over the 50-level
+        header/drawer/dialog family, under the toasts) — the F-224s reveal painted the
         pill exactly where the sticky mobile header sits, and the
         equal z-50 + later-DOM header won the paint order: the
         focused link was invisible below lg (keyboard users at phone

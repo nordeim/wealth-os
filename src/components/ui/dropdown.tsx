@@ -25,7 +25,11 @@ function DropdownContent({
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "z-[60] min-w-[10rem] overflow-hidden rounded-lg border border-line bg-surface p-1 text-foreground shadow-lg outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          // Session-231 (R-28, F-231c): the menu family's z-50 layer (the
+          // MENU_CONTENT sibling's own) — this dead vendored arm had pinned
+          // the skip-link's dedicated 60-level; a future consumer would
+          // have painted above dialogs AND the focused skip-link reveal.
+          "z-50 min-w-[10rem] overflow-hidden rounded-lg border border-line bg-surface p-1 text-foreground shadow-lg outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
         {...props}

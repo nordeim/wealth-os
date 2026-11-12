@@ -75,7 +75,13 @@ export default function ExpensesPage() {
   const [categoryFilter, setCategoryFilter] = React.useState("all");
 
   const now = new Date();
-  const expenses = store.transactions.filter((t) => t.type === "expense");
+  // Session-231 (R-28, F-231j): memoized on the store's stable array —
+  // a bare filter mints a fresh identity every render and defeats the
+  // `visible` memo below (it recomputed every render for nothing).
+  const expenses = React.useMemo(
+    () => store.transactions.filter((t) => t.type === "expense"),
+    [store.transactions],
+  );
   const split = budgetCategorySplit(store.transactions, now);
 
   const activeFilters = [categoryFilter !== "all", tab !== "all"].filter(Boolean).length;
@@ -476,7 +482,10 @@ export function ExpenseDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10">
+            <span
+              aria-hidden="true"
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10"
+            >
               $
             </span>
             {editing ? "Edit Expense" : "Add Expense"}

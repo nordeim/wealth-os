@@ -32,6 +32,20 @@ export function ResetPasswordScreen() {
   const [error, setError] = React.useState<string | null>(null);
   const [done, setDone] = React.useState(false);
 
+  // Session-231 (R-28, F-231b): the done swap replaces the focused
+  // form wholesale — focus lands on the confirmation heading now (the
+  // login card's unified view-swap technique). The guard compares the
+  // PREVIOUS done VALUE, never a boolean mount flag — the dev server's
+  // StrictMode double-invoke defeats boolean flags on the initial load
+  // (the F-231b lesson); a value guard is idempotent.
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
+  const prevDoneRef = React.useRef(done);
+  React.useEffect(() => {
+    const changed = prevDoneRef.current !== done;
+    prevDoneRef.current = done;
+    if (changed) titleRef.current?.focus();
+  }, [done]);
+
   async function onResetSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -102,7 +116,9 @@ export function ResetPasswordScreen() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50">
                   <Lock className="h-5 w-5 text-emerald-600" aria-hidden="true" />
                 </div>
-                <h1 className={LOGIN_LAYOUT.title}>Password reset</h1>
+                <h1 ref={titleRef} tabIndex={-1} className={LOGIN_LAYOUT.title}>
+                  Password reset
+                </h1>
                 <p className={LOGIN_LAYOUT.subtitle}>
                   Your password has been reset successfully. Sign in with your new password.
                 </p>

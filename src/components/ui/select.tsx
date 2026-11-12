@@ -73,7 +73,7 @@ function SelectContent({
         // + the FULL animation arm set (fade + zoom + all four
         // slide-in-from-* arms + all four per-side translates, all
         // unconditional on its single popper construction). OURS
-        // shipped the scaffold-era draft (a z-[60] layer, a 288px
+        // shipped the scaffold-era draft (a 60-level layer, a 288px
         // ceiling, rounded-lg, shadow-lg, fade+zoom+the two vertical
         // translates behind a
         // position ternary) — never pinned in 80 sessions. The token

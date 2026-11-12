@@ -82,7 +82,14 @@ export async function POST(request: Request) {
     // carries it without an any).
     ...({ duplex: "half" } as RequestInit),
   });
-  const form = await boundedRequest.formData().catch(() => null);
+  // Session-231 (R-28, F-231f): the parse failure leaves a trace before
+  // the 400 — the lambda-catch form had silently swallowed the multipart
+  // error (the one F-226c-genus site the retrofit sweep missed; the 400
+  // "No file provided" answer below is unchanged).
+  const form = await boundedRequest.formData().catch((error: unknown) => {
+    logApiError("upload POST multipart parse", error);
+    return null;
+  });
   if (streamOverflowed) {
     return ERR.BAD_REQUEST("File too large (max 5MB)");
   }

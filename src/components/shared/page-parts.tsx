@@ -71,10 +71,19 @@ export function KpiCard({
           </p>
           {delta != null ? (
             <p className={cn("mt-1 flex items-center gap-1 text-xs font-semibold", deltaTone)}>
+              {/* Session-231 (R-28, F-231i): both delta icons carry the
+                  explicit aria-hidden — lucide-react 0.525 already injects
+                  it on any icon lacking an a11y prop (the N-89c6
+                  library-level superset, verified against the installed
+                  package source: Icon.js spreads `...!children &&
+                  !hasA11yProp(rest) && { "aria-hidden": "true" }` — the
+                  reference's older lucide renders bare svgs); the explicit
+                  attribute keeps the pair symmetric and documents the
+                  injection without relying on it. */}
               {deltaDirection === "up" ? (
                 <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
               ) : deltaDirection === "down" ? (
-                <TrendingDown className="h-3.5 w-3.5" />
+                <TrendingDown className="h-3.5 w-3.5" aria-hidden="true" />
               ) : null}
               {delta}
             </p>

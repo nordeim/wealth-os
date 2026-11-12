@@ -126,6 +126,31 @@ test("need an account swaps the card to the minimal signup view and back", async
   await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
 });
 
+test("view swaps land focus on the new view's heading (F-231b)", async ({ page }) => {
+  // Session-231 (R-28, F-231b): the in-place transitions replace the
+  // focused control — unmanaged, focus falls to <body> and SR/keyboard
+  // users get no signal the view changed. Every swap now lands focus on
+  // the new view's heading (the verify view's box-1 pattern, which
+  // stays as the verify arm of the same unified effect).
+  await page.goto("/login");
+
+  await page.getByRole("button", { name: "Need an account? Sign up" }).click();
+  await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Create your account" })).toBeFocused();
+
+  await page.getByRole("button", { name: "Back to sign in" }).click();
+  await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeFocused();
+
+  await page.getByRole("button", { name: "Forgot password?" }).click();
+  await expect(page.getByRole("heading", { name: "Reset your password" })).toBeFocused();
+
+  // The initial page load keeps natural focus (the mount guard) — the
+  // swap legs above prove transitions; this reload proves the guard.
+  await page.goto("/login");
+  await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).not.toBeFocused();
+});
+
 test("signup view guards mismatched confirm passwords", async ({ page }) => {
   await page.goto("/login");
   await page.getByRole("button", { name: "Need an account? Sign up" }).click();

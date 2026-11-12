@@ -303,7 +303,14 @@ export default function AnalyticsPage() {
                         itemStyle={tooltipItemStyle}
                         contentStyle={tooltipStyle}
                       />
-                      <Bar dataKey="value" name="Spending" radius={[6, 6, 0, 0]} fill={CHART_COLORS.net} />
+                      {/* Session-231 (R-28, F-231e): the spending hue — this
+                        card is OUR superset (probe-231/b/c: the reference
+                        has no day-of-week card on any Analytics tab, and
+                        its bundle carries no such string), so the palette
+                        doctrine governs: a spending series rides the
+                        expenses rose, not the Net-Savings amber it was
+                        born with. */}
+                    <Bar dataKey="value" name="Spending" radius={[6, 6, 0, 0]} fill={CHART_COLORS.expenses} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
