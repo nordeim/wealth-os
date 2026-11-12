@@ -11,10 +11,11 @@ import { cn } from "@/lib/utils";
 // pinned the CALL-SITE class maps, not the chrome.
 //
 // The reference's --primary is the STOCK DARK #171717 (not its app blue —
-// the s5 DIALOG_SUBMIT finding) while OUR --primary token is deliberately
-// the app blue #2563eb (the inverted token mapping), so the computed-equal
-// expressions for the token-riding variants are the neutral literals —
-// the s13 PROFILE_LAYOUT.badge live-probed form:
+// the s5 DIALOG_SUBMIT finding) while OUR --primary token is the amber
+// #f59e0b (the session-199 "Premium Finance Suite" rebrand; the s13-era
+// comment cited the pre-rebrand app blue — corrected session 228), so
+// the computed-equal expressions for the token-riding variants are the
+// neutral literals — the s13 PROFILE_LAYOUT.badge live-probed form:
 //   reference default     -> bg-neutral-900 text-neutral-50 (+shadow)
 //   reference secondary   -> bg-neutral-100 text-neutral-900
 //                            (neutral-100 = hsl(0 0% 96.1%) = its --secondary)

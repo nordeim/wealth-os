@@ -15,7 +15,13 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { afterEach, describe, expect, it } from "vitest";
 import { pathToFileURL } from "url";
-import { repoRootFor, uploadsDir } from "../src/lib/uploads";
+import {
+  MAX_UPLOAD_FILES,
+  MAX_UPLOADS_TOTAL_BYTES,
+  repoRootFor,
+  uploadsCapacity,
+  uploadsDir,
+} from "../src/lib/uploads";
 
 const tempDirs: string[] = [];
 
@@ -95,5 +101,40 @@ describe("repoRootFor (the F-121c1 standalone virtual-import.meta.url trap)", ()
     const dir = uploadsDir();
     expect(dir).not.toContain(".next");
     expect(dir.endsWith(join("neo-crm", "uploads")) || dir.endsWith("uploads")).toBe(true);
+  });
+});
+
+// Session-228 (R-25, F-228f): the uploads capacity ceiling — the
+// write-only surface's self-hosted disk guard. Nothing in src/ ever
+// deletes an upload and the surface has zero UI consumers today, so the
+// 20×5MB/15min rate cap bounds growth per window but NOT over time; the
+// 256MB/4096-file ceilings answer 507 STORAGE_FULL before the write.
+describe("uploadsCapacity (the F-228f self-hosted ceiling)", () => {
+  it("the ceilings are the documented self-hosted posture (256 MB / 4096 files)", () => {
+    expect(MAX_UPLOADS_TOTAL_BYTES).toBe(256 * 1024 * 1024);
+    expect(MAX_UPLOAD_FILES).toBe(4096);
+  });
+
+  it("an empty (or absent) directory answers zero files, zero bytes", () => {
+    const repo = mkdtempSync(join(tmpdir(), "uploads-cap-"));
+    tempDirs.push(repo);
+    expect(uploadsCapacity(join(repo, "uploads"))).toEqual({ files: 0, bytes: 0 });
+  });
+
+  it("counts files and sums their sizes", () => {
+    const dir = mkdtempSync(join(tmpdir(), "uploads-cap-"));
+    tempDirs.push(dir);
+    writeFileSync(join(dir, "a.jpg"), "aaaaa"); // 5 bytes
+    writeFileSync(join(dir, "b.png"), "bb"); // 2 bytes
+    expect(uploadsCapacity(dir)).toEqual({ files: 2, bytes: 7 });
+  });
+
+  it("ignores subdirectories (only regular files count)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "uploads-cap-"));
+    tempDirs.push(dir);
+    writeFileSync(join(dir, "a.jpg"), "aaaaa");
+    mkdirSync(join(dir, "nested"));
+    writeFileSync(join(dir, "nested", "b.png"), "bb");
+    expect(uploadsCapacity(dir)).toEqual({ files: 1, bytes: 5 });
   });
 });

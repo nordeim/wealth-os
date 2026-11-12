@@ -96,25 +96,29 @@ describe("R-14: the explicit-light tails ride the flips (F-217c)", () => {
 // R-14 flip set left (i) --color-ring unflipped — input-base's focus
 // box-shadow is near-black (#1c1917) on dark inputs, an invisible focus
 // indicator, the exact F-217c token class on the ring token — and
-// (l) --color-muted/--color-subtle unflipped (the disabled-input text
-// rides muted; the dead exports would compute 2.9:1 on dark surfaces).
-describe("R-15: the ring + muted/subtle flips complete the set (F-218i/l)", () => {
+// (l) --color-muted unflipped (the disabled-input text rides muted; a
+// future consumer would compute 2.9:1 on dark surfaces). Session-228
+// (R-25, F-228b): --color-subtle RETIRED with the token (zero consumers
+// repo-wide) — its flip assertion went with it.
+describe("R-15: the ring + muted flips complete the set (F-218i/l)", () => {
   it("flips --color-ring in .dark (the invisible dark focus ring)", () => {
     const darkStart = CSS.indexOf(".dark {");
     const darkBlock = CSS.slice(darkStart, CSS.indexOf("}", CSS.indexOf("--color-line-strong", darkStart)) + 1);
     expect(darkBlock).toMatch(/--color-ring:\s*#f5f5f4/);
   });
 
-  it("flips --color-muted and --color-subtle", () => {
+  it("flips --color-muted (subtle retired with its token — F-228b)", () => {
     const darkStart = CSS.indexOf(".dark {");
     const darkBlock = CSS.slice(darkStart, CSS.indexOf("}", CSS.indexOf("--color-line-strong", darkStart)) + 1);
     expect(darkBlock).toMatch(/--color-muted:\s*#a8a29e/);
-    expect(darkBlock).toMatch(/--color-subtle:\s*#78716c/);
+    expect(darkBlock).not.toMatch(/--color-subtle/);
   });
 
   it("the light values still stand in @theme (the flips are additive)", () => {
     const themeStart = CSS.indexOf("@theme");
-    const themeBlock = CSS.slice(themeStart, CSS.indexOf("}", CSS.indexOf("--color-subtle", themeStart)) + 1);
+    // F-228b: --color-subtle retired — the slice marker rides the muted
+    // token (a stable @theme member that sits in the same block).
+    const themeBlock = CSS.slice(themeStart, CSS.indexOf("}", CSS.indexOf("--color-muted", themeStart)) + 1);
     expect(themeBlock).toMatch(/--color-ring:\s*#1c1917/);
   });
 });

@@ -64,6 +64,13 @@ export async function POST(req: Request) {
     if (!user || !user.verificationCodeHash) {
       // Unknown account or nothing to resend: answer with the same info
       // banner (the reference's non-leaking posture) — a rate-limited no-op.
+      // Session-228 (R-25, F-228e): the timing equalizer — the miss
+      // branch burns the SAME scrypt shape the known branch burns
+      // (hashVerificationCode over a freshly generated code), so latency
+      // cannot distinguish the never-verified state the identical banner
+      // hides (login's S72-C pattern). The known branch's DB-write tail
+      // remains a documented fsync-scale residual.
+      hashVerificationCode(generateVerifyCode());
       return ok({ resent: true, message: verificationResentMessage() });
     }
 

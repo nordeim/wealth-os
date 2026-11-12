@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, statSync } from "fs";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 
@@ -23,6 +23,46 @@ const UPLOADS_DIR_NAME = "uploads";
  * ("JPG, PNG or GIF. Max 5MB.").
  */
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+
+/**
+ * Session-228 (R-25, F-228f): the self-hosted capacity ceilings. The
+ * uploads surface is write-only (nothing in src/ deletes a file, and
+ * the surface has zero UI consumers today), so the per-request rate
+ * cap bounds growth per window but NOT over time — a sessioned caller
+ * could park ~9.6 GB/day. These ceilings are the honest single-box
+ * guard: the POST route refuses with 507 STORAGE_FULL when either
+ * would break. The count ceiling also bounds the capacity walk's own
+ * stat cost. The owner-tag/retention design (per-user cleanup needs a
+ * schema change — files are anonymous UUIDs today) is recorded in the
+ * F-228f ledger row for a future round.
+ */
+export const MAX_UPLOADS_TOTAL_BYTES = 256 * 1024 * 1024;
+export const MAX_UPLOAD_FILES = 4096;
+
+export interface UploadsCapacity {
+  files: number;
+  bytes: number;
+}
+
+/** The directory walk behind the ceiling check — regular files only,
+ *  sizes summed; subdirectories (none are written today) are ignored. */
+export function uploadsCapacity(dir: string): UploadsCapacity {
+  let files = 0;
+  let bytes = 0;
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    // An absent (or unreadable) directory carries nothing.
+    return { files: 0, bytes: 0 };
+  }
+  for (const entry of entries) {
+    if (!entry.isFile()) continue;
+    files += 1;
+    bytes += statSync(join(dir, entry.name)).size;
+  }
+  return { files, bytes };
+}
 
 /**
  * Stored names are `<32-hex>.<ext>` — the GET route accepts exactly this
@@ -87,8 +127,15 @@ export function repoRootFor(moduleUrl: string | undefined, cwd: string): string 
   return cwd;
 }
 
+// Session-228 (R-25, F-228i): memoized per process — the anchor chain
+// (existsSync probes) ran on every upload GET/POST for a path that
+// cannot move at runtime. The on-demand first-use resolution stays;
+// only the repeated walk retires.
+let cachedRoot: string | null = null;
+
 function repoRoot(): string {
-  return repoRootFor(import.meta.url, process.cwd());
+  cachedRoot ??= repoRootFor(import.meta.url, process.cwd());
+  return cachedRoot;
 }
 
 /**

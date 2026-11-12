@@ -157,32 +157,40 @@ describe("R-11: the v3 re-pin values (the F-214d cure literals)", () => {
     expect(wrong).toEqual([]);
   });
 
-  it("the 7 shadcn neutral tokens + the .dark flips are pinned (F-214e)", () => {
+  // Session-228 (R-25, F-228b — the legitimate recalibration): the
+  // F-214e set shipped 8 tokens; six had ZERO code consumers and lived
+  // only through comment strings naming their utilities (the F-224v
+  // violation) — retired with the comments reworded. The two LIVE
+  // members (input via border-input, secondary via hover:bg-secondary)
+  // keep their pins and .dark flips.
+  it("the LIVE shadcn neutral tokens + the .dark flips stay pinned (F-214e, trimmed F-228b)", () => {
     const LIGHT: Record<string, string> = {
       input: "#e5e5e5",
       secondary: "#f5f5f5",
-      "secondary-foreground": "#171717",
-      accent: "#f5f5f5",
-      "accent-foreground": "#171717",
-      "muted-foreground": "#737373",
-      popover: "#ffffff",
-      "popover-foreground": "#0a0a0a",
     };
     const missing = Object.entries(LIGHT).filter(
       ([token, hex]) => !CSS.includes(`--color-${token}: ${hex};`),
     );
     expect(missing).toEqual([]);
 
+    // The retired six must stay RETIRED (the negative form — a token
+    // resurrected by a stray comment or a re-added pin fails here).
+    const retired = [
+      "--color-secondary-foreground:",
+      "--color-accent:",
+      "--color-accent-foreground:",
+      "--color-muted-foreground:",
+      "--color-popover:",
+      "--color-popover-foreground:",
+      "--color-brand:",
+      "--color-subtle:",
+    ];
+    expect(retired.filter((t) => CSS.includes(t))).toEqual([]);
+
     const DARK = CSS.slice(CSS.indexOf(".dark {"));
     const darkFlips: Record<string, string> = {
       input: "#262626",
       secondary: "#262626",
-      "secondary-foreground": "#fafafa",
-      accent: "#262626",
-      "accent-foreground": "#fafafa",
-      "muted-foreground": "#a3a3a3",
-      popover: "#0a0a0a",
-      "popover-foreground": "#fafafa",
     };
     const missingDark = Object.entries(darkFlips).filter(
       ([token, hex]) => !DARK.includes(`--color-${token}: ${hex};`),

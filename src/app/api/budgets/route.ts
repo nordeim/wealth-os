@@ -78,9 +78,14 @@ export async function DELETE(req: Request) {
   if (!parsed.ok) return parsed.response;
 
   try {
-    await db.budget.deleteMany({
+    // Session-228 (R-25, F-228j): the count feeds a NOT_FOUND arm — the
+    // [id] families' conditional-mutation doctrine (R-24/F-227c) made
+    // count===0 → 404 the house norm; a miss answering the hit's
+    // envelope exactly was the one diverging mutation surface.
+    const res = await db.budget.deleteMany({
       where: { ownerId: guard.user.id, category: parsed.data.category, period: "monthly" },
     });
+    if (res.count === 0) return ERR.NOT_FOUND("Budget");
     return ok({ category: parsed.data.category });
   } catch (error) {
     logApiError("budgets DELETE", error);

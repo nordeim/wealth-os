@@ -60,7 +60,6 @@
      amber-500→yellow-600 gradient). The old #ffffff measured 2.15:1 —
      a systemic AA failure the a11y register's stale citation hid. */
   --color-primary-foreground: #1c1917;
-  --color-brand: #f59e0b;
   /* Session-207 (F-207e): the reference's H1 navy token — live-computed
      rgb(15,20,25) on its seven non-dashboard section H1s
      (`text-primary-navy`); a literal hex per the v4 tokens doctrine. */
@@ -71,7 +70,6 @@
   --color-surface: #ffffff;
   --color-foreground: #1c1917;
   --color-muted: #78716c;
-  --color-subtle: #a8a29e;
 
   /* Session-209 (F-209a, the A-209 cure): the shadcn card tokens the
      reference's card families read (`text-card-foreground` / `bg-card`).
@@ -82,23 +80,22 @@
   --color-card-foreground: #0a0a0a;
   --color-card: #ffffff;
 
-  /* Session-214 (R-11, F-214e — the A-209 cure's missed tail): the
-     shadcn neutral semantic tokens the ui primitives + the Settings
-     badge family read (border-input · hover:bg-secondary · the
-     dropdown/select accent hovers · dialog/table/tabs muted-foreground ·
-     popover faces). Same source as the card pair — the reference's own
-     :root, the neutral family (0 0% lightness steps) — and the .dark
-     block below flips the set at runtime exactly as it flips the card
-     pair. Before these pins the classes generated NO CSS (v4 drops
-     unknown tokens without warning). */
+  /* Session-214 (R-11, F-214e — the A-209 cure's missed tail; trimmed
+     session 228/R-25, F-228b): of the shadcn neutral semantic set
+     only the two LIVE members remain — input (border-input, the login
+     OTP boxes) and secondary (hover:bg-secondary, the Settings badge
+     family). The other six (secondary-foreground, accent,
+     accent-foreground, muted-foreground, popover, popover-foreground)
+     had zero code consumers and were kept alive ONLY by comment
+     strings naming their utilities (the F-224v doctrine violation) —
+     retired with the comments reworded; the computed-equal literals
+     ride the primitives directly. Same source as the card pair — the
+     reference's own :root, the neutral family (0 0% lightness steps) —
+     and the .dark block below flips the set at runtime exactly as it
+     flips the card pair. Before these pins the classes generated NO
+     CSS (v4 drops unknown tokens without warning). */
   --color-input: #e5e5e5;
   --color-secondary: #f5f5f5;
-  --color-secondary-foreground: #171717;
-  --color-accent: #f5f5f5;
-  --color-accent-foreground: #171717;
-  --color-muted-foreground: #737373;
-  --color-popover: #ffffff;
-  --color-popover-foreground: #0a0a0a;
 
   --color-line: #e7e5e4;
   --color-line-strong: #d6d3d1;
@@ -369,15 +366,11 @@
      as the light knob). */
   --color-background: #0e1310;
   /* Session-214 (R-11, F-214e): the semantic set's dark flips — the
-     shadcn neutral dark family (14.9% surfaces, 98% foregrounds). */
+     shadcn neutral dark family (14.9% surfaces, 98% foregrounds).
+     Session-228 (R-25, F-228b): the six unconsumed members retired;
+     the two live ones (input, secondary) keep their flips. */
   --color-input: #262626;
   --color-secondary: #262626;
-  --color-secondary-foreground: #fafafa;
-  --color-accent: #262626;
-  --color-accent-foreground: #fafafa;
-  --color-muted-foreground: #a3a3a3;
-  --color-popover: #0a0a0a;
-  --color-popover-foreground: #fafafa;
   /* Session-217 (R-14, F-217c): the app-native set's dark flips —
      the completion R-11 left behind. Without these, every dialog
      (DIALOG_CONTENT.base = bg-surface), the Select listbox, the
@@ -405,13 +398,12 @@
      token; the completion's own gap). #f5f5f4 keeps ~17:1 on the dark
      input surfaces. */
   --color-ring: #f5f5f4;
-  /* Session-218 (R-15, F-218l): the last two unflipped app-native
-     tokens — muted rides the disabled-input text (SC 1.4.3 exempts
-     disabled controls, but the flip closes the latent F-217c class:
-     any future text-muted consumer on a dark surface would compute
-     2.9:1). */
+  /* Session-218 (R-15, F-218l): the last unflipped app-native token —
+     muted rides the disabled-input text (SC 1.4.3 exempts disabled
+     controls, but the flip closes the latent F-217c class: any future
+     text-muted consumer on a dark surface would compute 2.9:1). Its
+     sibling subtle retired session 228 (F-228b — zero consumers). */
   --color-muted: #a8a29e;
-  --color-subtle: #78716c;
   /* Session-224 (R-21, F-224q): the reserved danger-soft flips too —
      the DropdownItem destructive hover (hover:bg-danger-soft) would
      paint a near-white chip on any dark popover surface (the F-222k

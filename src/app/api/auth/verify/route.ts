@@ -11,6 +11,7 @@ import {
   verificationRemainingMessage,
 } from "@/lib/verification";
 import { verifyVerificationCode } from "@/lib/verification-server";
+import { timingEqualizerHash } from "@/lib/password";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +73,14 @@ export async function POST(req: Request) {
   try {
     const user = await db.user.findUnique({ where: { email } });
     if (!user || !user.verificationCodeHash || !isVerificationPending(user.verificationExpiresAt)) {
+      // Session-228 (R-25, F-228e): the timing equalizer — the miss
+      // branch burns the SAME scrypt shape the known branch burns
+      // (login's S72-C pattern), so latency cannot distinguish the
+      // pending-verification state the byte-identical banner above
+      // hides. The known branch's DB-write tail (the attempts
+      // increment) remains a documented fsync-scale residual — the
+      // forgot-password posture.
+      verifyVerificationCode(code, timingEqualizerHash());
       // No pending code: behave like the reference's generic failure (the
       // banner family) without leaking whether the account exists.
       // Session-223 (R-20, F-223l): the remaining-message form — the

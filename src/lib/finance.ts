@@ -389,6 +389,7 @@ export function budgetVsActual(
 // ---- upcoming & alerts ------------------------------------------------------------------
 
 export interface UpcomingItem {
+  id: string;
   description: string;
   amount: number;
   nextDate: Date;
@@ -424,6 +425,11 @@ export function upcomingAlerts(
       const next = toDate(t.nextDate as Date | string);
       const days = Math.ceil((next.getTime() - ref.getTime()) / 86_400_000);
       return {
+        // Session-228 (R-25, F-228d): the id rides the seam (the
+        // recentActivity pattern) — the dashboard's Upcoming list keys
+        // by a stable identity instead of a description+index
+        // composite (two recurring "Rent" rows would collide).
+        id: t.id ?? "",
         description: t.description,
         amount: t.amount,
         nextDate: next,
@@ -486,6 +492,28 @@ export function portfolioStats(investments: InvestmentLike[]): PortfolioStats {
     returnPct: invested > 0 ? round1(((value - invested) / invested) * 100) : 0,
     holdings: rows,
   };
+}
+
+export interface SymbolGain {
+  symbol: string;
+  gain: number;
+}
+
+/**
+ * Per-symbol gain fold — the Analytics "Holdings Performance" chart's
+ * seam (session 228, R-25, F-228a). Two same-symbol lots are normal
+ * multi-lot portfolio state (the F-227b premise); the chart renders ONE
+ * bar per symbol with the lots' gains summed, so duplicate React keys
+ * and two bars overlapping at one X category are impossible by
+ * construction. First-appearance order is preserved (the input arrives
+ * value-sorted from portfolioStats).
+ */
+export function gainBySymbol(holdings: PortfolioStats["holdings"]): SymbolGain[] {
+  const by = new Map<string, number>();
+  for (const h of holdings) {
+    by.set(h.symbol, (by.get(h.symbol) ?? 0) + h.gainLoss);
+  }
+  return Array.from(by, ([symbol, gain]) => ({ symbol, gain: round2(gain) }));
 }
 
 export interface AllocationSlice {
@@ -595,8 +623,9 @@ export function categoryTrend(
   return points;
 }
 
-/** Day-of-month spending histogram (the Analytics "spending pattern"
- *  genus — early/late month weight). */
+/** Day-of-week spending histogram (Sun–Sat buckets — the Analytics
+ *  "Spending by Day of Week" card's genus; the docblock previously
+ *  said "day-of-month", wrong since birth — corrected session 228). */
 export function spendingByDayOfWeek(txs: TxLike[], ref: Date): Array<{ day: string; value: number }> {
   const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const totals = new Array(7).fill(0);

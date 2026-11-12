@@ -247,6 +247,39 @@ test.describe("Income / Goals / Accounts surfaces", () => {
     }
   });
 
+  // Session-228 (R-25, F-228a): the second holdings surface — the
+  // Analytics chart rides the per-symbol gain fold. Born RED on the
+  // pre-cure tree (8 bar rectangles — the two same-symbol lots overlap
+  // at one category); the folded form renders ONE bar per symbol:
+  // the 6 seeded symbols + the shared FOLD symbol = 7.
+  test("two same-symbol holdings render ONE aggregated bar on the Analytics chart (F-228a)", async ({ page }) => {
+    const lot = (name: string) => ({
+      symbol: "FOLD",
+      name,
+      type: "stock",
+      shares: 10,
+      avgCost: 100,
+      currentValue: 110,
+    });
+    const first = await page.request.post("/api/investments", { data: lot("First Fold Lot") });
+    const second = await page.request.post("/api/investments", { data: lot("Second Fold Lot") });
+    expect(first.ok()).toBe(true);
+    expect(second.ok()).toBe(true);
+    const firstId = ((await first.json()) as { data: { id: string } }).data.id;
+    const secondId = ((await second.json()) as { data: { id: string } }).data.id;
+
+    try {
+      await page.goto("/Analytics");
+      await page.getByRole("tab", { name: "Investments", exact: true }).click();
+      // The seeded corpus carries 6 distinct symbols; two FOLD lots fold
+      // to one bar — pre-cure the chart rendered 8 overlapping bars.
+      await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(7);
+    } finally {
+      await page.request.delete(`/api/investments/${firstId}`);
+      await page.request.delete(`/api/investments/${secondId}`);
+    }
+  });
+
   test("the Analytics page renders the four tabs", async ({ page }) => {
     await page.goto("/Analytics");
     for (const tab of ["Overview", "Expenses", "Income", "Investments"]) {

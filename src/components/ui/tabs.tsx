@@ -8,13 +8,13 @@ import { TABS_PILL, TABS_SEGMENTED } from "@/lib/page-layout";
 // plain text tabs; `variant="segmented"` renders the segmented control
 // used by the Activities priority tabs and the Settings tabs — the
 // reference track is `h-9 grid w-full grid-cols-{n} rounded-lg bg-muted
-// p-1 text-muted-foreground` with an equal-width column per tab and the
+// p-1` + its muted-foreground text token, with an equal-width column per tab and the
 // active tab a raised white pill; `variant="pill"` renders the Reports
 // tab bar — white bordered container `grid grid-cols-2 lg:grid-cols-{n}`,
 // active tab `bg-blue-50 text-blue-700`.
 //
 // Session-12 (S12-P4): the tracks carry text-muted-ink (the reference's
-// tablist text-muted-foreground — inactive tabs INHERIT #737373 instead
+// tablist muted-foreground token — inactive tabs INHERIT #737373 instead
 // of carrying gray-500) and the triggers are the reference's STOCK Radix
 // classes: natural height (no h-7), transition-all, ring-offset-background,
 // the bare `shadow` on the active state (the s6 shadow-sm pin was one step

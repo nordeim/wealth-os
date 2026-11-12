@@ -52,7 +52,7 @@ const buttonVariants = cva(
         // literal — live-walked two-app on the accounts rail's Save All
         // ghost (@1440): our hover computed rgb(10,10,10)
         // (hover:text-foreground) where the reference computes
-        // rgb(23,23,23) — its stock ghost's hover:text-accent-foreground
+        // rgb(23,23,23) — its stock ghost's accent-foreground hover ink
         // #171717. The F-128c1/F-129c3 value pair on the ghost variant
         // (s128 the menu-item ink · s129 the outline hover text · s130
         // the ghost hover text); the s80 badge precedent.
@@ -79,7 +79,7 @@ const buttonVariants = cva(
         // Data-tab template button + the profile Upload Photo, both
         // viewports): our hover text stayed rgb(10,10,10) (text-foreground,
         // no hover arm) where the reference computes rgb(23,23,23) — its
-        // stock outline's hover:text-accent-foreground #171717. The
+        // stock outline's accent-foreground hover ink #171717. The
         // F-128c1 value pair; the s80 badge precedent expresses its
         // accent-foreground as our neutral-900 literal.
         outline: "border border-line bg-surface text-foreground shadow-sm hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50",

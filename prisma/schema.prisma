@@ -55,6 +55,12 @@ model User {
   goals         Goal[]
   budgets       Budget[]
   settings      Setting[]
+
+  // Session-228 (R-25, F-227h/F-228g): the public reset lookup keys on
+  // the hashed token — without the index it scans the users table
+  // (negligible at self-hosted counts, the recorded posture; landed in
+  // the same schema round as the Transaction FK index).
+  @@index([resetToken])
 }
 
 model IncomeSource {
@@ -112,6 +118,12 @@ model Transaction {
   // at scale (the import route admits 5x5000 rows / 15min; the
   // dashboard hydrate fires on every navigation by design).
   @@index([ownerId, date])
+  // Session-228 (R-25, F-228g): the account-link FK's own index —
+  // SQLite does not auto-index foreign keys, and the onDelete: SetNull
+  // cascade fires `UPDATE ... WHERE accountId = ?` on every account
+  // delete (a full scan per deleted row at exactly the scale the
+  // import ceiling grows).
+  @@index([accountId])
 }
 
 model BankAccount {

@@ -43,6 +43,7 @@ import {
   formatMoney,
   monthlyAverages,
   portfolioStats,
+  gainBySymbol,
   spendingByDayOfWeek,
   toDate,
 } from "@/lib/finance";
@@ -116,6 +117,12 @@ export default function AnalyticsPage() {
     [inRange, n, refDate],
   );
   const stats = portfolioStats(store.investments);
+  // Session-228 (R-25, F-228a): the per-symbol gain fold — the Holdings
+  // Performance chart's seam. Two same-symbol lots are normal multi-lot
+  // state (the F-227b premise); the chart renders ONE bar per symbol
+  // (gains summed), so duplicate keys and overlapping bars are
+  // impossible by construction.
+  const foldedGains = gainBySymbol(stats.holdings);
   const allocation = assetAllocation(store.investments);
 
   const exportCsv = () => {
@@ -125,7 +132,7 @@ export default function AnalyticsPage() {
     // bypassed it) and names the artifact by the reference's own
     // prefix_YYYY-MM-DD convention (csvFilename).
     const csv = toCsv(inRange, [
-      { header: "Date", value: (t) => new Date(t.date).toISOString().slice(0, 10) },
+      { header: "Date", value: (t) => t.date.slice(0, 10) },
       { header: "Description", value: (t) => t.description },
       { header: "Type", value: (t) => t.type },
       { header: "Category", value: (t) => t.category },
@@ -436,7 +443,7 @@ export default function AnalyticsPage() {
                 ) : (
                 <div className="h-60">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={stats.holdings.map((h) => ({ symbol: h.symbol, gain: h.gainLoss }))}>
+                    <BarChart data={foldedGains}>
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                       <XAxis dataKey="symbol" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={formatAxisMoney} tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} width={56} />
@@ -447,8 +454,8 @@ export default function AnalyticsPage() {
                         contentStyle={tooltipStyle}
                       />
                       <Bar dataKey="gain" name="Gain/Loss" radius={[6, 6, 0, 0]}>
-                        {stats.holdings.map((h) => (
-                          <Cell key={h.symbol} fill={h.gainLoss >= 0 ? "#10b981" : "#f43f5e"} />
+                        {foldedGains.map((d) => (
+                          <Cell key={d.symbol} fill={d.gain >= 0 ? "#10b981" : "#f43f5e"} />
                         ))}
                       </Bar>
                     </BarChart>

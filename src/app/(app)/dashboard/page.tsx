@@ -418,9 +418,9 @@ export default function DashboardPage() {
               />
             ) : (
               <ul className="space-y-3">
-                {upcoming.slice(0, 5).map((item, i) => (
+                {upcoming.slice(0, 5).map((item) => (
                   <li
-                    key={`${item.description}-${i}`}
+                    key={item.id}
                     className="flex items-center justify-between gap-3 rounded-lg border border-stone-200/70 bg-stone-50/60 p-3 dark:border-stone-800 dark:bg-stone-800/40"
                   >
                     <div className="min-w-0">
@@ -588,7 +588,7 @@ function QuickAction({
   // (the exact class string, now carried by the anchor itself) while
   // fixing the nesting: ONE focusable element per destination. Token
   // notes (F-209a): the reference's `bg-background` reads our `bg-card`;
-  // its `hover:text-accent-foreground` is the neutral literals (the
+  // its accent-foreground hover ink is the neutral literals (the
   // F-129c3 house precedent). The icon's effective size stays 16px —
   // the [&_svg]:size-4 arm outranks the icon's own w-5 h-5.
   return (

@@ -3,7 +3,14 @@ import { writeFile } from "fs/promises";
 import { join } from "path";
 import { ERR, isGuarded, logApiError, ok, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
-import { EXT_BY_MIME, MAX_UPLOAD_BYTES, uploadsDir } from "@/lib/uploads";
+import {
+  EXT_BY_MIME,
+  MAX_UPLOAD_BYTES,
+  MAX_UPLOAD_FILES,
+  MAX_UPLOADS_TOTAL_BYTES,
+  uploadsCapacity,
+  uploadsDir,
+} from "@/lib/uploads";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -94,6 +101,18 @@ export async function POST(request: Request) {
   // The 5MB ceiling the reference's profile hint advertises.
   if (file.size > MAX_UPLOAD_BYTES) {
     return ERR.BAD_REQUEST("File too large (max 5MB)");
+  }
+
+  // Session-228 (R-25, F-228f): the self-hosted capacity ceiling — the
+  // write-only surface's over-time disk guard (nothing ever deletes an
+  // upload; the per-request rate cap bounds growth per window only).
+  // Either ceiling breaking refuses the write with 507 STORAGE_FULL.
+  const capacity = uploadsCapacity(uploadsDir());
+  if (
+    capacity.files >= MAX_UPLOAD_FILES ||
+    capacity.bytes + file.size > MAX_UPLOADS_TOTAL_BYTES
+  ) {
+    return ERR.STORAGE_FULL();
   }
 
   // Session-38 (S38-P5): the write path joins the envelope — an

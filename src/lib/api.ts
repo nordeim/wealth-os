@@ -48,6 +48,13 @@ export const ERR = {
           { status: 429, headers: { "Retry-After": String(Math.max(1, retryAfterSec)), "Cache-Control": "no-store" } },
         ),
   INTERNAL: () => fail("INTERNAL", "Something went wrong. Please try again.", 500),
+  // Session-228 (R-25, F-228f): the uploads capacity ceiling's honest
+  // answer — 507 (Insufficient Storage) is the semantically correct
+  // code for a self-hosted disk guard, not a 400 (the caller's request
+  // is fine) and not a bare 500 (nothing failed). Admin-facing: the
+  // operator clears <repo>/uploads/.
+  STORAGE_FULL: () =>
+    fail("STORAGE_FULL", "Upload storage is full. Please contact the administrator.", 507),
 };
 
 /** Session-226 (R-23, F-226c): the server-side error trace. Every

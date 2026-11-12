@@ -104,7 +104,7 @@ function DialogDescription({
   // stays for our unverifiable-superset surfaces (the contacts
   // scan-card dialog); entity-dialogs no longer renders it.
   // Session-26 (S26-P6): the color realigned to the reference's live
-  // import dialog (text-muted-foreground #737373 = our muted-ink token).
+  // import dialog (its muted-foreground token #737373 = our muted-ink token).
   return <DialogPrimitive.Description className={cn("text-sm text-muted-ink", className)} {...props} />;
 }
 

@@ -95,7 +95,7 @@ export { Dropdown, DropdownTrigger, DropdownContent, DropdownItem, DropdownLabel
 // Session-13 (S13-P4): the STOCK DropdownMenu primitives. The reference's
 // account menu AND its four row-action menus are real Radix DropdownMenus
 // (role=menu with menuitems, z-50/rounded-md/shadow-md surface, rounded-sm
-// items with focus:bg-accent + cursor-default) — class-dumped on the live
+// items with the accent focus-wash + cursor-default) — class-dumped on the live
 // reference (2026-09-30) + bundle-decoded (session 73: five Yg align:"end"
 // contents — the account menu + the accounts/contacts/leads/calendar row
 // menus, 13 stock $s items, ALL text-only). Session-73 (S73-P1): the four
@@ -105,7 +105,7 @@ export { Dropdown, DropdownTrigger, DropdownContent, DropdownItem, DropdownLabel
 // renders no Popover menus today; the N-56e operator KEEP stands, and
 // --color-danger-soft now flips in .dark so the destructive hover
 // cannot paint a light chip on a dark surface). Token VALUES are preserved via our
-// own variables where the reference uses popover tokens (bg-popover = our
+// own variables where the reference uses popover tokens (its popover bg = our
 // --color-surface white, border = --color-line #e5e5e5, text =
 // --color-foreground).
 // ---------------------------------------------------------------------------

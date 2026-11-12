@@ -284,6 +284,7 @@ export default function ExpensesPage() {
               ref={filtersTriggerRef}
               onClick={() => setFiltersOpen((v) => !v)}
               aria-expanded={filtersOpen}
+              aria-controls="expense-filters"
             >
               <Filter className="h-4 w-4" />
               Filters
@@ -298,6 +299,7 @@ export default function ExpensesPage() {
                 className="absolute right-0 top-12 z-20 w-64 rounded-lg border border-stone-200 bg-white p-4 shadow-lg dark:border-stone-700 dark:bg-stone-900"
                 role="group"
                 aria-label="Expense filters"
+                id="expense-filters"
               >
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-sm font-semibold text-stone-900 dark:text-stone-100">Filters</span>

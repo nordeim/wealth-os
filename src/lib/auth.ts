@@ -167,7 +167,23 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const token = store.get(SESSION_COOKIE)?.value;
   const payload = verifySessionToken(token);
   if (!payload) return null;
-  const user = await db.user.findUnique({ where: { id: payload.uid } });
+  // Session-228 (R-25, F-228h): an explicit select of exactly the
+  // consumed fields — the bare findUnique hauled passwordHash,
+  // resetToken, and verificationCodeHash (two 200+ char hashes) into
+  // scope on every sessioned request's hot path for nothing.
+  const user = await db.user.findUnique({
+    where: { id: payload.uid },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      avatarColor: true,
+      photoUrl: true,
+      role: true,
+      tokenVersion: true,
+      createdAt: true,
+    },
+  });
   // Session-163 (the digma S67-A port): the database-seam version check —
   // a token minted before a password reset still parses and still carries
   // a valid signature, but its embedded version no longer matches the

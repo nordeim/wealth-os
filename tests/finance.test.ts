@@ -11,6 +11,7 @@ import {
   financialHealthScore,
   formatAxisMoney,
   formatMoney,
+  gainBySymbol,
   goalProgress,
   healthAdvice,
   healthBand,
@@ -213,6 +214,37 @@ describe("upcoming & alerts", () => {
     expect(out[0].daysAway).toBe(4);
   });
 
+  // Session-228 (R-25, F-228d): the seam carries the id so the
+  // dashboard's Upcoming list keys by a stable identity (the
+  // recentActivity pattern) instead of a description+index composite.
+  it("carries the transaction id onto UpcomingItem (the F-228d identity seam)", () => {
+    const rent = tx({
+      id: "tx-rent-1",
+      description: "Rent",
+      amount: 2150,
+      type: "expense",
+      date: new Date(2026, 10, 1),
+      recurring: true,
+      nextDate: new Date(2026, 10, 12),
+    });
+    const out = upcomingAlerts([rent], REF);
+    expect(out).toHaveLength(1);
+    expect(out[0].id).toBe("tx-rent-1");
+  });
+
+  it("answers an empty-string id for id-less inputs (the inert-key fallback)", () => {
+    const rent = tx({
+      description: "Rent",
+      amount: 2150,
+      type: "expense",
+      date: new Date(2026, 10, 1),
+      recurring: true,
+      nextDate: new Date(2026, 10, 12),
+    });
+    const out = upcomingAlerts([rent], REF);
+    expect(out[0].id).toBe("");
+  });
+
   it("includes month-to-date OVERDUE rows but drops previous-month ones (the deliberate window, F-214g)", () => {
     // The section is "Upcoming & Alerts": a bill that came due earlier
     // THIS month stays visible as an overdue alert (negative daysAway,
@@ -308,6 +340,51 @@ describe("portfolio", () => {
     for (const row of stats.holdings) {
       expect(row.id).toBe("");
     }
+  });
+
+  // Session-228 (R-25, F-228a): the per-symbol gain fold — the
+  // Analytics Holdings Performance chart's seam. Two same-symbol lots
+  // are normal multi-lot state (the F-227b premise); the chart renders
+  // ONE bar per symbol, gains summed — duplicate keys and overlapping
+  // bars are impossible by construction.
+  describe("gainBySymbol (the F-228a chart seam)", () => {
+    it("folds two same-symbol lots into one summed row", () => {
+      const stats = portfolioStats([
+        { id: "a", symbol: "DUPL", name: "First lot", type: "stock", shares: 10, avgCost: 100, currentValue: 110 },
+        { id: "b", symbol: "DUPL", name: "Second lot", type: "stock", shares: 5, avgCost: 100, currentValue: 76 },
+      ]);
+      const folded = gainBySymbol(stats.holdings);
+      expect(folded).toHaveLength(1);
+      // +100 (first lot) + -120 (second lot) = -20
+      expect(folded[0].symbol).toBe("DUPL");
+      expect(folded[0].gain).toBe(-20);
+    });
+
+    it("passes distinct symbols through in first-appearance order (value-sorted input)", () => {
+      const stats = portfolioStats([
+        { symbol: "MSFT", name: "M", type: "stock", shares: 1, avgCost: 10, currentValue: 20 },
+        { symbol: "AAPL", name: "A", type: "stock", shares: 1, avgCost: 10, currentValue: 50 },
+        { symbol: "BND", name: "B", type: "bond", shares: 1, avgCost: 10, currentValue: 5 },
+      ]);
+      const folded = gainBySymbol(stats.holdings);
+      expect(folded.map((f) => f.symbol)).toEqual(["AAPL", "MSFT", "BND"]);
+      expect(folded.map((f) => f.gain)).toEqual([40, 10, -5]);
+    });
+
+    it("answers empty for empty holdings", () => {
+      expect(gainBySymbol([])).toEqual([]);
+    });
+
+    it("rounds the summed gain to 2dp at the boundary", () => {
+      const stats = portfolioStats([
+        { symbol: "X", name: "x", type: "stock", shares: 1, avgCost: 0, currentValue: 1.111 },
+        { symbol: "X", name: "x2", type: "stock", shares: 1, avgCost: 0, currentValue: 2.222 },
+      ]);
+      const folded = gainBySymbol(stats.holdings);
+      expect(folded).toHaveLength(1);
+      // 1.111 + 2.222 = 3.333 → the seam rounds at the boundary.
+      expect(folded[0].gain).toBe(3.33);
+    });
   });
 });
 
