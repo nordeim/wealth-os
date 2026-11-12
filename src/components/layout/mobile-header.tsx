@@ -54,6 +54,11 @@ export function MobileHeader({
             onClick={() => onDrawerOpenChange(!drawerOpen)}
             aria-label={drawerOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={drawerOpen}
+            // Session-232 (R-29, F-232d): the trigger↔drawer programmatic
+            // association — the expenses-filters precedent (aria-expanded
+            // AND aria-controls; the id rides the conditionally-mounted
+            // sheet, a benign dangling reference while closed).
+            aria-controls="mobile-nav-drawer"
           >
             {drawerOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>

@@ -260,8 +260,14 @@ const PROSE_ALLOWLIST = new Set([
   // Wildcard/placeholder utility forms (the * and ${n} shapes never parse)
   "rounded-*", "mt-*", "mt-*/space-y-*", "fade-*", "grid-cols-${n}",
   // Multi-class prose runs (each names several live/retired classes at
-  // once through separators — the parts are handled individually)
-  "border-primary/text-primary", "z-50/rounded-md/shadow-md",
+  // once through separators — the parts are handled individually).
+  // Session-232 (R-29, F-232b): the border-primary/text-primary entry
+  // RETIRED — the compound form hid border-primary (a DEAD utility:
+  // zero live consumers) behind its live text-primary sibling, and the
+  // tabs.tsx comment riding it was the sole carrier emitting the dead
+  // rule. The allowlist is not a carrier sanctuary: a compound entry
+  // is only honest when EVERY part is live or visibly not-a-class.
+  "z-50/rounded-md/shadow-md",
   "data-state/data-orientation/", "w-full+w-10",
   // Token-SCALE citations (custom-property names, not class quotes)
   "blur-sm",

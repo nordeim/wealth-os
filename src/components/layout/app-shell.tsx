@@ -63,6 +63,21 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
       >
         Skip to main content
       </a>
+      {/* Session-232 (R-29, F-232e): the ALWAYS-MOUNTED loading live
+          region — the F-218h genus. A live region that ARRIVES with its
+          content is not announced: the pre-cure LoadingBlock mounted
+          its role=status div exactly when the loading flip hit (the
+          mid-session "Try again" path re-entered hydrate() and the
+          region mounted fresh, silent for SR users). The region now
+          pre-exists in the a11y tree, empty when idle, and the label
+          swaps in on the flip. Placement: OUTSIDE main, mirroring the
+          toast viewport — the interior census fingerprints
+          main.querySelectorAll("*"), so a region inside main would
+          shift the element census and trip the drift gate. The visible
+          LoadingBlock below is the sighted-user surface only. */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {!hydrated || loading ? "Loading your workspace…" : ""}
+      </div>
       {/* Desktop sidebar — in-flow flex child, visible from lg. */}
       <Sidebar user={user} />
 

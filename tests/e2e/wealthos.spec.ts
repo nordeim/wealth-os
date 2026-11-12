@@ -177,6 +177,16 @@ test.describe("the Add Expense round-trip (the two-step dialog)", () => {
     await dialog.getByLabel("Amount (USD)").fill("5");
     await dialog.getByRole("button", { name: "+$10", exact: true }).click();
     await expect(dialog.getByLabel("Amount (USD)")).toHaveValue("15");
+
+    // Session-232 (R-29, F-232c): the step swaps land focus on the new
+    // view's primary control (the F-231b genus on the dialog surface) —
+    // quick→form the description input, form→quick the Quick Select
+    // heading. Pre-cure, focus fell to the dialog container on both
+    // swaps (Radix's FocusScope recovery) with no announcement.
+    await dialog.getByRole("button", { name: "Back to Quick Select" }).click();
+    await expect(dialog.getByRole("heading", { name: "Quick Select Category" })).toBeFocused();
+    await dialog.getByRole("button", { name: "Or fill manually" }).click();
+    await expect(dialog.getByLabel("Description")).toBeFocused();
     await dialog.getByRole("button", { name: "Cancel" }).click();
   });
 });

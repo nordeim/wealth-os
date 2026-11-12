@@ -11,7 +11,7 @@ import {
   MenuTrigger,
 } from "@/components/ui/dropdown";
 import { NAV_ITEMS, isNavActive } from "./nav-config";
-import { NAV_LAYOUT } from "@/lib/page-layout";
+import { NAV_LAYOUT, SHELL_LAYOUT } from "@/lib/page-layout";
 import { avatarTextColor } from "@/components/ui/avatar"; // F-218n: the luminance seam
 import { useTheme } from "./theme";
 import { useWealthOs } from "@/stores/wealthos-store";
@@ -27,7 +27,11 @@ import type { User } from "@/types";
  */
 export function Sidebar({ user }: { user: User }) {
   return (
-    <aside className="hidden lg:flex lg:w-64 lg:flex-col">
+    // Session-232 (R-29, F-232h): the aside consumes SHELL_LAYOUT.sidebar
+    // directly — the literal it carried was a byte-identical duplicate
+    // of the constant (a latent divergence point: edit one, miss the
+    // other).
+    <aside className={SHELL_LAYOUT.sidebar}>
       <div className={NAV_LAYOUT.container}>
         <BrandMark />
         <SidebarNav />
@@ -37,19 +41,20 @@ export function Sidebar({ user }: { user: User }) {
   );
 }
 
-export function BrandMark({ compact = false }: { compact?: boolean }) {
+// Session-232 (R-29, F-232h): the never-passed collapse arm retired
+// — the single call site always rendered the wordmark (the F-229f
+// genus, prop edition); the wordmark is unconditional.
+export function BrandMark() {
   return (
     <div className={NAV_LAYOUT.brand}>
       <div className="flex items-center gap-3">
         <div className={NAV_LAYOUT.brandLogo} aria-hidden="true">
           <DollarSign className="h-5 w-5 text-stone-900" strokeWidth={2.5} />
         </div>
-        {!compact && (
-          <div>
-            <h2 className={NAV_LAYOUT.brandWordmark}>WealthOS</h2>
-            <p className={NAV_LAYOUT.brandTagline}>Premium Finance Suite</p>
-          </div>
-        )}
+        <div>
+          <h2 className={NAV_LAYOUT.brandWordmark}>WealthOS</h2>
+          <p className={NAV_LAYOUT.brandTagline}>Premium Finance Suite</p>
+        </div>
       </div>
     </div>
   );

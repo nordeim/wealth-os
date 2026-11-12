@@ -192,7 +192,7 @@ describe("F-228b — the eight dead tokens retire; the live set stands", () => {
     const carriers = [
       "src/components/ui/select.tsx",
       "src/components/ui/dropdown.tsx",
-      "src/components/ui/table.tsx",
+      // table.tsx retired at session 232 (F-232a — zero-consumer stock)
       "src/components/ui/tabs.tsx",
       "src/components/ui/dialog.tsx",
       "src/components/ui/button.tsx",

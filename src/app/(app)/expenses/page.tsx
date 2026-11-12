@@ -401,6 +401,28 @@ export function ExpenseDialog({
   const [recurring, setRecurring] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
 
+  // Session-232 (R-29, F-232c): the step-swap focus — the F-231b genus
+  // on the dialog surface. The value-comparison guard (StrictMode-safe,
+  // no boolean mount flag) moves focus only on a real step CHANGE while
+  // the dialog is open: quick→form lands on the description input (the
+  // form's primary control — edit-mode opens included, the form IS the
+  // view), form→quick on the Quick Select heading. The initial open in
+  // create mode keeps Radix's natural content focus — no transition
+  // fires; a close-time reset never fires (open is false).
+  const descriptionRef = React.useRef<HTMLInputElement>(null);
+  const quickHeadingRef = React.useRef<HTMLHeadingElement>(null);
+  const prevStepRef = React.useRef(step);
+  React.useEffect(() => {
+    const changed = prevStepRef.current !== step;
+    prevStepRef.current = step;
+    if (!changed || !open) return;
+    if (step === "form") {
+      descriptionRef.current?.focus();
+    } else {
+      quickHeadingRef.current?.focus();
+    }
+  }, [step, open]);
+
   // Prefill on open — RENDER-TIME adjustment (the sanctioned
   // pattern; no setState inside an effect): when the dialog's
   // identity changes, adjust this component's own state during
@@ -499,7 +521,11 @@ export function ExpenseDialog({
 
         {step === "quick" && !editing ? (
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-stone-900 dark:text-stone-100">
+            <h3
+              ref={quickHeadingRef}
+              tabIndex={-1}
+              className="mb-3 text-sm font-semibold text-stone-900 outline-none focus-visible:ring-2 focus-visible:ring-ring dark:text-stone-100"
+            >
               Quick Select Category
             </h3>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -530,6 +556,7 @@ export function ExpenseDialog({
                 Description
               </label>
               <input
+                ref={descriptionRef}
                 id="expense-description"
                 required
                 maxLength={200}

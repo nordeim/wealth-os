@@ -7,7 +7,59 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.28.0** (session 231 — the a11y-tail,
+> **Current version: v2.29.0** (session 232 — the dead-stock
+> retirement, carrier-net repair, and dialog-focus round R-29: the
+> owner's standing directive — refresh → review → validate → audit →
+> parity iteration → remediation plan → TDD execution → captures →
+> docs lockstep → commit → push, with the reference STABLE on all
+> standing drift layers and the TRUE-390 mobile menu re-verified
+> this session; the cold-baseline gate GREEN at HEAD — no discovery
+> this round, the v2.28.0 ship state reproduced exactly). The
+> session-232 fresh-eyes audit (three Mode-C passes: the R-28 cure
+> surfaces driven by the session, the API/auth/security layer, and
+> the UI/a11y/shell layer — 0 Critical / 0 High / 0 Medium /
+> 13 Low / 9 Informational raw, every material claim re-verified at
+> file:line by the driving session; R-28's twelve pinned cures all
+> verified holding — the F-231b value-comparison guards are
+> StrictMode-idempotent across every view swap, the F-231h
+> retirement family intact, no new carriers, no aria-hidden misuse,
+> no layer-map violations). The round cures: THE VENDORED
+> DEAD-STOCK RETIREMENT (F-232a — card.tsx, table.tsx, label.tsx,
+> input.tsx: four zero-consumer shadcn-stock files with no KEEP
+> register entry, retiring per the F-231h Avatar precedent, with
+> their page-layout riders INPUT_BASE + DIALOG_TEXTAREA + CHECKBOX
+> whose last consumers were the dead files; the surviving
+> input.tsx Event/Activity citation retires with its file); THE
+> CARRIER-NET REPAIR (F-232b — the tabs.tsx border-primary citation
+> reworded per F-229d AND the parity-229 PROSE_ALLOWLIST compound
+> entry that hid the dead utility REMOVED — the allowlist is not a
+> carrier sanctuary; the globals.css danger-soft hover citation
+> reworded to prose); THE EXPENSES DIALOG STEP-SWAP FOCUS (F-232c —
+> the F-231b genus on the dialog surface: quick→form lands focus on
+> the description input, form→quick lands on the Quick Select
+> heading, value-guarded, plus the e2e leg); THE HAMBURGER
+> ARIA-CONTROLS (F-232d — id on the drawer + aria-controls on the
+> trigger, the expenses-filters precedent); THE ALWAYS-MOUNTED
+> LOADING LIVE REGION (F-232e — the F-218h genus: the region
+> pre-exists outside main, empty when idle, the label swaps in);
+> THE STALE AMBER ARM RETIREMENT (F-232f — the bg-amber-500 axe
+> sanction arm retires per F-220p: every live amber fill carries
+> stone-900 ink since F-219a); THE UPLOAD CAPACITY POST-WRITE
+> RE-CHECK (F-232g — the TOCTOU cure: re-read after the write,
+> unlink + STORAGE_FULL on breach); the low tail (F-232h the
+> CURRENCIES import, the BrandMark compact arm, the
+> SHELL_LAYOUT.sidebar consumption + the icon/bare member
+> retirements, the exportCsv revoke defer); THE LINE-STRONG
+> REGISTRATION (F-232i — the token joins the F-224t reserved
+> register with its citation). Recorded, not cured: F-232j (the
+> whole-store subscription idiom — 15 sites, a dedicated round),
+> F-232k (the import commit replay guard), F-232l (the first-admin
+> count race — role is inert), F-232m (the CSP posture — documented
+> deliberate), F-232n (the login-card logo narration), F-232o (the
+> between-footer comment refresh). §5 carries the execution
+> history.)
+>
+> **Previous version: v2.28.0** (session 231 — the a11y-tail,
 > logging-grain, and dead-family round R-28: the owner's
 > standing directive — refresh → review → validate → audit →
 > parity iteration → remediation plan → TDD execution →
@@ -789,6 +841,35 @@ passes' raw labels F-228-B1…B8 and F-228a…i folded into one series):
 | F-231q | Informational | **Create schemas reject explicit null on optional fields where the update twins accept it as the clear.** Create-side optionals (`nextDate`, `nextPaymentDate`, `purchaseDate`, `targetDate`, `notes`, `institution`) fail an explicit null with 400; the update twins' `.nullable()` is the F-219q sanctioned clear. Defensible ("nothing to clear at create"); first-party UI omits the fields. Documented asymmetry, not a defect. | `src/lib/schemas.ts:187,261,387,450` vs `:227,287,426,468` | recorded (documented design) |
 | F-231r | Informational | **The aggregate read surfaces return unbounded result sets.** The dashboard route returns six full-table findManys, export seven, coach five, the family GETs one each — the documented thin-read architecture (client-side derivation through finance.ts/ai.ts), bounded per-user by the import ceiling (25k rows/15min max). A scalability ceiling on the single-node box at multi-year volumes, not a correctness bug; server-side pagination is the recorded future seam. | `src/app/api/dashboard/route.ts:22-33`; the family | recorded (standing architecture) |
 | F-231s | Informational | **The session-231 audit brief's own contract text misstated two recorded contracts — the adjudication record.** The brief claimed "uploads GET-by-name is sessioned" (the recorded contract is public capability-URL serving: the route's own docblock + F-225i + the F-217g note; names are 32-hex unguessable, MIME-allowlisted, immutable-cached) and "forgot-password 5/15" (the recorded F-222n contract is 10/IP/15min + the 20/15 forgot-acct secondary). The CODE matches the repo's documented contracts in both cases — the findings were adjudicated as brief errors, zero repo change. Recorded so the next audit brief quotes the ledger verbatim instead of memory. | `src/app/api/uploads/[name]/route.ts` (the docblock); `src/app/api/auth/forgot-password/route.ts:47`; the ledgers F-225i/F-222n | recorded (adjudication) |
+
+### Session-232 audit (three Mode-C passes, every material claim re-verified)
+
+Pass A (the R-28 cure surfaces): all twelve pinned cures verified holding
+at file:line — the F-231b guards idempotent, the F-231h family intact,
+the parity-231 pins honest. Pass B (API/auth/security): the envelope
+discipline, scoping, injection surface, rate inventory, and error
+handling all clean beyond the recorded tail. Pass C (UI/a11y/shell):
+the token system mechanically airtight, the layer map, drawer contract,
+and portal exclusions intact. The findings below were each re-verified
+by the driving session before the row was written.
+
+| ID | Severity | Finding (verified evidence) | Location | Disposition |
+|---|---|---|---|---|
+| F-232a | Low | **Four vendored shadcn-stock files carry zero consumers and no KEEP register entry — the F-231h genus, file edition.** `card.tsx` (the whole Card family), `table.tsx` (the Table kit), `label.tsx` (`Label` + the Checkbox), `input.tsx` (`Input` + `Textarea`) are imported nowhere in src (import census: ui/dialog, ui/avatar, ui/dropdown, ui/toast, ui/select, ui/badge, ui/button, ui/tabs, ui/popover only); pages hand-roll their tables, labels, and inputs. The F-231m register keeps button's dead arms and dialog's re-exports; the N-56e note keeps the dropdown family — these four files carry no register rationale. Their page-layout riders `INPUT_BASE`, `DIALOG_TEXTAREA`, `CHECKBOX` lose their last consumers with them (grep-verified; no test pins any of the three). The `input.tsx` Event/Activity citation (the F-231h sweep's one miss, Pass A) retires with its file. The F-230f pin (reads card.tsx) and the parity-228 carriers-list entry (table.tsx) retire/recalibrate in the same commit. | `src/components/ui/card.tsx`, `src/components/ui/table.tsx`, `src/components/ui/label.tsx`, `src/components/ui/input.tsx`; the riders `src/lib/page-layout.ts:318-329,358-364`; the precedent `src/components/ui/avatar.tsx` (F-231h) | **R-29** (retire the files + riders + the two pin recalibrations) |
+| F-232b | Low | **The parity-229 PROSE_ALLOWLIST itself carries a compound entry whose first part is a dead utility — the F-229d genus, allowlist edition.** The tabs.tsx comment "the old border-primary/text-primary computed" rides the allowlist entry `"border-primary/text-primary"` (line 264, the multi-class prose-run family) — but `text-primary` is live (button.tsx link arm) while `border-primary` appears NOWHERE in live code: the compound form hides the dead half from the whole-tree invariant, and the comment is the sole carrier emitting the dead `.border-primary` rule. Companion: the globals.css:408 comment names `hover:bg-danger-soft` in prose — the utility is live (dropdown.tsx emits it) so no NET dead CSS, but the F-224v doctrine keeps comments carrier-free. | `src/components/ui/tabs.tsx:150`; `tests/parity-229.test.ts:264` (the allowlist entry); `src/app/globals.css:408` | **R-29** (reword both comments per F-229d; REMOVE the compound allowlist entry so the invariant nets the genus) |
+| F-232c | Low | **The Expenses dialog's quick→form step swap drops focus to the dialog container with no announcement — the F-231b genus on the app's highest-traffic dialog.** Every expense creation passes through the quick-select → form swap (`pickQuick` sets `setStep("form")`; "Or fill manually" and "Back to Quick Select" the same), and edit-mode opens land on the form via the formKey adjust-during-render reset. The swap unmounts the focused control; Radix's FocusScope recovers to the DialogContent container — focus never escapes the dialog (no hard WCAG failure), but nothing lands on the new view's primary control and no live announcement marks the change. The project cured this exact genus on the auth faces (F-231b: value-guarded focus, live-measured); the dialog surface was left to Radix. | `src/app/(app)/expenses/page.tsx:433-437` (pickQuick), `:394-422` (the formKey reset), `:500-525` (the quick view), `:649` (Back); the cured pattern `src/components/layout/login-card.tsx:124-135` | **R-29** (the value-guarded step effect: quick→form focuses the description input, form→quick the Quick Select heading with tabIndex -1; + the e2e leg) |
+| F-232d | Low | **The mobile hamburger carries aria-expanded but no aria-controls — the drawer has no id to reference.** The house's own preferred shape is the expenses filters trigger (`aria-expanded` AND `aria-controls="expense-filters"`, expenses/page.tsx:292-293). State is still conveyed (aria-expanded + the dialog role announcing on open), so this is enhancement, not failure — the two-gate and the F-217e focus contract are unaffected. | `src/components/layout/mobile-header.tsx:51-57` (the trigger); `src/components/layout/mobile-nav.tsx:127` (the sheet div, no id) | **R-29** (id="mobile-nav-drawer" on the sheet + aria-controls on the trigger, the expenses-filters precedent) |
+| F-232e | Low | **The LoadingBlock live region arrives with its content — the F-218h genus applied to the loading gate.** The shell mounts `<div role="status" aria-live="polite">` only when `!hydrated \|\| loading` flips true — a live region that arrives with its content is not announced. The initial full-page load is read wholesale anyway; the gap is the mid-session "Try again" path (app-shell.tsx:90 re-enters hydrate(), the region mounts fresh). The F-218h toast cure established the pattern: the region must pre-exist in the a11y tree. Placement note: the interior census fingerprints `main.querySelectorAll("*")`, so the always-mounted region must live OUTSIDE main (the toast viewport precedent). | `src/components/shared/page-parts.tsx:234-244`; the consumer `src/components/layout/app-shell.tsx:97-99`; the doctrine `src/components/ui/toast.tsx:78-88` (F-218h) | **R-29** (the always-mounted sr-only region outside main; LoadingBlock becomes the visual only) |
+| F-232f | Low | **The a11y sanction register's bg-amber-500 arm is stale — a future white-on-amber regression would be auto-sanctioned.** The arm's cite describes "the active period chip (bg-amber-500 + white 12px)" — but since F-219a every live amber fill carries stone-900 ink: the PeriodSegment active chip is `from-amber-500 to-yellow-600 text-stone-900` (page-parts.tsx:220), the expenses filters badge `bg-amber-500 … text-stone-900` (expenses:298), the ai-coach user bubbles `bg-amber-500 text-stone-900` (ai-coach.tsx:122,133). All pass contrast outright; the arm can only ever fire on a future violating white-on-amber node — the exact defect the F-220p round articulated when it retired the text-amber-500 and bg-primary arms. | `tests/e2e/a11y.spec.ts:60-66`; the F-220p precedent `:28-50`; the ink census page-parts.tsx:220, expenses:298, ai-coach:122/133 | **R-29** (retire the arm with the F-220p comment form) |
+| F-232g | Low | **The upload capacity guard is a check-then-write race (TOCTOU).** The F-228f ceiling reads `uploadsCapacity()` then writes after multiple await boundaries (`file.arrayBuffer()`, `writeFile`) — concurrent uploads at (ceiling − ε) all pass the check before any write lands; up to (N−1) extra files (≤5 MB each) beyond 256 MB/4096 files. The per-window rate cap (20/15) bounds N; the guard's documented purpose is bounding drift, not an exact invariant — but the honest close is cheap. | `src/app/api/upload/route.ts:117-132` | **R-29** (re-read capacity after the write; unlink the just-written file + STORAGE_FULL on breach) |
+| F-232h | Low | **The low tail: four hygiene items.** (a) The accounts page imports `CURRENCIES` it never uses (line 23; lint-invisible — no-unused-vars is off); (b) `BrandMark`'s `compact` prop is a dead arm (one call site, never passed — the F-229f genus, prop edition); (c) three dead page-layout members: `SHELL_LAYOUT.sidebar` is bypassed by the sidebar's own literal (a latent divergence point), `MOBILE_NAV_SHEET.icon` and `PAGE_ROOT.bare` have zero references; (d) the analytics `exportCsv` revokes the object URL synchronously after `click()` — evergreen browsers initiate synchronously so it works, but the robust idiom defers the revoke. | `src/app/(app)/accounts/page.tsx:23`; `src/components/layout/sidebar.tsx:32,40-47`; `src/lib/page-layout.ts:8,68,140`; `src/app/(app)/analytics/page.tsx:158` | **R-29** (drop the import + the prop; consume SHELL_LAYOUT.sidebar in sidebar.tsx, retire the icon/bare members; defer the revoke) |
+| F-232i | Low | **`--color-line-strong` is pinned and dark-flipped but has zero utility consumers and no register entry.** One of the F-217c seven app-native tokens, pinned by tests/dark-tokens.test.ts:45 — but no `border-line-strong`/`bg-line-strong`/`text-line-strong` exists in src or tests. Unlike the F-224t reserved family (success/warning/info/-soft, danger-soft, chart-*) it carries no keep citation; it is two dead custom-property declarations pending a register-or-retire decision. | `src/app/globals.css:101` + `:394`; the register family `globals.css:114-129`; the pin `tests/dark-tokens.test.ts:45` | **R-29** (register in the F-224t reserved family with the citation — the semantic tier stays; retiring would need the dark-tokens pin change and removes a design-system tier the token architecture names) |
+| F-232j | Informational | **All fifteen page call sites subscribe to the whole store — no `useShallow` anywhere in src.** The bare `const store = useWealthOs()` form re-renders the mounted page on every `set()` (settings writes, loading/error transitions), drifting from the web-application skill §9 one-store/useShallow architecture. Mitigated in practice: `React.useMemo` derivations key on stable slice identities so chart data never recomputes, and mutations trigger `refreshAll` the page needs to see anyway. The migration is a wide mechanical edit (each page's full slice census + selector rewrite) — a dedicated round, not a rider. | `src/app/(app)/*/page.tsx` (15 sites); the split idiom `src/components/layout/app-shell.tsx:23-28` | recorded (the dedicated-round plan) |
+| F-232k | Informational | **The import commit has no idempotency/replay guard.** The 5000-row `createMany` carries no dedup/batch key — a replayed POST (a retrying middlebox, a duplicate tab) duplicates up to 5000 rows, visible and individually deletable. UI-side single-fire is guarded (`if (!rows \|\| busy) return;`); first-party fetch never auto-retries POSTs — the residual is retry-infrastructure only. An opaque client `batchId` on the rows (or a short-TTL body-hash replay cache) closes it if ever needed. | `src/app/api/import/route.ts:31-43`; the UI guard `src/app/(app)/import/page.tsx:154` | recorded (the batchId seam if replay ever bites) |
+| F-232l | Informational | **The first-user admin assignment is a count-then-write race — and `role` has no authorization consumer.** Two concurrent first signups on a fresh deploy can both read `count === 0` and both become admin. Zero impact today: `role` is stored and echoed (login, users GET/PATCH) but never checked for authorization anywhere in src (the only `.role ===` matches are AI-coach chat messages). When role ever gains authz weight, derive first-admin atomically (a unique singleton flag row or a transactional count) — or drop the unused dimension. | `src/app/api/auth/signup/route.ts:68,86` | recorded (inert until role gains weight) |
+| F-232m | Informational | **The CSP is frame-ancestors-only (no script-src).** The global header set is Referrer-Policy, nosniff, HSTS, and `Content-Security-Policy: frame-ancestors 'self'` — the documented deliberate posture (the reference's three-header edge set + the frame-ancestors superset; "headers are function, not visuals"). No injection surface was found in the Pass-B sweep; a nonce-based `script-src` (+ `object-src 'none'`, `base-uri 'self'`) is the defense-in-depth next step when the header posture is revisited. | `next.config.ts:103-126` | recorded (documented deliberate posture) |
+| F-232n | Informational | **The login-card logo docblock still narrates the retired construction ("the retired construction was a CSS bar-chart mark").** F-231l's pins target the "used to draw" phrasings and pass; this sentence describes the current construction's provenance — contextual history rather than a dead-contract docblock, but the same narrative genus F-231l pruned. | `src/components/layout/login-card.tsx:672-675` | recorded (optional trim in a future lockstep) |
+| F-232o | Informational | **The dialog.tsx "reintroduce WITH a consumer" comment predates the live between-footer pattern.** The retired DIALOG_FOOTER_WIDE constant's use-case is expressed live via the expenses call-site `sm:justify-between` override on the base DialogFooter (tailwind-merge resolves the conflict) — the sanctioned F-231h replacement pattern working as designed; the comment's scope (the constant) is accurate. | `src/components/ui/dialog.tsx:88-91` vs `src/app/(app)/expenses/page.tsx:644` | recorded (comment refresh optional) |
 
 ## 3. The remediation program (R-items)
 
@@ -3181,6 +3262,89 @@ custom.db untouched. The recorded tail (F-231m through
 F-231s) stays documented in the ledger above.
 
 
+### R-29 — The dead-stock retirement, carrier-net repair, and dialog-focus round (session 232) — Status: Done(v2.29.0)
+
+The session-232 fresh-eyes audit (three Mode-C passes over the
+R-28 cure surfaces driven by the session, the API/auth/security
+layer, and the UI/a11y/shell layer — 0 Critical / 0 High /
+0 Medium / 13 Low / 9 Informational raw, every material claim
+re-verified at file:line by the driving session; R-28's twelve
+pinned cures all verified holding). The cold baseline GREEN at
+HEAD — the v2.28.0 ship state reproduced exactly, no discovery
+this round.
+
+**R-29.1 — the pins born RED.** The parity-232 source pins
+(twenty checks across the nine cure surfaces — eighteen born RED
++ two green-by-design genus guards: the import-absence census and
+the live-family keep list): the four-file dead-stock retirement
+(each file absent + no ui import + the riders retired from
+page-layout); the carrier-net repair (no border-primary token
+anywhere in src; the parity-229 allowlist carries no compound whose
+parts include a dead utility; the globals.css comment names no
+hover-form); the expenses step-swap focus (the prevStepRef
+value-guard effect + the description-input ref + the heading
+tabIndex -1); the hamburger aria-controls + the drawer id; the
+always-mounted loading region (outside main, the F-218h form); the
+amber arm retirement; the upload post-write re-check (unlink on
+breach); the low tail (the CURRENCIES import, the BrandMark collapse
+arm, the SHELL_LAYOUT.sidebar consumption, the icon/bare
+retirements, the revoke defer); the line-strong registration. Plus
+ONE e2e leg born RED with the honest focus failure (the +$10
+quick-add leg extended with the two step-swap focus assertions —
+Expected focused, Received inactive at the pre-cure build, verified
+by the stash round-trip).
+
+**R-29.2 — the cures.** THE VENDORED DEAD-STOCK RETIREMENT
+(F-232a — card.tsx, table.tsx, label.tsx, input.tsx deleted;
+INPUT_BASE + DIALOG_TEXTAREA + CHECKBOX retired with them; the
+Event/Activity citation gone with its file; the F-230f pin block
+retired — its subject file no longer exists; the parity-228
+carriers list drops its table.tsx entry); THE CARRIER-NET REPAIR
+(F-232b — the tabs.tsx citation reworded to prose per F-229d, the
+PROSE_ALLOWLIST compound entry "border-primary/text-primary"
+REMOVED so the whole-tree invariant nets the genus, the
+globals.css danger-soft hover citation reworded); THE EXPENSES
+DIALOG STEP-SWAP FOCUS (F-232c — the value-guarded prevStepRef
+effect: quick→form focuses the description input, form→quick the
+Quick Select heading tabIndex -1; edit-open lands on the
+description input — the form IS the view; the initial open keeps
+Radix's natural focus — no transition, no fire); THE HAMBURGER
+ARIA-CONTROLS (F-232d — id="mobile-nav-drawer" on the sheet +
+aria-controls on the trigger, the expenses-filters precedent);
+THE ALWAYS-MOUNTED LOADING LIVE REGION (F-232e — the sr-only
+region renders unconditionally OUTSIDE main, empty when idle, the
+label swaps in on the loading flip; the LoadingBlock loses its
+aria attrs and becomes the visual only); THE STALE AMBER ARM
+RETIREMENT (F-232f — the bg-amber-500 arm retires with the
+F-220p comment form: every live amber fill carries stone-900 ink
+since F-219a); THE UPLOAD CAPACITY POST-WRITE RE-CHECK (F-232g —
+re-read capacity after the write; on breach unlink the just-
+written file and answer STORAGE_FULL — the TOCTOU window closes
+to a single write's overshoot, then self-corrects); the low tail
+(F-232h — the CURRENCIES import dropped, the BrandMark compact
+arm dropped, the sidebar consumes SHELL_LAYOUT.sidebar,
+MOBILE_NAV_SHEET.icon + PAGE_ROOT.bare retired, the exportCsv
+revoke deferred); THE LINE-STRONG REGISTRATION (F-232i — the
+token joins the F-224t reserved register with its citation).
+
+**R-29.3 — the verification.** The full offline gate: lint
+0/0 · tsc 0 · **1254 unit (79 files, +19: +20 parity-232 − the
+retired F-230f block)** · build · smoke 15/15 · **139 e2e** (the
+step-swap focus assertions extend the existing +$10 quick-add leg —
+the check count unchanged). ALL SIX parity drift gates CLEAN at
+0-event margin (the four sweep classes 1440/390/768/1024 + the
+fullpage sweep + the interior census — every cure visually inert
+or attribute-only by construction). census MATCH; `bun audit`
+unchanged (the 1 moderate dev-chain minimatch, the documented
+deferral). The parity-229 whole-tree carrier invariant holds over
+the post-retirement tree — and CAUGHT the round's own recursive
+genus twice more (the retirement comments themselves named the
+retired identifiers and the utility forms; reworded per the F-229d
+discipline — the net has now caught the genus five times across
+three sessions). The captures and the docs lockstep per the
+standing rhythm; the recorded tail (F-232j through F-232o) stays
+documented in the ledger above.
+
 ## 5. Execution history
 
 | Version | Session | R-items executed | Gate at ship | Commit |
@@ -3217,6 +3381,7 @@ F-231s) stays documented in the ledger above.
 | v2.26.0 | 229 | **R-26** (the empty-state repair and dead-carrier retirement round): the cold baseline GREEN at the v2.25.0 ship state (lint 0/0 · tsc 0 · 1192/1192 unit (75 files) · build · smoke 15/15 · 137/137 e2e · census MATCH); the standing asks re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing); the fresh-eyes audit (three Mode-C passes → 0 Critical / 0 High / 1 Medium / 6 Low / 5 Informational raw, every claim re-verified; two claims ADJUDICATED INVERTED by live probes; the whole-tree scan grew the audit's nine dead carriers to thirty); the plan v2.26.0 written and validated. **R-26.1** the pins born RED (16 parity-229 source pins; the finance design-input pin green at birth; the e2e leg RED with the honest flat-chart failure) → **R-26.2** the cures (the Income-tab gate F-229a; the budgets P2002 arm F-229b; the seed UTC-midnight staging F-229c; the ~28-site carrier retirement F-229d; the dialog docblock truth F-229e; the dead-API retirement F-229f; the search note F-229h; the hygiene pass F-229j) + two legitimate pin recalibrations (parity-226's pill arm; docs-counts) → **R-26.3** the verification: lint 0/0 · tsc 0 · **1211 unit (76 files, +19)** · build · smoke 15/15 · **138 e2e (+1 — the Income empty-state leg)** · THE CSS SENTINEL PROBE (all 30 dead selectors leave the built stylesheet — 103,673 → 100,431 bytes — every live form stays) · ALL SIX drift gates CLEAN · census MATCH after the reseed (78 transactions, the today-edge inside the 54..108 bounds) · `bun audit` unchanged | lint 0/0 · tsc 0 · **1211 unit (76 files)** · build · smoke 15/15 · **138 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.27.0 | 230 | **R-27** (the register-and-hygiene round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD — the v2.26.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-230 fresh-eyes audit (three Mode-C passes: the R-26 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 2 Medium / 4 Low / 5 Informational raw, every material claim re-verified at file:line by the driving session; TWO claims adjudicated by live reference probes — the StatCard genus CONFIRMED (probe-230c: the reference's own Avg Monthly tiles carry the identical saturated gradients + minus-100 labels + white bold values) and the Cash Flow zero-data claim INVERTED (probe-230: the reference's own card renders four recharts surfaces unconditionally at its standing zero demo data — our unconditional render IS the genus); the Pass B findings re-derived the recorded tail (F-217m/F-215m/F-218t/F-224k) without new information). The plan v2.27.0 written (the F-230a-h ledger + the R-27 section) and validated against the tree. **R-27.1** the pins born RED (7 parity-230 checks — six RED: the StatCard register entry, the toDate tidy, the phantom-comment retirement, the ai-coach message-id keys ×2, the CARD_TITLE_OVERRIDE truth; one green-by-design genus guard) → **R-27.2** the cures: THE STATCARD REGISTER ENTRY (F-230a — the F-224y-form note on the analytics StatCard docblock, all three arms measured 2.24:1 / 3.08:1 / 3.01:1 + the white-value note, the genus citation probe-230c; NO visual change — a recolor would deviate from parity); THE LASTSYNCEDAT TODATE TIDY (F-230c — accounts:171 routes through toDate, behavior-identical); THE PHANTOM-BREAKPOINT COMMENT REWORDS (F-230d — the two F-207a-history quotes reworded to prose); THE AI-COACH MESSAGE-ID KEYS (F-230e — the model gains an id, a module-level counter mints at the three construction sites (a ref counter trips react-hooks/refs — the greeting consumes the mint DURING render; the module form is the sanctioned mint), the list keys by message.id; the import preview + OTP boxes documented as index-identity); THE CARD_TITLE_OVERRIDE TRUTH (F-230f) → **R-27.3** the verification: lint 0/0 · tsc 0 · **1218 unit (77 files, +7)** · build · smoke 15/15 · **138 e2e** (no new leg — every cure visually inert or comment-only by construction) · ALL SIX drift gates CLEAN · census MATCH · `bun audit` unchanged; the recorded-not-cured tail stays documented (F-230b the inverted Cash Flow adjudication, F-230g the pre-auth fetch standing, F-230h the clean-surface records) | lint 0/0 · tsc 0 · **1218 unit (77 files)** · build · smoke 15/15 · **138 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.28.0 | 231 | **R-28** (the a11y-tail, logging-grain, and dead-family round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD — the v2.27.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-231 fresh-eyes audit (three Mode-C passes: the R-27 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 0 Medium / 8 Low / 12 Informational raw, every material claim re-verified at file:line by the driving session; ONE claim adjudicated by live probes + a bundle grep — the Analytics day-of-week card is OUR OWN SUPERSET (probe-231/b/c: no such card on any of the reference's four Analytics tabs at its standing zero demo data, and the reference bundle carries no such string — the amber fill was a palette mis-assignment, never parity); the two Pass-B Lows adjudicated as AUDIT-BRIEF CONTRACT-TEXT ERRORS (F-231s — the uploads GET public capability-URL posture and the forgot 10/15 bucket are the recorded contracts; the code matches them)). The plan v2.28.0 written (the F-231a-s ledger + the R-28 section) and validated against the tree. **R-28.1** the pins born RED (the parity-231 source pins — the glyph aria-hidden, the heading-focus effect + h1 tabIndex arms, the z-50 re-pin, the icons.tsx retirement, the N-89c6 relocation, the TrendingDown symmetry, the day-of-week fill, the expenses memo, the peer retirement, the docblock fold, the multipart log, the ENOENT gate, the dead-family absence, the citation reword; one e2e leg RED with the honest focus-failure) → **R-28.2** the cures: THE EXPENSES DIALOG GLYPH HIDING (F-231a); THE AUTH-CARD VIEW-SWAP FOCUS (F-231b — mount-guarded heading focus on every transition, the verify box-1 pattern preserved); THE DROPDOWNCONTENT Z-PIN (F-231c); THE ICONS.TSX RETIREMENT (F-231d — the N-89c6 note relocated); THE DAY-OF-WEEK FILL (F-231e — CHART_COLORS.expenses, drift-inert by construction); THE UPLOAD MULTIPART LOG (F-231f); THE UPLOADS GET ENOENT GATE (F-231g); THE CRM-ERA DEAD-FAMILY RETIREMENT (F-231h — DialogFooterWide, DIALOG_FOOTER_WIDE, DIALOG_CONTENT.wide, Avatar/initialsOf; the Event/Activity citations reworded; the F-227f register keeps the shadcn-stock arms); the low tail (F-231i-l) → **R-28.3** the verification: lint 0/0 · tsc 0 · **1235 unit (78 files, +17)** · build · smoke 15/15 · **139 e2e (+1 — the view-swap focus leg)** · ALL SIX drift gates CLEAN · census MATCH · `bun audit` unchanged; the whole-tree carrier invariant caught the round's own recursive genus twice (both reworded); the capture set 134-136 verified in-DOM with the census tripwire MATCH; the recorded tail stays documented (F-231m-s) | lint 0/0 · tsc 0 · **1235 unit (78 files)** · build · smoke 15/15 · **139 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
+| v2.29.0 | 232 | **R-29** (the dead-stock retirement, carrier-net repair, and dialog-focus round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD — the v2.28.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-232 fresh-eyes audit (three Mode-C passes: the R-28 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 0 Medium / 13 Low / 9 Informational raw, every material claim re-verified at file:line by the driving session; R-28's twelve pinned cures all verified holding — the F-231b guards StrictMode-idempotent, the F-231h family intact, the token system mechanically airtight, the z-layer map and portal exclusions standing; no adjudications this round — every claim confirmed as-found). The plan v2.29.0 written (the F-232a-o ledger + the R-29 section) and validated against the tree. **R-29.1** the pins born RED (the parity-232 source pins — twenty checks, eighteen RED + two green-by-design genus guards; one e2e leg RED with the honest focus failure — Expected focused, Received inactive, verified by the stash round-trip) → **R-29.2** the cures: THE VENDORED DEAD-STOCK RETIREMENT (F-232a — card/table/label/input.tsx + the INPUT_BASE/DIALOG_TEXTAREA/CHECKBOX riders + the surviving Event/Activity citation + the F-230f pin retirement + the parity-228 carriers-list recalibration); THE CARRIER-NET REPAIR (F-232b — the tabs citation reworded, the PROSE_ALLOWLIST compound entry REMOVED, the globals comment reworded); THE EXPENSES DIALOG STEP-SWAP FOCUS (F-232c — the prevStepRef value-guard effect); THE HAMBURGER ARIA-CONTROLS (F-232d); THE ALWAYS-MOUNTED LOADING LIVE REGION (F-232e — outside main, the F-218h form; the parity-224 F-224aa pin re-anchored to the new seam); THE STALE AMBER ARM RETIREMENT (F-232f); THE UPLOAD CAPACITY POST-WRITE RE-CHECK (F-232g — unlink on breach); the low tail (F-232h); THE LINE-STRONG REGISTRATION (F-232i) → **R-29.3** the verification: lint 0/0 · tsc 0 · **1254 unit (79 files, +19)** · build · smoke 15/15 · **139 e2e** (the focus assertions extend the +$10 quick-add leg) · ALL SIX drift gates CLEAN · census MATCH · `bun audit` unchanged; the whole-tree carrier invariant caught the round's own recursive genus twice more (the retirement comments named the retired identifiers; reworded — five catches across three sessions); the captures verified in-DOM with the census tripwire MATCH; the recorded tail stays documented (F-232j-o) | lint 0/0 · tsc 0 · **1254 unit (79 files)** · build · smoke 15/15 · **139 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 
 > The next iteration session (231) has **no open R-item by default** —
 > the R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8

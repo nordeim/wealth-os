@@ -16,6 +16,73 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.29.0 (session 232, R-29 — the dead-stock retirement,
+  carrier-net repair, and dialog-focus round): the fresh-eyes audit
+  (three Mode-C passes — the R-28 cure surfaces driven by the
+  session, the API/auth/security layer, and the UI/a11y/shell
+  layer; 0 Critical / 0 High / 0 Medium / 13 Low / 9 Informational
+  raw, every material claim re-verified at file:line, R-28's
+  twelve pinned cures all verified holding — the F-231b guards
+  StrictMode-idempotent, the F-231h family intact, the token
+  system mechanically airtight, no adjudications — every claim
+  confirmed as-found; the cold baseline GREEN at HEAD — the
+  v2.28.0 ship state reproduced exactly, no discovery this
+  round; the reference STABLE on all standing layers with the
+  TRUE-390 mobile menu re-verified by probe:ref; `bun audit`
+  unchanged; neo-crm upstream unchanged). THE VENDORED
+  DEAD-STOCK RETIREMENT (F-232a Low): card.tsx, table.tsx,
+  label.tsx, and input.tsx — four zero-consumer shadcn-stock
+  files with no KEEP register entry — retired per the F-231h
+  Avatar precedent, with their page-layout riders (the input
+  base map, the dialog textarea, the checkbox kit) and the
+  surviving Event/Activity citation; the F-230f pin retired
+  with its subject file, the parity-228 carriers list
+  recalibrated. THE CARRIER-NET REPAIR (F-232b Low): the
+  tabs.tsx border-primary citation reworded per F-229d AND the
+  parity-229 PROSE_ALLOWLIST compound entry that hid the dead
+  utility behind its live sibling REMOVED — the allowlist is
+  not a carrier sanctuary; the globals.css danger-soft hover
+  citation reworded to the token-naming form. THE EXPENSES
+  DIALOG STEP-SWAP FOCUS (F-232c Low): the F-231b genus on the
+  app's highest-traffic dialog — the value-guarded prevStepRef
+  effect lands focus on the description input (quick→form, the
+  prefilled chip path, edit-mode opens) and the Quick Select
+  heading (form→quick, tabIndex -1); the initial create-mode
+  open keeps Radix's natural focus; e2e-proven RED→GREEN (the
+  honest Expected-focused/Received-inactive failure at the
+  pre-cure build). THE HAMBURGER ARIA-CONTROLS (F-232d Low):
+  the drawer sheet gains id="mobile-nav-drawer" and the
+  trigger aria-controls — the expenses-filters precedent. THE
+  ALWAYS-MOUNTED LOADING LIVE REGION (F-232e Low): the F-218h
+  genus — the region pre-exists in the a11y tree OUTSIDE main
+  (the census-safe placement, the toast viewport precedent),
+  empty when idle, the label swapping in on the loading flip;
+  LoadingBlock becomes the sighted-user visual only; the
+  parity-224 F-224aa pin re-anchored to the new seam. THE
+  STALE AMBER ARM RETIREMENT (F-232f Low): the bg-amber-500
+  axe sanction arm retires per the F-220p precedent — every
+  live amber fill carries stone-900 ink since F-219a. THE
+  UPLOAD CAPACITY POST-WRITE RE-CHECK (F-232g Low): the TOCTOU
+  cure — each writer re-reads the settled capacity after the
+  write and unlinks its own just-written file on breach
+  (STORAGE_FULL). The low tail (F-232h): the unused CURRENCIES
+  import, the BrandMark collapse arm, the SHELL_LAYOUT.sidebar
+  consumption (the sidebar's duplicate literal retired), the
+  icon/bare page-layout member retirements, the exportCsv
+  revoke defer. THE LINE-STRONG REGISTRATION (F-232i): the
+  strongest-hairline token joins the F-224t reserved register
+  with its citation — pinned, flipped, deliberately unwired.
+  Verification: lint 0/0 · tsc 0 · 1254 unit (79 files, +19)
+  · build · smoke 15/15 · 139 e2e (the focus assertions extend
+  the +$10 quick-add leg) · all six parity drift gates CLEAN
+  at 0-event margin · census MATCH; the whole-tree carrier
+  invariant caught the round's own recursive genus twice more
+  (the retirement comments named the retired identifiers).
+  Recorded, not cured: the whole-store subscription idiom
+  (F-232j — a dedicated round), the import replay guard
+  (F-232k), the first-admin count race (F-232l — role is
+  inert), the CSP posture (F-232m), the login-card logo
+  narration (F-232n), the between-footer comment (F-232o).
 - [SR] v2.28.0 (session 231, R-28 — the a11y-tail,
   logging-grain, and dead-family round): the fresh-eyes audit
   (three Mode-C passes — the R-27 cure surfaces driven by the
@@ -954,7 +1021,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1235) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1254) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (139) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -1375,9 +1442,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 78 | 1235 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 79 | 1254 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 3 | (finance, ai, schemas-finance) | `tests/finance|ai|schemas-finance.test.ts` | property + example based |
-| — architecture pins | 50 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231) | `tests/` | source-scanning contracts |
+| — architecture pins | 51 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232) | `tests/` | source-scanning contracts |
 | — infrastructure | 25 | auth, rate-limit, csv, uploads, headers, boot-env, search-query, store-logout, … | `tests/` | behavior |
 | E2E | 7 | 139 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -1410,7 +1477,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1235/1235 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1254/1254 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 139/139
@@ -1480,7 +1547,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1235 unit / 139 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1254 unit / 139 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -1515,7 +1582,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1235 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1254 unit · build · smoke 15/15 ·
 138 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

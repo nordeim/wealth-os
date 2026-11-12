@@ -155,7 +155,11 @@ export default function AnalyticsPage() {
     a.href = url;
     a.download = csvFilename("wealthos-analytics");
     a.click();
-    URL.revokeObjectURL(url);
+    // Session-232 (R-29, F-232h): the revoke defers to the next task —
+    // evergreen browsers initiate the download synchronously so the
+    // immediate form works, but the robust idiom (MDN's) lets the
+    // click's navigation settle before the URL dies.
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   return (

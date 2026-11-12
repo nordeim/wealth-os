@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1235) | `bun run test` |
+| Unit tests (1254) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 139) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -434,7 +434,15 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   class-shaped comment token must be live code or on the prose
   allowlist) — a fixed carrier list can never outrun the genus (the
   R-25 pin listed eight tokens; the whole-tree diff found thirty
-  more).
+  more). Session 232 (R-29, F-232b) — the ALLOWLIST EDITION: a
+  compound allowlist entry ("border-primary/text-primary") can hide
+  a DEAD utility behind its live sibling — the invariant passed while
+  the comment was the sole carrier emitting the dead rule. A compound
+  entry is only honest when EVERY part is live or visibly
+  not-a-class; the round also re-learned the retirement-notes lesson
+  twice more (the retirement comments themselves named the retired
+  identifiers and the utility forms — five invariant catches across
+  three sessions now; retirement notes describe, they never cite).
 - **The e2e battery's SIGNUP budget sits exactly at its cap — count
   the suite's signups before adding a leg** (session 229, F-229a's
   leg design): the signup bucket is 10/IP/15min and the battery

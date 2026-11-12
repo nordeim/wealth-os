@@ -103,12 +103,8 @@ describe("F-230e — the ai-coach message list keys by a minted id", () => {
   });
 });
 
-// ---- F-230f: the card.tsx docblock truth ----------------------------------
-
-describe("F-230f — the card.tsx title docblock names the real mechanism", () => {
-  it("no phantom CARD_TITLE_OVERRIDE citation; the className override is named", () => {
-    const src = read("src/components/ui/card.tsx");
-    expect(src).not.toContain("CARD_TITLE_OVERRIDE");
-    expect(src).toMatch(/className override/i);
-  });
-});
+// ---- F-230f: retired at session 232 (F-232a) ------------------------------
+// card.tsx was a zero-consumer vendored stock file and retired with the
+// F-232a dead-stock round; its docblock-truth pin (born over the live
+// file) retired with the subject. The retirement itself is pinned in
+// tests/parity-232.test.ts.

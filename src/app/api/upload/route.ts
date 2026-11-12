@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { writeFile } from "fs/promises";
+import { unlink, writeFile } from "fs/promises";
 import { join } from "path";
 import { ERR, isGuarded, logApiError, ok, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -130,6 +130,22 @@ export async function POST(request: Request) {
     const name = `${randomUUID().replace(/-/g, "")}.${ext}`;
     const bytes = Buffer.from(await file.arrayBuffer());
     await writeFile(join(uploadsDir(), name), bytes);
+
+    // Session-232 (R-29, F-232g): the POST-WRITE re-check — the
+    // check-then-write race cured. Concurrent in-flight uploads at
+    // (ceiling − ε) all passed the pre-write guard above before any
+    // write landed; each writer now re-reads the settled capacity and
+    // unlinks its own just-written file when the pair breached — the
+    // overshoot closes to a single write's duration, fail-closed, and
+    // the next request still sees an honest ceiling.
+    const settled = uploadsCapacity(uploadsDir());
+    if (
+      settled.files > MAX_UPLOAD_FILES ||
+      settled.bytes > MAX_UPLOADS_TOTAL_BYTES
+    ) {
+      await unlink(join(uploadsDir(), name));
+      return ERR.STORAGE_FULL();
+    }
 
     return ok({ file_url: `/api/uploads/${name}` });
   } catch (error) {

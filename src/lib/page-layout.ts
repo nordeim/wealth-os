@@ -65,7 +65,6 @@ export const MOBILE_NAV_SHEET = {
   // re-verified live at full class length (session 207).
   linkActive:
     "flex items-center gap-3 px-4 py-4 rounded-xl font-medium transition-all duration-200 bg-gradient-to-r from-amber-500/20 to-emerald-600/20 text-amber-200 shadow-lg border border-amber-400/30",
-  icon: "w-6 h-6",
   label: "text-lg",
   // Session-207 (F-207d): the reference's drawer footer — a bordered
   // band under the nav, with the ghost Sign Out (slate border,
@@ -137,7 +136,9 @@ export const PAGE_ROOT = {
   containerWide: "max-w-7xl mx-auto space-y-6",
   containerMid: "max-w-6xl mx-auto space-y-6",
   containerNarrow: "max-w-4xl mx-auto space-y-6",
-  bare: "",
+  // Session-232 (R-29, F-232h): the bare member retired — zero
+  // references (the F-229f re-entry rule); MOBILE_NAV_SHEET's icon
+  // member retired with it in the same round.
 } as const;
 
 /** The in-page card genera — session-209 (F-209a, R-7.10): the reference
@@ -315,18 +316,11 @@ export const DIALOG_CLOSE =
   // resting / 300 hover mirror keeps the affordance rising in both modes.
   "absolute right-4 top-4 rounded-md text-stone-500 transition-colors hover:text-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none dark:text-stone-400 dark:hover:text-stone-300" as const;
 
-export const INPUT_BASE = {
-  size: "text-base md:text-sm",
-  bg: "bg-transparent",
-  ink: "text-ink",
-  placeholder: "placeholder:text-muted-ink",
-  transition: "transition-colors",
-  focusRing: "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-  file: "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
-} as const;
-
-export const DIALOG_TEXTAREA =
-  "flex min-h-[60px] w-full rounded-md border border-line bg-transparent px-3 py-2 text-base md:text-sm text-ink shadow-sm transition-colors placeholder:text-muted-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+// Session-232 (R-29, F-232a): the three input-family constants here
+// (the input base map, the dialog textarea, the checkbox kit) retired
+// with the vendored input/label stock — zero consumers after the file
+// retirement (the F-231h Avatar precedent, the F-229f re-entry rule;
+// reintroduce WITH a consumer).
 
 export const SELECT_TRIGGER = {
   base: "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-line bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background",
@@ -354,14 +348,6 @@ export const MENU_CONTENT =
 
 export const MENU_ITEM =
   "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-2 text-sm outline-none transition-colors focus:bg-stone-100 focus:text-stone-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-stone-800 dark:focus:text-stone-100" as const;
-
-export const CHECKBOX = {
-  control:
-    "peer h-4 w-4 shrink-0 rounded border border-stone-300 text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 dark:border-stone-600",
-  indicator: "flex items-center justify-center text-current",
-  row: "flex items-start space-x-2",
-  label: "text-sm leading-none font-medium text-stone-700 dark:text-stone-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-} as const;
 
 export const TABS_SEGMENTED = {
   // Session-199: the inactive arm rides stone-600 (5.4:1 on the stone-100

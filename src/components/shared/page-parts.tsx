@@ -228,16 +228,18 @@ export function PeriodSegment({
   );
 }
 
-/** Loading skeleton block. Session-224 (R-21, F-224aa): the polite
- * live region — the loading gate announces itself to SR users (the
- * banner and toasts already carry their own announcements). */
+/** Loading skeleton block — the sighted-user surface. Session-224
+ * (R-21, F-224aa) made it a polite live region; session 232 (R-29,
+ * F-232e) moved the announcement to the always-mounted sr-only region
+ * in app-shell (the F-218h genus) — this block is the visual only. */
 export function LoadingBlock({ label = "Loading…" }: { label?: string }) {
+  // Session-232 (R-29, F-232e): the visual surface only. The polite
+  // announcement moved to the ALWAYS-MOUNTED sr-only live region in
+  // app-shell (the F-218h genus: a live region that arrives with its
+  // content is not announced — the region must pre-exist in the a11y
+  // tree, empty when idle, the label swapping in on the flip).
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="flex min-h-40 items-center justify-center p-8"
-    >
+    <div className="flex min-h-40 items-center justify-center p-8">
       <p className="text-sm text-stone-500 dark:text-stone-400">{label}</p>
     </div>
   );

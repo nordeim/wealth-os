@@ -57,13 +57,13 @@ const SANCTIONED: Record<string, Array<{ any: string[]; cite: string }>> = {
       any: ["from-emerald-500", "from-rose-500"],
       cite: "the per-page CTA gradient genera — the reference's own measured palette (F-219b)",
     },
-    {
-      // the ACTIVE period chip (bg-amber-500 + white 12px) — the
-      // reference's own segmented control genus (live-observed: the 6M
-      // chip renders amber with white text)
-      any: ["bg-amber-500"],
-      cite: "the active period chip — the reference's own palette",
-    },
+    // Session-232 (R-29, F-232f): the amber-500 FILL arm RETIRED —
+    // zero live white-on-amber consumers since F-219a (every amber
+    // fill carries stone-900 ink: the active period chip rides the
+    // amber→yellow gradient with stone-900, the expenses filters badge
+    // and the ai-coach user bubbles pair the fill with stone-900).
+    // A stale arm auto-sanctions a future white-on-amber regression —
+    // the F-220p class.
     {
       // the muted micro-captions (the % funded, the synced pill)
       any: ["text-stone-400", "text-stone-500"],

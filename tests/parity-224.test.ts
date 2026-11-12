@@ -77,10 +77,15 @@ describe("F-224p — global-error.tsx carries the dark arms (the third resilienc
 // ---- F-224aa: the loading gate announces; the error face has a landmark ------
 
 describe("F-224aa — LoadingBlock announces; the error face regains <main>", () => {
-  it("LoadingBlock carries role=status + aria-live=polite", () => {
-    const src = read("src/components/shared/page-parts.tsx");
-    expect(src).toMatch(/role="status"/);
-    expect(src).toMatch(/aria-live="polite"/);
+  // Session-232 (R-29, F-232e): the announcement moved — a live region
+  // that ARRIVES with its content is not announced (the F-218h genus),
+  // so the role/status div left LoadingBlock (now the visual only) for
+  // the ALWAYS-MOUNTED sr-only region in app-shell, outside main. The
+  // contract stands, at its new seam; pinned in parity-232.
+  it("the shell's always-mounted region carries role=status + aria-live=polite", () => {
+    const shell = read("src/components/layout/app-shell.tsx");
+    expect(shell).toMatch(/role="status"/);
+    expect(shell).toMatch(/aria-live="polite"/);
   });
 
   it("the error boundary card renders inside a <main> landmark", () => {

@@ -98,6 +98,17 @@
   --color-secondary: #f5f5f5;
 
   --color-line: #e7e5e4;
+  /* Session-232 (R-29, F-232i): the strongest hairline joins the
+     reserved register — one of the F-217c seven app-native tokens,
+     pinned and flipped for dark mode (tests/dark-tokens.test.ts) with
+     zero UTILITY consumers today (no border, background, or ink arm
+     rides the token anywhere in src or tests). The tier stays: it is
+     the design system's strongest hairline step, the visible sibling
+     of the subtlest one — retiring it would amputate a semantic tier
+     the token architecture names; a future consumer re-wires it with
+     zero re-derivation. The F-224t reserved family's doctrine
+     applies: pin-enumerated, flipped for dark mode, and deliberately
+     unwired. */
   --color-line-strong: #d6d3d1;
   --color-line-soft: #f5f5f4;
 
@@ -405,10 +416,12 @@
      sibling subtle retired session 228 (F-228b — zero consumers). */
   --color-muted: #a8a29e;
   /* Session-224 (R-21, F-224q): the reserved danger-soft flips too —
-     the DropdownItem destructive hover (hover:bg-danger-soft) would
-     paint a near-white chip on any dark popover surface (the F-222k
-     latent-arm class: a token consumed by a stock primitive that has
-     not yet rendered in dark). */
+     the DropdownItem destructive hover paints the danger-soft token
+     and would render a near-white chip on any dark popover surface
+     (the F-222k latent-arm class: a token consumed by a stock
+     primitive that has not yet rendered in dark). Session-232
+     (R-29, F-232b): the citation now names the token, not the
+     utility form — the F-224v comment doctrine. */
   --color-danger-soft: #3f1d1d;
 }
 

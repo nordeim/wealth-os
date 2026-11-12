@@ -124,7 +124,10 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
   if (!open) return null;
 
   return (
-    <div className={MOBILE_NAV_SHEET.content} role="dialog" aria-label="WealthOS navigation">
+    // Session-232 (R-29, F-232d): the id anchors the header hamburger's
+    // aria-controls — the expenses-filters precedent (the reference is
+    // dangling while the sheet is unmounted, benign per the ARIA model).
+    <div id="mobile-nav-drawer" className={MOBILE_NAV_SHEET.content} role="dialog" aria-label="WealthOS navigation">
       <DrawerNav onNavigate={() => onOpenChange(false)} />
     </div>
   );

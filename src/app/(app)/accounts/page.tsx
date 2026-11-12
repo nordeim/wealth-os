@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { EmptyState, PageHeader } from "@/components/shared/page-parts";
 import { useWealthOs } from "@/stores/wealthos-store";
-import { ACCOUNT_TYPES, CURRENCIES } from "@/lib/constants";
+import { ACCOUNT_TYPES } from "@/lib/constants";
 import { formatMoney, toDate } from "@/lib/finance";
 import { CARD, PAGE_ROOT, STOCK_CARD, CTA } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
