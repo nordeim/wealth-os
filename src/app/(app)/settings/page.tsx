@@ -30,7 +30,8 @@ import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
 // Session-208 (F-208d, the F-205b second half): the settings page carries
-// the reference's OWN glass-card genus — border-0 white/80 backdrop-blur
+// the reference's OWN glass-card genus — border-0 white/80 frosted-glass
+// (blur wash)
 // + shadow-lg cards with the shadcn CardHeader/CardTitle/CardContent
 // anatomy and the navy CardTitle token — plus its blue GDPR accents (the
 // blue box + the blue Export button) and the amber import box INSIDE a

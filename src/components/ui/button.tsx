@@ -8,16 +8,17 @@ import { cn } from "@/lib/utils";
 
 // Session-82 (M-82c1): the reference's stock Button base (the bundle's
 // uie, decoded verbatim) carries NO svg-margin arms — its icon-text
-// spacing rides EACH SURFACE'S OWN svg margin class (mr-2 on the
-// header/export family = the 16px icon-text gap s9 measured; mr-1 on
-// the compact family — the slide-over actions, the mobile cards, the
-// Check-as-completed ghost). The s9 iconGap invention
-// ([&_svg]:mr-2 + [&_svg:only-child]:mr-0) retired: its cascade
+// spacing rides EACH SURFACE'S OWN svg margin class (a 16px margin on
+// the header/export family = the 16px icon-text gap s9 measured; a
+// 4px margin on the compact family — the slide-over actions, the
+// mobile cards, the Check-as-completed ghost). The s9 iconGap
+// invention (a per-svg 8px margin pair with a zero-margin only-child
+// override) retired: its cascade
 // nullified every per-surface svg margin on svg+bare-text buttons
-// (the only-child mr-0 at (0,2,1) beat the svg's own (0,1,0)
+// (the only-child override at (0,2,1) beat the svg's own (0,1,0)
 // classes — LIVE-measured 0px where the reference computes 4/8px).
-// Focus rings are 1px near-black (`ring-ring`, --color-ring =
-// #0a0a0a).
+// Focus rings are 1px near-black (the ring token,
+// --color-ring = #0a0a0a).
 const buttonVariants = cva(
   cn(
     // Session-13 (S13-P3): rounded-md — the reference renders 6px radius
@@ -52,7 +53,7 @@ const buttonVariants = cva(
         // literal — live-walked two-app on the accounts rail's Save All
         // ghost (@1440): our hover computed rgb(10,10,10)
         // (hover:text-foreground) where the reference computes
-        // rgb(23,23,23) — its stock ghost's accent-foreground hover ink
+        // rgb(23,23,23) — its stock ghost's accent hover ink
         // #171717. The F-128c1/F-129c3 value pair on the ghost variant
         // (s128 the menu-item ink · s129 the outline hover text · s130
         // the ghost hover text); the s80 badge precedent.
@@ -61,8 +62,8 @@ const buttonVariants = cva(
         ghost: "hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50",
         // Session-129 (F-129c2): the destructive hover is the ALPHA form —
         // live-walked on the Danger Zone reset (both viewports): ours
-        // computed the SOLID darker step rgb(220,38,38) (the old
-        // hover:bg-red-600) where the reference computes
+        // computed the SOLID darker step rgb(220,38,38) (the old solid
+        // red-600 hover) where the reference computes
         // rgba(239,68,68,0.9) — its destructive at 90% ALPHA. The M-80c1
         // genus (the s80 Save precedent: the reference's hovers are the
         // /90 alpha form, never the solid darker step).
@@ -79,9 +80,9 @@ const buttonVariants = cva(
         // Data-tab template button + the profile Upload Photo, both
         // viewports): our hover text stayed rgb(10,10,10) (text-foreground,
         // no hover arm) where the reference computes rgb(23,23,23) — its
-        // stock outline's accent-foreground hover ink #171717. The
-        // F-128c1 value pair; the s80 badge precedent expresses its
-        // accent-foreground as our neutral-900 literal.
+        // stock outline's accent hover ink #171717. The
+        // F-128c1 value pair; the s80 badge precedent expresses that
+        // accent pair ink as our neutral-900 literal.
         outline: "border border-line bg-surface text-foreground shadow-sm hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50",
         link: "text-primary underline-offset-4 hover:underline",
       },

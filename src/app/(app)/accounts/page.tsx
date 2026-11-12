@@ -52,7 +52,7 @@ export default function AccountsPage() {
     <div className={PAGE_ROOT.standard}>
       <div className={PAGE_ROOT.containerMid}>
         <PageHeader
-        tone="navy"
+          tone="navy"
           title="My Accounts"
           subtitle="Manage your connected bank accounts"
           actions={

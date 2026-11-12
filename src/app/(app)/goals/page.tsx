@@ -49,7 +49,7 @@ export default function GoalsPage() {
     <div className={PAGE_ROOT.standard}>
       <div className={PAGE_ROOT.containerMid}>
         <PageHeader
-        tone="navy"
+          tone="navy"
           title="Savings Goals"
           subtitle="Set and track your financial objectives"
           actions={

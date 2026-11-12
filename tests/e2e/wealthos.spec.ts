@@ -6,6 +6,8 @@ import { e2ePort } from "./e2e-port";
 // two-step dialog), capital/lowercase route equivalence, and the
 // AI Coach modal.
 
+const BASE = `http://localhost:${e2ePort()}`;
+
 test.describe("section navigation", () => {
   const sections: Array<[string, string, string]> = [
     ["/Dashboard", "Financial Dashboard", "Financial Dashboard"],
@@ -613,5 +615,35 @@ test.describe("the per-casing route metadata (F-226b)", () => {
   test("/Dashboard keeps the ROOT head (the reference's own posture — the bare title)", async ({ page: p }) => {
     await p.goto("/Dashboard");
     await expect(p).toHaveTitle("WealthOS");
+  });
+});
+
+// Session-229 (R-26, F-229a — the Income tab's empty-state repair): the
+// F-219r gate read `incomeTrend.length === 0`, but categoryTrend
+// unconditionally returns one zero point per month — the empty state was
+// structurally unreachable and a zero-income viewer saw a flat all-zero
+// chart. This leg drives the REAL zero-income state on the demo session:
+// a from/to range BEFORE the seeded corpus's first row (the seed never
+// writes the past beyond six months) empties the range domain the gate
+// reads. No scratch signup — the battery's signup budget sits exactly at
+// its documented 10/15min cap (the F-223k login-budget lesson applies to
+// signups; the two ORIGIN-template signups in this file + auth.spec's
+// five + multi-user's + data-import's = 10).
+test.describe("the Analytics Income tab empty state (F-229a)", () => {
+  test("a zero-income range shows the empty state, not a flat chart", async ({ page }) => {
+    await page.goto("/Analytics");
+    await expect(page.getByRole("heading", { name: "Analytics & Reports", exact: true })).toBeVisible();
+    // A range entirely before the corpus — no rows, income or otherwise.
+    await page.getByLabel("From date").fill("2024-01-01");
+    await page.getByLabel("To date").fill("2024-03-31");
+    await page.getByRole("tab", { name: "Income" }).click();
+    // Post-cure: the income-presence gate renders the informative
+    // empty state. Pre-cure: the always-n-points chart rendered and
+    // this assertion failed (born RED on the pre-cure tree).
+    const incomeCard = page.locator("section").filter({ hasText: "Income Trend" }).first();
+    await expect(incomeCard.getByText("No income in range")).toBeVisible();
+    // And no recharts surface rides the card — the EmptyState's own
+    // icon svg is fine; a flat all-zero area chart is not.
+    await expect(incomeCard.locator("svg.recharts-surface")).toHaveCount(0);
   });
 });

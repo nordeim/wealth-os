@@ -48,7 +48,7 @@ const INFO_BANNER_MS = 3000;
  * Login card — session-7 re-pin (LOGIN_LAYOUT contracts): the reference's
  * slate design. A borderless glass card (`bg-white/95 backdrop-blur-sm
  * shadow-2xl`) with a gradient accent strip, centered logo/title column,
- * white Google button, `h-11 sm:h-12` slate inputs and a slate-900 submit.
+ * white Google button, the 44px→48px slate inputs and a slate-900 submit.
  * The logo is a CSS brand mark (the reference hotlinks a screenshot image;
  * we reproduce the white-circle + blue-dot shape with no external asset).
  *

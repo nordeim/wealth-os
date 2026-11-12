@@ -116,6 +116,16 @@ export default function AnalyticsPage() {
     () => categoryTrend(inRange, n, refDate, null, "income"),
     [inRange, n, refDate],
   );
+  // Session-229 (R-26, F-229a): the empty gate rides income PRESENCE,
+  // not array length — categoryTrend unconditionally returns one zero
+  // point per month (the pinned seam contract), so the F-219r
+  // length===0 gate could never fire and a zero-income viewer saw a
+  // flat all-zero chart. The range domain matches the message text and
+  // the sibling cards' slice-correct predicates.
+  const hasIncome = React.useMemo(
+    () => inRange.some((t) => t.type === "income"),
+    [inRange],
+  );
   const stats = portfolioStats(store.investments);
   // Session-228 (R-25, F-228a): the per-symbol gain fold — the Holdings
   // Performance chart's seam. Two same-symbol lots are normal multi-lot
@@ -152,7 +162,7 @@ export default function AnalyticsPage() {
     <div className={PAGE_ROOT.standard}>
       <div className={PAGE_ROOT.containerWide}>
         <PageHeader
-        tone="navy"
+          tone="navy"
           title="Analytics & Reports"
           subtitle="Real-time insights into your financial performance"
           actions={
@@ -380,7 +390,7 @@ export default function AnalyticsPage() {
           <TabsPanel tab="income" className="mt-4 space-y-4">
             <section className={cn(GLASS_CARD.base, CARD.padding)}>
               <CardTitleRow title="Income Trend" />
-              {incomeTrend.length === 0 ? (
+              {!hasIncome ? (
                 <EmptyState icon={RefreshCw} title="No income in range" />
               ) : (
               <div className="h-72">

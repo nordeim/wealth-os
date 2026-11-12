@@ -146,7 +146,8 @@ export const PAGE_ROOT = {
  *  p-6 in-base, the custom .card-hover utility, backdrop-blur-md, the
  *  via-amber-50/20 layer). Padding is a flat p-6 — the reference's
  *  shadcn CardHeader/CardContent anatomy resolves to 24px on every face
- *  (the `p-4 md:p-6` upsize was added chrome). The glass + stock families
+ *  (a 16px→24px responsive upsize was once drafted as added chrome; it
+ *  never shipped live). The glass + stock families
  *  live in GLASS_CARD/STOCK_CARD below; Settings keeps its own converged
  *  SETTINGS_CARD. */
 export const CARD = {
@@ -170,7 +171,8 @@ export const GLASS_CARD = {
 
 // Session-209 (F-209a): the STOCK shadcn card — the reference's family for
 // Accounts + Import (`bg-card` on the --color-card token; the empty-state
-// variant appends `text-center p-12 border-dashed`).
+// variant appends the centered dashed-border classes with a roomy 48px
+// pad).
 export const STOCK_CARD = "rounded-xl border bg-card text-card-foreground shadow";
 
 // Session-209 (F-209a): the Quick Actions one-off — the reference's own
@@ -189,7 +191,8 @@ export const STAT_GRADIENTS = {
 // live-extracted from its Dashboard (all four tiles, full class strings):
 // `w-12 h-12 rounded-xl <gradient> flex items-center justify-center` with
 // `w-6 h-6 text-white` icons. FIXED size — the reference carries no md:
-// upsize (our retired `md:h-14 md:w-14` was added chrome).
+// upsize (a 56px responsive pair was once drafted as added chrome; it never
+// shipped live).
 export const KPI_TONES = {
   emerald: "bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600",
   rose: "bg-gradient-to-r from-rose-500 via-red-500 to-rose-600",
@@ -199,7 +202,8 @@ export const KPI_TONES = {
 
 // Session-208 (F-208d): the Settings glass-card genus — the reference's
 // settings page carries its OWN card family (the F-205b navy/blue
-// treatment): border-0 glass with backdrop-blur + shadow-lg, the shadcn
+// treatment): border-0 frosted glass (the blur wash) with shadow-lg, the
+// shadcn
 // CardHeader/CardTitle/CardContent anatomy, the navy CardTitle token, and
 // the blue GDPR / amber import boxes. Every other page keeps CARD (the
 // warm genus — the reference's own split).
@@ -365,17 +369,14 @@ export const TABS_SEGMENTED = {
   // to its --background token — #0a0a0a in the fresh-visitor dark
   // posture). Without the class our focused tab painted the v4 DEFAULT
   // #fff offset — a WHITE halo under the focus ring on a dark page.
-  // (SELECT_TRIGGER and TABS_PILL keep it — all three byte-extracted
+  // (SELECT_TRIGGER keeps it too — both byte-extracted
   // from the reference's own DOM strings.)
+  // Session-229 (R-26, F-229f): the pill twin (the rounded-full track
+  // pair) retired with its variant — zero consumers (both Tabs call
+  // sites ride segmented).
   track: "inline-flex h-10 items-center justify-center rounded-lg bg-stone-100 p-1 text-stone-600 dark:bg-stone-800 dark:text-stone-300",
   trigger:
     "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
-} as const;
-
-export const TABS_PILL = {
-  track: "inline-flex h-9 items-center justify-center rounded-full bg-stone-100 p-1 text-stone-600 dark:bg-stone-800 dark:text-stone-300",
-  trigger:
-    "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-stone-900 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-900 dark:data-[state=active]:text-stone-100",
 } as const;
 
 
@@ -390,9 +391,9 @@ export const TABS_PILL = {
 export const LOGIN_LAYOUT = {
   page: "min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-[#f5f7fa] to-slate-100 p-4",
   // Session-207 (F-207f): re-pinned to the reference's live auth card —
-  // the borderless glass (border-0 shadow-2xl bg-white/95 backdrop-blur)
-  // with the SLATE accent strip and the taller md: padding rhythm (the
-  // docblock always claimed this genus; the constants had drifted).
+  // the borderless glass (border-0 shadow-2xl bg-white/95 + the blur
+  // wash) with the SLATE accent strip and the taller md: padding rhythm
+  // (the docblock always claimed this genus; the constants had drifted).
   card: "relative overflow-hidden rounded-2xl border-0 bg-white/95 shadow-2xl backdrop-blur-sm",
   accent: "absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200",
   inner: "p-8 sm:p-10 md:pt-12 md:pb-10 md:px-10",

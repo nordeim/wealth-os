@@ -16,8 +16,9 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   // Session-98 (F-98c1, the M-79c2 v4 doctrine): the reference's base
   // stacks its children with the v3 sibling-gap token at the 1.5 step —
-  // margin-TOP on FOLLOWING siblings, so a call-site `flex-row` override
-  // (the reports tab-2 table cards) makes the gap vertically INERT. Under
+  // margin-TOP on FOLLOWING siblings, so a call-site row-direction
+  // override (the reports tab-2 table cards) makes the gap vertically
+  // INERT. Under
   // our v4 the space-y family flips to margin-BOTTOM on :not(:last-child)
   // — landing on the TITLE in a row header and growing the flex line's
   // cross-size (+6px per card, measured live at 390). The mt-on-following
@@ -33,9 +34,10 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   // separately pinned). Color is inherited from the card foreground.
   // Session-13 (S13-P6): the DEFAULT is now the STOCK shadcn string
   // (`font-semibold leading-none tracking-tight`, 16px — the reports +
-  // profile surfaces); the bigger reference variants (dashboard/leads
-  // `text-base sm:text-lg`, filter rails + by-type `text-base`, settings
-  // `text-lg`) arrive via CARD_TITLE_OVERRIDE at the call sites.
+  // profile surfaces); the bigger reference variants (the dashboard and
+  // leads titles stepping up at sm, filter rails + by-type at the base
+  // step, settings at the larger step) arrive via CARD_TITLE_OVERRIDE at
+  // the call sites.
   return <div className={cn(CARD.title, className)} {...props} />;
 }
 

@@ -82,10 +82,10 @@
 
   /* Session-214 (R-11, F-214e — the A-209 cure's missed tail; trimmed
      session 228/R-25, F-228b): of the shadcn neutral semantic set
-     only the two LIVE members remain — input (border-input, the login
-     OTP boxes) and secondary (hover:bg-secondary, the Settings badge
-     family). The other six (secondary-foreground, accent,
-     accent-foreground, muted-foreground, popover, popover-foreground)
+     only the two LIVE members remain — input (the login OTP boxes'
+     border token) and secondary (the Settings badge family's /80
+     hover wash). The other six (the secondary, accent, muted, popover, and
+     popover ink pairs)
      had zero code consumers and were kept alive ONLY by comment
      strings naming their utilities (the F-224v doctrine violation) —
      retired with the comments reworded; the computed-equal literals

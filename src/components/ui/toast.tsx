@@ -87,7 +87,8 @@ function Toaster() {
       // for every mutation outcome; they announce now.
       aria-live="polite"
       // Session-7 live pin: the reference viewport is top-of-screen on
-      // phones and bottom-right from sm (sonner-style), max-w-[420px] at md.
+      // phones and bottom-right from sm (sonner-style), a 420px cap at
+      // md (ours rides the md variant; the reference's is bare).
       className="pointer-events-none fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse gap-2 p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"
     >
       {items.map((t) => (
@@ -117,9 +118,10 @@ function ToastCard({ item }: { item: ToastItem }) {
       className={cn(
         "pointer-events-auto flex items-start gap-3 rounded-xl border p-3.5 shadow-lg outline-none",
         // Session-131 (D-131a1): the scaffold-era data-[state] animation
-        // family RETIRED — the ToastCard never set data-state, so
-        // data-[state=open]:animate-in / animate-out / fade-* /
-        // slide-in-from-bottom-4 NEVER applied (zero animation since the
+        // family RETIRED — the ToastCard never set data-state, so the
+        // state-keyed enter/exit animation utilities (the animate,
+        // fade, and bottom slide arms) NEVER applied (zero animation
+        // since the
         // scaffold — live-censused tc.animName=none at walk22). The
         // F-131c1 record: the reference's toast system is DOM-DEAD (four
         // Ix.* calls in its bundle, ZERO rendered elements on any trigger

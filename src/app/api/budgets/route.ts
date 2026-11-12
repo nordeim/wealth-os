@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { budgetUpsertSchema, budgetDeleteSchema } from "@/lib/schemas";
+import { Prisma } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,37 @@ export async function POST(req: Request) {
     });
     return ok(budget);
   } catch (error) {
+    // Session-229 (R-26, F-229b): the concurrent-create race — two
+    // first-writes for the same (owner, category, period) both miss
+    // the upsert's read and the loser surfaces P2002 on the unique
+    // key. The settings family's arm (F-215i): recover gracefully.
+    // A single retry is semantically correct here — the winner's row
+    // now exists, the update arm fires, and the loser's amount
+    // applies last-writer-wins exactly like any concurrent update.
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      try {
+        const budget = await db.budget.upsert({
+          where: {
+            ownerId_category_period: {
+              ownerId: guard.user.id,
+              category: body.category,
+              period: body.period,
+            },
+          },
+          update: { amount: body.amount },
+          create: {
+            ownerId: guard.user.id,
+            category: body.category,
+            amount: body.amount,
+            period: body.period,
+          },
+        });
+        return ok(budget);
+      } catch (retryError) {
+        logApiError("budgets POST (P2002 retry)", retryError);
+        return ERR.INTERNAL();
+      }
+    }
     logApiError("budgets POST", error);
     return ERR.INTERNAL();
   }

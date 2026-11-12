@@ -105,7 +105,8 @@ export const LOGIN_RESET_LAYOUT = {
   send:
     "w-full h-10 sm:h-11 bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-sm rounded-xl transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-sm",
   /** The reset view's email input — the login input family one size down
-   *  (h-10 sm:h-11 vs the sign-in form's h-11 sm:h-12), same pl-10 mail
+   *  (40px→44px across the break vs the sign-in form's 44px→48px), same
+   *  pl-10 mail
    *  icon + slate-50/50 surface. The placeholder is LIGHTER than the
    *  sign-in fields' (slate-400 vs slate-600 — the reference's own
    *  inconsistency, mirrored; DOM: rgb(148,163,184)). Session-79
@@ -182,11 +183,14 @@ export const LOGIN_SIGNUP_LAYOUT = {
    *  the reference's computed mechanism (the M-79c2 doctrine). */
   field: "[&>*+*]:mt-1.5",
   label: "text-sm font-medium text-slate-700",
-  /** The input — the s11 resetInput family (h-10 sm:h-11, ONE size down
-   *  from the signin form's h-11 sm:h-12), DOM-verified on the reference's
-   *  signup view: …pl-10 h-10 sm:h-11 bg-slate-50/50 border-slate-200
-   *  focus:border-slate-400 focus:ring-slate-400 rounded-xl
-   *  placeholder:text-slate-400 text-sm sm:text-base. */
+  /** The input — the s11 resetInput family (40px→44px across the break,
+   *  ONE size down
+   *  from the signin form's 44px→48px), DOM-verified on the reference's
+   *  signup view: the pl-10 mail icon, the slate-50/50 surface, the
+   *  slate-200 border, the slate-400 FOCUS arms (border + 2px ring) at
+   *  the stock rounded-xl radius, the slate-400 placeholder, and the
+   *  14px→16px→14px size ladder (ours re-pins the focus
+   *  arms to slate-600 — the AA step). */
   input:
     "h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3 placeholder:text-slate-400 focus:border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 text-sm sm:text-base md:text-sm sm:h-11",
   /** The submit — the s11 one-size-down send family (the text-sm +

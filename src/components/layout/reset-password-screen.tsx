@@ -19,7 +19,7 @@ import { LOGIN_LAYOUT } from "@/lib/page-layout";
  * signs in with the new password).
  *
  * Class vocabulary: the login card's own families (LOGIN_LAYOUT) — the
- * same borderless glass card, the h-11 sm:h-12 slate inputs, the
+ * same borderless glass card, the 44px→48px slate inputs, the
  * slate-900 submit — so the reset surface reads as one design system
  * with the login/signup cards.
  */

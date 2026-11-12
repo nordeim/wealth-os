@@ -6,7 +6,16 @@ import { sanitizeSearchQuery } from "@/lib/search-query";
 export const dynamic = "force-dynamic";
 
 /** Global search — descriptions/categories/institutions/symbols/goals
- *  across the finance families (the shell's "Search" genus). */
+ *  across the finance families (the shell's "Search" genus).
+ *
+ *  Session-229 (R-26, F-229h — the delivered-truth note): the
+ *  case-insensitive matching rides SQLite's LIKE, which is
+ *  ASCII-case-insensitive by default. On the documented PostgreSQL
+ *  migration path (.env.example), Prisma `contains` is case-SENSITIVE
+ *  by default — a user typing "salary" would silently stop matching
+ *  "Salary Deposit". The migration step: add `mode: "insensitive"` to
+ *  each of the four contains arms (a Prisma/PostgreSQL-only option —
+ *  SQLite rejects it, so it lands with the provider flip, not before). */
 export async function GET(req: Request) {
   const guard = await requireSession();
   if (isGuarded(guard)) return guard.response;

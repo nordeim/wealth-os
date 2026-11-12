@@ -143,12 +143,14 @@ describe("F-226i — TABS_SEGMENTED carries ring-offset-background (the referenc
     const seg = src.match(/TABS_SEGMENTED = \{[\s\S]*?\} as const;/)?.[0] ?? "";
     expect(seg).toContain("ring-offset-background");
   });
-  it("SELECT_TRIGGER and TABS_PILL KEEP the class (byte-extracted from the reference)", () => {
+  it("SELECT_TRIGGER KEEPS the class (byte-extracted from the reference)", () => {
+    // Session-229 (R-26, F-229f — legitimate recalibration): the pill
+    // twin retired with its zero-consumer variant; the segmented and
+    // select families remain the two live carriers.
     const src = read("src/lib/page-layout.ts");
     const sel = src.match(/SELECT_TRIGGER = \{[\s\S]*?\} as const;/)?.[0] ?? "";
-    const pill = src.match(/TABS_PILL = \{[\s\S]*?\} as const;/)?.[0] ?? "";
     expect(sel).toContain("ring-offset-background");
-    expect(pill).toContain("ring-offset-background");
+    expect(src).not.toMatch(/TABS_PILL = \{/);
   });
 });
 

@@ -1,9 +1,9 @@
 "use client";
 
 // The WealthOS mobile drawer — session-199, the reference's OWN
-// construction (live-extracted): a FULL-SCREEN gradient overlay
-// (`fixed inset-0 z-40 bg-gradient-to-br from-stone-900 via-stone-800
-// to-stone-900`) that opens under the sticky mobile header (z-50) and
+// construction (live-extracted): a FULL-SCREEN gradient overlay (the
+// fixed z-40 stone-900→stone-800→stone-900 diagonal gradient) that
+// opens under the sticky mobile header (z-50) and
 // starts its content at pt-20. The reference's drawer is a PLAIN
 // conditional render — NOT a modal dialog (no focus trap, no
 // aria-hidden isolation: its header's ✕ close stays in the
@@ -26,9 +26,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { NAV_ITEMS, isNavActive } from "./nav-config";
 import { MOBILE_NAV_LAYOUT, MOBILE_NAV_SHEET } from "@/lib/page-layout";
 import { useWealthOs } from "@/stores/wealthos-store";

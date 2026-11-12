@@ -229,7 +229,7 @@ export default function ExpensesPage() {
     <div className={PAGE_ROOT.standard}>
       <div className={PAGE_ROOT.containerWide}>
         <PageHeader
-        tone="navy"
+          tone="navy"
           title="Expenses"
           subtitle="Track and categorize all your spending"
           actions={
@@ -379,12 +379,10 @@ export function ExpenseDialog({
   open,
   onOpenChange,
   editing,
-  presetCategory,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   editing: Transaction | null;
-  presetCategory?: string | null;
 }) {
   const store = useWealthOs();
   const [step, setStep] = React.useState<"quick" | "form">("quick");

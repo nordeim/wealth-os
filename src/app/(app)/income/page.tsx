@@ -84,7 +84,7 @@ export default function IncomePage() {
     <div className={PAGE_ROOT.standard}>
       <div className={PAGE_ROOT.containerMid}>
         <PageHeader
-        tone="navy"
+          tone="navy"
           title="Income Sources"
           subtitle="Track and manage all your income streams"
           actions={

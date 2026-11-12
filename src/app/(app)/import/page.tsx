@@ -169,7 +169,7 @@ export default function ImportPage() {
     <div className={PAGE_ROOT.navy}>
       <div className={PAGE_ROOT.containerMid}>
         <PageHeader
-        tone="navy"
+          tone="navy"
           title="Import Transactions"
           subtitle="Upload a CSV from your bank to quickly add expenses."
         />

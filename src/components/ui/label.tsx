@@ -30,8 +30,9 @@ function Label({ className, ...props }: React.ComponentProps<typeof LabelPrimiti
 // footer), with a Check h-4 w-4 indicator that mounts ONLY when checked.
 // The button element keeps keyboard semantics native (Space/Enter fire
 // click on buttons) and the label's htmlFor still forwards clicks to a
-// labelable button. Ours shipped native inputs with appearance-none
-// styling — no check glyph ever rendered, the checked fill was the app
+// labelable button. Ours shipped native inputs styled with an
+// appearance reset hack — no check glyph ever rendered, the checked
+// fill was the app
 // blue (the reference's computes #171717, the dark stock primary), and
 // the focus ring was 2px translucent blue instead of the 1px near-black.
 

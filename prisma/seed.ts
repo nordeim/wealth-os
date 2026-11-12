@@ -21,11 +21,18 @@ const db = new PrismaClient({
   adapter: new PrismaLibSql({ url: runtimeDatabaseUrl() }),
 });
 
+// Session-229 (R-26, F-229c): every seeded CALENDAR date stages as a
+// UTC midnight — the exact form `dateField` stores for user-created
+// rows and the form `toDate` re-anchors (the F-218d doctrine). The
+// pre-229 seed built local-NOON instants (a set-local-noon call), the
+// sole non-midnight writer in the tree: a viewer 12h+ ahead of the
+// seeding server read every seeded date one day late. The offset
+// arithmetic stays on the seeder's LOCAL calendar (the seeder's
+// "today"), then freezes to the UTC midnight of that date.
 function dayOffset(offsetDays: number): Date {
   const x = new Date();
   x.setDate(x.getDate() + offsetDays);
-  x.setHours(12, 0, 0, 0);
-  return x;
+  return new Date(Date.UTC(x.getFullYear(), x.getMonth(), x.getDate()));
 }
 
 async function main() {
@@ -221,7 +228,8 @@ async function main() {
       const occasional = ["Dinner at Lucia", "Weekend Trip", "Dental Checkup", "Clothing — Uniqlo", "Cinema Tickets", "Gas Fill-up"];
       if (occasional.includes(e.description) && (monthsAgo + e.dayOfMonth) % 3 !== 0) continue;
       const day = Math.min(e.dayOfMonth, daysInMonth);
-      const date = new Date(base.getFullYear(), base.getMonth(), day, 12, 0, 0, 0);
+      // F-229c: the UTC-midnight staging (the dateField identity).
+      const date = new Date(Date.UTC(base.getFullYear(), base.getMonth(), day));
       if (date > now) continue; // never seed the future
       // gentle month-over-month drift, deterministic
       const drift = 1 + ((monthsAgo * 7 + e.dayOfMonth) % 9 - 4) / 100;
@@ -233,7 +241,9 @@ async function main() {
         budgetCategory: e.budgetCategory,
         date,
         recurring: e.recurring,
-        nextDate: e.recurring ? new Date(base.getFullYear(), base.getMonth() + 1, Math.min(e.dayOfMonth, 28), 12, 0, 0, 0) : undefined,
+        nextDate: e.recurring
+          ? new Date(Date.UTC(base.getFullYear(), base.getMonth() + 1, Math.min(e.dayOfMonth, 28)))
+          : undefined,
         accountId: checking.id,
         ownerId: demo.id,
       });
@@ -241,7 +251,8 @@ async function main() {
     for (const inc of incomePlan) {
       if (inc.description.startsWith("Freelance") && monthsAgo % 2 === 1) continue;
       const day = Math.min(inc.dayOfMonth, daysInMonth);
-      const date = new Date(base.getFullYear(), base.getMonth(), day, 12, 0, 0, 0);
+      // F-229c: the UTC-midnight staging (the dateField identity).
+      const date = new Date(Date.UTC(base.getFullYear(), base.getMonth(), day));
       if (date > now) continue;
       txs.push({
         description: inc.description,

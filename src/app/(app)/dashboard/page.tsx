@@ -550,8 +550,8 @@ export default function DashboardPage() {
             rounded-2xl, amber-200 border; p-6 in the literal) */}
         <section className={QUICK_ACTIONS_CARD} aria-label="Quick Actions">
           {/* Session-219 (R-16, F-219k): amber-700 — amber-500 measured 2.09:1
-        on the light surface (the AA one-step doctrine). */}
-        <h2 className="mb-4 text-xl font-bold text-amber-700 dark:text-amber-400">Quick Actions</h2>
+              on the light surface (the AA one-step doctrine). */}
+          <h2 className="mb-4 text-xl font-bold text-amber-700 dark:text-amber-400">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <QuickAction href="/Income" label="Add Income" icon={TrendingUp} className="border-emerald-200 dark:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-300" iconClassName="text-emerald-600 dark:text-emerald-400" />
             <QuickAction href="/Expenses" label="Add Expense" icon={TrendingDown} className="border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:border-rose-300" iconClassName="text-rose-600 dark:text-rose-400" />
@@ -588,7 +588,7 @@ function QuickAction({
   // (the exact class string, now carried by the anchor itself) while
   // fixing the nesting: ONE focusable element per destination. Token
   // notes (F-209a): the reference's `bg-background` reads our `bg-card`;
-  // its accent-foreground hover ink is the neutral literals (the
+  // its accent hover ink is the neutral literals (the
   // F-129c3 house precedent). The icon's effective size stays 16px —
   // the [&_svg]:size-4 arm outranks the icon's own w-5 h-5.
   return (

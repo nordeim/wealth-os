@@ -67,23 +67,29 @@ function DialogContent({
 }
 
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
-  // Session-15 (S15-P3): the reference centers the title below sm
-  // (`text-center sm:text-left`) — the stock shadcn header. The old
-  // pr-6 clearance is gone (the X is the opacity pattern now).
+  // Session-229 (R-26, F-229e — the S15-P3 claim corrected): the
+  // reference's dialog titles are LEFT-ALIGNED at every width
+  // (live-probed on its Add-Expense panel at 390×844, probe-229-dialog4:
+  // the title element computes textAlign start — no centering below sm,
+  // no stock-shadcn header pair). Our DIALOG_HEADER already carries the
+  // genus; the pre-229 docblock's "centers below sm" claim was false.
+  // The old right-side clearance is gone (the X is the opacity pattern
+  // now).
   return <div className={cn(DIALOG_HEADER, className)} {...props} />;
 }
 
 function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
   // Session-15 (S15-P5): the STOCK footer for the max-w-lg family
-  // (Lead/Account/Contact) — `flex flex-col-reverse sm:flex-row
-  // sm:justify-end sm:space-x-2` (no gap class: the buttons touch when
+  // (Lead/Account/Contact) — the column-reverse stack flipping to a
+  // row with end-justified buttons at sm (no gap class: the buttons
+  // touch when
   // stacked on phones, 8px margin at sm). The max-w-2xl family
   // (Event/Activity) uses DIALOG_FOOTER_WIDE instead.
   return <div className={cn(DIALOG_FOOTER, className)} {...props} />;
 }
 
 /** Session-15 (S15-P5): the max-w-2xl family footer — `flex justify-end
- *  gap-3 pt-4` (row at all widths, 12px gap, 16px top padding). */
+ *  gap-3` + a 16px top pad (row at all widths, 12px gap). */
 function DialogFooterWide({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn(DIALOG_FOOTER_WIDE, className)} {...props} />;
 }

@@ -57,15 +57,10 @@ export const EXPENSE_CATEGORIES: Array<{
   { emoji: "📦", label: "Other", budgetCategory: "wants" },
 ];
 
-export const INCOME_CATEGORIES = [
-  { emoji: "💼", label: "Salary" },
-  { emoji: "🧑‍💻", label: "Freelance" },
-  { emoji: "🏢", label: "Business" },
-  { emoji: "📊", label: "Investment" },
-  { emoji: "🏘️", label: "Rental" },
-  { emoji: "🎁", label: "Gift" },
-  { emoji: "📦", label: "Other" },
-] as const;
+// Session-229 (R-26, F-229f): the income-category chip map retired —
+// zero consumers
+// (the income dialog's chips ride QUICK_PICK's income arm and the type
+// select rides the source-type map). Reintroduce WITH a consumer.
 
 export const INCOME_SOURCE_TYPES = [
   { value: "salary", label: "Salary" },
@@ -191,16 +186,11 @@ export const AI_SUGGESTED_QUESTIONS = [
   "How can I save more money?",
 ] as const;
 
-export const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-  JPY: "¥",
-  AED: "د.إ",
-  SGD: "S$",
-  AUD: "A$",
-  CAD: "C$",
-};
+// Session-229 (R-26, F-229f): the currency-symbol map retired — zero
+// consumers
+// (formatMoney carries its own $ symbol; the Settings currency select is
+// the documented decorative parity control, F-228m). Reintroduce WITH a
+// consumer (e.g. the F-228m default-currency wiring).
 
 export const APP_NAME = "WealthOS";
 export const APP_TAGLINE = "Premium Finance Suite";

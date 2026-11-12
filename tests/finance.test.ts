@@ -434,6 +434,18 @@ describe("analytics series", () => {
     expect(trend[1].value).toBe(7800); // November
   });
 
+  // Session-229 (R-26, F-229a — the design input behind the Income
+  // tab's gate): the seam UNCONDITIONALLY returns one point per month,
+  // zero-filled — so an `incomeTrend.length === 0` gate can never fire
+  // and a length-gated empty state is structurally unreachable. The
+  // page now gates on income PRESENCE instead; this pin keeps the
+  // seam's own contract explicit so the gate form cannot regress.
+  it("categoryTrend returns exactly n zero points on empty input (a length gate can never fire)", () => {
+    const trend = categoryTrend([], 6, REF, null, "income");
+    expect(trend).toHaveLength(6);
+    for (const point of trend) expect(point.value).toBe(0);
+  });
+
   it("transactionsInMonth filters by type", () => {
     expect(transactionsInMonth(TXS, REF, "expense")).toHaveLength(4);
     expect(transactionsInMonth(TXS, REF, "income")).toHaveLength(1);

@@ -73,12 +73,13 @@ function SelectContent({
         // + the FULL animation arm set (fade + zoom + all four
         // slide-in-from-* arms + all four per-side translates, all
         // unconditional on its single popper construction). OURS
-        // shipped the scaffold-era draft (z-[60] max-h-72 rounded-lg
-        // shadow-lg, fade+zoom+the two vertical translates behind a
+        // shipped the scaffold-era draft (a z-[60] layer, a 288px
+        // ceiling, rounded-lg, shadow-lg, fade+zoom+the two vertical
+        // translates behind a
         // position ternary) — never pinned in 80 sessions. The token
         // substitutions (border-line / bg-surface / text-foreground)
         // are the computed-equal expressions of its border-input /
-        // popover-bg / popover-foreground tokens (all verified: #e5e5e5,
+        // popover-bg / popover-ink tokens (all verified: #e5e5e5,
         // white, #0a0a0a on both apps).
         className={cn(
           "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-line bg-surface text-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
@@ -111,13 +112,13 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
       // Session-81 (M-81c2, live-computed on both apps' open popovers):
       // the reference's items ship rounded-sm computing 4px (its shadcn
       // radius derivation — ours computed 6px as rounded-md) + the
-      // focus WASH pair (the accent bg + accent-foreground ink) —
+      // focus WASH pair (the accent bg + its accent ink) —
       // the highlighted item's text SHIFTS #0a0a0a -> #171717 (LIVE:
       // the highlighted "Month" computed rgb(23,23,23) while the
       // resting "Week" computed rgb(10,10,10)). Our computed-equals:
       // focus:bg-line-soft (#f5f5f5 = its accent) +
       // focus:text-neutral-900 (#171717 — the s80 badge precedent for
-      // expressing its accent-foreground).
+      // expressing its accent pair ink).
       // Session-221 (R-18, F-221b): the dark arms join the pair — the
       // light-only form computed neutral-900 on line-soft's #262626
       // dark flip = 1.18:1 (live-verified on the dark-mode Income

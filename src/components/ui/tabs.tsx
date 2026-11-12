@@ -2,21 +2,25 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { TABS_PILL, TABS_SEGMENTED } from "@/lib/page-layout";
+import { TABS_SEGMENTED } from "@/lib/page-layout";
 
 // Native-ARIA tab strip. `variant="underline"` matches the reference's
-// plain text tabs; `variant="segmented"` renders the segmented control
-// used by the Activities priority tabs and the Settings tabs — the
-// reference track is `h-9 grid w-full grid-cols-{n} rounded-lg bg-muted
-// p-1` + its muted-foreground text token, with an equal-width column per tab and the
-// active tab a raised white pill; `variant="pill"` renders the Reports
-// tab bar — white bordered container `grid grid-cols-2 lg:grid-cols-{n}`,
-// active tab `bg-blue-50 text-blue-700`.
+// plain text tabs (the component's default genus — currently uncalled,
+// kept as the documented identity); `variant="segmented"` renders the
+// segmented control used by the Analytics section tabs and the Expenses
+// type tabs — the
+// reference track is the equal-width grid on a rounded-lg muted-surface
+// wash with a raised white active pill. Session-229 (R-26, F-229f):
+// the third variant (the pill bar) retired with its track constant, the
+// cols machinery, and the static column map — zero consumers across
+// the tree (both live call sites ride segmented, neither passes cols; the
+// N-66b note's claim that page-layout carried the responsive grid was
+// factually wrong — no column utility rides that constant).
 //
 // Session-12 (S12-P4): the tracks carry text-muted-ink (the reference's
-// tablist muted-foreground token — inactive tabs INHERIT #737373 instead
+// tablist muted-ink token — inactive tabs INHERIT #737373 instead
 // of carrying gray-500) and the triggers are the reference's STOCK Radix
-// classes: natural height (no h-7), transition-all, ring-offset-background,
+// classes: natural height (no 28px lock), transition-all, ring-offset-background,
 // the bare `shadow` on the active state (the s6 shadow-sm pin was one step
 // light), data-[state=active]:* variants riding a data-state attribute,
 // and NO hover classes (the reference ships none on any tab variant).
@@ -45,9 +49,7 @@ interface TabsProps {
   /** The wrapper div's classes — the reference's per-page Tabs region
    * (space-y-6 on settings/reports; bare on activities). */
   className?: string;
-  variant?: "underline" | "segmented" | "pill";
-  /** Equal-width grid columns for segmented/pill tracks (reference: one per tab). */
-  cols?: number;
+  variant?: "underline" | "segmented";
   /** The TabsPanel shells — rendered inside the wrapper after the tablist. */
   children?: React.ReactNode;
 }
@@ -58,19 +60,6 @@ interface TabsPanelProps extends React.ComponentProps<"div"> {
 }
 
 const TabsContext = React.createContext<{ uid: string; value: string } | null>(null);
-
-// Static class maps — Tailwind v4 scans source for literal class strings, so
-// dynamic `grid-cols-${n}` templates would never compile.
-const GRID_COLS: Record<number, string> = {
-  2: "grid grid-cols-2",
-  3: "grid grid-cols-3",
-  4: "grid grid-cols-4",
-  5: "grid grid-cols-5",
-  6: "grid grid-cols-6",
-};
-// Session-66 (N-66b): GRID_COLS_LG retired — zero references repo-wide (the
-// pill variant's responsive lg:grid-cols-5 lives in page-layout.ts's
-// TABS_PILL contract, not here). The s54 fully-dead class, CONST variant.
 
 // The reference's stock Radix TabsContent classes (byte-extracted from the
 // live reference on 2026-10-01): the focus-visible ring family rides every
@@ -86,7 +75,7 @@ const GRID_COLS: Record<number, string> = {
 const PANEL_BASE =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
-function Tabs({ tabs, value, onValueChange, className, variant = "underline", cols, children }: TabsProps) {
+function Tabs({ tabs, value, onValueChange, className, variant = "underline", children }: TabsProps) {
   const uid = React.useId();
   const tabRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -119,13 +108,11 @@ function Tabs({ tabs, value, onValueChange, className, variant = "underline", co
 
   const trackClass =
     variant === "segmented"
-      ? cn(TABS_SEGMENTED.track, cols && "w-full", cols ? GRID_COLS[cols] ?? null : "flex items-center gap-1 overflow-x-auto scrollbar-thin")
-      : variant === "pill"
-        ? TABS_PILL.track
-        : cn(
-            "flex items-center gap-1 overflow-x-auto scrollbar-thin border-b border-line",
-          );
-  const triggerClass = variant === "segmented" ? TABS_SEGMENTED.trigger : variant === "pill" ? TABS_PILL.trigger : null;
+      ? cn(TABS_SEGMENTED.track, "flex items-center gap-1 overflow-x-auto scrollbar-thin")
+      : cn(
+          "flex items-center gap-1 overflow-x-auto scrollbar-thin border-b border-line",
+        );
+  const triggerClass = variant === "segmented" ? TABS_SEGMENTED.trigger : null;
   const underline = variant === "underline";
   return (
     <TabsContext.Provider value={{ uid, value }}>

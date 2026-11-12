@@ -38,8 +38,6 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/Settings", label: "Settings", icon: Settings },
 ];
 
-export const NAV_FOOTER_ITEMS: NavItem[] = [];
-
 /**
  * The shared nav-active predicate — case-insensitive (the reference's
  * sidebar links carry the capitalized hrefs while its router serves both

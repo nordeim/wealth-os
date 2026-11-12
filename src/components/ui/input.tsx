@@ -11,7 +11,8 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       // verified live on the contacts search).
       // Session-9 (S9-12, S9-16): `text-base md:text-sm` (16px below md —
       // the reference's phones render 16px input text) and a 1px near-black
-      // focus ring with the border color unchanged (ring-ring).
+      // focus ring with the border color unchanged (the ring color
+      // token).
       // Session-10 (S10-2): the reference's stock Input is bg-transparent
       // (no bg class — the surface shows through, exactly like the live
       // computed probes) with NO text color class — typed text inherits its
@@ -32,8 +33,10 @@ function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
       // Session-10 (S10-2): transparent bg + ink + placeholder tokens like
       // the reference's stock textarea (no bg/text color classes there).
       // Session-15 (S15-P12/P13): the reference's dialog Description
-      // textareas ship `min-h-[60px] rounded-md` (class dump on the live
-      // Event/Activity dialogs) — ours had min-h-[72px] rounded-lg.
+      // textareas ship a 60px min-height at the stock rounded-md radius
+      // (class dump on the live
+      // Event/Activity dialogs) — ours had shipped a 72px min-height at
+      // the larger radius.
       className={cn(DIALOG_TEXTAREA, className)}
       {...props}
     />
