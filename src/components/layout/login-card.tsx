@@ -17,6 +17,7 @@ import {
 } from "@/lib/login-reset";
 import {
   VERIFICATION_CODE_LENGTH,
+  applyCodeInput,
   verificationIncompleteMessage,
   verificationResentMessage,
 } from "@/lib/verification";
@@ -322,17 +323,18 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
     }
   }
 
-  /** S21-P5: a single code input's change — keep the LAST digit typed and
-   *  auto-advance (the reference's six boxes walk forward as digits land). */
+  /** S21-P5: a single code input's change — the pure applyCodeInput
+   *  seam (session-233, F-233a). The pre-cure form kept only the LAST
+   *  digit of the raw value, so a whole-code paste or a one-time-code
+   *  autofill collapsed to a single digit and the length guard blocked
+   *  the submit. The seam distributes multi-digit edits across the
+   *  boxes and lands focus after the last filled one; single-digit
+   *  typing and the clear path are the pre-cure semantics. */
   function onCodeDigit(idx: number, raw: string) {
-    const digit = raw.replace(/\D/g, "").slice(-1);
-    setCodeDigits((prev) => {
-      const next = [...prev];
-      next[idx] = digit;
-      return next;
-    });
-    if (digit && idx < VERIFICATION_CODE_LENGTH - 1) {
-      codeRefs.current[idx + 1]?.focus();
+    const applied = applyCodeInput(codeDigits, idx, raw);
+    setCodeDigits(applied.next);
+    if (applied.focusIndex !== idx) {
+      codeRefs.current[applied.focusIndex]?.focus();
     }
   }
 
@@ -595,6 +597,16 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                             )}
                           </div>
 
+                          {/* Session-233 (R-30, F-233c): the ALWAYS-MOUNTED
+                              status region — a live region that ARRIVES
+                              with its content is not announced (the
+                              F-218h genus; the toast viewport and the
+                              shell's loading gate already ride this
+                              form). The green resend banner below stays
+                              the sighted-user visual only. */}
+                          <div role="status" aria-live="polite" className="sr-only">
+                            {info ?? ""}
+                          </div>
                           {error && <ErrorCallout message={error} />}
                           {info && <InfoCallout message={info} />}
 
@@ -838,11 +850,14 @@ function ErrorCallout({ message }: { message: string }) {
 /**
  * S21-P5: the reference's resend confirmation — the GREEN Callout
  * (bg-green-50/70 + border-green-200), auto-dismissed by the card after
- * the live-bounded ~3s.
+ * the live-bounded ~3s. Session-233 (R-30, F-233c): visual only — the
+ * announcement lives in the verify view's pre-existing sr-only status
+ * region (the F-218h form); a live region that arrives with its
+ * content is not announced.
  */
 function InfoCallout({ message }: { message: string }) {
   return (
-    <div role="status" className={LOGIN_INFO_CALLOUT.callout}>
+    <div className={LOGIN_INFO_CALLOUT.callout}>
       <div className={LOGIN_INFO_CALLOUT.text}>{message}</div>
     </div>
   );

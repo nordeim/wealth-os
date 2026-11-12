@@ -143,7 +143,16 @@ export async function POST(request: Request) {
       settled.files > MAX_UPLOAD_FILES ||
       settled.bytes > MAX_UPLOADS_TOTAL_BYTES
     ) {
-      await unlink(join(uploadsDir(), name));
+      // Session-233 (R-30, F-233g): the unlink rides its own guard — a
+      // faulting unlink (EACCES on the just-written file) must not
+      // escalate the honest 507 into a 500 and swallow the breach
+      // verdict. Log-and-continue: the next capacity read still sees
+      // the overshoot, and every later writer keeps failing closed.
+      try {
+        await unlink(join(uploadsDir(), name));
+      } catch (unlinkError) {
+        logApiError("upload POST breach-unlink", unlinkError);
+      }
       return ERR.STORAGE_FULL();
     }
 

@@ -78,6 +78,31 @@ test.describe("reset-password form (a non-empty token)", () => {
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole("heading", { name: "Welcome to WealthOS" })).toBeVisible();
   });
+
+  test("the one-time token leaves the address bar once the form renders (F-233f)", async ({ page }) => {
+    // Session-233 (R-30, F-233f): the token rode the query string for
+    // its whole 60-minute life (browser history, back-forward cache,
+    // intermediary logs). The screen captures it once at mount and
+    // strips the query — the OAuth-callback hygiene form. The form
+    // itself keeps working off the captured value.
+    await page.goto("/reset-password?token=e2e-shape-probe");
+    await expect(page.getByRole("heading", { name: "Set new password" })).toBeVisible();
+    // the query is gone from the address bar…
+    await expect(page).toHaveURL(/\/reset-password$/);
+    // …and the captured token still drives the form (the inputs and
+    // the submit stay live — a strip that broke the form would be a
+    // cure worse than the finding)
+    const password = page.locator("input#password");
+    await expect(password).toBeVisible();
+    await password.fill("NewPass1234!");
+    await page.locator("input#confirmPassword").fill("NewPass1234!");
+    await page.getByRole("button", { name: "Reset password", exact: true }).click();
+    await expect(
+      page.getByRole("alert").filter({ hasText: "Invalid or expired reset token" }),
+    ).toBeVisible({ timeout: 15_000 });
+    // the tokenless URL never re-renders the invalid-link card mid-flow
+    await expect(page.getByRole("heading", { name: "Set new password" })).toBeVisible();
+  });
 });
 
 test.describe("the full reset round-trip (the in-app delivery)", () => {
@@ -136,9 +161,14 @@ test.describe("the full reset round-trip (the in-app delivery)", () => {
     expect(href).toMatch(/\/reset-password\?token=.+/);
 
     // 3. Follow the link → the form renders with the LIVE token.
+    //    (Session-233, R-30, F-233f: the screen strips the token from
+    //    the address bar once the form stands — the URL assertion moved
+    //    from "still carries the token" to "the stripped form"; the
+    //    form's own liveness is the heading + the submit round-trip
+    //    below, which rides the captured value.)
     await infoLink.click();
     await expect(page.getByRole("heading", { name: "Set new password" })).toBeVisible();
-    await expect(page).toHaveURL(/\/reset-password\?token=.+/);
+    await expect(page).toHaveURL(/\/reset-password$/);
 
     // 4. Set the new password.
     await page.locator("input#password").fill("Reset1234!");

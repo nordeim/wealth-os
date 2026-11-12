@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { LoginCard } from "@/components/layout/login-card";
 import { LOGIN_LAYOUT } from "@/lib/page-layout";
 import { pageMetadata } from "@/lib/site";
@@ -30,7 +31,14 @@ export const dynamic = "force-dynamic";
 export default function LoginPage() {
   return (
     <main className={LOGIN_LAYOUT.page}>
-      <LoginCard />
+      {/* Session-233 (R-30, F-233h): the boundary the reset-password twin
+          already carries — LoginCard reads the search params (the from_url
+          round-trip), safe today only because this page is force-dynamic;
+          the boundary defuses that coupling (the family-consistency
+          form). */}
+      <Suspense>
+        <LoginCard />
+      </Suspense>
     </main>
   );
 }

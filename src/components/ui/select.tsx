@@ -50,8 +50,10 @@ function SelectTrigger({
       {children}
       <SelectPrimitive.Icon asChild>
         {/* Session-81 (M-81c3): the reference's chevron is bare
-            h-4 w-4 opacity-50 — the bundle's `h-4 w-4 shrink-0` is
-            the CHECKBOX's class, not the chevron's. */}
+            h-4 w-4 opacity-50 — the reference bundle's checkbox
+            carries the shrink-0 sizing, not the chevron. (Session-233,
+            F-233k: reworded — the capitalized identifier read as a
+            citation of the retired page-layout constant.) */}
         <ChevronDown className="h-4 w-4 opacity-50" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>

@@ -210,7 +210,17 @@ export default function ImportPage() {
             </p>
           ) : null}
           <div className="mt-4 flex justify-end">
-            <Button onClick={() => void extract(file)} disabled={!file || busy}>
+            {/* Session-233 (R-30, F-233e): the retry affordance — the
+                eager parse in pickFile already produced the review the
+                moment a file was selected, so a live re-parse on every
+                flow-through was redundant work (a second full read of
+                up to 10 MB). The button now stands for RETRY only:
+                enabled when a file is picked but no review stands (a
+                failed parse), disabled once rows exist. */}
+            <Button
+              onClick={() => void extract(file)}
+              disabled={!file || busy || rows !== null}
+            >
               <FileSpreadsheet className="h-4 w-4" />
               Upload and Extract
             </Button>

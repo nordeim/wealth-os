@@ -26,6 +26,19 @@ import { LOGIN_LAYOUT } from "@/lib/page-layout";
 export function ResetPasswordScreen() {
   const router = useRouter();
   const token = useSearchParams().get("token");
+  // Session-233 (R-30, F-233f): the token is captured ONCE at mount and
+  // the query is stripped from the address bar — the one-time
+  // credential was riding the URL for its whole 60-minute life
+  // (browser history, back-forward cache, intermediary logs; the
+  // OAuth-callback hygiene form). The captured value drives the form
+  // so the strip can never flip the view mid-flow; the honest trade:
+  // a refresh AFTER the strip lands on the invalid-link card and the
+  // user requests a new link (the token is single-use and short-lived
+  // — the standard posture for one-time credentials).
+  const [urlToken] = React.useState(token);
+  React.useEffect(() => {
+    if (token) window.history.replaceState(null, "", "/reset-password");
+  }, [token]);
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [pending, setPending] = React.useState(false);
@@ -59,7 +72,7 @@ export function ResetPasswordScreen() {
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reset_token: token, new_password: password }),
+        body: JSON.stringify({ reset_token: urlToken, new_password: password }),
       });
       const body = await res.json().catch(() => null);
       if (!res.ok || !body?.ok) {
@@ -74,8 +87,9 @@ export function ResetPasswordScreen() {
     }
   }
 
-  // The invalid-link state: a missing, empty, or differently-named param.
-  if (!token) {
+  // The invalid-link state: a missing, empty, or differently-named param
+  // (read off the captured value — the strip above clears the URL).
+  if (!urlToken) {
     return (
       <div className="w-full max-w-md">
         <div className={LOGIN_LAYOUT.card}>

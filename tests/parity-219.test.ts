@@ -286,9 +286,21 @@ describe("F-219u — the dead constants retire", () => {
 });
 
 describe("F-219v — InfoCallout is the polite status", () => {
-  it("the green resend banner carries role=status (not alert)", () => {
+  // Session-233 (R-30, F-233c): the role moved — a live region that
+  // ARRIVES with its content is not announced (the F-218h genus), so
+  // the InfoCallout became the visual only and the verify view carries
+  // an ALWAYS-MOUNTED sr-only status region (the F-232e form). The
+  // F-219v contract stands — the resend confirmation announces
+  // politely — at its new seam; pinned in parity-233.
+  it("the polite status role rides the always-mounted region, not the banner", () => {
     const src = read("src/components/layout/login-card.tsx");
-    const info = src.match(/function InfoCallout[\s\S]{0,600}/)?.[0] ?? "";
-    expect(info).toContain('role="status"');
+    const region = src.match(
+      /<div role="status"[\s\S]{0,400}?<\/div>/,
+    )?.[0] ?? "";
+    expect(region).not.toBe("");
+    expect(region).toMatch(/aria-live="polite"/);
+    expect(region).toMatch(/sr-only/);
+    const fn = src.match(/function InfoCallout[\s\S]{0,600}/)?.[0] ?? "";
+    expect(fn).not.toContain('role="status"');
   });
 });

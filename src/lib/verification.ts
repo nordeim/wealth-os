@@ -72,3 +72,54 @@ export function isVerificationPending(expiresAt: Date | string | null | undefine
   const exp = typeof expiresAt === "string" ? new Date(expiresAt).getTime() : expiresAt.getTime();
   return Number.isFinite(exp) && exp > Date.now();
 }
+
+/**
+ * Session-233 (R-30, F-233a): the six-box code-entry reducer. Applies a
+ * raw edit to ONE box and returns the next code array plus the box focus
+ * should land on.
+ *
+ * The pre-cure handler kept only the LAST character of whatever landed in
+ * a box — correct for typing, catastrophic for the multi-digit forms: the
+ * first box carries autoComplete="one-time-code", so Chrome/Android/iOS
+ * insert the FULL code there and the collapse reduced it to one digit;
+ * every whole-code paste failed the same way (the "enter all 6 digits"
+ * guard blocked a submit the user believed they had completed).
+ *
+ * Contract (behavioral pins in tests/verification-code.test.ts):
+ *  - a single digit fills the box and focus advances (the last box keeps
+ *    focus — the pre-cure walk, byte-identical);
+ *  - an empty or non-digit edit clears the box and never moves focus
+ *    (the pre-cure clear);
+ *  - a MULTI-digit edit (paste, autofill, an over-typed box) distributes
+ *    its digits across the boxes from the edited one — overwriting any
+ *    prior values there, truncating at the final box — and focus lands
+ *    on the box AFTER the last filled one (the final box when full).
+ *
+ * NO maxLength rides the inputs: a browser-enforced cap truncates a paste
+ * BEFORE the change handler ever sees the full value, which would
+ * re-break the exact path this seam cures.
+ */
+export function applyCodeInput(
+  prev: readonly string[],
+  idx: number,
+  raw: string,
+): { next: string[]; focusIndex: number } {
+  const digits = raw.replace(/\D/g, "");
+  if (digits === "") {
+    const next = [...prev];
+    next[idx] = "";
+    return { next, focusIndex: idx };
+  }
+  if (digits.length > 1) {
+    const next = [...prev];
+    let last = idx;
+    for (let k = 0; k < digits.length && idx + k < next.length; k++) {
+      next[idx + k] = digits[k] ?? "";
+      last = idx + k;
+    }
+    return { next, focusIndex: Math.min(last + 1, next.length - 1) };
+  }
+  const next = [...prev];
+  next[idx] = digits;
+  return { next, focusIndex: Math.min(idx + 1, next.length - 1) };
+}

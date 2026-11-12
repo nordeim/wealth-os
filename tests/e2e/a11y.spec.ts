@@ -58,12 +58,16 @@ const SANCTIONED: Record<string, Array<{ any: string[]; cite: string }>> = {
       cite: "the per-page CTA gradient genera — the reference's own measured palette (F-219b)",
     },
     // Session-232 (R-29, F-232f): the amber-500 FILL arm RETIRED —
-    // zero live white-on-amber consumers since F-219a (every amber
-    // fill carries stone-900 ink: the active period chip rides the
+    // zero live white-on-amber consumers among the fill-carrying
+    // controls since F-219a (every amber chip/badge/bubble pairs the
+    // fill with stone-900 ink: the active period chip rides the
     // amber→yellow gradient with stone-900, the expenses filters badge
     // and the ai-coach user bubbles pair the fill with stone-900).
-    // A stale arm auto-sanctions a future white-on-amber regression —
-    // the F-220p class.
+    // Session-233 (R-30, F-233j): scope note — the Investments KPI
+    // gradient tile family DOES carry white values on amber (the
+    // F-226m WCAG-exemption register; the surviving text-white arm
+    // below covers it if axe ever flags it). A stale arm auto-sanctions
+    // a future white-on-amber regression — the F-220p class.
     {
       // the muted micro-captions (the % funded, the synced pill)
       any: ["text-stone-400", "text-stone-500"],

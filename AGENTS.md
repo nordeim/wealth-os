@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1254) | `bun run test` |
+| Unit tests (1282) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 139) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 140) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -477,3 +477,23 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   gotcha above: dev-mode semantics differ from prod; verify
   focus/mount behaviors against BOTH builds.
 
+- **A browser-enforced `maxLength` TRUNCATES A PASTE before the change
+  handler ever sees it** (session-233, F-233a): the OTP-box paste cure
+  must live IN THE HANDLER (distribute the multi-digit value across
+  the boxes), never in an input cap — `maxLength={1}` on a code box
+  silently eats every whole-code paste and autofill the distribution
+  was built to carry. The one-time-code autofill path is the common
+  case (Chrome/Android/iOS insert the full code into the first box);
+  a cap that breaks it fails silently in every unit test (the pure
+  seam is correct) and only bites live. Pinned in
+  `tests/verification-code.test.ts` + the parity-233 no-maxLength pin.
+- **A comment that NAMES the token a test scans for trips the scanner —
+  the F-229d genus, test-source edition** (session-233, F-233h's
+  riders): the route-case URL-state pin greps src for the literal hook
+  name, and the Suspense-boundary comment ("LoginCard reads
+  useSearchParams…") made BOTH auth pages offenders — the comment was
+  the only carrier. The F-229d discipline (describe, never cite) binds
+  test-source scans exactly as it binds the Tailwind content scan:
+  when a test greps for a token, no comment in the scanned tree may
+  spell that token. Reworded to "reads the search params"; the
+  route-case offender list stays empty.

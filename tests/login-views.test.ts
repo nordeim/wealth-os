@@ -118,8 +118,11 @@ describe("session-21: the Callout error banner (S21-P3)", () => {
     expect(src).toMatch(/function ErrorCallout\(/);
     expect((src.match(/<ErrorCallout message=/g) || []).length).toBe(4);
     expect(src).toMatch(/function InfoCallout\(/);
-    // Session-219 (R-16, F-219v): InfoCallout is now role="status" (a
-    // polite non-error banner); ErrorCallout keeps role="alert".
+    // Session-219 (R-16, F-219v): the resend banner is the polite
+    // status face; session-233 (R-30, F-233c) moved the role to the
+    // verify view's always-mounted sr-only region (the F-218h form —
+    // a live region that arrives with its content is not announced),
+    // so the counts still read one status + one alert.
     expect((src.match(/role="alert"/g) || []).length).toBe(1);
     expect((src.match(/role="status"/g) || []).length).toBe(1);
   });

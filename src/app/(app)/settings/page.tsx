@@ -375,10 +375,23 @@ export default function SettingsPage() {
 
         {/* The reference's Save footer — the bottom right-aligned row. */}
         <div className={SETTINGS_CARD.saveRow}>
+          {/* Session-233 (R-30, F-233d): the preferences guard — the
+              settings fetch can fail silently inside hydrate() while the
+              dashboard data landed fine; the form then shows local
+              defaults a Save would persist OVER the stored preferences.
+              Save disables while the slice is missing and the amber
+              line states the protection (the import-warning genus). */}
+          {!settings && !store.loading ? (
+            <p className="mr-auto flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400">
+              <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
+              Settings could not be loaded — saving is disabled to protect your
+              stored preferences. Try reloading.
+            </p>
+          ) : null}
           <button
             type="button"
             onClick={() => void save()}
-            disabled={busy}
+            disabled={busy || !settings}
             className={SETTINGS_CARD.saveButton}
           >
             <Save className="h-4 w-4" aria-hidden="true" />
