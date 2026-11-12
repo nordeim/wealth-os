@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 1162 / Playwright 136 / smoke 15). Covers the design system,
+  layer (Vitest 1192 / Playwright 137 / smoke 15). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -122,8 +122,8 @@ Locked versions from `package.json` (verified at distillation):
 | State | `zustand` | 5.1.0 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` + `@prisma/adapter-libsql` | 7.10.1 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3); R-9: the prisma 7 major — generated client in `src/generated/prisma` (postinstall), PrismaLibSql driver adapter (bun hard-blocks better-sqlite3 — oven-sh/bun#4290), `prisma.config.ts` on the db-path seam |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses. The `dompurify` npm override (3.4.17 — session 198's critical cure) stays as a defensive pin |
-| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 1162 checks / 74 files |
-| E2E tests | `@playwright/test` + `axe-core` | 1.65.0 / 4.14.0 | Chromium; 136 checks / 7 specs; own db + port 3100 |
+| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 1192 checks / 75 files |
+| E2E tests | `@playwright/test` + `axe-core` | 1.65.0 / 4.14.0 | Chromium; 137 checks / 7 specs; own db + port 3100 |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
 | Runtime tooling | `bun` | ≥ 1.3 | `bun run` scripts; Node-compatible build/start |
 
@@ -198,8 +198,8 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (1162 checks) |
-| E2E (boots own server) | `CI=1 bun run test:e2e` (136 checks) |
+| Unit tests | `bun run test` (1192 checks) |
+| E2E (boots own server) | `CI=1 bun run test:e2e` (137 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (15 assertions; needs build) |
 | DB push / seed / census | `bun run db:push` / `db:seed` / `db:census` |
@@ -673,11 +673,11 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 1162 passed / 74 files
+- [ ] `bun run test` — 1192 passed / 75 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 15/15 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)
-- [ ] `CI=1 bun run test:e2e` — 136/136 (7 specs)
+- [ ] `CI=1 bun run test:e2e` — 137/137 (7 specs)
 - [ ] `bun run db:census` — `census: MATCH`
 - [ ] Parity chain when parity surfaces changed (active since
       v2.8.0/R-4.5): `bun run gate:full` — the four sweep class drift

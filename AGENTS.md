@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1162) | `bun run test` |
+| Unit tests (1192) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 136) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 137) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -395,3 +395,28 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   the alias resolves AND matches the canonical content. When adding
   any symlink to the tree, resolve it from its own directory and run
   the build leg — the loop shape passes every other gate.
+- **A doctrine-uniformity "tidy" can itself be the bug — prove which
+  side of the identity a raw parse sits on before routing it through
+  the seam** (session 228, F-228c): the Analytics CSV export's
+  `new Date(t.date).toISOString().slice(0, 10)` was a letter-
+  violation of the toDate doctrine yet CORRECT — `t.date` is the
+  stored UTC-midnight ISO form, so raw-parse → `toISOString` is an
+  identity in every zone, while routing it through `toDate()` (the
+  "doctrinal" edit) would re-anchor to LOCAL midnight and emit the
+  PREVIOUS day for every UTC+ viewer (the F-219e mirror image). The
+  strictly safer form carries no Date math at all:
+  `t.date.slice(0, 10)` — unambiguous on both the stored `.000Z` and
+  bare `yyyy-mm-dd` forms. Before tidying a raw `new Date()` on a
+  stored date, check whether the parse round-trips to the SAME
+  calendar date in every zone; when the stored form already IS the
+  output form, slice the string.
+- **A dead-token retirement must grep the WHOLE tree for the
+  class-shaped string — the carriers are never only where the audit
+  found them** (session 228, F-228b): the audit named six comment
+  carriers keeping dead utilities alive in the built CSS; the
+  repo-wide grep found TWO MORE in button.tsx the audit missed
+  (both `hover:text-accent-foreground` docblock citations). The
+  F-224v reword cure is only complete when
+  `rg "<class-string>" src/` returns nothing — a single surviving
+  carrier silently re-emits the dead rule and the retirement is
+  cosmetic.
