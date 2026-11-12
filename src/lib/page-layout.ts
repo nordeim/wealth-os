@@ -98,8 +98,9 @@ export const MOBILE_HEADER = {
     "text-lg font-bold bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-600 dark:from-amber-400 dark:via-yellow-300 dark:to-amber-400 bg-clip-text text-transparent",
   // The reference's badge genus (rounded-md, semibold, green + wifi),
   // rendered in its RIGHT cluster beside the theme toggle + hamburger
-  // (F-207a: always visible — the old `hidden xs:inline-flex` rode a
-  // breakpoint Tailwind v4 never defines, hiding the pill below sm).
+  // (F-207a: always visible — the pill's old form rode a phantom
+  // sub-sm breakpoint Tailwind v4 never defines, which hid it below
+  // the small viewport; the cure retired the construction).
   // Session-223 (F-223f): the MOBILE twin keeps its light/dark arms
   // (the topbar wash IS light in light mode) — only the desktop
   // NAV_LAYOUT.syncedPill carries the unconditional dark-surface

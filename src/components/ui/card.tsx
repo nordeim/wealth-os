@@ -36,8 +36,9 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   // (`font-semibold leading-none tracking-tight`, 16px — the reports +
   // profile surfaces); the bigger reference variants (the dashboard and
   // leads titles stepping up at sm, filter rails + by-type at the base
-  // step, settings at the larger step) arrive via CARD_TITLE_OVERRIDE at
-  // the call sites.
+  // step, settings at the larger step) arrive via the per-call
+  // className override over this base (session-230, F-230f: the old
+  // docblock named a constant that never existed).
   return <div className={cn(CARD.title, className)} {...props} />;
 }
 

@@ -18,10 +18,24 @@ import { AI_SUGGESTED_QUESTIONS } from "@/lib/constants";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { cn } from "@/lib/utils";
 
+// Session-230 (R-27, F-230e): messages carry a minted id so the list
+// keys by identity, not position — a future retry-replaces-a-message
+// edit can no longer mis-associate DOM state (the import preview rows
+// and the OTP boxes stay index-keyed by design: a frozen slice; fixed
+// six slots — the index IS the identity there).
 interface CoachMessage {
+  id: number;
   role: "user" | "assistant";
   content: string;
 }
+
+// The id mint (F-230e): a module-level counter — the greeting's
+// render-time adjustment consumes it DURING render, and React forbids
+// ref access during render (react-hooks/refs); a module counter is the
+// sanctioned mint form. One shared sequence is fine — keys need
+// uniqueness within a list only.
+let nextMessageId = 0;
+const nextId = () => ++nextMessageId;
 
 export function AiCoachDialog({
   open,
@@ -44,6 +58,7 @@ export function AiCoachDialog({
     setGreeted(true);
     setMessages([
       {
+        id: nextId(),
         role: "assistant",
         content:
           "Hi! I'm your AI financial coach. Ask me about your spending, savings goals, or investments — or pick a question below.",
@@ -58,13 +73,14 @@ export function AiCoachDialog({
   const send = async (question: string) => {
     const trimmed = question.trim();
     if (!trimmed || busy) return;
-    setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
+    setMessages((prev) => [...prev, { id: nextId(), role: "user", content: trimmed }]);
     setInput("");
     setBusy(true);
     const res = await askCoach(trimmed);
     setMessages((prev) => [
       ...prev,
       {
+        id: nextId(),
         role: "assistant",
         content: res.ok
           ? res.data.answer
@@ -93,9 +109,9 @@ export function AiCoachDialog({
              region — assistant replies are announced when they land (the
              old aria-live wrapped only the textless dots row). */}
         <div ref={listRef} aria-live="polite" className="flex-1 space-y-4 overflow-y-auto px-5 py-4 scrollbar-thin">
-          {messages.map((message, i) => (
+          {messages.map((message) => (
             <div
-              key={i}
+              key={message.id}
               className={cn("flex gap-2.5", message.role === "user" && "flex-row-reverse")}
             >
               <span

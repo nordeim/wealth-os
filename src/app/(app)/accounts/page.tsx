@@ -21,7 +21,7 @@ import {
 import { EmptyState, PageHeader } from "@/components/shared/page-parts";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { ACCOUNT_TYPES, CURRENCIES } from "@/lib/constants";
-import { formatMoney } from "@/lib/finance";
+import { formatMoney, toDate } from "@/lib/finance";
 import { CARD, PAGE_ROOT, STOCK_CARD, CTA } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
@@ -168,7 +168,7 @@ function AccountCard({
       </p>
       <p className="text-xs text-stone-500 dark:text-stone-400">
         {account.currency} · synced{" "}
-        {new Date(account.lastSyncedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+        {toDate(account.lastSyncedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
       </p>
       <div className="mt-4 flex gap-2">
         <Button variant="outline" className="h-8 flex-1 text-xs" onClick={onEdit}>

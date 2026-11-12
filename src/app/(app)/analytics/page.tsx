@@ -484,7 +484,20 @@ export default function AnalyticsPage() {
 /** Session-209 (F-209b): the reference's Analytics stat tile — a saturated
  *  to-r gradient card (`rounded-xl <gradient> text-white border-0
  *  shadow-lg` > p-6 > label `text-X-100 text-sm font-medium mb-1` +
- *  `text-2xl font-bold` value + the w-8 h-8 tone icon right). */
+ *  `text-2xl font-bold` value + the w-8 h-8 tone icon right).
+ *
+ * Session-230 (R-27, F-230a) — the WCAG exemption register (the F-224y
+ * pattern), this surface's own entry: the minus-100 labels on the
+ * saturated 500-to-600 gradients compute below AA — measured:
+ * emerald-100 on emerald-500 = 2.24:1, red-100 on red-500 = 3.08:1,
+ * blue-100 on blue-500 = 3.01:1; the white text-2xl values ride the
+ * large-text threshold (2.54:1 at the emerald-500 side, passing on
+ * the 600 side). The genus is the reference's own (probe-230c: its
+ * Avg Monthly tiles measured the identical gradients, labels, and
+ * values at its standing zero demo data); the a11y two-gate sanctions
+ * the arms. The register entry keeps a future contrast sweep from
+ * "discovering" them. A recolor would deviate from parity — the
+ * register is the record, never a fix (the F-226i lesson). */
 function StatCard({
   label,
   value,
