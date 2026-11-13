@@ -159,6 +159,35 @@ const enumField = <T extends readonly string[]>(
   message: string,
 ) => z.string({ message }).refine((v) => (values as readonly string[]).includes(v), message);
 
+// Session-236 (R-33, F-236c): the clearable date. The F-219q string
+// family (notes/institution/accountId) treats "" and null as THE
+// CLEAR; the nullable dates 400'd on "" — dateField's own min(1)
+// fires AHEAD of any downstream transform, so the guard must run
+// BEFORE the validation chain. The seam normalizes the empty string
+// to null and keeps dateField's calendar-true validation for every
+// present value (the F-216h contract unchanged). The create twins
+// ride the same seam so ONE uniform clear shape works everywhere.
+const clearableDateField = (message: string) =>
+  z.preprocess(
+    (v) => (v === "" ? null : v),
+    dateField(message).nullable().optional(),
+  );
+
+// Session-236 (R-33, F-236a): the no-fields guard. All five update
+// schemas are all-optional BY DESIGN (three-state PUT semantics —
+// absent means skip, null means clear), but a body with NO known
+// fields parses to {} and Prisma SHORT-CIRCUITS updateMany with an
+// empty data object to count 0 — the routes answered 404 for an
+// existing, owned record (live-reproduced: a control mutation with
+// real data returns 1 on the same row, the empty call returns 0).
+// The refine makes the no-field body the honest 400 through the
+// existing parseBody issue mapping; unknown-only keys strip to {}
+// and hit the same guard. settings PUT and users PATCH ride
+// db.<model>.update (a no-op that returns the record), not
+// updateMany — they are deliberately NOT built through the guard.
+const updateSchema = <T extends z.ZodRawShape>(shape: T) =>
+  z.object(shape).refine((v) => Object.keys(v).length > 0, "No fields to update");
+
 // ---- transactions (income + expense) ----------------------------------------
 
 export const transactionCreateSchema = z.object({
@@ -184,7 +213,7 @@ export const transactionCreateSchema = z.object({
     .transform((v) => (v === "" ? undefined : v))
     .optional(),
   recurring: z.boolean().default(false),
-  nextDate: dateField("Enter a valid next date").optional(),
+  nextDate: clearableDateField("Enter a valid next date"),
   accountId: z
     .string()
     .trim()
@@ -193,7 +222,7 @@ export const transactionCreateSchema = z.object({
     .optional(),
 });
 
-export const transactionUpdateSchema = z.object({
+export const transactionUpdateSchema = updateSchema({
   description: z
     .string()
     .trim()
@@ -224,7 +253,7 @@ export const transactionUpdateSchema = z.object({
     .transform((v) => (v === "" ? null : v))
     .optional(),
   recurring: z.boolean().optional(),
-  nextDate: dateField("Enter a valid next date").nullable().optional(),
+  nextDate: clearableDateField("Enter a valid next date"),
   // Session-220 (R-17, F-220i): accountId joins the F-219q null-clear
   // contract — the old transform collapsed null/"" to undefined (the
   // exact collapse F-219q cured for notes/institution), so the route's
@@ -258,7 +287,7 @@ export const incomeSourceCreateSchema = z.object({
     "Invalid frequency",
   ).default("monthly"),
   active: z.boolean().default(true),
-  nextPaymentDate: dateField("Enter a valid next payment date").optional(),
+  nextPaymentDate: clearableDateField("Enter a valid next payment date"),
   notes: z
     .string()
     .trim()
@@ -267,7 +296,7 @@ export const incomeSourceCreateSchema = z.object({
     .optional(),
 });
 
-export const incomeSourceUpdateSchema = z.object({
+export const incomeSourceUpdateSchema = updateSchema({
   name: z
     .string()
     .trim()
@@ -284,7 +313,7 @@ export const incomeSourceUpdateSchema = z.object({
     "Invalid frequency",
   ).optional(),
   active: z.boolean().optional(),
-  nextPaymentDate: dateField("Enter a valid next payment date").nullable().optional(),
+  nextPaymentDate: clearableDateField("Enter a valid next payment date"),
   // Session-219 (R-16, F-219q): an explicit null OR "" now means THE
   // CLEAR (both normalize to null and SURVIVE the parse — the routes'
   // `!== undefined` spreads write it). The old null→undefined collapse
@@ -321,14 +350,22 @@ export const bankAccountCreateSchema = z.object({
     CURRENCIES.map((c) => c.value),
     "Invalid currency",
   ).default("USD"),
-  color: z
-    .string()
-    .trim()
-    .regex(/^#[0-9a-fA-F]{6}$/, "Color must be a hex value like #3b82f6")
-    .optional(),
+  // Session-236 (R-33, F-236c): color joins the uniform clear contract
+  // — the regex fires ahead of any downstream transform, so the
+  // empty-string guard rides z.preprocess (the clearable-date seam's
+  // own form). null and "" both mean THE CLEAR on both twins now.
+  color: z.preprocess(
+    (v) => (v === "" ? null : v),
+    z
+      .string()
+      .trim()
+      .regex(/^#[0-9a-fA-F]{6}$/, "Color must be a hex value like #3b82f6")
+      .nullable()
+      .optional(),
+  ),
 });
 
-export const bankAccountUpdateSchema = z.object({
+export const bankAccountUpdateSchema = updateSchema({
   name: z
     .string()
     .trim()
@@ -351,12 +388,18 @@ export const bankAccountUpdateSchema = z.object({
     CURRENCIES.map((c) => c.value),
     "Invalid currency",
   ).optional(),
-  color: z
-    .string()
-    .trim()
-    .regex(/^#[0-9a-fA-F]{6}$/, "Color must be a hex value like #3b82f6")
-    .nullable()
-    .optional(),
+  // Session-236 (R-33, F-236c): the update twin rides the same
+  // preprocess guard ("" cleared nothing here either — the regex
+  // rejected it ahead of the old transform chain).
+  color: z.preprocess(
+    (v) => (v === "" ? null : v),
+    z
+      .string()
+      .trim()
+      .regex(/^#[0-9a-fA-F]{6}$/, "Color must be a hex value like #3b82f6")
+      .nullable()
+      .optional(),
+  ),
 });
 
 // ---- investments -------------------------------------------------------------------
@@ -384,7 +427,7 @@ export const investmentCreateSchema = z.object({
     .max(1_000_000_000, "Shares is too large"),
   avgCost: moneyField("Cost per share is required"),
   currentValue: moneyField("Current price is required"),
-  purchaseDate: dateField("Enter a valid purchase date").optional(),
+  purchaseDate: clearableDateField("Enter a valid purchase date"),
   notes: z
     .string()
     .trim()
@@ -393,7 +436,7 @@ export const investmentCreateSchema = z.object({
     .optional(),
 });
 
-export const investmentUpdateSchema = z.object({
+export const investmentUpdateSchema = updateSchema({
   symbol: z
     .string()
     .trim()
@@ -423,7 +466,7 @@ export const investmentUpdateSchema = z.object({
     .optional(),
   avgCost: moneyField("Cost per share is required").optional(),
   currentValue: moneyField("Current price is required").optional(),
-  purchaseDate: dateField("Enter a valid purchase date").nullable().optional(),
+  purchaseDate: clearableDateField("Enter a valid purchase date"),
   // Session-219 (R-16, F-219q): an explicit null OR "" now means THE
   // CLEAR (both normalize to null and SURVIVE the parse — the routes'
   // `!== undefined` spreads write it). The old null→undefined collapse
@@ -447,16 +490,21 @@ export const goalCreateSchema = z.object({
     .max(120, "Goal name must be reasonably sized"),
   targetAmount: moneyField("Target amount is required"),
   currentAmount: moneyField("Current amount is required").default(0),
-  targetDate: dateField("Enter a valid target date").optional(),
+  targetDate: clearableDateField("Enter a valid target date"),
   category: enumField(
     GOAL_CATEGORIES.map((c) => c.value),
     "Invalid goal category",
   ).default("other"),
   status: enumField(["active", "completed", "paused"], "Invalid status").default("active"),
-  icon: z.string().trim().max(40).optional(),
+  // Session-236 (R-33, F-236c): icon joins the uniform clear contract
+  // (null and "" both mean THE CLEAR, on both twins).
+  icon: z.preprocess(
+    (v) => (v === "" ? null : v),
+    z.string().trim().max(40).nullable().optional(),
+  ),
 });
 
-export const goalUpdateSchema = z.object({
+export const goalUpdateSchema = updateSchema({
   name: z
     .string()
     .trim()
@@ -465,13 +513,16 @@ export const goalUpdateSchema = z.object({
     .optional(),
   targetAmount: moneyField("Target amount is required").optional(),
   currentAmount: moneyField("Current amount is required").optional(),
-  targetDate: dateField("Enter a valid target date").nullable().optional(),
+  targetDate: clearableDateField("Enter a valid target date"),
   category: enumField(
     GOAL_CATEGORIES.map((c) => c.value),
     "Invalid goal category",
   ).optional(),
   status: enumField(["active", "completed", "paused"], "Invalid status").optional(),
-  icon: z.string().trim().max(40).nullable().optional(),
+  icon: z.preprocess(
+    (v) => (v === "" ? null : v),
+    z.string().trim().max(40).nullable().optional(),
+  ),
 });
 
 // ---- budgets -------------------------------------------------------------------------------

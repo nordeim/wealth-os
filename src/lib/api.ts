@@ -48,6 +48,12 @@ export const ERR = {
           { status: 429, headers: { "Retry-After": String(Math.max(1, retryAfterSec)), "Cache-Control": "no-store" } },
         ),
   INTERNAL: () => fail("INTERNAL", "Something went wrong. Please try again.", 500),
+  // Session-236 (R-33, F-236b): the transient-DB family's honest answer —
+  // a pool/transaction timeout is 503 with the auth family's byte-identical
+  // copy (F-221g's inline arms hoisted into the envelope; the sessioned
+  // CRUD routes join the family through isTransientDbError in src/lib/db).
+  UNAVAILABLE: () =>
+    fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503),
   // Session-228 (R-25, F-228f): the uploads capacity ceiling's honest
   // answer — 507 (Insufficient Storage) is the semantically correct
   // code for a self-hosted disk guard, not a 400 (the caller's request

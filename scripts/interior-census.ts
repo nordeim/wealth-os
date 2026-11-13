@@ -1538,8 +1538,15 @@ export interface StandingAllowance {
 export const STANDING_CENSUS: Readonly<
   Record<string, Readonly<Record<string, StandingAllowance>>>
 > = {
+  // Session-236 (R-33, F-236e): the dashboard's health-advice glyph gained
+  // its aria-hidden wrapper (the F-235g family's missed site) — one inline
+  // element inside main on a census-visible surface. Re-derived per the
+  // R-7.10 doctrine (the touched page re-measured, same commit as the
+  // cure): +1 unexplained on desktop/phone/landscape; on tablet the span
+  // classifies into the wrapper-twin genus (259 → 258, one FEWER
+  // unexplained). mainH unchanged everywhere (the span is inline).
   desktop: {
-    dashboard: { unexplained: 254, mainH: -167 },
+    dashboard: { unexplained: 255, mainH: -167 },
     income: { unexplained: 43, mainH: 49 },
     expenses: { unexplained: 115, mainH: 49 },
     accounts: { unexplained: 25, mainH: 49 },
@@ -1552,7 +1559,7 @@ export const STANDING_CENSUS: Readonly<
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   phone: {
-    dashboard: { unexplained: 270, mainH: 217 },
+    dashboard: { unexplained: 271, mainH: 217 },
     income: { unexplained: 41, mainH: -15 },
     expenses: { unexplained: 112, mainH: -261 },
     accounts: { unexplained: 23, mainH: -15 },
@@ -1565,7 +1572,7 @@ export const STANDING_CENSUS: Readonly<
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   tablet: {
-    dashboard: { unexplained: 259, mainH: -151 },
+    dashboard: { unexplained: 258, mainH: -151 },
     income: { unexplained: 41, mainH: -15 },
     expenses: { unexplained: 111, mainH: -15 },
     accounts: { unexplained: 23, mainH: -15 },
@@ -1578,7 +1585,7 @@ export const STANDING_CENSUS: Readonly<
     "reset-password": { unexplained: 19, mainH: 0 },
   },
   landscape: {
-    dashboard: { unexplained: 254, mainH: 35 },
+    dashboard: { unexplained: 255, mainH: 35 },
     income: { unexplained: 43, mainH: 49 },
     expenses: { unexplained: 115, mainH: 103 },
     accounts: { unexplained: 25, mainH: 49 },

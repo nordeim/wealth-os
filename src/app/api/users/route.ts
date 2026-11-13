@@ -1,4 +1,4 @@
-import { db, isRecordNotFound } from "@/lib/db";
+import { db, isRecordNotFound, isTransientDbError } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, readBoundedJson, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { profileUpdateSchema } from "@/lib/schemas";
@@ -79,6 +79,7 @@ export async function PATCH(request: Request) {
     if (isRecordNotFound(error)) {
       return ERR.UNAUTHORIZED();
     }
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

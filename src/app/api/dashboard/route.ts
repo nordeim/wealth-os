@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, requireSession } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -48,6 +48,7 @@ export async function GET() {
     });
   } catch (error) {
     logApiError("dashboard GET", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

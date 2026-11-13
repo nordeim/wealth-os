@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { isTransientDbError } from "@/lib/db";
 import { unlink, writeFile } from "fs/promises";
 import { join } from "path";
 import { ERR, isGuarded, logApiError, ok, requireSession } from "@/lib/api";
@@ -159,6 +160,7 @@ export async function POST(request: Request) {
     return ok({ file_url: `/api/uploads/${name}` });
   } catch (error) {
     logApiError("upload POST", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

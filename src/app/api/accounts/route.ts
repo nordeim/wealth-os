@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { bankAccountCreateSchema } from "@/lib/schemas";
@@ -16,6 +16,7 @@ export async function GET() {
     return ok(accounts);
   } catch (error) {
     logApiError("accounts GET", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }
@@ -50,6 +51,7 @@ export async function POST(req: Request) {
     return ok(account);
   } catch (error) {
     logApiError("accounts POST", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

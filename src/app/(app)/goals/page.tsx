@@ -127,7 +127,7 @@ export default function GoalsPage() {
                     className="mt-2 h-2.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700"
                     role="progressbar"
                     aria-label={`${goal.name} funding progress`}
-                    aria-valuenow={Math.round(progress.pct)}
+                    aria-valuenow={progress.pct}
                     aria-valuemin={0}
                     aria-valuemax={100}
                   >

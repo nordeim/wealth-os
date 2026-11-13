@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { ERR, isGuarded, logApiError, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
@@ -73,6 +73,7 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     logApiError("export GET", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

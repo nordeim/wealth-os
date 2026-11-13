@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1337) | `bun run test` |
+| Unit tests (1391) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 140) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 142) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -542,3 +542,38 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   login drift). Production never evals (React's own contract) and
   the build bakes the strict form — verify the served header with
   curl on the standalone before shipping a CSP change.
+- **Prisma SHORT-CIRCUITS `updateMany({ data: {} })` to count 0 —
+  WITHOUT executing a query (session 236, F-236a)**: an
+  all-optional update schema parses a `{}` body cleanly, the
+  route's conditional spreads build an empty data object, and the
+  count-mapped 404 arm answers NOT_FOUND for an EXISTING, owned
+  row — indistinguishable from the vanished/foreign row the arm
+  exists for (live-reproduced: a control mutation with real data
+  returns 1 on the same row). The five `[id]` update schemas carry
+  the no-fields refine ("No fields to update" 400);
+  `db.<model>.update` with empty data is a no-op that RETURNS the
+  record (settings/users) — the two forms diverge exactly here.
+  Any new count-mapped mutation route needs the same guard.
+- **A superset element on a CENSUS-VISIBLE surface shifts the
+  interior census — re-derive the standing allowance in the SAME
+  commit (session 236, F-236e)**: the aria-hidden emoji wrap on
+  the dashboard's health line added one inline span inside
+  `<main>`, and the interior-census gate REDed at three of four
+  axes (+1 unexplained; at tablet the span classified into the
+  wrapper-twin genus, −1). The R-7.10 doctrine covers it: a
+  legitimate DOM-genus change re-measures the touched page's
+  allowance literals same-commit, decode documented in the table.
+  Before shipping ANY element-adding a11y cure, name which
+  captured/censused surfaces it touches — "DOM-inert on captured
+  faces" (the F-235g test) is only true for CLOSED dialogs.
+- **A redirecting face can VANISH before a capture's waitFor
+  polls it — hold the navigation (session 236, the F-236f
+  captures lesson)**: under the dev server the revocation face
+  rendered and redirected in well under one poll interval (~100 ms
+  — the e2e leg passed on the slower production build with no
+  hold). The captures script arms a brief route-interception
+  delay on the redirect target so the face stays paintable for
+  the assertion + screenshot. When capturing a transient surface,
+  verify the full flow first (a probe that dumps the final URL
+  proves the face lived), then decide whether the natural window
+  is wide enough.

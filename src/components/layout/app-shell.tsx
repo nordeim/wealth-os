@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
 import { MobileHeader } from "./mobile-header";
+import { GuestLoginRedirect } from "@/components/layout/guest-login-redirect";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { APP_FOOTER, SHELL_LAYOUT } from "@/lib/page-layout";
 import { LoadingBlock } from "@/components/shared/page-parts";
@@ -26,6 +27,13 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
   const loading = useWealthOs((s) => s.loading);
   const hydrated = useWealthOs((s) => s.hydrated);
   const storeError = useWealthOs((s) => s.error);
+  // Session-236 (R-33, F-236f): the store's OWN user — the server-prop
+  // user stays valid for the chrome, but a hydrate that answers
+  // UNAUTHORIZED (a tokenVersion bumped in another tab, or the 7-day
+  // TTL crossed between the server layout's pass and the client fetch)
+  // nulls it. The gate below re-establishes the login wall client-side
+  // instead of rendering an empty workspace.
+  const storeUser = useWealthOs((s) => s.user);
 
   // Close the drawer on navigation — adjust-during-render for this
   // component's OWN state (the sanctioned React pattern; non-link
@@ -41,6 +49,18 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
   React.useEffect(() => {
     void hydrate();
   }, [hydrate]);
+
+  // Session-236 (R-33, F-236f): the mid-flight revocation face. The
+  // (app) layout's server gate PASSED (the cookie was valid at request
+  // time); the client hydrate answered UNAUTHORIZED — pre-cure the
+  // `!hydrated || loading` gate fell through to children with EMPTY
+  // slices (a $0 dashboard, the stale sidebar, no explanation). The
+  // guest-wall face re-establishes the login wall client-side with
+  // the from_url round-trip. The logout path is clear by construction:
+  // it resets hydrated/loading, so the loading gate owns it.
+  if (hydrated && !loading && storeUser === null) {
+    return <GuestLoginRedirect />;
+  }
 
   return (
     <div className={SHELL_LAYOUT.root}>

@@ -33,6 +33,16 @@ describe("F-235a — the coach greeting seeds in an effect so the region announc
     const src = read("src/components/shared/ai-coach.tsx");
     expect(src).toMatch(/aria-live="polite"/);
   });
+
+  // Session-236 (R-33, F-236h): the deferral mechanism itself. The three
+  // pins above pass a regression to a synchronous state write in the
+  // effect body — the announcement-breaking shape the F-218h doctrine
+  // exists to prevent. The timer/cleanup pair IS the mechanism.
+  it("the seed defers through a zero-delay timer with a cancellable cleanup (F-236h)", () => {
+    const src = read("src/components/shared/ai-coach.tsx");
+    expect(src).toMatch(/const t = setTimeout\(/);
+    expect(src).toMatch(/return \(\) => clearTimeout\(t\);/);
+  });
 });
 
 // ---- F-235b: the login verification oracle reorder ---------------------------

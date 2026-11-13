@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { ERR, MAX_AI_BODY_BYTES, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { aiCoachSchema } from "@/lib/schemas";
@@ -55,6 +55,7 @@ export async function POST(req: Request) {
     return ok({ answer });
   } catch (error) {
     logApiError("ai/coach POST", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

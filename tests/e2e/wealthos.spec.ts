@@ -657,3 +657,63 @@ test.describe("the Analytics Income tab empty state (F-229a)", () => {
     await expect(incomeCard.locator("svg.recharts-surface")).toHaveCount(0);
   });
 });
+
+// Session-236 (R-33, F-236a): the empty-put 400, end-to-end. The
+// five [id] PUT routes' update schemas are all-optional (three-state
+// semantics); a body with no known fields parsed to {} and Prisma
+// short-circuits updateMany({ data: {} }) to count 0 — the route
+// answered 404 for an existing, OWNED row. The no-fields refine makes
+// it the honest 400. This probe was born RED against the pre-cure
+// tree (the 404 answered).
+test.describe("the empty-put 400 (F-236a — the no-fields guard)", () => {
+  test("a PUT with no known fields answers 400, never 404 on an existing row", async ({ request }) => {
+    // An existing, owned row through the authenticated list.
+    const list = await request.get("/api/transactions");
+    const body = await list.json();
+    expect(body.ok).toBe(true);
+    const id = body.data?.[0]?.id;
+    expect(id).toBeTruthy();
+
+    const res = await request.put(`/api/transactions/${id}`, { data: {} });
+    expect(res.status()).toBe(400);
+    const parsed = await res.json();
+    expect(parsed.ok).toBe(false);
+    expect(parsed.error?.message).toBe("No fields to update");
+
+    // A body of ONLY unknown keys is the same no-fields update (zod
+    // strips them ahead of the refine).
+    const unknownOnly = await request.put(`/api/transactions/${id}`, {
+      data: { nonsense: true },
+    });
+    expect(unknownOnly.status()).toBe(400);
+  });
+});
+
+// Session-236 (R-33, F-236f): the mid-flight revocation face. The
+// (app) layout's server gate PASSED (the cookie is valid at request
+// time); the client hydrate's /api/dashboard leg answers UNAUTHORIZED
+// (a tokenVersion bumped in another tab, or the TTL crossed). The
+// shell's post-hydrate null-user gate re-establishes the login wall
+// client-side — the guest-wall face with the from_url round-trip.
+// The route interception is the deterministic trigger (the bump
+// window itself cannot be raced reliably).
+test.describe("the mid-flight revocation face (F-236f)", () => {
+  test("a hydrate that answers UNAUTHORIZED renders the login wall, not an empty workspace", async ({ page }) => {
+    await page.route("**/api/dashboard", (route) =>
+      route.fulfill({
+        status: 401,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: false,
+          error: { code: "UNAUTHORIZED", message: "Sign in required" },
+        }),
+      }),
+    );
+    await page.goto("/dashboard");
+    // The guest-wall face (F-235j's status surface, re-used by the gate).
+    await expect(page.getByText("Redirecting to sign in…")).toBeVisible({ timeout: 10_000 });
+    // The from_url round-trip: the redirect carries the current URL.
+    await page.waitForURL(/\/login\?from_url=/, { timeout: 10_000 });
+    await page.unroute("**/api/dashboard");
+  });
+});

@@ -157,13 +157,19 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
       const body = await res.json().catch(() => null);
       if (!res.ok || !body?.ok) {
         // Session-218 (R-15, F-218a): a VERIFICATION_REQUIRED 403 means
-        // the credentials were RIGHT — the account simply carries an
-        // unverified (or expired) code. Render the banner dead-end and
-        // the user is locked out: the verify view (the only surface
-        // with the Resend) was reachable solely via signup success,
-        // re-signup answers "already exists", and the reset flow never
-        // clears the hash. Land the verify view instead — its Resend
-        // re-arms the code (the F-217d server cure).
+        // the account carries an unverified (or expired) code — render
+        // the banner dead-end and the user is locked out: the verify
+        // view (the only surface with the Resend) was reachable solely
+        // via signup success, re-signup answers "already exists", and
+        // the reset flow never clears the hash. Land the verify view
+        // instead — its Resend re-arms the code (the F-217d server
+        // cure).
+        // Session-236 (R-33, F-236g — the F-235b reorder's rider): the
+        // 403 no longer encodes credential validity — the gate sits
+        // ABOVE the password check, so both arms answer 403 (the e2e
+        // probe pins it); the 6-digit code is the gate, not the
+        // password. The old comment's "credentials were RIGHT" claim
+        // was falsified by the reorder.
         if (body?.error?.code === "VERIFICATION_REQUIRED") {
           setCodeDigits(Array(VERIFICATION_CODE_LENGTH).fill(""));
           setError(null);

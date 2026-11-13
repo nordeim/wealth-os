@@ -323,7 +323,9 @@ describe("F-222o — the [id] vanish race answers NOT_FOUND, never INTERNAL", ()
       // Session-227 (R-24, F-227c): the transactions family also imports
       // the F-227l FK seam — the import-line pin flexes to the set form
       // (isRecordNotFound still present; the contract grew, not moved).
-      expect(src).toMatch(/import \{ db,(?: isForeignKeyViolation,)? isRecordNotFound \} from "@\/lib\/db";/);
+      // Session-236 (R-33, F-236b): the transient seam joins the set —
+      // the same flex, second growth.
+      expect(src).toMatch(/import \{ db,(?: isForeignKeyViolation,)? isRecordNotFound,(?: isTransientDbError)? \} from "@\/lib\/db";/);
       const seams = src.split("if (isRecordNotFound(e)) return ERR.NOT_FOUND();").length - 1;
       expect(seams).toBe(2);
       expect(src).not.toMatch(/\} catch \{\n\s*return ERR\.INTERNAL\(\);\n\s*\}/);

@@ -155,8 +155,11 @@ describe("F-220e — the error pages' Try-again focus ring", () => {
 
 describe("F-220f — the toast dismiss ink (2.52:1 → text-muted)", () => {
   it("the dismiss button rides text-muted (4.74:1 light / ~7:1 dark)", () => {
+    // Session-236 (R-33, F-236d): the padding joined the DIALOG_CLOSE
+    // family (26×26px over the 24px floor) — the contiguous ink form
+    // carries the new step, the F-235f lockstep precedent.
     expect(read("src/components/ui/toast.tsx")).toMatch(
-      /p-1 text-muted transition-colors/,
+      /p-1\.5 text-muted transition-colors/,
     );
     expect(read("src/components/ui/toast.tsx")).not.toMatch(/p-1 text-subtle/);
   });

@@ -60,3 +60,20 @@ export function isForeignKeyViolation(error: unknown): boolean {
     error.code === "P2003"
   );
 }
+
+/**
+ * Session-236 (R-33, F-236b): the transient-DB seam — a connection-pool
+ * timeout (P2024) or a transaction-interaction timeout (P2028) is a
+ * SERVER-side, time-bounded condition: the request is fine, the data is
+ * fine, the caller's honest answer is 503 with retry copy, never the
+ * generic 500's "something went wrong" (a retry cannot succeed until
+ * the contention clears — the auth family's own F-220k/F-221g doctrine,
+ * completed across the sessioned CRUD family). The forgot/reset/reset
+ * routes carried the arm inline since F-221g; this seam is its hoist.
+ */
+export function isTransientDbError(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    (error.code === "P2024" || error.code === "P2028")
+  );
+}

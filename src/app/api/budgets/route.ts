@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { budgetUpsertSchema, budgetDeleteSchema } from "@/lib/schemas";
@@ -18,6 +18,7 @@ export async function GET() {
     return ok(budgets);
   } catch (error) {
     logApiError("budgets GET", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }
@@ -88,10 +89,12 @@ export async function POST(req: Request) {
         return ok(budget);
       } catch (retryError) {
         logApiError("budgets POST (P2002 retry)", retryError);
+        if (isTransientDbError(retryError)) return ERR.UNAVAILABLE();
         return ERR.INTERNAL();
       }
     }
     logApiError("budgets POST", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }
@@ -121,6 +124,7 @@ export async function DELETE(req: Request) {
     return ok({ category: parsed.data.category });
   } catch (error) {
     logApiError("budgets DELETE", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

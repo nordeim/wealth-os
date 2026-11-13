@@ -2,10 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   aiCoachSchema,
   bankAccountCreateSchema,
+  bankAccountUpdateSchema,
   budgetUpsertSchema,
   csvImportSchema,
   goalCreateSchema,
+  goalUpdateSchema,
   incomeSourceCreateSchema,
+  incomeSourceUpdateSchema,
   investmentCreateSchema,
   investmentUpdateSchema,
   settingsUpdateSchema,
@@ -286,5 +289,107 @@ describe("aiCoachSchema", () => {
     expect(
       aiCoachSchema.parse({ question: "How am I doing?" }).history,
     ).toEqual([]);
+  });
+});
+
+// Session-236 (R-33, F-236a): the no-fields guard. All five update
+// schemas are all-optional by design (three-state PUT semantics), but a
+// body with NO known fields parses to {} and Prisma short-circuits
+// updateMany({ data: {} }) to count 0 — the routes answered 404 for an
+// existing, owned record (live-reproduced against the exact client).
+// The refine makes the no-field body an honest 400.
+describe("the update schemas' no-fields guard (F-236a)", () => {
+  it.each([
+    ["transactionUpdateSchema", transactionUpdateSchema],
+    ["incomeSourceUpdateSchema", incomeSourceUpdateSchema],
+    ["bankAccountUpdateSchema", bankAccountUpdateSchema],
+    ["investmentUpdateSchema", investmentUpdateSchema],
+    ["goalUpdateSchema", goalUpdateSchema],
+  ] as const)("%s rejects a body with no known fields", (_name, schema) => {
+    expect(schema.safeParse({}).success).toBe(false);
+    // Unknown keys are stripped by zod — a body of ONLY unknown keys is
+    // the same no-fields update.
+    expect(schema.safeParse({ nonsense: 1 }).success).toBe(false);
+  });
+
+  it("the guard's message maps through parseBody's issue mapping", () => {
+    const res = transactionUpdateSchema.safeParse({});
+    expect(res.success).toBe(false);
+    if (!res.success) expect(res.error.issues[0].message).toBe("No fields to update");
+  });
+
+  it("a single-field PUT keeps its three-state semantics (the guard does not overreach)", () => {
+    const parsed = transactionUpdateSchema.parse({ amount: 10 });
+    expect(parsed.amount).toBe(10);
+    expect(parsed.notes).toBeUndefined();
+  });
+});
+
+// Session-236 (R-33, F-236c): the uniform clear contract. The F-219q
+// string family (notes/institution/accountId) treats "" and null as THE
+// CLEAR; the dates 400'd on "" (dateField's min(1) fires ahead of any
+// transform) and the create twins rejected the null the update twins
+// accept. The clearable-date seam normalizes both forms on both twins;
+// color and icon join the contract.
+describe("the uniform clear contract (F-236c)", () => {
+  const txValid = {
+    description: "Whole Foods run",
+    amount: 142.67,
+    type: "expense",
+    date: "2026-11-08",
+  };
+  const isValid = { name: "Side gig", amount: 500 };
+  const invValid = { symbol: "aapl", name: "Apple", shares: 10, avgCost: 100, currentValue: 150 };
+  const goalValid = { name: "Trip", targetAmount: 8000 };
+  const acctValid = {
+    name: "Checking",
+    type: "checking",
+    balance: 1000,
+    institution: "House Bank",
+  };
+
+  it("the empty string clears the nullable dates on the update twins", () => {
+    expect(transactionUpdateSchema.parse({ nextDate: "" }).nextDate).toBeNull();
+    expect(incomeSourceUpdateSchema.parse({ nextPaymentDate: "" }).nextPaymentDate).toBeNull();
+    expect(investmentUpdateSchema.parse({ purchaseDate: "" }).purchaseDate).toBeNull();
+    expect(goalUpdateSchema.parse({ targetDate: "" }).targetDate).toBeNull();
+  });
+
+  it("the empty string clears the nullable dates on the create twins too (one uniform shape)", () => {
+    expect(transactionCreateSchema.parse({ ...txValid, nextDate: "" }).nextDate).toBeNull();
+    expect(incomeSourceCreateSchema.parse({ ...isValid, nextPaymentDate: "" }).nextPaymentDate).toBeNull();
+    expect(investmentCreateSchema.parse({ ...invValid, purchaseDate: "" }).purchaseDate).toBeNull();
+    expect(goalCreateSchema.parse({ ...goalValid, targetDate: "" }).targetDate).toBeNull();
+  });
+
+  it("null joins the create twins (the update twins already accept it)", () => {
+    expect(transactionCreateSchema.parse({ ...txValid, nextDate: null }).nextDate).toBeNull();
+    expect(goalCreateSchema.parse({ ...goalValid, targetDate: null, icon: null }).targetDate).toBeNull();
+    expect(
+      goalCreateSchema.parse({ ...goalValid, targetDate: null, icon: null }).icon,
+    ).toBeNull();
+    expect(bankAccountCreateSchema.parse({ ...acctValid, color: null }).color).toBeNull();
+  });
+
+  it("the empty string clears color and icon on both twins", () => {
+    expect(bankAccountCreateSchema.parse({ ...acctValid, color: "" }).color).toBeNull();
+    expect(bankAccountUpdateSchema.parse({ color: "" }).color).toBeNull();
+    expect(goalCreateSchema.parse({ ...goalValid, icon: "" }).icon).toBeNull();
+    expect(goalUpdateSchema.parse({ icon: "" }).icon).toBeNull();
+  });
+
+  it("a present valid date still round-trips on both twins", () => {
+    expect(transactionUpdateSchema.parse({ nextDate: "2026-06-01" }).nextDate).toBe("2026-06-01");
+    expect(
+      transactionCreateSchema.parse({ ...txValid, nextDate: "2026-06-01" }).nextDate,
+    ).toBe("2026-06-01");
+  });
+
+  it("the REQUIRED date fields still reject the empty string (the guard is per-field, not global)", () => {
+    expect(transactionCreateSchema.safeParse({ ...txValid, date: "" }).success).toBe(false);
+  });
+
+  it("a present valid hex color still round-trips", () => {
+    expect(bankAccountCreateSchema.parse({ ...acctValid, color: "#3b82f6" }).color).toBe("#3b82f6");
   });
 });

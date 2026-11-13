@@ -41,6 +41,8 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
     // should pin an ink pair or darken the fill, never inherit this
     // silently.
     destructive: "border-transparent bg-danger text-neutral-50 shadow hover:bg-danger/80",
+    // Session-236 (R-33, F-236j — the F-229f register): the outline arm is
+    // vendored shadcn stock — zero consumers today.
     outline: "text-foreground",
   };
   return (

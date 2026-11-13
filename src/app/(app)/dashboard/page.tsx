@@ -311,7 +311,10 @@ export default function DashboardPage() {
             </div>
             <div className="mt-4 p-3 rounded-xl bg-amber-50/60 dark:bg-amber-900/10 border border-amber-200/40 dark:border-amber-800/30">
               <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
-                💡 {healthAdvice(health)}
+                {/* Session-236 (R-33, F-236e): the aria-hidden wrap — every
+                    other decorative glyph in the tree carries it; the raw
+                    emoji announced "light bulb" before the advice. */}
+                <span aria-hidden="true">💡</span> {healthAdvice(health)}
               </p>
             </div>
           </section>

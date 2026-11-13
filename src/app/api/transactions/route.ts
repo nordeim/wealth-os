@@ -1,4 +1,4 @@
-import { db, isForeignKeyViolation } from "@/lib/db";
+import { db, isForeignKeyViolation, isTransientDbError } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { transactionCreateSchema } from "@/lib/schemas";
@@ -23,6 +23,7 @@ export async function GET() {
     return ok(transactions);
   } catch (error) {
     logApiError("transactions GET", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }
@@ -74,6 +75,7 @@ export async function POST(req: Request) {
     if (isForeignKeyViolation(error)) {
       return ERR.BAD_REQUEST("Selected account does not exist");
     }
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

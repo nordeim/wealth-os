@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { settingsUpdateSchema } from "@/lib/schemas";
@@ -52,6 +52,7 @@ export async function GET() {
     return ok(await readSettings(guard.user.id));
   } catch (error) {
     logApiError("settings GET", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }
@@ -78,6 +79,7 @@ export async function PUT(req: Request) {
     return ok(await readSettings(guard.user.id));
   } catch (error) {
     logApiError("settings PUT", error);
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

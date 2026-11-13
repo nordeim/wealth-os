@@ -1,4 +1,4 @@
-import { db, isForeignKeyViolation, isRecordNotFound } from "@/lib/db";
+import { db, isForeignKeyViolation, isRecordNotFound, isTransientDbError } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, parseBody, requireSession } from "@/lib/api";
 import { transactionUpdateSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -65,6 +65,7 @@ export async function PUT(req: Request, { params }: Params) {
     // guard and the mutation is NOT_FOUND, never INTERNAL.
     if (isForeignKeyViolation(e)) return ERR.BAD_REQUEST("Selected account does not exist");
     if (isRecordNotFound(e)) return ERR.NOT_FOUND();
+    if (isTransientDbError(e)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }
@@ -93,6 +94,7 @@ export async function DELETE(req: Request, { params }: Params) {
     // Session-222 (R-19, F-222o): a record that vanished between the
     // guard and the mutation is NOT_FOUND, never INTERNAL.
     if (isRecordNotFound(e)) return ERR.NOT_FOUND();
+    if (isTransientDbError(e)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

@@ -74,6 +74,9 @@ const buttonVariants = cva(
         // pin a --color-danger-ink pair (red-600/red-400) or darken the
         // fill, never inherit this silently.
         destructive: "bg-danger text-white shadow-sm hover:bg-danger/90",
+        // Session-236 (R-33, F-236j — the F-229f register): the sidebar and
+        // link variant arms are vendored shadcn stock — zero consumers
+        // today; retained for the family's completeness.
         sidebar: "bg-white/10 text-white hover:bg-white/20",
         // Session-129 (F-129c3): the outline variant gains the hover TEXT
         // arm — live-walked on BOTH censused outline surfaces (the
@@ -87,6 +90,9 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
+        // Session-236 (R-33, F-236j — the F-229f register): the icon,
+        // small-icon, pill, and large size arms are vendored shadcn
+        // stock — zero consumers today.
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-6",
