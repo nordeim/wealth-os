@@ -353,8 +353,12 @@ export default function InvestmentsPage() {
                                 else toast.error("Delete failed", res.error);
                               }}
                             >
+                              {/* Session-234 (R-31, F-234h): the glyph
+                                  joins its screen-reader label under the
+                                  aria-hidden convention — the computed
+                                  name kept the bare character. */}
                               <span className="sr-only">Delete {row.symbol}</span>
-                              ✕
+                              <span aria-hidden="true">✕</span>
                             </Button>
                           </span>
                         </td>

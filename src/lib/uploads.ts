@@ -58,8 +58,18 @@ export function uploadsCapacity(dir: string): UploadsCapacity {
   }
   for (const entry of entries) {
     if (!entry.isFile()) continue;
-    files += 1;
-    bytes += statSync(join(dir, entry.name)).size;
+    // Session-234 (R-31, F-234e): the per-entry guard — a file that
+    // vanishes between the directory read and this size read carries
+    // nothing; skip it instead of throwing past the envelope (the
+    // pre-write call site sits outside the route's try, so the raw
+    // throw escaped as a non-JSON 500, and the post-write site
+    // answered INTERNAL after the write, skipping the breach-unlink).
+    try {
+      bytes += statSync(join(dir, entry.name)).size;
+      files += 1;
+    } catch {
+      // A vanished entry occupies no capacity.
+    }
   }
   return { files, bytes };
 }

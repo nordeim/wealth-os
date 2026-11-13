@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1282;
+const UNIT_TOTAL = 1302;
 const E2E_TOTAL = 140;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 81;
+const TEST_FILES = 82;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -69,9 +69,10 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // parity-228 — 47 rows; session-229 added parity-229 — 48 rows;
     // session-230 added parity-230 — 49 rows; session-231 added
     // parity-232 — 51 rows; session-233 added parity-233 — 52 rows, and
-    // the verification-code seam took the domain-seams family to 4).
+    // the verification-code seam took the domain-seams family to 4;
+    // session-234 added parity-234 — 53 rows.)
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 52 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233) |",
+      "| — architecture pins | 53 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99

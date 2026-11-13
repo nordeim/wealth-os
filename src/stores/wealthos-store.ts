@@ -77,6 +77,14 @@ export interface WealthOsState {
   goals: Goal[];
   budgets: Budget[];
   settings: Settings | null;
+  // Session-234 (R-31, F-234a): the settings fetch's settled flag —
+  // hydrate commits its loading drop BEFORE the settings await, so
+  // slice-null alone cannot distinguish "in flight" from "failed"
+  // (the Settings page's amber guard flashed on every hard load under
+  // real latency). The flag flips in BOTH arms of the fetch and resets
+  // on every hydrate/logout cycle; the page keys its reason line on it
+  // instead of the loading drop.
+  settingsSettled: boolean;
 
   // ui
   loading: boolean;
@@ -167,6 +175,7 @@ function createStore() {
     goals: [],
     budgets: [],
     settings: null,
+    settingsSettled: false,
     loading: true,
     error: null,
 
@@ -177,7 +186,7 @@ function createStore() {
       // still set (the banner + the LoadingBlock rendered together
       // mid-retry), and a 401 landing left a stale non-auth error
       // standing after the failure mode changed.
-      set({ loading: true, error: null });
+      set({ loading: true, error: null, settingsSettled: false });
       const res = await call<DashboardData>("/api/dashboard");
       if (token !== sessionWriteToken) return;
       if (res.ok) {
@@ -194,8 +203,14 @@ function createStore() {
           error: null,
         });
         const settingsRes = await call<Settings>("/api/settings");
-        if (token === sessionWriteToken && settingsRes.ok) {
-          set({ settings: settingsRes.data });
+        if (token === sessionWriteToken) {
+          // Session-234 (R-31, F-234a): flip the settled flag in BOTH
+          // arms — the in-flight window renders nothing on the Settings
+          // page; only a settled-and-missing slice is a failure face.
+          set({
+            settingsSettled: true,
+            ...(settingsRes.ok ? { settings: settingsRes.data } : {}),
+          });
         }
       } else if (res.code === "UNAUTHORIZED") {
         // Session-220 (R-17, F-220j): the code-keyed branch (was a
@@ -232,6 +247,7 @@ function createStore() {
         goals: [],
         budgets: [],
         settings: null,
+        settingsSettled: false,
         hydrated: false,
         loading: true,
         error: null,

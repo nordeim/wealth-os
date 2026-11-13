@@ -25,13 +25,24 @@ export const dynamic = "force-dynamic";
  * eviction (below) is a one-row indexed update on the session's user.
  */
 export async function POST(req: Request) {
-  const limit = rateLimit(`writes:${clientKey(req)}`, 60, 15 * 60 * 1000);
-  sweepRateLimits();
-  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
+  // Session-234 (R-31, F-234g): the gate moves ABOVE the bucket. The
+  // pre-parse burn genus's seventh surface, at broader scope: this
+  // route burned a slot of the SHARED writes bucket (the family every
+  // sessioned mutation rides) before the content-type gate rejected a
+  // cross-site plain-text volley — 60 cookie-less no-preflight posts
+  // 429'd the victim's CRUD for a renewable 15-minute window. Logout
+  // reads no body and owns no brute-force surface (possession of the
+  // cookie IS the credential), so the gate is its CSRF defense, not an
+  // anti-brute-force bound — gate-first: the cross-site burn dies at
+  // 400 un-bucketed, and the first-party JSON path rides the bucket
+  // exactly as before.
   const contentType = req.headers.get("content-type") ?? "";
   if (!contentType.toLowerCase().includes("application/json")) {
     return ERR.BAD_REQUEST("Invalid request body");
   }
+  const limit = rateLimit(`writes:${clientKey(req)}`, 60, 15 * 60 * 1000);
+  sweepRateLimits();
+  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
   try {
     // Session-223 (R-20, F-223k): "sign out" means REVOKE — the same
     // tokenVersion eviction the reset flow rides. An exfiltrated cookie

@@ -126,7 +126,13 @@ export function GradientKpiCard({
   gradient: string;
 }) {
   return (
-    <div className={cn("rounded-xl text-card-foreground border-0 shadow-2xl text-white p-6", gradient)}>
+    // Session-234 (R-31, F-234i): the semantic ink token retired from
+    // this string — twMerge drops it before the DOM whenever the
+    // literal white rides the same chain, so it was a cascade-dead
+    // carrier (a live-source member of the dead-utility genus the
+    // content scan cannot see; removing the literal later would have
+    // silently activated a different ink in dark mode).
+    <div className={cn("rounded-xl border-0 shadow-2xl text-white p-6", gradient)}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-white/70 text-sm font-medium mb-1">{label}</p>

@@ -117,7 +117,11 @@ describe("F-233d — Save disables while the settings slice is missing", () => {
 
   it("the card states the reason while the slice is missing", () => {
     const src = read("src/app/(app)/settings/page.tsx");
-    expect(src).toContain("!settings && !store.loading");
+    // Session-234 (R-31, F-234a) recalibration: the condition keys on
+    // the store's settled flag — the loading drop lands before the
+    // settings await, so the slice alone read the in-flight window as
+    // failure (the flash on every hard load under real latency).
+    expect(src).toContain("!settings && store.settingsSettled");
     expect(src).toMatch(/could not be loaded/i);
   });
 });
@@ -127,7 +131,10 @@ describe("F-233d — Save disables while the settings slice is missing", () => {
 describe("F-233e — the extract button is the retry affordance, not a re-parse", () => {
   it("the button disables once the review stands", () => {
     const src = read("src/app/(app)/import/page.tsx");
-    expect(src).toContain("disabled={!file || busy || rows !== null}");
+    // Session-234 (R-31, F-234b) recalibration: the disabled set gains
+    // the parse in-flight flag — the button sat enabled inside the
+    // parse window, re-firing the exact re-parse this pin guards.
+    expect(src).toContain("disabled={!file || busy || parsing || rows !== null}");
   });
 });
 

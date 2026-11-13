@@ -23,7 +23,9 @@ export type Theme = "light" | "dark" | "system";
 
 const STORAGE_KEY = "wealthos-theme";
 
-export function resolveTheme(value: string | null): Theme {
+// Session-234 (R-31, F-234j): module-local — consumed only by
+// readStoredTheme in this file; the export keyword was vestigial.
+function resolveTheme(value: string | null): Theme {
   return value === "dark" || value === "light" || value === "system"
     ? value
     : "system";

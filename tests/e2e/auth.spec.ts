@@ -209,12 +209,44 @@ test("a fresh signup swaps to the verify-email view with its ladder", async ({ p
   ).toBeVisible();
 
   // The resend: the green info Callout (auto-dismissing on the reference).
+  // Session-234 (R-31, F-234d): arm the response capture BEFORE the
+  // click — the paste leg below needs the FRESH code the resend mints
+  // (the in-app delivery the e2e environment pins on).
+  const resendResponse = page.waitForResponse(
+    (r) => r.url().includes("/api/auth/resend") && r.request().method() === "POST",
+  );
   await page.getByRole("button", { name: "Resend" }).click();
   await expect(
-    // Session-219 (R-16, F-219v): the resend banner is the polite
-    // InfoCallout (role="status") — ErrorCallout keeps role="alert".
+    // Session-219 (R-16, F-219v): the polite live region carries the
+    // resend confirmation (the status role) — ErrorCallout keeps the
+    // assertive role. Session-233 (R-30, F-233c): the region pre-exists
+    // in the verify view; the visual callout is the banner only.
     page.getByRole("status").filter({ hasText: "New verification code sent to your email" }),
   ).toBeVisible();
+  const resendBody = (await (await resendResponse).json()) as {
+    data?: { verificationCode?: string | null };
+  };
+  const wholeCode = resendBody.data?.verificationCode ?? "";
+  expect(wholeCode).toMatch(/^\d{6}$/);
+
+  // Session-234 (R-31, F-234d): the paste/autofill path — the whole
+  // code delivered as ONE edit into a LATER box. The browser
+  // one-time-code autofill inserts the full code into the first
+  // focused box and a whole-code paste behaves identically at the
+  // change-event layer; fill() delivers exactly that event shape.
+  // With one digit already typed (the type-then-paste flow), the seam
+  // must restart the distribution at box 1 (F-234c) — the session-233
+  // form rotated the code from the edited box and burned an attempt.
+  await page.getByLabel("Digit 1").fill(wholeCode[0]!);
+  await page.getByLabel("Digit 2").fill(wholeCode);
+  for (let i = 1; i <= 6; i += 1) {
+    await expect(page.getByLabel(`Digit ${i}`)).toHaveValue(wholeCode[i - 1]!);
+  }
+  await expect(page.getByLabel("Digit 6")).toBeFocused();
+  await page.getByRole("button", { name: "Verify email" }).click();
+  // The resend reset the attempt ladder, so the correct code signs in —
+  // the verify success lands the app's root (the dashboard).
+  await expect(page.getByRole("heading", { name: "Financial Dashboard", exact: true })).toBeVisible();
 });
 
 // Session-67 (N-67 family coverage closure): the ladder beyond rung 1 —
@@ -275,8 +307,10 @@ test("the wrong-code ladder climbs to lockout and repeats its message", async ({
   // server-side).
   await page.getByRole("button", { name: "Resend" }).click();
   await expect(
-    // Session-219 (R-16, F-219v): the resend banner is the polite
-    // InfoCallout (role="status") — ErrorCallout keeps role="alert".
+    // Session-219 (R-16, F-219v): the polite live region carries the
+    // resend confirmation (the status role) — ErrorCallout keeps the
+    // assertive role. Session-233 (R-30, F-233c): the region pre-exists
+    // in the verify view; the visual callout is the banner only.
     page.getByRole("status").filter({ hasText: "New verification code sent to your email" }),
   ).toBeVisible();
 });
@@ -389,8 +423,10 @@ test("the signin 403 lands the verify view and the Resend re-arms (F-218a)", asy
   // The Resend completes the recovery loop (the F-217d re-arm).
   await page.getByRole("button", { name: "Resend" }).click();
   await expect(
-    // Session-219 (R-16, F-219v): the resend banner is the polite
-    // InfoCallout (role="status") — ErrorCallout keeps role="alert".
+    // Session-219 (R-16, F-219v): the polite live region carries the
+    // resend confirmation (the status role) — ErrorCallout keeps the
+    // assertive role. Session-233 (R-30, F-233c): the region pre-exists
+    // in the verify view; the visual callout is the banner only.
     page.getByRole("status").filter({ hasText: "New verification code sent to your email" }),
   ).toBeVisible();
 

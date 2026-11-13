@@ -56,6 +56,15 @@ export default function ImportPage() {
   const [skipped, setSkipped] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
+  // Session-234 (R-31, F-234b): the parse in-flight flag + the monotonic
+  // parse token — a completion may only land its state while it is
+  // still the NEWEST parse (the store's refresh-sequence genus,
+  // page-local). Pre-cure, a re-pick mid-parse let the slower extract
+  // land last (a wrong-review-committed path), and the extract button
+  // sat enabled inside the parse window (the redundant re-parse the
+  // F-233e round retired, reachable again in-flight).
+  const [parsing, setParsing] = React.useState(false);
+  const parseSeq = React.useRef(0);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const pickFile = (f: File | null) => {
@@ -67,21 +76,30 @@ export default function ImportPage() {
 
   const extract = async (f: File | null) => {
     if (!f) return;
-    if (f.size > MAX_FILE_BYTES) {
-      setError("File exceeds the 10MB limit.");
-      return;
-    }
-    // Session-215 (R-12, F-215f — the honest non-CSV branch): the accept
-    // list + hint stay byte-identical to the reference (parity surfaces —
-    // its bundle ships no spreadsheet library either; the advertising is
-    // its own). But a binary .xls/.xlsx pick no longer decodes to garbage
-    // and dies in column detection — it gets the honest guidance now.
-    if (/\.xlsx?$/i.test(f.name) && f.type !== "text/csv") {
-      setError("XLS/XLSX isn’t supported yet — export your spreadsheet as CSV and re-upload.");
-      return;
-    }
+    // Session-234 (R-31, F-234b): every parse takes a sequence number
+    // at entry; the in-flight flag keeps the extract button honest
+    // inside the window. The branches before the read are synchronous
+    // from entry (no yield — the token cannot move under them); the
+    // guard lands at the read's completion, the one real interleaving
+    // point, and gates the whole state-landing tail.
+    const seq = ++parseSeq.current;
+    setParsing(true);
     try {
+      if (f.size > MAX_FILE_BYTES) {
+        setError("File exceeds the 10MB limit.");
+        return;
+      }
+      // Session-215 (R-12, F-215f — the honest non-CSV branch): the accept
+      // list + hint stay byte-identical to the reference (parity surfaces —
+      // its bundle ships no spreadsheet library either; the advertising is
+      // its own). But a binary .xls/.xlsx pick no longer decodes to garbage
+      // and dies in column detection — it gets the honest guidance now.
+      if (/\.xlsx?$/i.test(f.name) && f.type !== "text/csv") {
+        setError("XLS/XLSX isn’t supported yet — export your spreadsheet as CSV and re-upload.");
+        return;
+      }
       const text = await f.text();
+      if (seq !== parseSeq.current) return; // a newer pick superseded this parse
       const table = parseCsv(text);
       if (table.length < 2) {
         setError("The file has no data rows.");
@@ -146,7 +164,9 @@ export default function ImportPage() {
       }
       setRows(parsed);
     } catch {
-      setError("Could not read the file — is it valid CSV?");
+      if (seq === parseSeq.current) setError("Could not read the file — is it valid CSV?");
+    } finally {
+      if (seq === parseSeq.current) setParsing(false);
     }
   };
 
@@ -219,7 +239,7 @@ export default function ImportPage() {
                 failed parse), disabled once rows exist. */}
             <Button
               onClick={() => void extract(file)}
-              disabled={!file || busy || rows !== null}
+              disabled={!file || busy || parsing || rows !== null}
             >
               <FileSpreadsheet className="h-4 w-4" />
               Upload and Extract

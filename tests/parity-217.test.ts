@@ -21,7 +21,10 @@ const STORE = readFileSync(
 
 describe("R-14: hydrate clears the stale error face (F-217k)", () => {
   it("hydrate's entry write resets error alongside loading", () => {
-    expect(STORE).toMatch(/set\(\{ loading: true, error: null \}\)/);
+    // Session-234 (R-31, F-234a) recalibration: the entry write also
+    // resets the settings settled flag — a new hydrate cycle retires
+    // the previous cycle's settled state.
+    expect(STORE).toMatch(/set\(\{ loading: true, error: null, settingsSettled: false \}\)/);
   });
 
   it("the 401 branch no longer leaves a stale error standing", () => {

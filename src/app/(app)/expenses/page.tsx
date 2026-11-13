@@ -380,8 +380,10 @@ export default function ExpensesPage() {
 
 /** The Add/Edit Expense dialog — the reference's two-step genus: the
  * "Quick Select Category" chip grid → the manual form (prefilled by the
- * chosen chip), with the +$1..$500 quick-adds on the amount field. */
-export function ExpenseDialog({
+ * chosen chip), with the +$1..$500 quick-adds on the amount field.
+ * Session-234 (R-31, F-234j): module-local — consumed only by this
+ * page; the export keyword was vestigial (zero importers). */
+function ExpenseDialog({
   open,
   onOpenChange,
   editing,

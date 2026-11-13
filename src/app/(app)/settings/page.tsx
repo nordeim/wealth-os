@@ -58,6 +58,8 @@ export default function SettingsPage() {
   // F-221q round's last uncovered surface (the void-discarded result
   // also meant failures were fully silent; the result now toasts).
   const [busyBudget, setBusyBudget] = React.useState<string | null>(null);
+  // Session-234 (R-31, F-234f): the budget-add busy rider.
+  const [busyAdd, setBusyAdd] = React.useState(false);
 
   const deleteBudget = async (category: string) => {
     setBusyBudget(category);
@@ -102,13 +104,20 @@ export default function SettingsPage() {
   };
 
   const addBudget = async () => {
+    // Session-234 (R-31, F-234f): the busy rider — the mutation
+    // family's last unguarded trigger; a double-click fired two POSTs
+    // and twin toasts over the idempotent upsert (the sibling delete
+    // control four lines up carries the same guard).
+    if (busyAdd) return;
     const category = budgetCategory.trim();
     const amount = Number(budgetAmount);
     if (!category || !Number.isFinite(amount) || amount <= 0) {
       toast.error("Enter a category and a positive amount");
       return;
     }
+    setBusyAdd(true);
     const res = await store.upsertBudget({ category, amount });
+    setBusyAdd(false);
     if (res.ok) {
       toast.success(`Budget for ${category} saved`);
       setBudgetCategory("");
@@ -250,7 +259,7 @@ export default function SettingsPage() {
                 aria-label="Monthly budget amount"
                 className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-32 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
               />
-              <Button variant="outline" onClick={() => void addBudget()}>
+              <Button variant="outline" onClick={() => void addBudget()} disabled={busyAdd}>
                 <PlusCircle className="h-4 w-4" />
                 Add
               </Button>
@@ -380,8 +389,13 @@ export default function SettingsPage() {
               dashboard data landed fine; the form then shows local
               defaults a Save would persist OVER the stored preferences.
               Save disables while the slice is missing and the amber
-              line states the protection (the import-warning genus). */}
-          {!settings && !store.loading ? (
+              line states the protection (the import-warning genus).
+              Session-234 (R-31, F-234a): the line keys on the store's
+              settled flag — hydrate commits its loading drop BEFORE the
+              settings await, so the slice alone read the in-flight
+              window as failure and flashed the message on every hard
+              load under real latency. */}
+          {!settings && store.settingsSettled ? (
             <p className="mr-auto flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400">
               <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
               Settings could not be loaded — saving is disabled to protect your

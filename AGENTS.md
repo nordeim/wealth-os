@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1282) | `bun run test` |
+| Unit tests (1302) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 140) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -443,6 +443,11 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   twice more (the retirement comments themselves named the retired
   identifiers and the utility forms — five invariant catches across
   three sessions now; retirement notes describe, they never cite).
+  Session 234 (R-31) — the CURE-COMMENT edition, catch six: the
+  full-code-restart cure's own comment coined a hyphenated
+  distribution description that parsed as a from-scale utility;
+  the same discipline binds cure comments (describe the behavior
+  in words, never coin a hyphenated form while explaining it).
 - **The e2e battery's SIGNUP budget sits exactly at its cap — count
   the suite's signups before adding a leg** (session 229, F-229a's
   leg design): the signup bucket is 10/IP/15min and the battery
@@ -487,6 +492,19 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   a cap that breaks it fails silently in every unit test (the pure
   seam is correct) and only bites live. Pinned in
   `tests/verification-code.test.ts` + the parity-233 no-maxLength pin.
+- **A null-slice guard cannot distinguish "fetch in flight" from
+  "fetch failed" when the loader drops before the dependent fetch**
+  (session 234, F-234a): hydrate committed its loading:false with the
+  dashboard slices and ONLY THEN awaited /api/settings — the shell
+  renders children the moment loading drops, so the Settings page's
+  could-not-load guard (keyed on slice-null + !loading) read the
+  one-round-trip in-flight window as FAILURE and flashed the amber
+  message on every hard load under real latency (invisible to every
+  gate: localhost and the e2e server coalesce the two commits into
+  one paint). The cure is a tri-state: a settled flag flipped in BOTH
+  arms of the dependent fetch, reset on every cycle; the guard keys
+  on settled-and-missing. Whenever a guard rides a LATER-ARRIVING
+  slice, pin the distinction between in-flight and failed.
 - **A comment that NAMES the token a test scans for trips the scanner —
   the F-229d genus, test-source edition** (session-233, F-233h's
   riders): the route-case URL-state pin greps src for the literal hook

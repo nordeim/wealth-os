@@ -112,10 +112,18 @@ export function applyCodeInput(
   }
   if (digits.length > 1) {
     const next = [...prev];
-    let last = idx;
-    for (let k = 0; k < digits.length && idx + k < next.length; k++) {
-      next[idx + k] = digits[k] ?? "";
-      last = idx + k;
+    // Session-234 (R-31, F-234c): an edit carrying EXACTLY the code's
+    // length restarts the distribution at box 1 — the session-233 form
+    // started at the EDITED box, so the type-then-paste flow (one digit
+    // typed, the whole code pasted after it) produced a complete but
+    // ROTATED code that passed the length guard and burned an attempt
+    // (the fails-safe-to-fails-dangerous residue of the F-233a cure).
+    // Partial pastes keep distributing from the edited box.
+    const start = digits.length === next.length ? 0 : idx;
+    let last = start;
+    for (let k = 0; k < digits.length && start + k < next.length; k++) {
+      next[start + k] = digits[k] ?? "";
+      last = start + k;
     }
     return { next, focusIndex: Math.min(last + 1, next.length - 1) };
   }

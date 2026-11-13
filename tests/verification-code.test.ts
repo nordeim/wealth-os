@@ -102,3 +102,38 @@ describe("applyCodeInput — the multi-digit distribution (the F-233a cure)", ()
     expect(got.focusIndex).toBe(3);
   });
 });
+
+// Session-234 (R-31, F-234c): the full-code restart rule. The session-233
+// distribution started at the EDITED box, so the type-then-paste flow (one
+// digit typed, then the whole code pasted after it) produced a COMPLETE
+// but ROTATED code that passed the length guard and burned an attempt —
+// the fails-safe-to-fails-dangerous residue of the F-233a cure. An edit
+// carrying exactly the code's length now restarts at box 1; partial
+// pastes keep distributing from the edited box (the pins above).
+
+describe("applyCodeInput — the full-code restart (F-234c)", () => {
+  it("the type-then-paste flow: one digit typed, the whole code pasted into box 2", () => {
+    // The typed digit is the code's own first digit — the shape of the
+    // real flow (the user types the digit they are reading, then pastes
+    // the whole code the message carries).
+    const prev = boxes("9");
+    const got = applyCodeInput(prev, 1, "941372");
+    expect(got.next).toEqual(boxes("941372"));
+    expect(got.focusIndex).toBe(5);
+  });
+
+  it("a junk-laden full-code paste into a mid box restarts at box 1", () => {
+    const got = applyCodeInput(boxes(""), 3, "9a4b1c3d7e2f");
+    expect(got.next).toEqual(boxes("941372"));
+    expect(got.focusIndex).toBe(5);
+  });
+
+  it("a longer-than-code paste at a later box keeps truncating from the edited box", () => {
+    // Seven extracted digits is not the exact code length — the
+    // restart rule must not fire; the overflow truncates as before.
+    const prev = boxes("12");
+    const got = applyCodeInput(prev, 2, "3456789");
+    expect(got.next).toEqual(boxes("123456"));
+    expect(got.focusIndex).toBe(5);
+  });
+});
