@@ -31,7 +31,12 @@ describe("F-234a — the settings-fetch settled flag (the in-flight window is no
 
   it("every hydrate cycle and the logout clear reset the flag", () => {
     const src = read("src/stores/wealthos-store.ts");
-    expect(src).toMatch(/set\(\{ loading: true, error: null, settingsSettled: false \}\);/);
+    // Session-237 (R-34, F-237c) recalibration: the entry write is
+    // remount-aware — BOTH arms reset the flag (the remount arm skips
+    // only the loading re-gate).
+    expect(src).toMatch(
+      /set\(\s*remount\s*\?\s*\{ error: null, settingsSettled: false \}\s*:\s*\{ loading: true, error: null, settingsSettled: false \},?\s*\);/,
+    );
     // the logout clear block resets it beside the slice
     expect(src).toMatch(/settings: null,\s*settingsSettled: false,/);
   });

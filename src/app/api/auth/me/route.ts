@@ -1,4 +1,5 @@
 import { ERR, logApiError, ok } from "@/lib/api";
+import { isTransientDbError } from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +14,12 @@ export async function GET() {
     return ok(user); // data: user | null
   } catch (error) {
     logApiError("auth/me GET", error);
+    // Session-237 (R-34, F-237b): the transient arm joins the auth
+    // family — the sibling forgot-password/reset-password/reset routes
+    // already answered a pool/transaction timeout with the honest 503;
+    // these catches answered the generic 500 with retry advice for a
+    // condition a retry cannot clear.
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

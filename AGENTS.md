@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1391) | `bun run test` |
+| Unit tests (1421) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 142) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 143) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -577,3 +577,45 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   verify the full flow first (a probe that dumps the final URL
   proves the face lived), then decide whether the natural window
   is wide enough.
+- **A gate keyed on a state a FAILURE branch also produces swallows
+  the failure face (session 237, F-237a)**: the F-236f revocation
+  gate keyed on storeUser-null, but the store's non-401 hydrate
+  branch ALSO leaves `user` at its initial null on a first load —
+  a 500, a 503, or a network drop bounced a valid-session user to
+  the login wall with the F-216c/d error banner + Try-again
+  unreachable (live-reproduced; no e2e covered the failure face,
+  so nothing failed). The cure keys the gate on the branch's
+  DISCRIMINATOR — the 401 arm commits error-null alongside
+  user-null, so `&& !storeError` fires the wall only for the
+  revocation. General rule: before keying a gate on a state, ask
+  which OTHER branches also produce it, and pin every face the
+  gate can swallow in e2e.
+- **A shell that REMOUNTS between route groups re-runs its mount
+  effect — an unconditional hydrate re-gate flashes the loader
+  over loaded data (session 237, F-237c)**: the root `/` route
+  and the (app) group render two AppShell tree positions, and the
+  post-login landing on `/` makes the first sidebar click (and
+  every 404 "Go Home" hop) a REMOUNT. The store survives on
+  globalThis by design — hydrate must distinguish the remount (a
+  live user stands) and refresh in place without the loading
+  flip; first loads and the failure-face retry keep the gate.
+- **A family sweep that counts only IN-FILE arms misses the
+  shared guard seam (session 237, F-237b)**: the transient-503
+  family pinned 19 route files while `requireSession()`'s own
+  catch — the one DB call EVERY protected route makes — and the
+  six auth routes' catches still answered the generic 500 for a
+  P2024/P2028. When completing an error-family across routes,
+  enumerate the SEAMS OUTSIDE the route files too (shared guards,
+  middleware, the auth funnel the family doctrine already
+  blessed).
+- **Next's route announcer carries the alert role on app pages —
+  a bare `getByRole("alert")` is never unique under the battery's
+  timing (session 237, the F-237a e2e lesson)**: the strict-mode
+  catch resolved the store banner AND `__next-route-announcer__`
+  (the leg passed standalone and failed in the full battery —
+  the announcer mounts on navigation, a timing-dependent second
+  match). Scope by text: `getByRole("alert").filter({ hasText })
+  `. Same family as the shared-Response test lesson: fixtures
+  that depend on mount timing or single-use objects (a Response
+  body is consumed on first read — factories, never shared
+  constants) pass in isolation and fail in the pack.

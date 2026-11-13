@@ -13,8 +13,10 @@ function read(rel: string): string {
   return existsSync(p) ? readFileSync(p, "utf8") : "";
 }
 
-// The 18 route files whose DB-touching catch arms gain the transient
-// arm (F-236b). /api/reset already carries it (the F-235c cure).
+// The 19 route files whose DB-touching catch arms carry the transient
+// arm (F-236b). /api/reset already carried it (the F-235c cure); the
+// F-237b completion extends the family beyond these files (the
+// requireSession seam + the six auth routes — pinned in parity-237).
 const TRANSIENT_FAMILY = [
   "src/app/api/transactions/route.ts",
   "src/app/api/transactions/[id]/route.ts",
@@ -90,7 +92,9 @@ describe("F-236c — the clearable-date seam and the nullable create twins", () 
   it("the clearable-date seam preprocesses the empty string to the null clear", () => {
     const src = read("src/lib/schemas.ts");
     expect(src).toMatch(/const clearableDateField = \(message: string\) =>/);
-    expect(src).toMatch(/z\.preprocess\(\s*\(v\) => \(v === "" \? null : v\),\s*dateField\(message\)\.nullable\(\)\.optional\(\),\s*\)/);
+    // Session-237 (R-34, F-237e) recalibration: the guard is trim-aware
+    // — whitespace-only joins the clear (the F-236c form superseded).
+    expect(src).toMatch(/z\.preprocess\(\s*\(v\) => \(typeof v === "string" && v\.trim\(\) === "" \? null : v\),\s*dateField\(message\)\.nullable\(\)\.optional\(\),\s*\)/);
   });
 
   it("all eight nullable-date sites ride the seam", () => {
@@ -106,7 +110,8 @@ describe("F-236c — the clearable-date seam and the nullable create twins", () 
     // the PREPROCESS form (the F-219q transform form cannot express it:
     // the regex and min(1) checks fire AHEAD of any downstream
     // transform, so the guard must run before the validation chain).
-    const guards = src.match(/z\.preprocess\(\s*\(v\) => \(v === "" \? null : v\),/g) ?? [];
+    // Session-237 (R-34, F-237e) recalibration: the trim-aware form.
+    const guards = src.match(/z\.preprocess\(\s*\(v\) => \(typeof v === "string" && v\.trim\(\) === "" \? null : v\),/g) ?? [];
     expect(guards.length).toBe(5);
   });
 });
@@ -135,7 +140,11 @@ describe("F-236f — the shell re-establishes the login wall on a mid-flight rev
   it("the post-hydrate null-user gate renders the guest-wall face", () => {
     const src = read("src/components/layout/app-shell.tsx");
     expect(src).toMatch(/import \{ GuestLoginRedirect \} from "@\/components\/layout\/guest-login-redirect";/);
-    expect(src).toMatch(/hydrated && !loading && storeUser === null/);
+    // Session-237 (R-34, F-237a) recalibration: the gate gained the
+    // auth-specific discriminator — the non-401 failure branch also
+    // leaves user at its initial null, and the bare form swallowed
+    // the error face.
+    expect(src).toMatch(/hydrated && !loading && storeUser === null && !storeError/);
   });
 
   it("the store's UNAUTHORIZED branch still nulls the user (the gate's input)", () => {

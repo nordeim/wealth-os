@@ -111,26 +111,33 @@ export async function POST(request: Request) {
     return ERR.BAD_REQUEST("File too large (max 5MB)");
   }
 
-  // Session-228 (R-25, F-228f): the self-hosted capacity ceiling — the
-  // write-only surface's over-time disk guard (nothing ever deletes an
-  // upload; the per-request rate cap bounds growth per window only).
-  // Either ceiling breaking refuses the write with 507 STORAGE_FULL.
-  const capacity = uploadsCapacity(uploadsDir());
-  if (
-    capacity.files >= MAX_UPLOAD_FILES ||
-    capacity.bytes + file.size > MAX_UPLOADS_TOTAL_BYTES
-  ) {
-    return ERR.STORAGE_FULL();
-  }
-
   // Session-38 (S38-P5): the write path joins the envelope — an
   // ENOSPC/EACCES on the uploadsDir() mkdir or the writeFile answers
   // ERR.INTERNAL inside { ok, error } instead of a raw non-JSON 500
   // mid-upload (the I/O face of the DB-envelope family).
+  // Session-237 (R-34, F-237d): the PRE-WRITE leg rides inside too.
+  // The capacity read used to run before this try — its uploadsDir()
+  // call is the very mkdir the S38-P5 contract names, and a failing
+  // mkdir escaped as the raw non-envelope 500 the docblock disclaims
+  // (the F-234e class, at the one site that cure left exposed).
   try {
+    // Session-228 (R-25, F-228f): the self-hosted capacity ceiling —
+    // the write-only surface's over-time disk guard (nothing ever
+    // deletes an upload; the per-request rate cap bounds growth per
+    // window only). Either ceiling breaking refuses the write with
+    // 507 STORAGE_FULL.
+    const dir = uploadsDir();
+    const capacity = uploadsCapacity(dir);
+    if (
+      capacity.files >= MAX_UPLOAD_FILES ||
+      capacity.bytes + file.size > MAX_UPLOADS_TOTAL_BYTES
+    ) {
+      return ERR.STORAGE_FULL();
+    }
+
     const name = `${randomUUID().replace(/-/g, "")}.${ext}`;
     const bytes = Buffer.from(await file.arrayBuffer());
-    await writeFile(join(uploadsDir(), name), bytes);
+    await writeFile(join(dir, name), bytes);
 
     // Session-232 (R-29, F-232g): the POST-WRITE re-check — the
     // check-then-write race cured. Concurrent in-flight uploads at

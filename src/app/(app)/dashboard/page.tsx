@@ -135,10 +135,21 @@ export default function DashboardPage() {
   // Session-216 (R-13, F-216d): a failed refresh is no longer a silent
   // no-op — the Result rides back (refreshAll returns it) and the
   // button toasts the failure (the house mutation-feedback pattern).
+  // Session-237 (R-34, F-237g): the busy rider — the F-221q/F-234f
+  // idiom reaches the read-side refresh controls (double-clicks fired
+  // parallel fetches and the round-trip gave no feedback). The spin
+  // rides the same conditional-class form the family uses, neutralized
+  // under the reduced-motion preference by the globals rule.
+  const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = () => {
-    void store.refresh().then((res) => {
-      if (!res.ok) toast.error("Refresh failed", res.error);
-    });
+    if (refreshing) return;
+    setRefreshing(true);
+    void store
+      .refresh()
+      .then((res) => {
+        if (!res.ok) toast.error("Refresh failed", res.error);
+      })
+      .finally(() => setRefreshing(false));
   };
 
   return (
@@ -153,8 +164,8 @@ export default function DashboardPage() {
                 <BrainCircuit className="h-4 w-4" />
                 AI Coach
               </Button>
-              <Button variant="outline" onClick={onRefresh} aria-label="Refresh data">
-                <RefreshCw className="h-4 w-4" />
+              <Button variant="outline" onClick={onRefresh} aria-label="Refresh data" disabled={refreshing}>
+                <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
                 Refresh
               </Button>
               <Link href="/Expenses" className={BUTTONS.primary}>
@@ -530,8 +541,9 @@ export default function DashboardPage() {
                   className="h-8 w-8 rounded-full p-0"
                   aria-label="Regenerate insights"
                   onClick={onRefresh}
+                  disabled={refreshing}
                 >
-                  <RefreshCw className="h-3.5 w-3.5" />
+                  <RefreshCw className={cn("h-3.5 w-3.5", refreshing && "animate-spin")} />
                 </Button>
               </div>
             </div>

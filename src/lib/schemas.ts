@@ -167,9 +167,13 @@ const enumField = <T extends readonly string[]>(
 // to null and keeps dateField's calendar-true validation for every
 // present value (the F-216h contract unchanged). The create twins
 // ride the same seam so ONE uniform clear shape works everywhere.
+// Session-237 (R-34, F-237e): the guard is TRIM-AWARE — a
+// whitespace-only value means the clear too (pre-cure "  " 400'd
+// here while the notes family cleared it; one uniform shape on
+// every clearable field, required fields keep rejecting).
 const clearableDateField = (message: string) =>
   z.preprocess(
-    (v) => (v === "" ? null : v),
+    (v) => (typeof v === "string" && v.trim() === "" ? null : v),
     dateField(message).nullable().optional(),
   );
 
@@ -354,8 +358,10 @@ export const bankAccountCreateSchema = z.object({
   // — the regex fires ahead of any downstream transform, so the
   // empty-string guard rides z.preprocess (the clearable-date seam's
   // own form). null and "" both mean THE CLEAR on both twins now.
+  // Session-237 (R-34, F-237e): the guard is trim-aware — a
+  // whitespace-only value means the clear (pre-cure it 400'd).
   color: z.preprocess(
-    (v) => (v === "" ? null : v),
+    (v) => (typeof v === "string" && v.trim() === "" ? null : v),
     z
       .string()
       .trim()
@@ -392,7 +398,7 @@ export const bankAccountUpdateSchema = updateSchema({
   // preprocess guard ("" cleared nothing here either — the regex
   // rejected it ahead of the old transform chain).
   color: z.preprocess(
-    (v) => (v === "" ? null : v),
+    (v) => (typeof v === "string" && v.trim() === "" ? null : v),
     z
       .string()
       .trim()
@@ -499,7 +505,7 @@ export const goalCreateSchema = z.object({
   // Session-236 (R-33, F-236c): icon joins the uniform clear contract
   // (null and "" both mean THE CLEAR, on both twins).
   icon: z.preprocess(
-    (v) => (v === "" ? null : v),
+    (v) => (typeof v === "string" && v.trim() === "" ? null : v),
     z.string().trim().max(40).nullable().optional(),
   ),
 });
@@ -520,7 +526,7 @@ export const goalUpdateSchema = updateSchema({
   ).optional(),
   status: enumField(["active", "completed", "paused"], "Invalid status").optional(),
   icon: z.preprocess(
-    (v) => (v === "" ? null : v),
+    (v) => (typeof v === "string" && v.trim() === "" ? null : v),
     z.string().trim().max(40).nullable().optional(),
   ),
 });

@@ -176,8 +176,12 @@ describe("F-232g — the upload capacity guard re-checks after the write (the TO
     const src = read("src/app/api/upload/route.ts");
     expect(src).toMatch(/unlink/);
     // the re-read happens AFTER the writeFile (search() takes no start
-    // index — indexOf does; the first check precedes the write)
-    const firstCheckAt = src.indexOf("uploadsCapacity(uploadsDir())");
+    // index — indexOf does; the first check precedes the write).
+    // Session-237 (R-34, F-237d) recalibration: the pre-write check
+    // moved INSIDE the try (the capacity read's uploadsDir() mkdir
+    // escaped the envelope) — the order contract is unchanged, only
+    // the hoisted `dir` variable now feeds both calls.
+    const firstCheckAt = src.indexOf("uploadsCapacity(dir)");
     const writeAt = src.indexOf("await writeFile");
     const recheckAt = src.indexOf("uploadsCapacity(uploadsDir())", firstCheckAt + 1);
     expect(firstCheckAt).toBeGreaterThan(-1);

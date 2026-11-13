@@ -58,7 +58,17 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
   // guest-wall face re-establishes the login wall client-side with
   // the from_url round-trip. The logout path is clear by construction:
   // it resets hydrated/loading, so the loading gate owns it.
-  if (hydrated && !loading && storeUser === null) {
+  // Session-237 (R-34, F-237a): the auth-specific discriminator. The
+  // store's non-401 failure branch ALSO leaves user at its initial
+  // null on a first load — keying on storeUser alone swallowed the
+  // error face (a 500/503/network hydrate bounced a valid-session
+  // user to this wall with the banner + Try-again unreachable). The
+  // 401 branch commits error-null alongside user-null; the failure
+  // branch commits the error — so !storeError fires the wall ONLY
+  // for the revocation, and the failure face keeps the F-216c/d
+  // banner. The mid-session window joins through refreshAll's own
+  // UNAUTHORIZED branch (it nulls the user the same way).
+  if (hydrated && !loading && storeUser === null && !storeError) {
     return <GuestLoginRedirect />;
   }
 

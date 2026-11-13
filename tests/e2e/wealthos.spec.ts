@@ -716,4 +716,38 @@ test.describe("the mid-flight revocation face (F-236f)", () => {
     await page.waitForURL(/\/login\?from_url=/, { timeout: 10_000 });
     await page.unroute("**/api/dashboard");
   });
+
+  // Session-237 (R-34, F-237a): the failure face. The F-236f gate
+  // keyed on storeUser-null, but the store's non-401 failure branch
+  // also leaves user at its initial null on a first load — a 500 (or
+  // a 503, or a network drop) bounced a valid-session user to the
+  // login wall with the error banner unreachable. The gate now
+  // discriminates on the 401 branch's error-null commit.
+  test("a hydrate that answers 500 renders the error banner, not the login wall (F-237a)", async ({ page }) => {
+    await page.route("**/api/dashboard", (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: false,
+          error: { code: "INTERNAL", message: "Something went wrong. Please try again." },
+        }),
+      }),
+    );
+    await page.goto("/dashboard");
+    // The F-216c/d face: the alert banner + the retry affordance.
+    // Scoped by text: Next's route announcer also carries the alert
+    // role on app pages — a bare getByRole("alert") resolves to both
+    // under the battery's timing (the strict-mode catch, third
+    // fixture of the round).
+    const banner = page.getByRole("alert").filter({ hasText: "Couldn't load your data" });
+    await expect(banner).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText("Couldn't load your data")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
+    // And NOT the wall: the URL stays put, the redirect face never lands.
+    await page.waitForTimeout(700);
+    expect(page.url()).not.toContain("/login");
+    await expect(page.getByText("Redirecting to sign in…")).toHaveCount(0);
+    await page.unroute("**/api/dashboard");
+  });
 });

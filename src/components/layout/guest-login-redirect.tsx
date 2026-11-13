@@ -18,12 +18,21 @@ import { useRouter } from "next/navigation";
 // Session-235 (R-32, F-235j): the shim used to render NOTHING between
 // paint and redirect — a blank, silent page for unauthenticated
 // deep-link visits. The status face below fills the window (sighted
-// visitors see where they are going; the a11y tree carries the same
-// text). It is a pure superset on a surface the reference never shows
-// us, and the smoke ladder's guest-wall check (no dashboard HTML)
-// is unaffected — a redirect notice is not dashboard content.
+// visitors see where they are going).
+// Session-237 (R-34, F-237h): the F-218h genus' fifth surface — a
+// live region that ARRIVES with its content is not announced, and
+// this face mounted exactly that way. The F-235a form seeds the
+// label through a zero-delay timer: the region commits empty and
+// the text lands as a content change (announced), with the cleanup
+// pair cancelling the StrictMode double-invoke.
 export function GuestLoginRedirect() {
   const router = useRouter();
+  const [seeded, setSeeded] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setSeeded(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   React.useEffect(() => {
     // location.href (the ABSOLUTE URL, query included) — the reference's
@@ -36,7 +45,9 @@ export function GuestLoginRedirect() {
       role="status"
       className="flex min-h-screen items-center justify-center bg-background"
     >
-      <p className="text-sm text-muted">Redirecting to sign in…</p>
+      {seeded ? (
+        <p className="text-sm text-muted">Redirecting to sign in…</p>
+      ) : null}
     </div>
   );
 }

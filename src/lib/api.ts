@@ -4,6 +4,7 @@
 import { NextResponse } from "next/server";
 import type { z } from "zod";
 import { getSessionUser, type SessionUser } from "./auth";
+import { isTransientDbError } from "./db";
 
 export type ApiError = { code: string; message: string };
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: ApiError };
@@ -85,6 +86,13 @@ export async function requireSession(): Promise<{ user: SessionUser } | { respon
     user = await getSessionUser();
   } catch (error) {
     logApiError("session read", error);
+    // Session-237 (R-34, F-237b): the seam the F-236b family missed —
+    // this catch is the one DB call EVERY protected route makes, and
+    // it answered the generic 500 for a pool/transaction timeout
+    // while the routes' own arms (which sit AFTER this guard returns)
+    // carried the honest 503. The arm rides here now: every guarded
+    // route inherits the transient answer through the seam.
+    if (isTransientDbError(error)) return { response: ERR.UNAVAILABLE() };
     return { response: ERR.INTERNAL() };
   }
   if (!user) return { response: ERR.UNAUTHORIZED() };

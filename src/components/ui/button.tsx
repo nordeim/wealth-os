@@ -91,8 +91,9 @@ const buttonVariants = cva(
       },
       size: {
         // Session-236 (R-33, F-236j — the F-229f register): the icon,
-        // small-icon, pill, and large size arms are vendored shadcn
-        // stock — zero consumers today.
+        // small-icon, pill, large, and small size arms are vendored
+        // shadcn stock — zero consumers today (the F-237i completion:
+        // the small size arm is the fifth, missed by the first census).
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-6",

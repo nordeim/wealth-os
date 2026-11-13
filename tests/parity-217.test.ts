@@ -24,7 +24,15 @@ describe("R-14: hydrate clears the stale error face (F-217k)", () => {
     // Session-234 (R-31, F-234a) recalibration: the entry write also
     // resets the settings settled flag — a new hydrate cycle retires
     // the previous cycle's settled state.
-    expect(STORE).toMatch(/set\(\{ loading: true, error: null, settingsSettled: false \}\)/);
+    // Session-237 (R-34, F-237c) recalibration: the entry write is
+    // remount-aware — a remount (the store holds a live user) skips
+    // the loading re-gate (the `/` ↔ section AppShell transition
+    // flashed the full-screen loader over loaded data); a first load
+    // keeps the gate. The error/st settled resets hold on BOTH arms.
+    expect(STORE).toMatch(
+      /set\(\s*remount\s*\?\s*\{ error: null, settingsSettled: false \}\s*:\s*\{ loading: true, error: null, settingsSettled: false \},\s*\);/,
+    );
+    expect(STORE).toMatch(/const remount = get\(\)\.hydrated && get\(\)\.user !== null;/);
   });
 
   it("the 401 branch no longer leaves a stale error standing", () => {

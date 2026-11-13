@@ -158,6 +158,16 @@ async function refreshAll(
       loading: false,
       error: null,
     });
+  } else if (res.code === "UNAUTHORIZED") {
+    // Session-237 (R-34, F-237a): the mid-session revocation window.
+    // Pre-cure this arm set only the error — a session revoked between
+    // mutations rendered "Sign in required" in the banner over a stale
+    // workspace (the user object survived, so the shell's revocation
+    // gate never fired). Mirrors hydrate's UNAUTHORIZED branch: the
+    // user nulls, the error stays null, and the shell re-establishes
+    // the login wall with the from_url round-trip — the F-236f intent
+    // completed on both windows.
+    set({ loading: false, user: null, error: null });
   } else {
     set({ loading: false, error: res.error });
   }
@@ -181,12 +191,27 @@ function createStore() {
 
     hydrate: async () => {
       const token = ++sessionWriteToken;
+      // Session-237 (R-34, F-237c): the remount discriminator. The root
+      // dashboard route and the (app) group render two AppShell tree
+      // positions — the post-login landing on `/` makes the first
+      // sidebar click a REMOUNT, and the mount effect re-entered here
+      // unconditionally re-gating with loading:true (a full-screen
+      // loader over already-loaded data + a redundant refetch of both
+      // endpoints). A remount (the store holds a live user) refreshes
+      // in place: no loading flip, the chrome and slices stay painted,
+      // the fetches land underneath. First loads and the Try-again
+      // retry (user null on the failure face) keep the gate.
+      const remount = get().hydrated && get().user !== null;
       // Session-217 (R-14, F-217k): clear the stale error at entry — the
       // error banner's Try-again re-entered here with the previous error
       // still set (the banner + the LoadingBlock rendered together
       // mid-retry), and a 401 landing left a stale non-auth error
       // standing after the failure mode changed.
-      set({ loading: true, error: null, settingsSettled: false });
+      set(
+        remount
+          ? { error: null, settingsSettled: false }
+          : { loading: true, error: null, settingsSettled: false },
+      );
       const res = await call<DashboardData>("/api/dashboard");
       if (token !== sessionWriteToken) return;
       if (res.ok) {

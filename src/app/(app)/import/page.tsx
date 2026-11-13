@@ -242,7 +242,11 @@ export default function ImportPage() {
               disabled={!file || busy || parsing || rows !== null}
             >
               <FileSpreadsheet className="h-4 w-4" />
-              Upload and Extract
+              {/* Session-237 (R-34, F-237f): the parse window's pending
+                  face — the eager parse reads up to 10 MB and walks up to
+                  5001 rows with the surface otherwise frozen; the label
+                  joins the dialog family's pending idiom while it runs. */}
+              {parsing ? "Reading file…" : "Upload and Extract"}
             </Button>
           </div>
         </section>

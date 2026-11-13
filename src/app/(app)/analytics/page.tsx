@@ -73,6 +73,20 @@ export default function AnalyticsPage() {
 
   const axisColor = isDark ? "#a8a29e" : "#78716c";
   const gridColor = isDark ? "#292524" : "#e7e5e4";
+  // Session-237 (R-34, F-237g): the refresh busy rider — the
+  // F-221q/F-234f idiom reaches this read-side control (the
+  // dashboard pair's own cure, mirrored here).
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    void store
+      .refresh()
+      .then((res) => {
+        if (!res.ok) toast.error("Refresh failed", res.error);
+      })
+      .finally(() => setRefreshing(false));
+  };
   // Session-222 (R-19, F-222i): every analytics tooltip joins the
   // isDark family — the bare <Tooltip /> sites rendered recharts'
   // default white chip over dark cards.
@@ -197,15 +211,8 @@ export default function AnalyticsPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  void store.refresh().then((res) => {
-                    if (!res.ok) toast.error("Refresh failed", res.error);
-                  })
-                }
-              >
-                <RefreshCw className="h-4 w-4" />
+              <Button variant="outline" onClick={onRefresh} disabled={refreshing}>
+                <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
                 Refresh
               </Button>
               <Button variant="outline" onClick={exportCsv}>

@@ -1,6 +1,6 @@
 import { ERR, logApiError, ok } from "@/lib/api";
 import { clearSessionCookie, getSessionUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -61,6 +61,12 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     logApiError("auth/logout POST", error);
+    // Session-237 (R-34, F-237b): the transient arm joins the auth
+    // family — the sibling forgot-password/reset-password/reset routes
+    // already answered a pool/transaction timeout with the honest 503;
+    // these catches answered the generic 500 with retry advice for a
+    // condition a retry cannot clear.
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
   await clearSessionCookie();

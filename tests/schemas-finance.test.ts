@@ -392,4 +392,28 @@ describe("the uniform clear contract (F-236c)", () => {
   it("a present valid hex color still round-trips", () => {
     expect(bankAccountCreateSchema.parse({ ...acctValid, color: "#3b82f6" }).color).toBe("#3b82f6");
   });
+
+  // Session-237 (R-34, F-237e): whitespace-only joins the uniform clear.
+  // Pre-cure "  " diverged across the family — the icon stored the
+  // empty string (the clear never happened), color and the clearable
+  // dates 400'd, only the F-219q transform family cleared. All five
+  // preprocess guards ride the trim-aware form now.
+  it("whitespace-only clears the nullable dates on the update twins", () => {
+    expect(transactionUpdateSchema.parse({ nextDate: "   " }).nextDate).toBeNull();
+    expect(incomeSourceUpdateSchema.parse({ nextPaymentDate: "  " }).nextPaymentDate).toBeNull();
+    expect(investmentUpdateSchema.parse({ purchaseDate: "  " }).purchaseDate).toBeNull();
+    expect(goalUpdateSchema.parse({ targetDate: "  " }).targetDate).toBeNull();
+  });
+
+  it("whitespace-only clears color and icon on both twins", () => {
+    expect(bankAccountCreateSchema.parse({ ...acctValid, color: "  " }).color).toBeNull();
+    expect(bankAccountUpdateSchema.parse({ color: "   " }).color).toBeNull();
+    expect(goalCreateSchema.parse({ ...goalValid, icon: "  " }).icon).toBeNull();
+    expect(goalUpdateSchema.parse({ icon: "  " }).icon).toBeNull();
+  });
+
+  it("the REQUIRED fields still reject whitespace-only (only the clearable family widens)", () => {
+    expect(transactionCreateSchema.safeParse({ ...txValid, date: "  " }).success).toBe(false);
+    expect(bankAccountUpdateSchema.safeParse({ color: "  " }).success).toBe(true);
+  });
 });
