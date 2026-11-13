@@ -95,6 +95,20 @@ export async function POST(req: Request) {
         // The eviction: every pre-reset cookie dies at the getSessionUser
         // version comparison.
         tokenVersion: { increment: 1 },
+        // Session-239 (R-36, F-239b): a successful reset clears the
+        // pending verification state too. The reset token's possession
+        // proves email control (delivered to the registered address) —
+        // exactly what verification attests. Pre-cure, a never-verified
+        // account that completed the entire reset funnel still hit
+        // login's verification gate (403 above the credential check):
+        // the recovery funnel completed but the account stayed locked
+        // out. In the demo posture the in-band OTP made the standing
+        // hash no real protection either (an attacker could verify
+        // in-band the same way) — the clear closes the owner's
+        // recovery without opening anything.
+        verificationCodeHash: null,
+        verificationExpiresAt: null,
+        verificationAttempts: 0,
       },
     });
     if (result.count === 0) {

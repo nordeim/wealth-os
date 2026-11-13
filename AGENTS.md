@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1450) | `bun run test` |
+| Unit tests (1469) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 147) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -666,3 +666,57 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   quoted the dead boot-env disjunct its pin forbade verbatim.
   Describe the behavior in words, never cite the retired form —
   in the cure, in the pin, and in the doc that records both.
+- **A clear-only revocation commit must also advance the write
+  token — a clear without the bump admits late landings (session
+  239, F-239a)**: the F-238b wall emptied every slice but left
+  `sessionWriteToken` untouched, so a fetch already in flight when
+  the wall fired (its server read predating the revocation — a 200
+  carrying the OLD user's data) still held the live token and
+  committed AFTER the wall, re-populating the ledger over the login
+  wall until the next fetch 401s. The logout branch's own bump
+  contract (F-217l) was the missing half; the bump is
+  sequencing-safe when every wall caller compares its token BEFORE
+  invoking the wall. General rule: any "clear the store" commit
+  that guards against in-flight writers must invalidate those
+  writers' tokens in the SAME commit — the clear alone is half a
+  cure.
+- **A recovery funnel must clear EVERY gate the account faces, not
+  just the credential it owns (session 239, F-239b)**: the reset
+  updated the hash, consumed the token, bumped the version — and
+  left `verificationCodeHash` standing, so a never-verified account
+  (the exact population most likely to need forgot-password)
+  completed the whole funnel and STILL answered the login gate's
+  403. The reset token's possession proves email control — exactly
+  what verification attests; the reset now clears both gates.
+  General rule: enumerate every gate on the sign-in path when
+  writing a recovery flow, and have the recovery's strongest proof
+  satisfy each one. The e2e proof restructured the existing reset
+  leg to the never-verified population — a stronger leg at ZERO
+  extra signup cost (the F-229a signup-budget lesson's gift
+  edition: restructure before you add).
+- **Render-time clocks on server-rendered client pages are a
+  hydration error in a box — suppress the comparison, never gate
+  the paint (session 239, F-239c)**: the dashboard's date subtitle
+  derived from `new Date()` during render; a server and client on
+  different calendar dates (the daily TZ window) diverge at the
+  text level and React 19 throws. The UTC sandbox is blind to it
+  (the F-218d genus). The theme bootstrap's own
+  `suppressHydrationWarning` is the honest cure for inherent
+  server/client divergence: the texts agree outside the window, the
+  suppressed arm self-heals on the next render, and a mounted-gate
+  (the alternative) would flash empty for everyone to protect an
+  edge case.
+- **A PIN THAT COMPARES TWO PARITY LITERALS must extract
+  indentation-agnostically and slice from the CONSTRUCTION SITE
+  (session 239, F-239e's authoring)**: a `^\s{N}` key-extraction
+  regex silently misses keys at any other indent (the wall's
+  4-space set vs logout's 8-space set), and slicing a function
+  from its declaration catches parameter names as keys — slice from
+  the `set({` call and match `^\s+(\w+):` per line, then assert
+  the documented asymmetric keys EXPLICITLY (the wall's clear-set ⊆
+  the logout's, with exactly `hydrated` the logout-only extra).
+  The same round re-learned the wrap discipline for prose pins: a
+  comment-wrapped phrase needs per-phrase or comment-stripped
+  matching (the F-239f pin tripped on its own mid-phrase line
+  wrap), and a JSX-attribute regex must split on the opening tag
+  (arrow handlers end naive `[^>]*` matches early).

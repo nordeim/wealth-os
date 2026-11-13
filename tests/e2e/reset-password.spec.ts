@@ -107,10 +107,16 @@ test.describe("reset-password form (a non-empty token)", () => {
 
 test.describe("the full reset round-trip (the in-app delivery)", () => {
   test("forgot → the sent card carries the link → set a new password → sign in with it", async ({ page }) => {
-    // The scratch flow: signup (the in-app OTP delivery answers the code
-    // in the response — the digma ADR-014 port), verify, then the reset
-    // round-trip. The scratch account is disposable; the e2e DB re-seeds
-    // per run. No restore step is needed.
+    // The scratch flow: signup, then the reset round-trip. The scratch
+    // account is disposable; the e2e DB re-seeds per run. No restore
+    // step is needed.
+    // Session-239 (R-36, F-239b): the scratch account stays
+    // NEVER-VERIFIED through the reset — the exact population the
+    // recovery gate serves (signed up, never verified, locked out).
+    // The reset clears the pending verification state alongside the
+    // token pair, so the post-reset login reaches the Dashboard; the
+    // pre-cure tree answered the login gate's 403 here (the standing
+    // hash survived the reset) — this leg was RED against it.
     const scratchEmail = `s163-reset-${Date.now()}@e2e.test`;
     await page.goto("/login");
     const registered = await page.evaluate(
@@ -126,28 +132,12 @@ test.describe("the full reset round-trip (the in-app delivery)", () => {
     );
     expect(registered.ok).toBe(true);
     expect(typeof registered.data.verificationCode).toBe("string");
-
-    const verified = await page.evaluate(
-      async ({ email, code }) => {
-        const res = await fetch("/api/auth/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, code }),
-        });
-        return res.json();
-      },
-      { email: scratchEmail, code: registered.data.verificationCode },
-    );
-    expect(verified.ok).toBe(true);
-
-    // The scratch session is LIVE in this context — the forgot flow needs
-    // the signed-out card, so log the scratch session out first.
-    await page.evaluate(() => fetch("/api/auth/logout", { method: "POST", headers: { "Content-Type": "application/json" } }).then(() => undefined)); /* F-218p: the route gates on the content-type */
+    // Deliberately NOT verified: the account carries its pending
+    // verification state into the funnel below.
 
     // 1. The forgot request on the scratch account (the reset view's
     //    submit is now the REAL endpoint — the client-side theater is
     //    retired).
-    await page.goto("/login");
     await page.getByRole("button", { name: "Forgot password?" }).click();
     await page.getByLabel("Email").fill(scratchEmail);
     await page.getByRole("button", { name: "Send reset link" }).click();

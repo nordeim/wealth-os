@@ -7,7 +7,81 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.35.0** (session 238 — the history-width,
+> **Current version: v2.36.0** (session 239 — the wall-token,
+> recovery-gate, and hydration-window round R-36: the owner's
+> standing directive — refresh → review → validate → audit →
+> parity iteration → remediation plan → TDD execution →
+> captures → docs lockstep → commit → push, with the reference
+> STABLE on all standing drift layers and the TRUE-390 mobile
+> menu re-verified by probe:ref this session; the cold-baseline
+> gate GREEN at HEAD b1be1ca — no discovery this round, the
+> v2.35.0 ship state reproduced exactly: lint 0/0 · tsc 0 ·
+> 1450/1450 unit (88 files) · build · smoke 15/15 · 147/147
+> e2e · census MATCH). The session-239 fresh-eyes audit (three
+> Mode-C passes: the R-35 cure surfaces driven by the session, the
+> API/auth/security layer, and the UI/a11y/shell layer —
+> 0 Critical / 1 High / 3 Medium / 13 Low / 18 Informational
+> raw after dedup, every material claim re-verified at file:line
+> by the driving session; R-35's cures verified holding —
+> pass A confirmed all seven cure surfaces, no regressions, one
+> residual race INSIDE the new wall machinery itself; the
+> round's High adjudicated to the parity register by live
+> reference probe — the F-226i doctrine: the reference's own
+> Select/Menu focus wash computes the same sub-3:1 genus in both
+> apps, M-81c2-measured light pair + the dark probe #262626
+> this session — registered, not cured, the F-224y/F-230a
+> pattern). The round's flagships: THE WALL'S WRITE-TOKEN BUMP
+> (F-239a Medium — commitRevocationWall cleared every slice
+> but never bumped sessionWriteToken, so a fetch already in
+> flight when the wall fired (its server-side read predating
+> the revocation, answering 200 with the old user's data)
+> still held the live token and committed AFTER the wall —
+> re-populating the just-cleared ledger over the login wall
+> until the next fetch 401s and re-walls; the logout branch's
+> own F-217l bump contract, missing from the wall's commit);
+> THE RECOVERY GATE (F-239b Medium — a successful password
+> reset updated the hash, cleared the token, bumped the
+> version… and left verificationCodeHash standing, so a
+> never-verified account (the exact population most likely to
+> need forgot-password) completed the entire reset funnel and
+> STILL answered 403 VERIFICATION_REQUIRED at login — the
+> reset token's possession proves email control, exactly what
+> verification attests; the reset now clears the pending
+> verification state too); THE HYDRATION TIMEZONE WINDOW
+> (F-239c Medium — the dashboard's date subtitle derives from
+> a render-time new Date() on a server-rendered client page,
+> so a server and client on different calendar dates (the
+> daily TZ-offset window) diverge at the text level — a React
+> 19 hydration error in that window, invisible to every gate
+> (the F-218d UTC-sandbox-blind genus); the analytics date
+> inputs carry the attribute-mismatch half; both ride the
+> theme-bootstrap's own suppressHydrationWarning pattern);
+> plus the store-battery coverage completion (F-239d — the
+> two inline 401 arms and the refreshAll-wall composition get
+> their behavioral legs), the logout↔wall clear-parity pin
+> (F-239e — the two literals are duplication-tied today, a
+> future slice add could regress F-238c silently), the 507
+> operator-copy truth (F-239f — it names the folder-clearing
+> path the memoized mkdir cannot self-heal), the settings
+> upsert (F-239g — the budgets-POST house form replaces the
+> read-create-then-update pair), the upload catch arms
+> (F-239h — a non-ENOENT read failure answers 500 not 404; a
+> physical ENOSPC/EDQUOT answers the 507 family not a bare
+> 500), the Dark-Mode state suffix (F-239i — the sr-only
+> superset, the mobile header's own pattern), the desktop
+> sidebar's internal scroll (F-239j — the F-219h drawer cure's
+> desktop twin, pixel-invisible when content fits), and the
+> dead animation-token retirement (F-239k). Registered, not
+> cured: the focus-wash register entry (F-239l), the vestigial
+> history header-row classes (F-239m — the reference's own
+> title is a bare div, ours renders identical, the re-derivation
+> churn exceeds the gain), the segmented track's ≤360px
+> start-clip (F-239n — the reference's own center-justified
+> track, our overflow superset already mitigates), and the
+> standing informational set (F-239o-s). §5 carries the
+> execution history.)
+>
+> **Previous version: v2.35.0** (session 238 — the history-width,
 > third-window, and slice-hygiene round R-35: the owner's
 > standing directive — refresh → review → validate → audit →
 > parity iteration → remediation plan → TDD execution →
@@ -1420,6 +1494,45 @@ session-199 original that every gate modeled as normal for 39 sessions.
 | F-238o | Informational | **The uploads.ts F-234e comment describes the pre-F-237d call-site layout.** "the pre-write call site sits outside the route's try" — F-237d moved it inside; the rationale text is one remediation behind the code. | `src/lib/uploads.ts:61-66` | **R-35** (the comment rewords — rides the F-238d file touch) |
 | F-238p | Informational | **Mobile-nav e2e coverage gaps: no Shift+Tab backward-wrap leg; no direct scroller-lock assertion.** The Tab interceptor implements both directions and the main-scroller lock is a kept superset, but the spec only walks forward Tab and never asserts the lock. The behaviors were live-verified during the audit. | `tests/e2e/mobile-navigation.spec.ts:86-125` | **R-35** (the backward leg + the overflow assertion join the spec — the operator's standing mobile-menu ask gets its full keyboard coverage) |
 | F-238q | Informational | **The mutation-failure toast rides the wall's redirect face for its auto-dismiss window.** Post-F-238b, a revoked mutation still toasts the action's own failure ("Delete failed — Sign in required") while the wall commits and redirects — the toast is the honest delete-failure notice, transient (~4s), and the wall owns the screen (no stale workspace — VLM-verified in capture 157); curing it means res.code-aware toast suppression at 20+ call sites for a cosmetic redirect-window artifact. | the mutation callers (e.g. `src/app/(app)/expenses/page.tsx` deleteExpense's toast arm); capture `docs/screenshots/157-session238-mutation-401-wall.png` | recorded (posture; the toast is accurate feedback for the failed action itself) |
+
+### session-239 audit (R-36's findings ledger — every row re-verified at file:line by the driving session)
+
+Three Mode-C passes (the R-35 cure surfaces driven by the session · the
+API/auth/security layer · the UI/a11y/shell layer). Raw after dedup:
+**0 Critical / 1 High / 3 Medium / 13 Low / 18 Informational.** R-35's
+cures verified holding (pass A, cure-by-cure — all seven surfaces, no
+incomplete applications, no wrapper regressions; one residual race found
+INSIDE the new wall machinery, F-239a); the recorded tail (F-238h/q +
+the F-237j-r families) re-verified at its recorded status. The round's
+High (the Select/Menu focus-wash visibility) was adjudicated by LIVE
+REFERENCE PROBE — the F-226i doctrine: the reference's own highlighted
+option computes `rgb(38,38,38)` on its dark panel (probed this session)
+and its light pair was M-81c2-live-measured (#f5f5f5 on white) — the
+same sub-3:1 genus both apps ship; registered (F-239l), the
+F-224y/F-230a pattern, not cured (a wash step-up or item ring would
+deviate from the pinned interactive genus on every combobox).
+
+| ID | Severity | Finding | Location | Disposition |
+|---|---|---|---|---|
+| F-239a | Medium | **The revocation wall never bumps the write token — an in-flight pre-revocation 200 can re-populate the cleared ledger after the wall.** `logout()` deliberately bumps `sessionWriteToken` before its clear (the F-217l contract: a mid-flight fetch can never re-populate the cleared slices), but `commitRevocationWall` commits the identical clear WITHOUT the bump. Any fetch already in flight when the wall fired — whose server-side read predates the revocation, so it answers 200 with the old user's data — passes every write-guard (`token !== sessionWriteToken` is still false; neither `refreshSeq` moved) and commits AFTER the wall: the dashboard slice-set re-populates user + all six slices over the login wall until the next fetch 401s and re-walls; hydrate's settings tail can re-land `settings` + `settingsSettled` after a mutation-401 wall (slow-link reachable); on the F-238c compound path with client-side navigation the re-populated user can take AppShell's remount branch. Transient stale/cross-user flash on an uncommon timing — no persistence, no corruption — but it is the exact F-217l genus the bump was invented for, missing from the wall's own commit. | `src/stores/wealthos-store.ts:140-158` (the wall commit, no bump); the admitting guards `:179` (refreshAll), `:275`/`:290` (hydrate + its settings tail), `:230`/`:468`/`:485` (the 401 arms); the contrast `:321` (logout's bump) | **R-36** (the wall bumps the write token — every in-flight guard then discards post-wall landings; all three call sites compare their token BEFORE invoking the wall, so the bump is sequencing-safe; behavioral leg: a late-landing 200 after a mutation-401 wall leaves the slices empty) |
+| F-239b | Medium | **A successful password reset leaves the pending verification state standing — a never-verified account completes the recovery funnel and still cannot sign in.** The reset's atomic updateMany writes passwordHash, clears the token pair, bumps tokenVersion — and never touches `verificationCodeHash`. Login's F-235b gate (`if (user.verificationCodeHash)` → 403 VERIFICATION_REQUIRED, above the credential check) then blocks the exact population most likely to use forgot-password (signed up, never verified, now locked out): they receive the reset link, set a new password, see "Password reset successfully" — and the next login still answers 403. The reset token's possession proves email control (delivered to the registered address — at least as strongly as the OTP attests), which is exactly what verification attests; in the demo posture the in-band OTP makes the gate no real protection either (an attacker can verify in-band the same way). | `src/app/api/auth/reset-password/route.ts:89-99` (the updateMany data block); the gate `src/app/api/auth/login/route.ts:90-96`; the schema fields `prisma/schema.prisma:34-38` | **R-36** (the reset clears verificationCodeHash/verificationExpiresAt/verificationAttempts alongside the token pair — the recovery contract closes; source pin in the auth-reset battery) |
+| F-239c | Medium | **The dashboard's date subtitle and the analytics date inputs derive from render-time `new Date()` — a server/client calendar-date divergence is a React 19 hydration error in the daily TZ window.** Both pages are server-rendered client components: the server renders `longDate(new Date())` with the SERVER's local calendar, the client hydrates with its own. When the two sit on different dates (the daily window equal to the TZ offset — a UTC server + UTC−5 user between 19:00–24:00 local), the subtitle's text content diverges → hydration error + client re-render flash; the analytics `from`/`to` initial values render as date-input `value` attributes → the attribute-mismatch half (warned + patched). Invisible to every gate (server and browser share the UTC sandbox — the F-218d genus: "The UTC sandbox is why every gate was blind"). Self-hosted single-user deployments (server TZ == user TZ) never fire. | `src/app/(app)/dashboard/page.tsx:75,160`; `src/app/(app)/analytics/page.tsx:65-70,189,196`; `longDate` `src/lib/finance.ts:110` | **R-36** (the theme-bootstrap's own pattern: `suppressHydrationWarning` on the subtitle carrier and both date inputs — the divergence is inherent (the server's date is unknowable client-side), the texts agree in every non-window load, and the suppressed arm self-heals on the next re-render; source pins + the doctrine note) |
+| F-239d | Low | **The store battery's wall coverage has three gaps.** The `mutate` wrapper's 401 arm has real behavioral coverage, but (a) the two INLINE arms (updateSettings, askCoach) are pinned by source regex only — exactly the "source pins cannot see semantics" residual the db-transient rider's own docblock names; (b) no leg covers a logout landing mid-mutation (the F-217l guard must prevent both the write AND a spurious wall); (c) mutation-200 → refreshAll-401 (the wall firing through refreshAll's own arm — reachable code) has zero coverage. | `tests/store-hydrate.test.ts` (the existing F-238b/c legs); the arms `src/stores/wealthos-store.ts:468-470,485-487` | **R-36** (the three behavioral legs join the battery, mirroring the F-238b pattern; the late-200 leg rides F-239a's cure) |
+| F-239e | Low | **The logout-clear ↔ wall-clear parity is enforced by duplication, not by a pin that compares the two sets.** Today the two literals are exactly identical (verified key-by-key), but both the parity pin (presence-of-keys inside the helper) and the behavioral leg (enumerates the current slices) freeze the CURRENT enumeration — a future slice added to WealthOsState and only logout's literal regresses F-238c silently (the standing-ledger genus the helper was built to prevent), with nothing structural tying logout's clear to the helper. | `src/stores/wealthos-store.ts:140-158` vs `:328-341`; the pins `tests/parity-238.test.ts:91-109` | **R-36** (a pin slices both code regions and asserts the key-SETS match — the structural tie; routing logout's clear through the wall was rejected: the spread order would need inverting and the extra-key semantics (hydrated/loading) diverge by design) |
+| F-239f | Low | **The STORAGE_FULL operator copy names the vanishing path the memoized mkdir cannot self-heal.** The 507 envelope's guidance says "the operator clears `<repo>/uploads/`" — but clearing plausibly means removing the FOLDER, and F-238d's cure memoized the once-per-process `uploadsDir()` mkdir behind `uploadsDirEnsured`: a directory removed while the server runs is never recreated (every POST fails ENOENT → 500 until restart; GETs 404). Pre-cure the per-call mkdir self-healed exactly this path. | `src/lib/api.ts:62-64` (the copy); the memoization `src/lib/uploads.ts:169-178` | **R-36** (the copy rewords: delete the FILES INSIDE, never the folder itself — the one-line truth; an ENOENT re-ensure arm was rejected as unreachable-in-practice scaffolding for an operator error the copy now prevents) |
+| F-239g | Low | **The settings PUT rides a read-create-then-update pair — three round-trips and a vanishing-row window.** `readSettings()` (lazy-create) → `db.setting.update` → `readSettings()` again: the middle update can surface P2025 as a 500 if the row vanishes between the create and the update (unreachable today — no user/setting delete endpoint — but the same one-statement shape the budgets route already solved), and the final re-read discards the update's own return value. | `src/app/api/settings/route.ts:73-79` | **R-36** (the budgets-POST house form: `db.setting.upsert` + the P2002 single retry — one round-trip on the hot path, the P2025 window closes, the concurrent-first-touch race keeps its recovery) |
+| F-239h | Low | **The upload family's catch arms collapse two honest failure classes into the wrong envelopes.** (a) The GET's `readFile` catch maps EVERY non-ENOENT failure (EACCES, EMFILE, EISDIR) to the NOT_FOUND 404 — a real server fault is indistinguishable from a capability-URL miss (the operator sees the log; the client story does not). (b) The POST's catch has no ENOSPC/EDQUOT arm — a PHYSICAL disk-full falls through the 507 family to the generic 500, breaking the route's own documented "the operator clears uploads" contract exactly when the OS disk, not the app ceiling, is the constraint. | `src/app/api/uploads/[name]/route.ts:46-60`; `src/app/api/upload/route.ts:170-174` | **R-36** (the GET answers ERR.INTERNAL for non-ENOENT failures — a valid-format name is not a secret, the regex pins the shape; the POST gains the ENOSPC/EDQUOT arm answering STORAGE_FULL before the generic 500) |
+| F-239i | Low | **The desktop user-menu's "Dark Mode" item exposes no state.** A screen-reader user cannot tell whether clicking will enable or disable the mode (WCAG 4.1.2); the mobile header's own toggle does this correctly (`aria-label={isDark ? "Switch to light mode" : …}`). The visible label stays the reference's own ("Dark Mode" — its string). | `src/components/layout/sidebar.tsx:140-143`; the correct twin `src/components/layout/mobile-header.tsx:47` | **R-36** (the sr-only state suffix — the a11y-superset pattern the hamburger's labeled form set; pixel-invisible, no sweep/census surface: the sidebar is outside `<main>` and sr-only renders nothing) |
+| F-239j | Low | **The desktop sidebar has no internal scroll — the footer clips on short lg viewports.** The mobile drawer got `overflow-y-auto` (F-219h) but the desktop nav did not: 9 links + brand + footer ≈ 620px of content inside the `h-screen overflow-hidden` root with nowhere to scroll — the user row and Synced pill are unreachable at, e.g., 1024×600. | `src/lib/page-layout.ts:22` (NAV_LAYOUT.nav, `flex-1` without overflow); the groundwork `:8` (container `min-h-0`) | **R-36** (the nav gains the drawer's own overflow pair — `overflow-y-auto scrollbar-thin`; pixel-invisible when content fits (no scrollbar renders), brand + footer stay pinned) |
+| F-239k | Informational | **Two dead animation tokens + their keyframes ride globals.css with zero consumers.** The `--animate-fade-in`/`--animate-slide-in-right` pair (and both `@keyframes` blocks) have no class consumers anywhere in src/ or tests/ (the Radix transitions ride the tw-animate-css import); v4 emits keyframes only on use, so this is dead source only — but it is the same dead-stock genus F-230b recorded for the button family. | `src/app/globals.css:303-322` | **R-36** (the pair + keyframes retire; the retirement note describes, never cites — the F-229d discipline) |
+| F-239l | Informational | **The Select/Menu keyboard-highlight wash computes below the 3:1 focus-indicator guidance — the reference's own genus, REGISTERED.** The only highlight a keyboard user gets arrowing through options is the focus wash: light ≈1.07:1 (#f5f5f4 on white), dark ≈1.24:1 (#292524 on #0a0a0a); no data-highlighted styling, no item ring; the paired ink shift (#0a0a0a→#171717) is imperceptible. LIVE-PROBED THIS SESSION (the F-226i doctrine before adjudicating): the reference's own highlighted option computes `rgb(38,38,38)` on its dark panel — the same sub-3:1 genus; the light pair was M-81c2-live-measured at extraction time. Unlike the F-221b cure (where OUR dark text was 1.18:1 UNREADABLE — a real defect the reference did not share), here the highlighted text is readable in both modes in both apps; only the wash-as-indicator is subtle. A wash step-up or item ring would deviate from the pinned interactive genus on every combobox in the app. | `src/components/ui/select.tsx:131`; `src/lib/page-layout.ts:354` (MENU_ITEM); the reference probe (this session, dark) + the M-81c2 record (light) | recorded (the F-224y/F-230a register pattern — the parity register supersedes AA for reference-measured surfaces; revisit only if the reference ever strengthens its own wash) |
+| F-239m | Informational | **The post-F-238a history header row carries vestigial flex-row classes.** With the Tabs hoisted, the row's only child is the h2 — `sm:flex-row sm:items-center sm:justify-between` are dead styling. The reference's own title is a BARE div (probed this session: `font-semibold…` with no row wrapper), but ours renders visually identical (a single child is unaffected by row/justify) and the class string is already sweep-baselined: removing it means re-deriving the expenses page's allowances again for zero visual gain. | `src/app/(app)/expenses/page.tsx:373-375`; the reference's bare-div form (this session's probe) | recorded (the reference's own single-title form documented; fold into the next expenses-page touch) |
+| F-239n | Informational | **The segmented Tabs track clips its start side at ≤360px.** `justify-center` + `overflow-x-auto` (our superset) places the start-side overflow outside the scrollable region — at 360px the four Analytics tabs (~350px) exceed the ~320px track; at 320px the first tab is mostly hidden. The center-justified track is the reference's own byte-extracted string; the reference itself has no scroll affordance at all there (worse); our overflow superset already recovers most of the track. A start-justify would visibly deviate at every width where tabs fit. | `src/lib/page-layout.ts:370` (track) + the page's overflow construction `src/components/ui/tabs.tsx:113-118` | recorded (the reference's own genus at the Galaxy-Fold edge; the superset already mitigates) |
+| F-239o | Informational | **The first-admin signup race + the unconsumed role vocabulary.** `count()` → `create` TOCTOU: two concurrent first signups on an empty DB both read count 0 and both become admin; the role strings are three-way inconsistent (signup writes "rep", the schema default is "user", the seed writes "user") with zero route gating on role today — the distinction carries no privilege. Latent until an admin surface ever lands. | `src/app/api/auth/signup/route.ts:68,87-88` | recorded (normalize the vocabulary + make the grant atomic when an authorization surface actually lands) |
+| F-239p | Informational | **The verify-success session mint reads tokenVersion before the clearing update.** A concurrent logout/reset bumping the version in the ms-window mints a cookie that dies at the next getSessionUser — a 200 "verified" then an immediate 401. Self-healing, extremely narrow. | `src/app/api/auth/verify/route.ts:74,134-144` | recorded (re-read the version at mint time if the class ever surfaces) |
+| F-239q | Informational | **Whole-store `useWealthOs()` subscriptions on all nine section pages.** No correctness risk (no allocating selectors — the useShallow law is honored; nothing derives fresh objects), purely over-render on cross-slice writes. The shell itself uses precise per-slice selectors. | the nine section pages (exemplar `src/app/(app)/expenses/page.tsx:49`) | recorded (per-slice selectors where cheap, the next time each page is touched) |
+| F-239r | Informational | **The ThemeProvider's `theme` label can stay "system" despite a stored choice.** Initial state "system" re-syncs from localStorage only when the resolved dark class CHANGES — a stored "dark" on first load never changes the class, so the label stays stale until a toggle. No current consumer reads the label (both toggles read the DOM class). | `src/components/layout/theme.tsx:87,129-133` | recorded (sync once on mount if a label consumer ever lands) |
+| F-239s | Informational | **The standing hygiene set (grouped register, all Verified).** The `call()` header merge drops a Headers-instance init (latent — no caller passes headers); the budgets P2002-retry can itself race to P2002 (near-impossible window); the redundant `dark:bg-[#0e1310]` literal on SHELL_LAYOUT.root beside the token flip (harmless belt-and-suspenders, two edits if the wash ever changes); the light-only reserved `-soft` token trio (zero consumers, documented reserved); the dead `?`-testing arms in the two pathname matchers (defensive, harmless); the badge's dead hover/focus affordances on a non-interactive div (stock shadcn mirror); the login-card icon annotation drift (lucide auto-injects aria-hidden — behavior correct); `--color-line-strong` pinned+flipped with zero consumers (the documented reserved-unwired contract); `page-wash`'s `background-attachment: fixed` (mobile-Safari jank — the reference's own genus). | the cited file:line sites in the audit passes | recorded (the grouped F-222p-style register row; none carries user impact today) |
 
 ## 3. The remediation program (R-items)
 
@@ -4400,10 +4513,80 @@ commands, the pre-ship checklist), this plan (R-35 → Done, the
 The recorded tail stays documented (F-238h + F-238q + the
 F-237j-r/standing families).
 
+### R-36 — The wall-token, recovery-gate, and hydration-window round (session 239) — Status: Done(v2.36.0)
+
+The cure for F-239a/b/c (the three Mediums) + F-239d-k (the Low and
+Informational riders), each verified at file:line over the R-35 ship
+state. TDD throughout: the pins born RED, then the cures, then the full
+gate + the six parity drift legs.
+
+1. **R-36.1 — the pins born RED**:
+   - `tests/parity-239.test.ts` (new): the wall-body bump pin (F-239a —
+     the token advance rides inside commitRevocationWall, before the
+     set); the reset's verification clears (F-239b — the three fields
+     in the updateMany data block); the suppressHydrationWarning trio
+     (F-239c — the PageHeader subtitle carrier + both analytics date
+     inputs); the logout↔wall key-set parity (F-239e — both literals
+     sliced, the key SETS asserted equal); the 507 copy truth (F-239f);
+     the settings upsert + retry (F-239g); the upload catch arms
+     (F-239h — the GET's non-ENOENT 500 arm + the POST's disk-full
+     507 arm); the Dark-Mode state suffix (F-239i); the nav overflow
+     pair (F-239j); the dead animation-token retirement (F-239k — the
+     globals.css block carries neither token nor keyframe).
+   - `tests/auth-reset.test.ts` extension: the verification-state
+     clears in the reset's write (RED until the cure).
+   - `tests/store-hydrate.test.ts` extensions (F-239a/d — behavioral):
+     the late-200-after-wall leg (a pending dashboard 200 resolving
+     after a mutation-401 wall leaves every slice empty + user null);
+     the updateSettings-401 and askCoach-401 legs (the inline arms
+     commit the wall); the mutation-200→refresh-401 leg (the wall via
+     refreshAll's own arm); the logout-mid-mutation genus guard (the
+     F-217l guard prevents both the write and a spurious wall).
+2. **R-36.2 — the cures**:
+   - **F-239a**: `commitRevocationWall` advances the write token before
+     its set — every in-flight guard (refreshAll's pair, hydrate's
+     dashboard + settings-tail guards, the inline arms' own
+     token-equality re-checks) then discards post-wall landings; all
+     three wall callers compare their token BEFORE invoking the wall,
+     so the bump is sequencing-safe (a second 401 landing later skips
+     its idempotent wall commit).
+   - **F-239b**: the reset's updateMany clears the verification pair +
+     attempts counter alongside the token pair (the email-control
+     proof the reset token carries is what verification attests).
+   - **F-239c**: `suppressHydrationWarning` on PageHeader's subtitle
+     carrier (inert for every static-string consumer) and both
+     analytics date inputs — the theme-bootstrap's own pattern for
+     inherent server/client divergence.
+   - **F-239d/e**: the behavioral legs + the key-set parity pin (test
+     files only).
+   - **F-239f**: the 507 copy names the files-inside form.
+   - **F-239g**: the settings PUT rides `db.setting.upsert` + the
+     budgets-POST P2002 single-retry form; the response projects the
+     row's fields exactly as readSettings does.
+   - **F-239h**: the GET's catch splits the ENOENT miss (404, unlogged)
+     from every other I/O failure (logged + ERR.INTERNAL); the POST's
+     catch gains the ENOSPC/EDQUOT arm answering STORAGE_FULL.
+   - **F-239i**: the Dark-Mode item grows the sr-only state suffix
+     (the visible label unchanged — the reference's own string).
+   - **F-239j**: NAV_LAYOUT.nav gains the overflow pair.
+   - **F-239k**: the dead animation tokens + keyframes retire from
+     globals.css (the retirement note describes, never cites).
+3. **R-36.3 — the verification**: lint 0/0 · tsc 0 · the full unit
+   suite (the new pins counted) · build · smoke 15/15 · the e2e
+   battery · the six parity drift gates (the round's surfaces are all
+   pixel-invisible or outside the censused DOM — the standing
+   allowances should hold UNMOVED; any movement re-derives per the
+   F-236e doctrine with the decode documented) · census MATCH ·
+   `bun audit` re-triage · the captures set (the standing operator
+   asks: the mobile drawer + this round's cured surfaces) · the docs
+   lockstep (README/AGENTS/CLAUDE/PAD/SKILL/this plan/worklog/the
+   session record) in the same commit.
+
 ## 5. Execution history
 
 | Version | Session | R-items executed | Gate at ship | Commit |
 |---|---|---|---|---|
+| v2.36.0 | 239 | **R-36** (the wall-token, recovery-gate, and hydration-window round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD b1be1ca — the v2.35.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-239 fresh-eyes audit (three Mode-C passes: the R-35 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 1 High / 3 Medium / 13 Low / 18 Informational raw after dedup, every material claim re-verified at file:line by the driving session; R-35's cures verified holding; the round's High adjudicated to the parity register by LIVE REFERENCE PROBE (the F-226i doctrine — the reference's own Select/Menu wash computes the same sub-3:1 genus, dark-probed this session + M-81c2-measured light). The plan v2.36.0 written (the F-239a-s ledger + the R-36 section) and validated against the tree. **R-36.1** the pins born RED (the parity-239 source pins — 13 RED + 1 green-by-design genus guard; the auth-reset extension — 1 RED; the store-hydrate behavioral extensions — the late-200-after-wall leg RED + 5 genus/coverage legs green at birth; the reset e2e leg restructured to the never-verified population — RED-proven against the pre-cure build via the stash-rebuild cycle) → **R-36.2** the cures: THE WALL'S WRITE-TOKEN BUMP (F-239a — commitRevocationWall advances the token before its set, every in-flight guard discards late landings); THE RECOVERY GATE (F-239b — the reset clears the verification pair + attempts; the email-control proof the token carries); THE HYDRATION TIMEZONE WINDOW (F-239c — suppressHydrationWarning on the subtitle carrier + both date inputs, the theme-bootstrap's pattern); the store-battery completion (F-239d); the logout↔wall key-set parity pin (F-239e); the 507 copy truth (F-239f); the settings upsert (F-239g — the budgets-POST house form); the upload catch arms (F-239h); the Dark-Mode sr-only state (F-239i); the sidebar scroll (F-239j); the animation-token retirement (F-239k) → **R-36.3** the verification: lint 0/0 · tsc 0 · **1469 unit (89 files)** · build · smoke 15/15 · **147 e2e** · ALL SIX drift gates CLEAN (the standing allowances held UNMOVED — the round's surfaces pixel-invisible or outside the censused DOM) · census MATCH · `bun audit` unchanged; the captures 158-161 verified in-DOM with the census tripwire + pixel-verified (the standing mobile-drawer ask, the state-exposed theme item, the short-viewport sidebar scroll, the analytics date inputs); the recorded tail stays documented (F-239l-n + F-239o-s + the standing families) | lint 0/0 · tsc 0 · **1469 unit (89 files)** · build · smoke 15/15 · **147 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.0.0 | 203 | plan created; **R-1** (security ledger + zod floor pin + PAD/AGENTS lockstep) · **R-2** (docs-counts port + 8 site fixes incl. §7.1) · **R-3** (vitest.config comment) | lint 0/0 · tsc 0 · **508 unit** (37 files; +10: 8 docs-counts + 2 security-ledger) · build · smoke 14/14 · e2e 84/84 · census MATCH | `905b8a4` (the execution commit) |
 | v2.1.0 | 204 | **R-4.1** (the sweep re-anchor: REF_URL + the 11-page WealthOS set + the CRM baselines retired, both sweep.ts and sweep-state.ts; tests/sweep-tool.test.ts born RED 9/9 → GREEN; the maiden report-only run green end-to-end) · **R-6** (the F-204a docs-counts site-inventory completion: 4 grouped pins born RED against 10 stale sites; totals re-converged 508/37/592 → 521/38/605) | lint 0/0 · tsc 0 · **521 unit** (38 files; +13: 9 sweep-tool + 4 docs-counts) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · the maiden sweep report (login pair + 11×2 captures + seed restore) | (this session's execution commit) |
 | v2.2.0 | 205 | **R-4.2** (the maiden derivation: the F-205a per-page resolved-theme match — planThemeWrites born RED 3× → GREEN, the table collapsed ~85% → 12–75%; the four class tables derived from the theme-matched maidens at 390/768/1024/1440 — 12 literal values each, deep-pinned with the 3 session-204 pending-state pins replaced; the byte-identical re-run noise calibration; all four --fail-on-drift runs clean + the live --drift-margin -5 teeth check; the genera decoded — data-vs-empty, F-205b import+settings navy, F-205c styling deltas; R-7 programmed for the parity convergence) | lint 0/0 · tsc 0 · **524 unit** (38 files; +3 net: 3 planThemeWrites + 3 derived-state − 3 pending-state) · build · smoke 14/14 · e2e 84/84 (1.4m) · census MATCH · 4× drift-gate clean | (this session's execution commit) |

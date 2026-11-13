@@ -170,6 +170,21 @@ export async function POST(request: Request) {
   } catch (error) {
     logApiError("upload POST", error);
     if (isTransientDbError(error)) return ERR.UNAVAILABLE();
+    // Session-239 (R-36, F-239h): a PHYSICAL disk-full (the OS
+    // refusing the write — ENOSPC, or the quota variant) answers the
+    // storage-full family, not the generic 500: the route's own
+    // operator contract names the storage guard, and the disk itself
+    // is exactly the constraint that contract exists for (the logical
+    // ceilings above guard the app's own budget; this arm guards the
+    // machine's).
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error.code === "ENOSPC" || error.code === "EDQUOT")
+    ) {
+      return ERR.STORAGE_FULL();
+    }
     return ERR.INTERNAL();
   }
 }

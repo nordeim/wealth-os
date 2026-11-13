@@ -163,6 +163,24 @@ describe("reset-password route contract (session-163, digma S67-A/S76-A/S124-A)"
     expect(src).toContain("resetTokenExpiresAt: null");
   });
 
+  it("clears the pending verification state (F-239b — the never-verified account's recovery closes)", () => {
+    // Session-239 (R-36): the reset token's possession proves email
+    // control — exactly what verification attests. Pre-cure, a
+    // never-verified account completed the whole reset funnel and
+    // STILL answered the login gate's 403 (the gate reads the
+    // standing hash above the credential check). The atomic write
+    // clears the verification pair + attempts counter alongside the
+    // token pair.
+    const src = resetRoute();
+    const block = src.slice(
+      src.indexOf("db.user.updateMany({"),
+      src.indexOf("});", src.indexOf("db.user.updateMany({")),
+    );
+    expect(block).toContain("verificationCodeHash: null");
+    expect(block).toContain("verificationExpiresAt: null");
+    expect(block).toContain("verificationAttempts: 0");
+  });
+
   it("surfaces the transient family as the 503 arm (both catch blocks)", () => {
     const src = resetRoute();
     // Session-238 (R-35, F-238k) recalibration: the seam form.

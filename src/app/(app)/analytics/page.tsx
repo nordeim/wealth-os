@@ -190,6 +190,12 @@ export default function AnalyticsPage() {
                 aria-label="From date"
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
+                // Session-239 (R-36, F-239c): the initial range derives
+                // from a render-time clock — a server/client calendar
+                // divergence is an attribute mismatch in the daily TZ
+                // window; the comparison opts out (the client value
+                // wins, the texts agree outside the window).
+                suppressHydrationWarning
                 className="input-base h-10 w-36"
               />
               <input
@@ -197,6 +203,7 @@ export default function AnalyticsPage() {
                 aria-label="To date"
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
+                suppressHydrationWarning
                 className="input-base h-10 w-36"
               />
               <Select value={months} onValueChange={setMonths}>

@@ -58,8 +58,12 @@ export const ERR = {
   // Session-228 (R-25, F-228f): the uploads capacity ceiling's honest
   // answer — 507 (Insufficient Storage) is the semantically correct
   // code for a self-hosted disk guard, not a 400 (the caller's request
-  // is fine) and not a bare 500 (nothing failed). Admin-facing: the
-  // operator clears <repo>/uploads/.
+  // is fine) and not a bare 500 (nothing failed). Admin-facing:
+  // Session-239 (R-36, F-239f) — the operator deletes the FILES
+  // INSIDE <repo>/uploads/, never the folder itself: the directory is
+  // created once per process (the F-238d memoization), so a removed
+  // folder is never recreated and every later upload fails until a
+  // restart.
   STORAGE_FULL: () =>
     fail("STORAGE_FULL", "Upload storage is full. Please contact the administrator.", 507),
 };

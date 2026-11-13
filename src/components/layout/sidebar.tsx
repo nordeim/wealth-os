@@ -13,7 +13,7 @@ import {
 import { NAV_ITEMS, isNavActive } from "./nav-config";
 import { NAV_LAYOUT, SHELL_LAYOUT } from "@/lib/page-layout";
 import { avatarTextColor } from "@/components/ui/avatar"; // F-218n: the luminance seam
-import { useTheme } from "./theme";
+import { useIsDark, useTheme } from "./theme";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { cn } from "@/lib/utils";
 import type { User } from "@/types";
@@ -89,6 +89,11 @@ function SidebarFooter({ user }: { user: User }) {
   const logout = useWealthOs((s) => s.logout);
   const router = useRouter();
   const { toggle } = useTheme();
+  // Session-239 (R-36, F-239i): the theme-reading hook joins the
+  // footer — the Dark-Mode item's screen-reader arm announces whether
+  // the click will enable or disable (the mobile header's own
+  // pattern; the visible label stays the reference's own string).
+  const isDark = useIsDark();
   const initial = (user.name || user.email).charAt(0).toUpperCase();
 
   const signOut = async () => {
@@ -140,6 +145,7 @@ function SidebarFooter({ user }: { user: User }) {
           <MenuItem onSelect={() => toggle()} className="gap-2">
             <Moon className="h-4 w-4" aria-hidden="true" />
             Dark Mode
+            <span className="sr-only">{isDark ? " — currently on" : " — currently off"}</span>
           </MenuItem>
           <MenuItem
             // Session-223 (R-20, F-223a): the navigating helper, not the

@@ -71,12 +71,46 @@ export async function PUT(req: Request) {
   if (!parsed.ok) return parsed.response;
 
   try {
-    await readSettings(guard.user.id); // lazily create the user's row
-    await db.setting.update({
-      where: { ownerId: guard.user.id },
-      data: parsed.data,
+    // Session-239 (R-36, F-239g): the upsert — the budgets-POST house
+    // form — replaces the read-create-then-update pair. One round-trip
+    // on the hot path (the old form made three: lazy-create, update,
+    // re-read); the vanishing-row window between the lazy create and
+    // the update (a P2025 surfacing as a 500) can no longer open; the
+    // create arm carries the lazy-create contract the pair had.
+    const row = await db.setting
+      .upsert({
+        where: { ownerId: guard.user.id },
+        update: parsed.data,
+        create: { ownerId: guard.user.id, ...parsed.data },
+      })
+      .catch(async (e: unknown) => {
+        // The budgets family's concurrent-first-touch race (F-229b):
+        // two first-writes both miss the upsert's read and the loser
+        // hits the ownerId unique constraint — a single retry is
+        // semantically correct (the winner's row now exists, the
+        // update arm fires, last-writer-wins exactly like any
+        // concurrent update).
+        if (
+          e instanceof Prisma.PrismaClientKnownRequestError &&
+          e.code === "P2002"
+        ) {
+          return db.setting.upsert({
+            where: { ownerId: guard.user.id },
+            update: parsed.data,
+            create: { ownerId: guard.user.id, ...parsed.data },
+          });
+        }
+        throw e;
+      });
+    return ok({
+      defaultCurrency: row.defaultCurrency,
+      dateFormat: row.dateFormat,
+      pushNotifications: row.pushNotifications,
+      emailAlerts: row.emailAlerts,
+      budgetWarnings: row.budgetWarnings,
+      monthlyReports: row.monthlyReports,
+      theme: row.theme,
     });
-    return ok(await readSettings(guard.user.id));
   } catch (error) {
     logApiError("settings PUT", error);
     if (isTransientDbError(error)) return ERR.UNAVAILABLE();

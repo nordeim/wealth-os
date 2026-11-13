@@ -29,7 +29,15 @@ export function PageHeader({
     <div className={PAGE_HEADER.root}>
       <div className="space-y-1">
         <h1 className={tone === "navy" ? PAGE_HEADER.titleNavy : PAGE_HEADER.title}>{title}</h1>
-        {subtitle ? <p className={PAGE_HEADER.subtitle}>{subtitle}</p> : null}
+        {/* Session-239 (R-36, F-239c): the subtitle carrier opts out of
+            the hydration text comparison — the dashboard's date
+            subtitle derives from a render-time clock, and a server and
+            client on different calendar dates (the daily TZ window)
+            diverge at the text level: a React 19 hydration error in
+            that window. The theme bootstrap's own pattern for inherent
+            server/client divergence — inert for every static-string
+            consumer (the texts agree, nothing is compared). */}
+        {subtitle ? <p className={PAGE_HEADER.subtitle} suppressHydrationWarning>{subtitle}</p> : null}
       </div>
       {actions ? <div className={PAGE_HEADER.actions}>{actions}</div> : null}
     </div>

@@ -345,3 +345,203 @@ describe("F-238c — the 401 branches clear the domain slices", () => {
     expect(s.settings).toBeNull();
   });
 });
+
+// Session-239 (R-36): the wall-token and coverage-completion extensions.
+// F-239a: commitRevocationWall never bumped the write token — a fetch
+// already in flight when the wall fired (its server-side read predating
+// the revocation, so it answers 200 with the OLD user's data) passed
+// every write-guard and re-populated the just-cleared ledger over the
+// login wall. The wall now advances the token; a late landing must
+// discard. F-239d: the two INLINE 401 arms (updateSettings, askCoach)
+// and the mutation-200→refresh-401 composition had no behavioral legs.
+describe("F-239a — a late-landing 200 cannot re-populate the walled store", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("a pre-revocation dashboard 200 resolving AFTER a mutation-401 wall leaves every slice empty", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+      settings: { currency: "USD" } as never,
+      settingsSettled: true,
+    });
+    // An in-flight manual refresh whose dashboard read predates the
+    // revocation — it answers 200 with the old user's data, but it
+    // LANDS after the wall. Held pending so the wall fires first.
+    let releaseRefresh!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseRefresh = resolve;
+        }),
+    );
+    const pendingRefresh = store.getState().refresh();
+    // The mutation itself answers 401 — the wall commits NOW.
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    const res = await store.getState().deleteTransaction("t1");
+    expect(res.ok).toBe(false);
+    const walled = store.getState();
+    expect(walled.user).toBeNull();
+    expect(walled.transactions).toEqual([]);
+    // The late 200 lands — the pre-cure tree re-populated user +
+    // slices here (the guard still passed: the wall never bumped).
+    releaseRefresh(dashboardEnvelope());
+    await pendingRefresh;
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.transactions).toEqual([]);
+    expect(s.settings).toBeNull();
+    expect(s.error).toBeNull();
+  });
+
+  it("a SECOND 401 landing after the wall stays walled (the idempotent skip)", async () => {
+    // Genus guard: the bump must not break the wall's own idempotence —
+    // a later 401 (the refresh's own arm) compares its stale token,
+    // skips the wall commit, and the store stays on the wall face.
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    await store.getState().createTransaction({ description: "x" });
+    expect(store.getState().user).toBeNull();
+    // The in-flight refresh from the SAME pre-wall entry also 401s.
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    await store.getState().refresh();
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.error).toBeNull();
+    expect(s.transactions).toEqual([]);
+  });
+});
+
+describe("F-239d — the inline 401 arms and the refreshAll-wall composition", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("updateSettings answering 401 commits the wall (the inline arm)", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    const res = await store.getState().updateSettings({ theme: "dark" });
+    expect(res.ok).toBe(false);
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.error).toBeNull();
+    expect(s.transactions).toEqual([]);
+  });
+
+  it("askCoach answering 401 commits the wall (the inline arm)", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    const res = await store.getState().askCoach("how am I doing?");
+    expect(res.ok).toBe(false);
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.error).toBeNull();
+    expect(s.transactions).toEqual([]);
+  });
+
+  it("a mutation 200 whose post-success refresh 401s commits the wall via refreshAll's arm", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    // The mutation itself succeeds (200 + ok:true envelope)…
+    fetchMock.mockResolvedValueOnce(
+      jsonRes({ ok: true, data: { id: "t2" } }),
+    );
+    // …but the session died between the write and the refresh — the
+    // dashboard GET answers 401. The wall must fire through
+    // refreshAll's own arm (the composition F-238b's wrapper relies
+    // on but no leg ever drove).
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    const res = await store.getState().createTransaction({ description: "x" });
+    expect(res.ok).toBe(true);
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.error).toBeNull();
+    expect(s.transactions).toEqual([]);
+  });
+
+  it("a logout landing mid-mutation prevents BOTH the write and a spurious wall (the F-217l guard)", async () => {
+    // Genus guard: the entry-captured token exists to protect the
+    // LOGOUT clear — a mutation resolving after a logout must neither
+    // re-populate the store nor wall it (the user deliberately left;
+    // the login wall is the next route's own face).
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    // The mutation is in flight when the logout lands.
+    let releaseMutation!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseMutation = resolve;
+        }),
+    );
+    const pendingMutation = store.getState().createTransaction({
+      description: "x",
+    });
+    // The logout: bumps the token, succeeds, clears.
+    fetchMock.mockResolvedValueOnce(jsonRes({ ok: true, data: {} }));
+    const loggedOut = await store.getState().logout();
+    expect(loggedOut).toBe(true);
+    expect(store.getState().user).toBeNull();
+    expect(store.getState().hydrated).toBe(false);
+    // The mutation's 401 lands LATE — the wrapper's token guard must
+    // skip the wall (the logout already owns the store's face).
+    releaseMutation(unauthorized401());
+    await pendingMutation;
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.hydrated).toBe(false);
+    expect(s.transactions).toEqual([]);
+  });
+});

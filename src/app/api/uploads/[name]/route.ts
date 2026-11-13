@@ -48,14 +48,21 @@ export async function GET(req: Request, { params }: Params) {
   } catch (error) {
     // Session-231 (R-28, F-231g): a miss on a capability URL is the 404
     // normal case, not a server fault — ENOENT stays out of the error
-    // log (up to 240 scans/15min/IP would drown the seam); every other
-    // I/O failure still logs before the envelope.
+    // log (up to 240 scans/15min/IP would drown the seam).
+    // Session-239 (R-36, F-239h): every OTHER I/O failure (EACCES,
+    // EMFILE, EISDIR) is a real server fault — it logs and answers the
+    // internal-error envelope, never a 404 that hides it from the
+    // client story (the name's format is pinned by the regex above; a
+    // well-formed name answering 500 discloses nothing).
     const miss =
       typeof error === "object" &&
       error !== null &&
       "code" in error &&
       error.code === "ENOENT";
-    if (!miss) logApiError("uploads/:name GET", error);
+    if (!miss) {
+      logApiError("uploads/:name GET", error);
+      return ERR.INTERNAL();
+    }
     return fail("NOT_FOUND", "File not found", 404);
   }
 

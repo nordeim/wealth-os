@@ -19,7 +19,14 @@ export const NAV_LAYOUT = {
   brandWordmark:
     "text-xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent",
   brandTagline: "text-xs text-amber-400/80",
-  nav: "flex-1 px-4 py-6 space-y-2 relative z-10",
+  // Session-239 (R-36, F-239j): the nav scrolls internally on short lg
+  // viewports — the F-219h drawer cure's desktop twin. Content ≈620px
+  // (brand + 9 links + footer) inside the h-screen overflow-hidden
+  // root: without the overflow pair the footer (user row, Synced pill)
+  // is unreachable at e.g. 1024×600. Pixel-invisible when content fits
+  // (no scrollbar renders); the container's min-h-0 groundwork above
+  // plus overflow ⇒ the automatic flex minimum releases.
+  nav: "flex-1 px-4 py-6 space-y-2 relative z-10 overflow-y-auto scrollbar-thin",
   // The reference's exact link contracts (live-extracted).
   link: "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-stone-300 hover:bg-gradient-to-r hover:from-white/5 hover:to-amber-500/5 hover:text-amber-100 hover:border hover:border-amber-500/10",
   linkActive:

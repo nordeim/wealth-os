@@ -141,6 +141,21 @@ function commitRevocationWall(
   set: (partial: Partial<WealthOsState>) => void,
   extra: Partial<WealthOsState> = {},
 ): void {
+  // Session-239 (R-36, F-239a): the wall ADVANCES the write token —
+  // the logout branch's own F-217l contract, applied to the third
+  // window. Without the bump, a fetch already in flight when the wall
+  // fired (its server-side read predating the revocation, so it
+  // answers 200 with the old user's data) still held the live token
+  // and committed AFTER the wall — re-populating the just-cleared
+  // ledger over the login wall until the next fetch 401s and
+  // re-walls. Every in-flight guard (refreshAll's token+sequence
+  // pair, hydrate's dashboard and settings-tail guards, the inline
+  // arms' own token-equality re-checks) evaluates against the
+  // advanced token and discards the late landing. All three wall
+  // callers compare their captured token BEFORE invoking the wall, so
+  // the advance is sequencing-safe; a second 401 landing later simply
+  // skips its (idempotent) wall commit.
+  sessionWriteToken += 1;
   set({
     ...extra,
     loading: false,
