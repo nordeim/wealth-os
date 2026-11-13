@@ -116,9 +116,22 @@ const nextConfig: NextConfig = {
           // already bar cross-origin WRITES; this bars the framing
           // itself). A functional superset — the reference's edge set
           // does not carry it, and headers are function, not visuals.
+          // Session-235 (R-32, F-235k): the additive containment backstop
+          // — script/object/base/form directives join the frame rule.
+          // 'unsafe-inline' on scripts is the Next.js floor (the inline
+          // bootstrap/hydration scripts); retiring it needs a nonce
+          // architecture. 'unsafe-eval' rides the DEV branch ONLY:
+          // React's dev tooling evals for callstack reconstruction, and a
+          // strict dev header paints the dev-tools issue badge into
+          // every capture (live-caught by the 390 sweep — the drift
+          // decode found the badge). Production NEVER evals (React's own
+          // contract), and the build bakes the strict form: headers()
+          // resolves at build time under NODE_ENV=production.
           {
             key: "Content-Security-Policy",
-            value: "frame-ancestors 'self'",
+            value: `frame-ancestors 'self'; script-src 'self' 'unsafe-inline'${
+              process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"
+            }; object-src 'none'; base-uri 'self'; form-action 'self'`,
           },
         ],
       },

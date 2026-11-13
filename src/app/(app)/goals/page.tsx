@@ -123,7 +123,14 @@ export default function GoalsPage() {
                       of {formatMoney(goal.targetAmount)}
                     </p>
                   </div>
-                  <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
+                  <div
+                    className="mt-2 h-2.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700"
+                    role="progressbar"
+                    aria-label={`${goal.name} funding progress`}
+                    aria-valuenow={Math.round(progress.pct)}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                  >
                     <div
                       className={cn(
                         "h-full rounded-full transition-all",
@@ -169,7 +176,8 @@ export default function GoalsPage() {
                       onClick={async () => {
                         setBusyId(goal.id);
                         const res = await store.deleteGoal(goal.id);
-                        setBusyId(null);
+                        // F-235e: clear only if this row still owns the slot.
+                        setBusyId((prev) => (prev === goal.id ? null : prev));
                         if (res.ok) toast.success("Goal deleted");
                         else toast.error("Delete failed", res.error);
                       }}
@@ -317,7 +325,8 @@ function GoalDialog({
                 <SelectContent>
                   {GOAL_CATEGORIES.map((c) => (
                     <SelectItem key={c.value} value={c.value}>
-                      {c.emoji} {c.label}
+                      {/* F-235g: the decorative glyph never rides the name. */}
+                      <span aria-hidden="true">{c.emoji}</span> {c.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

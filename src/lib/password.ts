@@ -6,21 +6,46 @@
 // in one place silently broke demo login in the other. This module is
 // node:crypto ONLY — both consumers import it, and auth.ts re-exports for
 // the routes' existing import surface.
-import { createHash, randomBytes, randomInt, scryptSync, timingSafeEqual } from "node:crypto";
+//
+// Session-235 (R-32, F-235d): the seam went ASYNC. The synchronous
+// scrypt blocked the single-threaded server ~28 ms per call, and every
+// public auth route burns exactly one (the timing equalizers included)
+// — an unauthenticated availability amplifier (~35 concurrent requests
+// saturate one core's loop time). util.promisify over the callback form
+// keeps the parameters, the stored format, and the timing profile
+// byte-identical; every call site was already async (routes, seed,
+// tests) — the awaits are the whole diff.
+import {
+  createHash,
+  randomBytes,
+  randomInt,
+  scrypt as scryptCallback,
+  timingSafeEqual,
+} from "node:crypto";
+import { promisify } from "node:util";
+
+const scrypt = promisify(scryptCallback) as (
+  password: string,
+  salt: string,
+  keylen: number,
+) => Promise<Buffer>;
 
 const KEY_LENGTH = 64;
 
-export function hashPassword(password: string): string {
+export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16).toString("hex");
-  const hash = scryptSync(password, salt, KEY_LENGTH).toString("hex");
+  const hash = (await scrypt(password, salt, KEY_LENGTH)).toString("hex");
   return `scrypt:${salt}:${hash}`;
 }
 
-export function verifyPassword(password: string, stored: string): boolean {
+export async function verifyPassword(
+  password: string,
+  stored: string,
+): Promise<boolean> {
   const parts = stored.split(":");
   if (parts.length !== 3 || parts[0] !== "scrypt") return false;
   const [, salt, expected] = parts;
-  const actual = scryptSync(password, salt, KEY_LENGTH).toString("hex");
+  const actual = (await scrypt(password, salt, KEY_LENGTH)).toString("hex");
   const a = Buffer.from(actual, "hex");
   const b = Buffer.from(expected, "hex");
   if (a.length !== b.length) return false;
@@ -38,9 +63,12 @@ export function verifyPassword(password: string, stored: string): boolean {
 // is the only consumer.
 let equalizerHash: string | null = null;
 
-export function timingEqualizerHash(): string {
+export async function timingEqualizerHash(): Promise<string> {
+  // The memo race is benign: two concurrent initial callers both
+  // compute the same constant and the final write wins — the value is
+  // deterministic.
   if (equalizerHash === null) {
-    equalizerHash = hashPassword("neo-crm-timing-equalizer-constant");
+    equalizerHash = await hashPassword("neo-crm-timing-equalizer-constant");
   }
   return equalizerHash;
 }

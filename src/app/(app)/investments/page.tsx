@@ -348,7 +348,8 @@ export default function InvestmentsPage() {
                                 if (!inv) return;
                                 setBusyId(inv.id);
                                 const res = await store.deleteInvestment(inv.id);
-                                setBusyId(null);
+                                // F-235e: clear only if this row still owns the slot.
+                                setBusyId((prev) => (prev === inv.id ? null : prev));
                                 if (res.ok) toast.success("Investment removed");
                                 else toast.error("Delete failed", res.error);
                               }}

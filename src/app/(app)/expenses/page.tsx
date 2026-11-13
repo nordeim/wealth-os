@@ -226,7 +226,9 @@ export default function ExpensesPage() {
   const deleteExpense = async (tx: Transaction) => {
     setBusyId(tx.id);
     const res = await store.deleteTransaction(tx.id);
-    setBusyId(null);
+    // F-235e: clear only if this row still owns the slot — a sibling's
+    // in-flight guard must survive another row's completion.
+    setBusyId((prev) => (prev === tx.id ? null : prev));
     if (res.ok) toast.success("Expense deleted");
     else toast.error("Delete failed", res.error);
   };
@@ -329,7 +331,11 @@ export default function ExpensesPage() {
                     <SelectItem value="all">All categories</SelectItem>
                     {EXPENSE_CATEGORIES.map((c) => (
                       <SelectItem key={c.label} value={c.label}>
-                        {c.emoji} {c.label}
+                        {/* F-235g: the glyph is decorative — the chips face's
+                            own convention (the emoji never rides the
+                            accessible name of the option or the trigger
+                            echo). */}
+                        <span aria-hidden="true">{c.emoji}</span> {c.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -347,6 +353,7 @@ export default function ExpensesPage() {
               value={tab}
               onValueChange={setTab}
               variant="segmented"
+              ariaLabel="Filter expenses by budget category"
               tabs={[
                 { id: "all", label: "All" },
                 { id: "needs", label: "Needs" },
@@ -624,7 +631,8 @@ function ExpenseDialog({
                   <SelectContent className="max-h-64">
                     {EXPENSE_CATEGORIES.map((c) => (
                       <SelectItem key={c.label} value={c.label}>
-                        {c.emoji} {c.label}
+                        {/* F-235g: the decorative glyph never rides the name. */}
+                        <span aria-hidden="true">{c.emoji}</span> {c.label}
                       </SelectItem>
                     ))}
                   </SelectContent>

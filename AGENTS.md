@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1302) | `bun run test` |
+| Unit tests (1337) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 140) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -515,3 +515,30 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   when a test greps for a token, no comment in the scanned tree may
   spell that token. Reworded to "reads the search params"; the
   route-case offender list stays empty.
+- **An auth gate placed AFTER the credential comparison leaks the
+  comparison's result (session 235, F-235b)**: login's
+  VERIFICATION_REQUIRED 403 fired only when the password was
+  CORRECT (a wrong password answered 401 first) — a
+  password-confirmation oracle on every never-verified account. The
+  cure moves the gate above the verify and burns the timing
+  equalizer on its branch, so the gate answers 403 for BOTH arms at
+  equal latency. The general rule: any branch that runs after a
+  credential check inherits the check's verdict as a side channel —
+  gates that must not confirm credentials go BEFORE them.
+- **SYNCHRONOUS crypto in the request path is an availability bug
+  (session 235, F-235d)**: the synchronous scrypt blocked the event
+  loop ~28 ms per call, and every public auth route burns exactly
+  one (the timing equalizers included) — ~35 concurrent requests
+  saturated one core and stalled every user of the single-process
+  deployment. The seam promisifies the callback form
+  (util.promisify); the stored format, parameters, and timing
+  profile are byte-identical and every call site was already async.
+  New crypto in request paths: async from birth.
+- **A strict CSP needs the eval permission on the DEV branch only
+  (session 235, the F-235k live lesson)**: React's dev tooling
+  evals for callstack reconstruction — a strict dev header blocks
+  it, and the Next dev-tools issue badge then paints into EVERY
+  capture (the 390 sweep's drift decode caught the badge as a +9%
+  login drift). Production never evals (React's own contract) and
+  the build bakes the strict form — verify the served header with
+  curl on the standalone before shipping a CSP change.

@@ -45,6 +45,7 @@ export function KpiCard({
   value,
   delta,
   deltaDirection,
+  deltaTone: toneOverride,
   icon: Icon,
   tone,
 }: {
@@ -52,15 +53,27 @@ export function KpiCard({
   value: string;
   delta?: string | null;
   deltaDirection?: "up" | "down" | "flat";
+  /** Session-235 (R-32, F-235i): the optional good/bad override. The
+   * direction drives the glyph (sign semantics); the tone carries the
+   * good/bad channel. Expenses needs them decoupled — spending that
+   * falls is a DOWN glyph in GOOD green (the old form coupled both to
+   * the direction and rendered an upward arrow beside a negative
+   * number). Omitted: the tone follows the direction (the income/net
+   * genus, where sign IS good/bad). */
+  deltaTone?: "good" | "bad";
   icon: LucideIcon;
   tone: keyof typeof KPI_TONES;
 }) {
   const deltaTone =
-    deltaDirection === "up"
+    toneOverride === "good"
       ? "text-emerald-700 dark:text-emerald-400"
-      : deltaDirection === "down"
+      : toneOverride === "bad"
         ? "text-red-600 dark:text-red-400" // F-218j: red-500 was 3.76:1 at text-xs
-        : "text-stone-600 dark:text-stone-400";
+        : deltaDirection === "up"
+          ? "text-emerald-700 dark:text-emerald-400"
+          : deltaDirection === "down"
+            ? "text-red-600 dark:text-red-400" // F-218j: red-500 was 3.76:1 at text-xs
+            : "text-stone-600 dark:text-stone-400";
   return (
     <div className={cn(CARD.kpi)}>
       <div className="flex items-start justify-between gap-3">

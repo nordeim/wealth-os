@@ -1,5 +1,7 @@
+import { Prisma } from "@/generated/prisma/client";
+
 import { db } from "@/lib/db";
-import { ERR, isGuarded, logApiError, ok, readBoundedJson, requireSession } from "@/lib/api";
+import { ERR, fail, isGuarded, logApiError, ok, readBoundedJson, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -51,6 +53,19 @@ export async function POST(req: Request) {
     return ok({ reset: true });
   } catch (error) {
     logApiError("reset POST", error);
+    // Session-235 (R-32, F-235c): the honest-failure arm the sibling auth
+    // routes already carry — this wipe is the app's BIGGEST transaction
+    // (six owner-scoped deleteManys over the dataset the recorded growth
+    // posture allows to grow unbounded), precisely where the interactive
+    // timeout fires first. A generic 500 tells the user "try again" —
+    // advice that cannot succeed until the dataset shrinks; the 503
+    // family copy names the timeout honestly.
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      (error.code === "P2024" || error.code === "P2028")
+    ) {
+      return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
+    }
     return ERR.INTERNAL();
   }
 }

@@ -75,16 +75,18 @@ export async function POST(req: Request) {
     // is logged to the SERVER console for the demo workflow (never shipped
     // to the client, never committed).
     const code = generateVerifyCode();
+    const passwordHash = await hashPassword(password);
+    const verificationCodeHash = await hashVerificationCode(code);
     let user;
     try {
       user = await db.user.create({
         data: {
           name,
           email,
-          passwordHash: hashPassword(password),
+          passwordHash,
           avatarColor: NAME_COLORS[count % NAME_COLORS.length],
           role: count === 0 ? "admin" : "rep",
-          verificationCodeHash: hashVerificationCode(code),
+          verificationCodeHash,
           verificationAttempts: 0,
           verificationExpiresAt: new Date(Date.now() + VERIFICATION_TTL_MS),
         },

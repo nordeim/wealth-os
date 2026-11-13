@@ -66,12 +66,16 @@ describe("F-228e — the timing-equalizer family completes on verify/resend", ()
     // The login S72-C pattern: the miss branch burns the same scrypt
     // shape the known branch burns, so latency cannot distinguish the
     // pending-verification state the byte-identical banners hide.
-    expect(src).toContain("verifyVerificationCode(code, timingEqualizerHash())");
+    // Session-235 (R-32, F-235d): the seam went async — the burn carries
+    // its awaits.
+    expect(src).toContain(
+      "await verifyVerificationCode(code, await timingEqualizerHash())",
+    );
   });
 
   it("resend burns the equalizer on the unknown-account miss branch", () => {
     const src = read("src/app/api/auth/resend/route.ts");
-    expect(src).toContain("hashVerificationCode(generateVerifyCode())");
+    expect(src).toContain("await hashVerificationCode(generateVerifyCode())");
   });
 });
 

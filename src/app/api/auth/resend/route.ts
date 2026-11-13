@@ -70,15 +70,16 @@ export async function POST(req: Request) {
       // cannot distinguish the never-verified state the identical banner
       // hides (login's S72-C pattern). The known branch's DB-write tail
       // remains a documented fsync-scale residual.
-      hashVerificationCode(generateVerifyCode());
+      await hashVerificationCode(generateVerifyCode());
       return ok({ resent: true, message: verificationResentMessage() });
     }
 
     const code = generateVerifyCode();
+    const verificationCodeHash = await hashVerificationCode(code);
     await db.user.update({
       where: { id: user.id },
       data: {
-        verificationCodeHash: hashVerificationCode(code),
+        verificationCodeHash,
         verificationAttempts: 0,
         verificationExpiresAt: new Date(Date.now() + VERIFICATION_TTL_MS),
       },

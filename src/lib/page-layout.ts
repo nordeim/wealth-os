@@ -314,7 +314,11 @@ export const DIALOG_CLOSE =
   // Session-222 (R-19, F-222h): the dark arms — the hover pair stepped
   // DOWN to 2.47:1 in dark (stone-600 on the flipped surface); the 400
   // resting / 300 hover mirror keeps the affordance rising in both modes.
-  "absolute right-4 top-4 rounded-md text-stone-500 transition-colors hover:text-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none dark:text-stone-400 dark:hover:text-stone-300" as const;
+  // Session-235 (R-32, F-235f): the hit area — the button's box was the
+  // bare 16px glyph; the padding lifts the touch target toward the 24px
+  // floor (the toast dismiss's own p-1 superset family), invisible to
+  // every captured class axis.
+  "absolute right-4 top-4 rounded-md p-1.5 text-stone-500 transition-colors hover:text-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none dark:text-stone-400 dark:hover:text-stone-300" as const;
 
 // Session-232 (R-29, F-232a): the three input-family constants here
 // (the input base map, the dialog textarea, the checkbox kit) retired

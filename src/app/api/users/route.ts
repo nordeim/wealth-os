@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, isRecordNotFound } from "@/lib/db";
 import { ERR, isGuarded, logApiError, ok, readBoundedJson, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { profileUpdateSchema } from "@/lib/schemas";
@@ -72,6 +72,13 @@ export async function PATCH(request: Request) {
     return ok(user);
   } catch (error) {
     logApiError("users PATCH", error);
+    // Session-235 (R-32, F-235l): the record-not-found arm the [id]
+    // family has carried since R-19/R-24 — the session user row can
+    // only vanish out-of-band (no user-delete API exists), and a
+    // vanished session user is semantically a 401, never a bare 500.
+    if (isRecordNotFound(error)) {
+      return ERR.UNAUTHORIZED();
+    }
     return ERR.INTERNAL();
   }
 }

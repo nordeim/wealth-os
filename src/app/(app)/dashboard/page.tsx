@@ -179,7 +179,8 @@ export default function DashboardPage() {
             label="Monthly Expenses"
             value={formatMoney(expenses)}
             delta={expenseDelta != null ? `${expenseDelta > 0 ? "+" : ""}${expenseDelta}%` : null}
-            deltaDirection={expenseDelta == null ? "flat" : expenseDelta <= 0 ? "up" : "down"}
+            deltaDirection={expenseDelta == null ? "flat" : expenseDelta >= 0 ? "up" : "down"}
+            deltaTone={expenseDelta != null && expenseDelta <= 0 ? "good" : "bad"}
             icon={TrendingDown}
             tone="rose"
           />
@@ -288,7 +289,14 @@ export default function DashboardPage() {
                         {metric.score}/{metric.max}
                       </span>
                     </div>
-                    <div className="h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden"
+                      role="progressbar"
+                      aria-label={`${metric.label} score`}
+                      aria-valuenow={metric.score}
+                      aria-valuemin={0}
+                      aria-valuemax={metric.max}
+                    >
                       <div
                         className="h-full rounded-full"
                         style={{
@@ -393,7 +401,14 @@ export default function DashboardPage() {
                         {formatMoney(row.actual)} / {formatMoney(row.budget)}
                       </span>
                     </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
+                    <div
+                      className="h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700"
+                      role="progressbar"
+                      aria-label={`${row.category} budget usage`}
+                      aria-valuenow={Math.round(Math.min(100, row.pct))}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                    >
                       <div
                         className={cn(
                           "h-full rounded-full transition-all",
@@ -639,13 +654,15 @@ function HealthGauge({ score, band }: { score: number; band: string }) {
     <div className="relative flex flex-col items-center" role="img" aria-label={`Financial health score ${score} out of 100, ${band}`}> {/* F-218m: role-less aria-label is ignored by AT */}
       <svg width="160" height="96" viewBox="0 0 160 96" role="presentation">
         <path d={arc(0, 180)} fill="none" stroke="#e7e5e4" strokeWidth="12" strokeLinecap="round" className="dark:opacity-20" />
+        {/* Session-235 (R-32, F-235m): the inert dash-array transition
+            style retired with this redraw — the arc morphs via its path
+            geometry, no animated stroke property exists. */}
         <path
           d={arc(0, angle)}
           fill="none"
           stroke={color}
           strokeWidth="12"
           strokeLinecap="round"
-          style={{ transition: "stroke-dasharray 0.5s ease" }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-1">

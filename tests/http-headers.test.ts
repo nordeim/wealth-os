@@ -124,11 +124,22 @@ describe("session-217: the response-hardening pair (F-217g/F-217h)", () => {
     expect(ERR.RATE_LIMITED(30).headers.get("cache-control")).toBe("no-store");
   });
 
-  it("next.config.ts ships Content-Security-Policy: frame-ancestors 'self' (F-217h)", () => {
+  it("next.config.ts ships Content-Security-Policy: frame-ancestors 'self' (F-217h) + the containment backstop (F-235k)", () => {
     const src = configSrc();
+    // Session-235 (R-32, F-235k): the additive hardening — the frame rule
+    // is joined by the script/object/base/form directives (the 'unsafe-
+    // inline' script floor is the Next.js bootstrap requirement; retiring
+    // it needs a nonce architecture). The eval permission rides the DEV
+    // branch only (React's dev tooling evals; the 390 sweep live-caught
+    // the strict dev form painting the issue badge into every capture);
+    // the build bakes the strict production header.
     expect(src).toMatch(
-      /key:\s*"Content-Security-Policy",\s*value:\s*"frame-ancestors 'self'"/,
+      /key:\s*"Content-Security-Policy",\s*value:\s*`frame-ancestors 'self'; script-src 'self' 'unsafe-inline'\$\{/,
     );
+    expect(src).toContain(
+      'process.env.NODE_ENV === "production" ? "" : " \'unsafe-eval\'"',
+    );
+    expect(src).toContain("; object-src 'none'; base-uri 'self'; form-action 'self'");
   });
 
   it("the bare-HSTS reference-parity pins survive the addition", () => {

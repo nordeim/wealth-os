@@ -16,7 +16,7 @@ export { generateVerifyCode };
  */
 
 /** Hashes a code for storage (the scrypt format the auth layer already uses). */
-export function hashVerificationCode(code: string): string {
+export async function hashVerificationCode(code: string): Promise<string> {
   return hashPassword(code);
 }
 
@@ -24,6 +24,9 @@ export function hashVerificationCode(code: string): string {
  * Constant-time-ish code check routed through the auth layer's scrypt
  * verify (salted + timing-safe digest comparison under the hood).
  */
-export function verifyVerificationCode(code: string, storedHash: string): boolean {
+export async function verifyVerificationCode(
+  code: string,
+  storedHash: string,
+): Promise<boolean> {
   return verifyPassword(code, storedHash);
 }

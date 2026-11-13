@@ -248,6 +248,7 @@ export default function AnalyticsPage() {
           value={tab}
           onValueChange={setTab}
           variant="segmented"
+          ariaLabel="Analytics section"
           tabs={[
             { id: "overview", label: "Overview" },
             { id: "expenses", label: "Expenses" },

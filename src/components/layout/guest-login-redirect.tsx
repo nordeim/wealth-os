@@ -14,6 +14,14 @@ import { useRouter } from "next/navigation";
 // with it: the from_url round-trip needs the current URL, which a
 // server layout cannot know (headers() carries no path — probed live
 // this session), and the reference's own guard is client-side anyway.
+//
+// Session-235 (R-32, F-235j): the shim used to render NOTHING between
+// paint and redirect — a blank, silent page for unauthenticated
+// deep-link visits. The status face below fills the window (sighted
+// visitors see where they are going; the a11y tree carries the same
+// text). It is a pure superset on a surface the reference never shows
+// us, and the smoke ladder's guest-wall check (no dashboard HTML)
+// is unaffected — a redirect notice is not dashboard content.
 export function GuestLoginRedirect() {
   const router = useRouter();
 
@@ -23,6 +31,12 @@ export function GuestLoginRedirect() {
     router.replace(`/login?from_url=${encodeURIComponent(window.location.href)}`);
   }, [router]);
 
-  // Nothing paints — the wall is the login page the guard lands on
-  return null;
+  return (
+    <div
+      role="status"
+      className="flex min-h-screen items-center justify-center bg-background"
+    >
+      <p className="text-sm text-muted">Redirecting to sign in…</p>
+    </div>
+  );
 }

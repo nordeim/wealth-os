@@ -109,7 +109,8 @@ export default function AccountsPage() {
                   onDelete={async () => {
                     setBusyId(account.id);
                     const res = await store.deleteAccount(account.id);
-                    setBusyId(null);
+                    // F-235e: clear only if this row still owns the slot.
+                    setBusyId((prev) => (prev === account.id ? null : prev));
                     if (res.ok) toast.success("Account deleted");
                     else toast.error("Delete failed", res.error);
                   }}
@@ -279,7 +280,8 @@ function AccountDialog({
                 <SelectContent>
                   {ACCOUNT_TYPES.map((t) => (
                     <SelectItem key={t.value} value={t.value}>
-                      {t.icon} {t.label}
+                      {/* F-235g: the decorative glyph never rides the name. */}
+                      <span aria-hidden="true">{t.icon}</span> {t.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -114,8 +114,10 @@ describe("F-221k — the goals Paused badge light arm is stone-600", () => {
 describe("F-221l — the dialog close ink passes 1.4.11 in light mode", () => {
   it("the ✕ drops the opacity and rides stone-500 (the F-220f toast cure's mirror)", () => {
     const src = read("src/lib/page-layout.ts");
+    // Session-235 (R-32, F-235f): the hit-area padding joins the string —
+    // the contiguous form carries it between the radius and the ink.
     expect(src).toContain(
-      "rounded-md text-stone-500 transition-colors hover:text-stone-600",
+      "rounded-md p-1.5 text-stone-500 transition-colors hover:text-stone-600",
     );
     const closeLine = src.slice(
       src.indexOf("DIALOG_CLOSE"),

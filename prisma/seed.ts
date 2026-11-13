@@ -36,6 +36,10 @@ function dayOffset(offsetDays: number): Date {
 }
 
 async function main() {
+  // Session-235 (R-32, F-235d): the demo hash computed ONCE — the seam
+  // went async (the availability cure), and the upsert's two arms share
+  // the value.
+  const demoPasswordHash = await hashPassword("$Abcd1234");
   // Idempotency: refresh THE DEMO USER's domain data, keep schema and
   // keep every OTHER account's rows. Session-215 (R-12, F-215e): the
   // pre-215 seed opened with seven UNSCOPED wipes — an
@@ -49,7 +53,7 @@ async function main() {
     where: { email: "sepnetflix2023@outlook.com" },
     update: {
       name: "sepnetflix2023",
-      passwordHash: hashPassword("$Abcd1234"),
+      passwordHash: demoPasswordHash,
       avatarColor: "#fbbf24", // amber — the WealthOS brand avatar
       role: "user",
       photoUrl: null,
@@ -62,7 +66,7 @@ async function main() {
     create: {
       email: "sepnetflix2023@outlook.com",
       name: "sepnetflix2023",
-      passwordHash: hashPassword("$Abcd1234"),
+      passwordHash: demoPasswordHash,
       avatarColor: "#fbbf24",
       role: "user",
     },

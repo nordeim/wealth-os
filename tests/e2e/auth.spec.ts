@@ -451,6 +451,23 @@ test("the signin 403 lands the verify view and the Resend re-arms (F-218a)", asy
   expect(noPendingProbe.status()).toBe(400);
   expect(pendingBody.error?.message).toBe("Invalid verification code. 4 attempts remaining.");
   expect(noPendingBody.error?.message).toBe(pendingBody.error?.message);
+
+  // Session-235 (R-32, F-235b — the login verification-oracle closure,
+  // riding this leg's existing signup): a WRONG password on this
+  // never-verified account must answer the SAME 403 the correct one
+  // does — pre-cure it answered 401 INVALID_CREDENTIALS, confirming
+  // credential validity through the 403/401 split. The gate now sits
+  // above the credential check with the equalizer burned on its branch;
+  // the probe asserts the closed oracle (403 + the verify message) with
+  // zero new signups.
+  const wrongPwProbe = await page.request.post("/api/auth/login", {
+    data: { email, password: "DefinitelyNotThePassword1" },
+  });
+  const wrongPwBody = (await wrongPwProbe.json()) as {
+    error?: { code?: string; message?: string };
+  };
+  expect(wrongPwProbe.status()).toBe(403);
+  expect(wrongPwBody.error?.code).toBe("VERIFICATION_REQUIRED");
 });
 
 // Session-224 (R-21, F-224d): the logout REVOCATION's first behavioral

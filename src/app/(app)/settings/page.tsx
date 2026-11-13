@@ -64,7 +64,9 @@ export default function SettingsPage() {
   const deleteBudget = async (category: string) => {
     setBusyBudget(category);
     const res = await store.deleteBudget(category);
-    setBusyBudget(null);
+    // F-235e: clear only if this row still owns the slot — a sibling's
+    // in-flight guard must survive another row's completion.
+    setBusyBudget((prev) => (prev === category ? null : prev));
     if (res.ok) {
       toast.success("Budget deleted");
     } else {

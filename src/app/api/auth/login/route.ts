@@ -54,13 +54,23 @@ export async function POST(req: Request) {
   // fires on a thrown DB failure.
   try {
     const user = await db.user.findUnique({ where: { email } });
-    if (!user || !verifyPassword(password, user.passwordHash)) {
+    // Session-235 (R-32, F-235b): the unverified-account gate moved
+    // ABOVE the credential check. The old order (verify, then gate)
+    // made the 403 a password-correctness oracle: a wrong password
+    // answered 401 INVALID_CREDENTIALS while a correct one answered
+    // 403 VERIFICATION_REQUIRED — confirming credential validity for
+    // any never-verified account (account existence was already
+    // protected; credential validity was not). The gate branch burns
+    // the equalizer so BOTH arms answer 403 at the same latency: the
+    // response leaks only account existence, already open by signup's
+    // own design — never credential validity.
+    if (!user) {
       // Session-163 (the digma S72-C port): the timing equalizer — the
       // miss branch burns the SAME scrypt work against a precomputed
       // throwaway-constant hash, so response latency no longer
       // distinguishes registered emails (the 401 envelope stays
       // byte-identical; the burn is LAZY-memoized at the pure seam).
-      if (!user) verifyPassword(password, timingEqualizerHash());
+      await verifyPassword(password, await timingEqualizerHash());
       // Session-21 (S21-P1): the reference's banner text — "Invalid email or
       // password" (ours said "Incorrect…"; wrong-password probes on both apps).
       return fail("INVALID_CREDENTIALS", "Invalid email or password", 401);
@@ -78,7 +88,15 @@ export async function POST(req: Request) {
     // of its own recovery. A present hash = never verified (verify-success
     // clears it); the resend re-arms expired accounts with a fresh code.
     if (user.verificationCodeHash) {
+      // F-235b: burn the equalizer here too — the gate answers 403 for
+      // BOTH wrong and correct passwords at the same latency, so the
+      // branch confirms nothing about the credential.
+      await verifyPassword(password, await timingEqualizerHash());
       return fail("VERIFICATION_REQUIRED", verificationRequiredMessage(), 403);
+    }
+
+    if (!(await verifyPassword(password, user.passwordHash))) {
+      return fail("INVALID_CREDENTIALS", "Invalid email or password", 401);
     }
 
     // Session-163 (the digma S67-A port): the mint carries the live row's

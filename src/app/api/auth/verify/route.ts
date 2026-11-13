@@ -80,7 +80,7 @@ export async function POST(req: Request) {
       // hides. The known branch's DB-write tail (the attempts
       // increment) remains a documented fsync-scale residual — the
       // forgot-password posture.
-      verifyVerificationCode(code, timingEqualizerHash());
+      await verifyVerificationCode(code, await timingEqualizerHash());
       // No pending code: behave like the reference's generic failure (the
       // banner family) without leaking whether the account exists.
       // Session-223 (R-20, F-223l): the remaining-message form — the
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
       return fail("VERIFICATION_LOCKED", verificationLockoutMessage(), 429);
     }
 
-    if (!verifyVerificationCode(code, user.verificationCodeHash)) {
+    if (!(await verifyVerificationCode(code, user.verificationCodeHash))) {
       // Session-67 (N-67c): the counter increments ATOMICALLY server-side
       // (the DB's own increment) — the read-modify-write form could let
       // concurrent submissions overshoot the 5-wrong lockout against one

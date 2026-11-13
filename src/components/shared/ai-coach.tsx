@@ -50,21 +50,37 @@ export function AiCoachDialog({
   const [busy, setBusy] = React.useState(false);
   const listRef = React.useRef<HTMLDivElement>(null);
 
-  // The greeting bubble on open (the reference's opening message genus) —
-  // RENDER-TIME adjustment (no setState inside an effect): the greeting
-  // seeds the thread the first time the dialog opens.
+  // The greeting bubble on open (the reference's opening message genus).
+  // Session-235 (R-32, F-235a): the seed moved OUT of render into a
+  // deferred effect — the F-218h doctrine. The message list is the
+  // polite live region AND lives inside DialogContent, which Radix
+  // unmounts while closed: a render-time seed meant the region ARRIVED
+  // with the greeting already in it, and a live region that arrives with
+  // its content is never announced (screen readers heard silence on the
+  // surface's opening message). The seed rides a zero-delay timer so the
+  // region is committed EMPTY and survives a paint cycle before the
+  // greeting lands as a content change — the announcement form — and the
+  // timer callback keeps the house lint contract (no synchronous state
+  // write inside the effect body; the login-card banner timer is the
+  // precedent). The cleanup cancels the StrictMode double-invoke's first
+  // timer; the value guard keeps the thread persistent across
+  // close/reopen exactly as before.
   const [greeted, setGreeted] = React.useState(false);
-  if (open && !greeted) {
-    setGreeted(true);
-    setMessages([
-      {
-        id: nextId(),
-        role: "assistant",
-        content:
-          "Hi! I'm your AI financial coach. Ask me about your spending, savings goals, or investments — or pick a question below.",
-      },
-    ]);
-  }
+  React.useEffect(() => {
+    if (!open || greeted) return;
+    const t = setTimeout(() => {
+      setGreeted(true);
+      setMessages([
+        {
+          id: nextId(),
+          role: "assistant",
+          content:
+            "Hi! I'm your AI financial coach. Ask me about your spending, savings goals, or investments — or pick a question below.",
+        },
+      ]);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [open, greeted]);
 
   React.useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });

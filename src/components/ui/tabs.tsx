@@ -50,6 +50,10 @@ interface TabsProps {
    * (space-y-6 on settings/reports; bare on activities). */
   className?: string;
   variant?: "underline" | "segmented";
+  /** Session-235 (R-32, F-235h): the tablist's accessible name — with
+   * two strips on Expenses (the 50/30/20 filter) and Analytics (the
+   * section tabs), SR wayfinding needs to tell them apart. */
+  ariaLabel?: string;
   /** The TabsPanel shells — rendered inside the wrapper after the tablist. */
   children?: React.ReactNode;
 }
@@ -75,7 +79,7 @@ const TabsContext = React.createContext<{ uid: string; value: string } | null>(n
 const PANEL_BASE =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
-function Tabs({ tabs, value, onValueChange, className, variant = "underline", children }: TabsProps) {
+function Tabs({ tabs, value, onValueChange, className, variant = "underline", ariaLabel, children }: TabsProps) {
   const uid = React.useId();
   const tabRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -120,6 +124,7 @@ function Tabs({ tabs, value, onValueChange, className, variant = "underline", ch
         <div
           role="tablist"
           aria-orientation="horizontal"
+          aria-label={ariaLabel}
           className={trackClass}
           onKeyDown={onKeyDown}
         >

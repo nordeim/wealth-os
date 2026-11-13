@@ -72,7 +72,9 @@ export default function IncomePage() {
   const toggleActive = async (source: IncomeSource) => {
     setBusyId(source.id);
     const res = await store.updateIncomeSource(source.id, { active: !source.active });
-    setBusyId(null);
+    // F-235e: clear only if this row still owns the slot — a sibling's
+    // in-flight guard must survive another row's completion.
+    setBusyId((prev) => (prev === source.id ? null : prev));
     if (res.ok) {
       toast.success(source.active ? "Income source paused" : "Income source activated");
     } else {

@@ -102,9 +102,13 @@ describe("reset-password route contract (session-163, digma S67-A/S76-A/S124-A)"
     expect(tokenIndex).toBeGreaterThan(-1);
     expect(passwordIndex).toBeGreaterThan(tokenIndex);
     // And the route's DB-level token-alive check precedes the hash write
-    // (the call site, not the import).
+    // (the call site, not the import). Session-235 (R-32, F-235d): the
+    // hash is computed into a local before the update (the async seam) —
+    // the ordering contract is unchanged.
     const routeSrc = resetRoute();
-    expect(routeSrc.indexOf("findFirst")).toBeLessThan(routeSrc.indexOf("passwordHash: hashPassword"));
+    expect(routeSrc.indexOf("findFirst")).toBeLessThan(
+      routeSrc.indexOf("await hashPassword(newPassword)"),
+    );
   });
 
   it("consumes the token ATOMICALLY: updateMany with the HASHED token + live expiry in the WHERE", () => {
@@ -198,7 +202,13 @@ describe("the login timing equalizer wiring (session-163, digma S72-C)", () => {
   it("the login route burns the equalizer scrypt on the unknown-email miss branch", () => {
     const src = stripComments(read("src/app/api/auth/login/route.ts") ?? "");
     expect(src).toContain("timingEqualizerHash");
-    expect(src).toContain("verifyPassword(password, timingEqualizerHash())");
+    // Session-235 (R-32): the seam went async — the burn carries its
+    // awaits, and F-235b moved the unverified gate above the credential
+    // check with its own equalizer burn (both gate arms answer 403).
+    expect(src).toContain("await verifyPassword(password, await timingEqualizerHash())");
+    // the gate branch (the F-235b oracle closure) burns the same equalizer
+    const gateBurns = src.match(/await verifyPassword\(password, await timingEqualizerHash\(\)\);/g) ?? [];
+    expect(gateBurns.length).toBeGreaterThanOrEqual(2);
   });
 
   it("the 401 envelope stays byte-identical (INVALID_CREDENTIALS, 'Invalid email or password')", () => {

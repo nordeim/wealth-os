@@ -3,25 +3,27 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { hashPassword, verifyPassword, signSession, verifySessionToken, SESSION_COOKIE } from "@/lib/auth";
 
 describe("password hashing", () => {
-  it("round-trips a password", () => {
-    const stored = hashPassword("Sup3rSecret!");
+  // Session-235 (R-32, F-235d): the seam went async — the awaits are the
+  // whole diff (identical parameters, format, and timing profile).
+  it("round-trips a password", async () => {
+    const stored = await hashPassword("Sup3rSecret!");
     expect(stored.startsWith("scrypt:")).toBe(true);
-    expect(verifyPassword("Sup3rSecret!", stored)).toBe(true);
+    expect(await verifyPassword("Sup3rSecret!", stored)).toBe(true);
   });
 
-  it("rejects a wrong password", () => {
-    const stored = hashPassword("Sup3rSecret!");
-    expect(verifyPassword("wrong", stored)).toBe(false);
+  it("rejects a wrong password", async () => {
+    const stored = await hashPassword("Sup3rSecret!");
+    expect(await verifyPassword("wrong", stored)).toBe(false);
   });
 
-  it("produces unique salts for identical passwords", () => {
-    expect(hashPassword("same")).not.toBe(hashPassword("same"));
+  it("produces unique salts for identical passwords", async () => {
+    expect(await hashPassword("same")).not.toBe(await hashPassword("same"));
   });
 
-  it("rejects malformed stored hashes", () => {
-    expect(verifyPassword("x", "not-a-hash")).toBe(false);
-    expect(verifyPassword("x", "bcrypt:abc:def")).toBe(false);
-    expect(verifyPassword("x", "scrypt:only-two")).toBe(false);
+  it("rejects malformed stored hashes", async () => {
+    expect(await verifyPassword("x", "not-a-hash")).toBe(false);
+    expect(await verifyPassword("x", "bcrypt:abc:def")).toBe(false);
+    expect(await verifyPassword("x", "scrypt:only-two")).toBe(false);
   });
 });
 

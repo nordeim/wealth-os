@@ -90,10 +90,11 @@ export async function POST(req: Request) {
   // honestly as a 503 with the human copy, never a bare 500 past it (the
   // no-bare-throw discipline).
   try {
+    const newPasswordHash = await hashPassword(newPassword);
     const result = await db.user.updateMany({
       where: { id: user.id, resetToken: hashResetToken(resetToken), resetTokenExpiresAt: { gt: new Date() } },
       data: {
-        passwordHash: hashPassword(newPassword),
+        passwordHash: newPasswordHash,
         resetToken: null,
         resetTokenExpiresAt: null,
         // The eviction: every pre-reset cookie dies at the getSessionUser
