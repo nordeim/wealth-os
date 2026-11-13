@@ -1,7 +1,5 @@
-import { Prisma } from "@/generated/prisma/client";
-
-import { db } from "@/lib/db";
-import { ERR, fail, isGuarded, logApiError, ok, readBoundedJson, requireSession } from "@/lib/api";
+import { db, isTransientDbError } from "@/lib/db";
+import { ERR, isGuarded, logApiError, ok, readBoundedJson, requireSession } from "@/lib/api";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -60,12 +58,9 @@ export async function POST(req: Request) {
     // timeout fires first. A generic 500 tells the user "try again" —
     // advice that cannot succeed until the dataset shrinks; the 503
     // family copy names the timeout honestly.
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      (error.code === "P2024" || error.code === "P2028")
-    ) {
-      return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
-    }
+    // Session-238 (R-35, F-238k): the seam arm replaces the hand-rolled
+    // inline form (the F-236b hoist this route predated).
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
 }

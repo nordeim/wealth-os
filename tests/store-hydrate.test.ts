@@ -215,3 +215,133 @@ describe("F-237c — the remount hydrate never re-gates", () => {
     expect(store.getState().loading).toBe(false);
   });
 });
+
+// Session-238 (R-35, F-238b/F-238c): the third-window and slice-hygiene
+// extensions. The F-236f/F-237a wall covered hydrate and refreshAll;
+// a revocation surfacing on the mutation POST itself returned 401 to
+// the page, which toasted "Save failed — Sign in required" over a dead
+// stale workspace (F-238b). And neither UNAUTHORIZED branch cleared the
+// domain slices — on the compound path (revocation-without-logout →
+// different-user sign-in → failed first hydrate) the PREVIOUS user's
+// financial data rendered under the error banner (F-238c).
+describe("F-238b — a mutation 401 commits the wall (the third window)", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("a mutation POST answering 401 nulls the user and the error, clearing the slices", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    const res = await store.getState().createTransaction({ description: "x" });
+    expect(res.ok).toBe(false);
+    const s = store.getState();
+    // The wall face — never the toast-only stale workspace.
+    expect(s.user).toBeNull();
+    expect(s.error).toBeNull();
+    expect(s.loading).toBe(false);
+    // F-238c rides the same commit: no standing ledger.
+    expect(s.transactions).toEqual([]);
+  });
+
+  it("a mutation POST answering 500 keeps the workspace (the caller's toast stays honest)", async () => {
+    // Genus guard: the non-auth failure arm's shape — a failed save
+    // must NOT wall (the banner genus, the F-237a split preserved).
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    fetchMock.mockResolvedValueOnce(internal500());
+    const res = await store.getState().createTransaction({ description: "x" });
+    expect(res.ok).toBe(false);
+    const s = store.getState();
+    expect(s.user).toEqual(user);
+    expect(s.transactions).toEqual([{ id: "t1" }]);
+  });
+});
+
+describe("F-238c — the 401 branches clear the domain slices", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("a first-load 401 empties every domain slice (the cross-user compound path)", async () => {
+    // The compound path: user A revoked (the wall) → A's slices stand
+    // in the globalThis store → user B signs in (the login card never
+    // touches the store) → B's hydrate takes the FIRST-LOAD path → a
+    // 401 here must clear A's data, never render it.
+    store.setState({
+      user: null,
+      hydrated: false,
+      transactions: [{ id: "t1" }] as never,
+      incomeSources: [{ id: "i1" }] as never,
+      accounts: [{ id: "a1" }] as never,
+      investments: [{ id: "v1" }] as never,
+      goals: [{ id: "g1" }] as never,
+      budgets: [{ id: "b1" }] as never,
+      settings: { currency: "USD" } as never,
+      settingsSettled: true,
+      loading: false,
+      error: null,
+    });
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    await store.getState().hydrate();
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.transactions).toEqual([]);
+    expect(s.incomeSources).toEqual([]);
+    expect(s.accounts).toEqual([]);
+    expect(s.investments).toEqual([]);
+    expect(s.goals).toEqual([]);
+    expect(s.budgets).toEqual([]);
+    expect(s.settings).toBeNull();
+    expect(s.settingsSettled).toBe(false);
+  });
+
+  it("a mid-session refresh 401 clears the slices too (the wall leaves no standing ledger)", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+      settings: { currency: "USD" } as never,
+      settingsSettled: true,
+    });
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    const res = await store.getState().refresh();
+    expect(res.ok).toBe(false);
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.transactions).toEqual([]);
+    expect(s.settings).toBeNull();
+  });
+});

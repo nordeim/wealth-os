@@ -81,13 +81,16 @@ describe("F-237a — the revocation gate discriminates the failure face", () => 
     const src = read("src/stores/wealthos-store.ts");
     // Scoped to the refreshAll function body — hydrate's own branch
     // (which this mirrors) must not satisfy the pin.
+    // Session-238 (R-35, F-238c) recalibration: both branches ride the
+    // shared wall commit (the slice-clearing form) — the pin follows
+    // the helper call, hydrate's extra-keyed and refreshAll's bare.
     const start = src.indexOf("async function refreshAll");
-    const end = src.indexOf("function createStore");
+    const end = src.indexOf("async function mutate<");
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const body = src.slice(start, end);
     expect(body).toMatch(/res\.code === "UNAUTHORIZED"/);
-    expect(body).toMatch(/user: null, error: null/);
+    expect(body).toMatch(/commitRevocationWall\(set\);/);
   });
 });
 

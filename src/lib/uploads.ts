@@ -1,4 +1,5 @@
-import { existsSync, mkdirSync, readdirSync, statSync } from "fs";
+import { existsSync, mkdirSync } from "fs";
+import { readdir, stat } from "node:fs/promises";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 
@@ -45,13 +46,21 @@ export interface UploadsCapacity {
 }
 
 /** The directory walk behind the ceiling check — regular files only,
- *  sizes summed; subdirectories (none are written today) are ignored. */
-export function uploadsCapacity(dir: string): UploadsCapacity {
+ *  sizes summed; subdirectories (none are written today) are ignored.
+ *  Session-238 (R-35, F-238d): the walk is ASYNC — the F-235d
+ *  availability doctrine's fs edition. The pre-cure walk read the
+ *  directory and every entry's size SYNCHRONOUSLY, twice per upload
+ *  POST, on the request path: at the 4096-file ceiling that is
+ *  ~8,192 blocking stat syscalls stalling the single-process event
+ *  loop — the same genus the scrypt promisification cured. The
+ *  promises-based fs family keeps the per-entry guard semantics (a
+ *  vanished entry carries nothing); both call sites already await. */
+export async function uploadsCapacity(dir: string): Promise<UploadsCapacity> {
   let files = 0;
   let bytes = 0;
   let entries;
   try {
-    entries = readdirSync(dir, { withFileTypes: true });
+    entries = await readdir(dir, { withFileTypes: true });
   } catch {
     // An absent (or unreadable) directory carries nothing.
     return { files: 0, bytes: 0 };
@@ -60,12 +69,12 @@ export function uploadsCapacity(dir: string): UploadsCapacity {
     if (!entry.isFile()) continue;
     // Session-234 (R-31, F-234e): the per-entry guard — a file that
     // vanishes between the directory read and this size read carries
-    // nothing; skip it instead of throwing past the envelope (the
-    // pre-write call site sits outside the route's try, so the raw
-    // throw escaped as a non-JSON 500, and the post-write site
-    // answered INTERNAL after the write, skipping the breach-unlink).
+    // nothing; skip it instead of throwing past the envelope (both
+    // capacity call sites ride inside the route's try since F-237d,
+    // so a raw throw answers ERR.INTERNAL — and the post-write site
+    // would skip the breach-unlink).
     try {
-      bytes += statSync(join(dir, entry.name)).size;
+      bytes += (await stat(join(dir, entry.name))).size;
       files += 1;
     } catch {
       // A vanished entry occupies no capacity.
@@ -151,9 +160,19 @@ function repoRoot(): string {
 /**
  * Absolute path of the uploads directory, created on demand (first
  * upload) — the same contract as db-path's urlForRoot.
+ * Session-238 (R-35, F-238d): the mkdir memoizes behind a module-level
+ * ensured flag — the pre-cure form ran mkdirSync on EVERY call (the
+ * GET route paid it per request); the directory cannot vanish at
+ * runtime (nothing deletes it), so one syscall per process is the
+ * honest bound.
  */
+let uploadsDirEnsured = false;
+
 export function uploadsDir(): string {
   const dir = join(repoRoot(), UPLOADS_DIR_NAME);
-  mkdirSync(dir, { recursive: true });
+  if (!uploadsDirEnsured) {
+    mkdirSync(dir, { recursive: true });
+    uploadsDirEnsured = true;
+  }
   return dir;
 }

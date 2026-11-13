@@ -125,11 +125,21 @@ export default function ExpensesPage() {
       if (e.target.closest('button[aria-label="Close filters"]')) return;
       setFiltersOpen(false);
     };
+    // Session-238 (R-35, F-238f): the popover is an in-flow absolute
+    // surface anchored to the trigger — when the main scroller moves
+    // while it is open, its top region travels UNDER the sticky mobile
+    // header (the 50-level layer) and turns unclickable. Closing on
+    // scroll is the one-line cure (the standard non-portal-popover
+    // behavior); the layering stays untouched. `main` owns scrolling
+    // in the shell model (the mobile drawer's own lock contract).
+    const onScroll = () => setFiltersOpen(false);
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer);
+    document.querySelector("main")?.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("pointerdown", onPointer);
+      document.querySelector("main")?.removeEventListener("scroll", onScroll);
     };
   }, [filtersOpen]);
 
@@ -347,36 +357,49 @@ export default function ExpensesPage() {
 
         {/* History — the page's glass genus (F-209a) */}
         <section className={cn(GLASS_CARD.base, CARD.padding)}>
+          {/* Session-238 (R-35, F-238a): the header row and the Tabs
+              wrapper are SIBLINGS. The session-199 original nested the
+              Tabs (tablist AND all four panels — the whole list body)
+              INSIDE this sm:flex-row header div, so at every viewport
+              ≥ sm the entire history list collapsed to a ~427px
+              right-side column while the h2 floated vertically centered
+              beside it (live-measured: the list ul x=957 w=427 inside
+              the 1120px card at 1440 — invisible to every gate: the
+              sweeps capture the zero-data state, where the squeezed
+              element's computed classes are unchanged). The reference's
+              own card stacks the title, the tablist, and the content
+              full-width (live-probed); the Analytics page carries the
+              same sibling form. */}
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className={CARD.title}>Expense History ({visible.length})</h2>
-            <Tabs
-              value={tab}
-              onValueChange={setTab}
-              variant="segmented"
-              ariaLabel="Filter expenses by budget category"
-              tabs={[
-                { id: "all", label: "All" },
-                { id: "needs", label: "Needs" },
-                { id: "wants", label: "Wants" },
-                { id: "savings", label: "Savings" },
-              ]}
-            >
-              {/* Session-218 (R-15, F-218o): one panel per trigger — the
-                  pre-cure single panel left three triggers' aria-controls
-                  dangling at dead ids (the F-217s promotion; the analytics
-                  pattern). The list body is the shared filtered view. */}
-              {(["all", "needs", "wants", "savings"] as const).map((panelId) => (
-                <TabsPanel key={panelId} tab={panelId}>
-                  {/* Only the ACTIVE panel carries the list — the hidden
-                      shells stay empty so text selectors stay unique
-                      (the maiden e2e run decoded the quadruplicated
-                      hidden copies). aria-controls resolves for every
-                      trigger; the content renders once. */}
-                  {tab === panelId ? historyBody : null}
-                </TabsPanel>
-              ))}
-            </Tabs>
           </div>
+          <Tabs
+            value={tab}
+            onValueChange={setTab}
+            variant="segmented"
+            ariaLabel="Filter expenses by budget category"
+            tabs={[
+              { id: "all", label: "All" },
+              { id: "needs", label: "Needs" },
+              { id: "wants", label: "Wants" },
+              { id: "savings", label: "Savings" },
+            ]}
+          >
+            {/* Session-218 (R-15, F-218o): one panel per trigger — the
+                pre-cure single panel left three triggers' aria-controls
+                dangling at dead ids (the F-217s promotion; the analytics
+                pattern). The list body is the shared filtered view. */}
+            {(["all", "needs", "wants", "savings"] as const).map((panelId) => (
+              <TabsPanel key={panelId} tab={panelId}>
+                {/* Only the ACTIVE panel carries the list — the hidden
+                    shells stay empty so text selectors stay unique
+                    (the maiden e2e run decoded the quadruplicated
+                    hidden copies). aria-controls resolves for every
+                    trigger; the content renders once. */}
+                {tab === panelId ? historyBody : null}
+              </TabsPanel>
+            ))}
+          </Tabs>
         </section>
 
         <ExpenseDialog open={dialogOpen} onOpenChange={setDialogOpen} editing={editing} />

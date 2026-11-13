@@ -115,26 +115,28 @@ describe("uploadsCapacity (the F-228f self-hosted ceiling)", () => {
     expect(MAX_UPLOAD_FILES).toBe(4096);
   });
 
-  it("an empty (or absent) directory answers zero files, zero bytes", () => {
+  it("an empty (or absent) directory answers zero files, zero bytes", async () => {
     const repo = mkdtempSync(join(tmpdir(), "uploads-cap-"));
     tempDirs.push(repo);
-    expect(uploadsCapacity(join(repo, "uploads"))).toEqual({ files: 0, bytes: 0 });
+    // Session-238 (R-35, F-238d): the walk is async — the same
+    // behavioral contract, the promise form.
+    expect(await uploadsCapacity(join(repo, "uploads"))).toEqual({ files: 0, bytes: 0 });
   });
 
-  it("counts files and sums their sizes", () => {
+  it("counts files and sums their sizes", async () => {
     const dir = mkdtempSync(join(tmpdir(), "uploads-cap-"));
     tempDirs.push(dir);
     writeFileSync(join(dir, "a.jpg"), "aaaaa"); // 5 bytes
     writeFileSync(join(dir, "b.png"), "bb"); // 2 bytes
-    expect(uploadsCapacity(dir)).toEqual({ files: 2, bytes: 7 });
+    expect(await uploadsCapacity(dir)).toEqual({ files: 2, bytes: 7 });
   });
 
-  it("ignores subdirectories (only regular files count)", () => {
+  it("ignores subdirectories (only regular files count)", async () => {
     const dir = mkdtempSync(join(tmpdir(), "uploads-cap-"));
     tempDirs.push(dir);
     writeFileSync(join(dir, "a.jpg"), "aaaaa");
     mkdirSync(join(dir, "nested"));
     writeFileSync(join(dir, "nested", "b.png"), "bb");
-    expect(uploadsCapacity(dir)).toEqual({ files: 1, bytes: 5 });
+    expect(await uploadsCapacity(dir)).toEqual({ files: 1, bytes: 5 });
   });
 });

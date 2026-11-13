@@ -239,10 +239,12 @@ describe("F-220j — call() carries error.code; hydrate branches on UNAUTHORIZED
 // ---- F-220k: forgot-password's read path ------------------------------------
 
 describe("F-220k — forgot-password's read path 503s the transient-abort family", () => {
-  it("the findUnique catch distinguishes P2024/P2028 (no blanket swallow)", () => {
+  it("the findUnique catch distinguishes the transient family (no blanket swallow)", () => {
     const src = read("src/app/api/auth/forgot-password/route.ts");
+    // Session-238 (R-35, F-238k) recalibration: the seam arm form —
+    // the inline codes joined the F-236b hoist.
     expect(src).toMatch(
-      /findUnique[\s\S]{0,600}P2024" \|\| error\.code === "P2028/,
+      /findUnique[\s\S]{0,600}if \(isTransientDbError\(error\)\) return ERR\.UNAVAILABLE\(\);/,
     );
     expect(src).not.toMatch(/findUnique\(\{ where: \{ email \} \}\)\.catch\(\(\) => null\)/);
   });

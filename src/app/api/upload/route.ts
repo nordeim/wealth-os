@@ -127,7 +127,9 @@ export async function POST(request: Request) {
     // window only). Either ceiling breaking refuses the write with
     // 507 STORAGE_FULL.
     const dir = uploadsDir();
-    const capacity = uploadsCapacity(dir);
+    // Session-238 (R-35, F-238d): the walk is async — the request path
+    // no longer blocks the event loop on per-entry stat syscalls.
+    const capacity = await uploadsCapacity(dir);
     if (
       capacity.files >= MAX_UPLOAD_FILES ||
       capacity.bytes + file.size > MAX_UPLOADS_TOTAL_BYTES
@@ -146,7 +148,7 @@ export async function POST(request: Request) {
     // unlinks its own just-written file when the pair breached — the
     // overshoot closes to a single write's duration, fail-closed, and
     // the next request still sees an honest ceiling.
-    const settled = uploadsCapacity(uploadsDir());
+    const settled = await uploadsCapacity(uploadsDir());
     if (
       settled.files > MAX_UPLOAD_FILES ||
       settled.bytes > MAX_UPLOADS_TOTAL_BYTES

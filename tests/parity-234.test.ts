@@ -90,9 +90,11 @@ describe("F-234c — an exactly-full-length edit restarts the distribution at bo
 describe("F-234e — the capacity walk's per-entry size read rides its own guard", () => {
   it("a vanished entry skips both counters instead of throwing past the envelope", () => {
     const src = read("src/lib/uploads.ts");
-    // the size read and the file counter sit inside their own try
+    // the size read and the file counter sit inside their own try.
+    // Session-238 (R-35, F-238d) recalibration: the walk is async —
+    // the awaited promises-form size read.
     expect(src).toMatch(
-      /try \{\s*bytes \+= statSync\(join\(dir, entry\.name\)\)\.size;\s*files \+= 1;\s*\} catch \{/,
+      /try \{\s*bytes \+= \(await stat\(join\(dir, entry\.name\)\)\)\.size;\s*files \+= 1;\s*\} catch \{/,
     );
   });
 });

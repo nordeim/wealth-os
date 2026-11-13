@@ -85,7 +85,10 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
       settings: 18.5, login: 11.0, "reset-password": 16.5,
     });
     expect({ ...STANDING_BASELINES.tablet }).toEqual({
-      dashboard: 7.2, income: 31.0, expenses: 29.1, accounts: 10.2,
+      // Session-238 (R-35, F-238a) re-derivation: expenses 29.1→30.5
+      // (the history-width restoration reshaped the zero-data
+      // construction — decode in scripts/sweep.ts's table).
+      dashboard: 7.2, income: 31.0, expenses: 30.5, accounts: 10.2,
       investments: 20.3, import: 8.8, analytics: 48.9, goals: 6.5,
       settings: 32.3, login: 11.5, "reset-password": 6.5,
     });

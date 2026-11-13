@@ -79,13 +79,14 @@ describe("F-235b — the unverified-account gate sits above the credential check
 describe("F-235c — the reset transaction answers the transient-timeout family honestly", () => {
   it("the catch carries the pool/interactive-timeout arm before the INTERNAL fallback", () => {
     const src = read("src/app/api/reset/route.ts");
-    const arm = src.indexOf("P2024");
+    // Session-238 (R-35, F-238k) recalibration: the seam arm form —
+    // the inline codes joined the F-236b hoist.
+    const arm = src.indexOf("isTransientDbError");
     const internal = src.indexOf("ERR.INTERNAL()");
     expect(arm).toBeGreaterThan(-1);
     expect(internal).toBeGreaterThan(-1);
     expect(arm).toBeLessThan(internal);
-    expect(src).toMatch(/P2024/);
-    expect(src).toMatch(/P2028/);
+    expect(src).toMatch(/if \(isTransientDbError\(error\)\) return ERR\.UNAVAILABLE\(\);/);
   });
 });
 

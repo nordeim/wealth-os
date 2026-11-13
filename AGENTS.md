@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1421) | `bun run test` |
+| Unit tests (1450) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 143) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 147) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -619,3 +619,50 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   that depend on mount timing or single-use objects (a Response
   body is consumed on first read — factories, never shared
   constants) pass in isolation and fail in the pack.
+- **A GEOMETRY defect is invisible to every class-fingerprint
+  gate — pin layout with bounding-box ratios, not classes
+  (session 238, F-238a)**: the Expenses history list rendered
+  INSIDE the page-header flex row for 39 sessions — at every
+  viewport ≥ sm the whole list collapsed to a ~427px right-side
+  column while every gate stayed green (the sweeps compare
+  computed classes in the zero-data state, where the squeezed
+  element's classes are unchanged; the interior census counts
+  elements, unchanged by nesting moves; the e2e legs were
+  functional-only). The cure class is the GEOMETRY e2e pin: the
+  active tabpanel's width ≥ 90% of its card, at the left edge —
+  assert bounding-box RATIOS, never class strings. And a DOM
+  move on a censused/swept surface re-derives the touched page's
+  allowances same-commit (the F-236e doctrine's geometry
+  edition: sweep pct + census mainH moved even though the
+  element census did not).
+- **A mutation-action family converges through ONE shared
+  wrapper — never N copies of the same guard (session 238,
+  F-238b)**: the third revocation window shipped because all 18
+  mutation actions carried the same `if (res.ok) await
+  refreshAll(...)` shape with no failure arm — the wall covered
+  only hydrate and refreshAll. The cure is a `mutate(path, init,
+  set)` wrapper owning the F-217l entry token, the post-success
+  refresh, AND the 401 wall commit; a future action cannot
+  forget the arm. Prefer one seam over eighteen copies even when
+  the copies are "only" two lines each.
+- **An e2e leg for a REDIRECTING face asserts the OUTCOME, not
+  the transient face (session 238, the F-238b e2e lesson — the
+  F-236f captures lesson's e2e edition)**: the mutation-401 wall
+  redirected to /login in well under one poll interval, so
+  `expect(getByText("Redirecting to sign in…")).toBeVisible()`
+  timed out against an already-landed login page (the leg
+  PASSED standalone at first-run latency and failed in the
+  battery). The honest form asserts the from_url round-trip
+  (`waitForURL(/\/login\?from_url=/)`) — the redirect's
+  signature; hold the navigation only when a screenshot needs
+  the face itself (the captures pattern).
+- **The carrier-comment discipline binds CURE COMMENTS and TEST
+  SCANNERS too — catches seven and eight (session 238,
+  F-238d/F-238f/F-238n riders)**: the round's own cure comments
+  coined a hyphenated layering nickname that parsed as a live
+  z-index utility (the parity-229 whole-tree invariant caught
+  it), cited the retired sync-fs call names a scanner greps for
+  (the parity-238 pin tripped on its own rationale text), and
+  quoted the dead boot-env disjunct its pin forbade verbatim.
+  Describe the behavior in words, never cite the retired form —
+  in the cure, in the pin, and in the doc that records both.

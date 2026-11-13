@@ -156,8 +156,10 @@ describe("F-233f — the one-time token leaves the address bar", () => {
 describe("F-233g — a failing breach-unlink never turns the 507 into a 500", () => {
   it("the unlink rides its own try/catch inside the breach branch", () => {
     const src = read("src/app/api/upload/route.ts");
+    // Session-238 (R-35, F-238d) recalibration: the settled walk is
+    // async now (await ahead of the call).
     const breach = src.match(
-      /const settled = uploadsCapacity[\s\S]{0,900}?STORAGE_FULL/,
+      /const settled = await uploadsCapacity[\s\S]{0,900}?STORAGE_FULL/,
     )?.[0] ?? "";
     expect(breach).not.toBe("");
     // the isolation: an inner try around the unlink, ahead of the

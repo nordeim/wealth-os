@@ -328,6 +328,44 @@ test.describe("the Expenses tabs + search", () => {
     await expect(page.getByText("Apartment Rent")).toHaveCount(0);
   });
 
+  // Session-238 (R-35, F-238a): the GEOMETRY pin — the first e2e pin of
+  // the geometry genus (the F-221f/F-225d gate-blind-spot family). The
+  // history list rendered inside the page-header flex row since the
+  // session-199 original: at every viewport ≥ sm the entire list
+  // collapsed to a ~427px right-side column (live-measured: ul x=957
+  // w=427 inside the 1120px card at 1440) while the computed-style
+  // fingerprints stayed byte-identical — the class-based gates cannot
+  // see geometry. The cure hoists the Tabs wrapper out of the header
+  // row; this leg pins the active panel's width against the card's.
+  test("the Expense History list renders full-width beside its card at >=sm (F-238a — the geometry genus)", async ({ page }) => {
+    await page.goto("/Expenses");
+    // The page is client-rendered — wait for the seeded list before
+    // measuring (an eager evaluate races the hydrate and reads null).
+    await page.getByText("Apartment Rent").first().waitFor();
+    const m = await page.evaluate(() => {
+      const section = [...document.querySelectorAll("section")].find((s) =>
+        s.querySelector("h2")?.textContent?.startsWith("Expense History"));
+      if (!section) return null;
+      const panel = section.querySelector<HTMLElement>('[role="tabpanel"]:not([hidden])');
+      if (!panel) return null;
+      const sr = section.getBoundingClientRect();
+      const pr = panel.getBoundingClientRect();
+      return {
+        sectionW: sr.width,
+        panelW: pr.width,
+        panelX: pr.x,
+        sectionX: sr.x,
+      };
+    });
+    expect(m).not.toBeNull();
+    // The pre-cure squeeze: the panels shared the header flex row with
+    // the h2 — panelW ≈ 427 against sectionW ≈ 960+ at the 1280 class.
+    // The cure: the panel carries (nearly) the card's full content width.
+    expect(m!.panelW).toBeGreaterThanOrEqual(m!.sectionW * 0.9);
+    // And it starts at the card's left edge, not pushed to the right.
+    expect(Math.abs(m!.panelX - m!.sectionX)).toBeLessThanOrEqual(24);
+  });
+
   test("the search box filters by description", async ({ page }) => {
     await page.goto("/Expenses");
     await page.getByLabel("Search expenses").fill("Whole Foods");
@@ -749,5 +787,36 @@ test.describe("the mid-flight revocation face (F-236f)", () => {
     expect(page.url()).not.toContain("/login");
     await expect(page.getByText("Redirecting to sign in…")).toHaveCount(0);
     await page.unroute("**/api/dashboard");
+  });
+
+  // Session-238 (R-35, F-238b): the THIRD revocation window. The
+  // F-236f/F-237a wall covered the hydrate and refreshAll windows —
+  // but every mutation action refreshed only on success, so a
+  // revocation surfacing on the mutation POST itself returned 401 to
+  // the page, which toasted "Delete failed — Sign in required" over a
+  // dead stale workspace (the wall unreachable without a navigation).
+  // The mutation wrapper now commits the wall on the 401 failure arm.
+  test("a mutation POST answering 401 renders the login wall, not a toast over a dead workspace (F-238b)", async ({ page }) => {
+    await page.route("**/api/transactions/*", (route) =>
+      route.fulfill({
+        status: 401,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: false,
+          error: { code: "UNAUTHORIZED", message: "Sign in required" },
+        }),
+      }),
+    );
+    await page.goto("/Expenses");
+    // The seeded row's Delete button fires the DELETE mutation.
+    await page.getByRole("button", { name: /Delete Apartment Rent/ }).first().click();
+    // The wall's signature is the from_url round-trip onto the login
+    // wall — the "Redirecting…" face itself is transient (the F-236f
+    // captures lesson: a redirecting face can vanish before a poll
+    // sees it; the outcome is the honest assertion). Pre-cure this leg
+    // RED-proved the opposite: the URL stayed on /Expenses with the
+    // "Delete failed — Sign in required" toast over the stale list.
+    await page.waitForURL(/\/login\?from_url=/, { timeout: 10_000 });
+    await page.unroute("**/api/transactions/*");
   });
 });

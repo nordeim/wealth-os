@@ -72,12 +72,16 @@ describe("forgot-password route contract (session-163, digma S46/S64/S66/S124)",
     expect(src).toContain("`/reset-password?token=${token}`");
   });
 
-  it("swallows P2025 to the no-enumeration 200 and surfaces P2024/P2028 as 503", () => {
+  it("swallows P2025 to the no-enumeration 200 and surfaces the transient family as 503", () => {
     const src = forgotRoute();
     expect(src).toContain('"P2025"');
-    expect(src).toContain('"P2024"');
-    expect(src).toContain('"P2028"');
-    expect(src).toContain("503");
+    // Session-238 (R-35, F-238k) recalibration: the P2024/P2028 arms
+    // joined the isTransientDbError seam (the F-236b hoist) — the
+    // route asserts the seam import + both arm usages (the read
+    // path's single-line form and the update path's else-if chain).
+    expect(src).toMatch(/import \{[^}]*isTransientDbError[^}]*\} from "@\/lib\/db";/);
+    expect(src.match(/isTransientDbError\(error\)/g)?.length ?? 0).toBe(2);
+    expect(src.match(/ERR\.UNAVAILABLE\(\);/g)?.length ?? 0).toBe(2);
   });
 });
 
@@ -133,12 +137,13 @@ describe("reset-password route contract (session-163, digma S67-A/S76-A/S124-A)"
     const src = resetRoute();
     expect(src).not.toMatch(/findFirst\([\s\S]*?\)\.catch\(\(\) => null\)/);
     // The read arm carries its own transient-abort 503 BEFORE the
-    // invalid-token 400 fires (the same P2024/P2028 family the
-    // update path answers).
+    // invalid-token 400 fires (the same family the update path
+    // answers). Session-238 (R-35, F-238k) recalibration: the seam
+    // arm form (the inline codes joined the F-236b hoist) — the
+    // ordering compares the ARM's usage, not the import line.
     const readArm = src.slice(0, src.indexOf("updateMany"));
-    expect(readArm).toContain('"P2024"');
-    expect(readArm).toContain("503");
-    expect(readArm.indexOf('"P2024"')).toBeGreaterThan(readArm.indexOf("findFirst"));
+    expect(readArm).toMatch(/if \(isTransientDbError\(error\)\) return ERR\.UNAVAILABLE\(\);/);
+    expect(readArm.indexOf("if (isTransientDbError(error))")).toBeGreaterThan(readArm.indexOf("findFirst"));
   });
 
   it("answers the invalid-token 400 when the conditional write lands count 0 (the racing replay)", () => {
@@ -158,11 +163,11 @@ describe("reset-password route contract (session-163, digma S67-A/S76-A/S124-A)"
     expect(src).toContain("resetTokenExpiresAt: null");
   });
 
-  it("surfaces P2024/P2028 as the 503 family", () => {
+  it("surfaces the transient family as the 503 arm (both catch blocks)", () => {
     const src = resetRoute();
-    expect(src).toContain('"P2024"');
-    expect(src).toContain('"P2028"');
-    expect(src).toContain("503");
+    // Session-238 (R-35, F-238k) recalibration: the seam form.
+    expect(src).toMatch(/import \{[^}]*isTransientDbError[^}]*\} from "@\/lib\/db";/);
+    expect(src.match(/if \(isTransientDbError\(error\)\) return ERR\.UNAVAILABLE\(\);/g)?.length ?? 0).toBe(2);
   });
 });
 

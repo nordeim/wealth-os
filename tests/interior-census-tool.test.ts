@@ -183,7 +183,10 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
     expect({ ...STANDING_CENSUS.phone }).toEqual({
       dashboard: { unexplained: 271, mainH: 217 },
       income: { unexplained: 41, mainH: -15 },
-      expenses: { unexplained: 112, mainH: -261 },
+      // Session-238 (R-35, F-238a) re-derivation: mainH -261→-273 (the
+      // history-width restoration's stacked construction — decode in
+      // scripts/interior-census.ts's table).
+      expenses: { unexplained: 112, mainH: -273 },
       accounts: { unexplained: 23, mainH: -15 },
       investments: { unexplained: 131, mainH: -625 },
       import: { unexplained: 32, mainH: -15 },
@@ -209,7 +212,8 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
     expect({ ...STANDING_CENSUS.landscape }).toEqual({
       dashboard: { unexplained: 255, mainH: 35 },
       income: { unexplained: 43, mainH: 49 },
-      expenses: { unexplained: 115, mainH: 103 },
+      // Session-238 (R-35, F-238a) re-derivation: mainH 103→119.
+      expenses: { unexplained: 115, mainH: 119 },
       accounts: { unexplained: 25, mainH: 49 },
       investments: { unexplained: 142, mainH: -455 },
       import: { unexplained: 31, mainH: 49 },

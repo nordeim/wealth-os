@@ -319,11 +319,18 @@ export const STANDING_BASELINES = {
     login: 11.0,
     "reset-password": 16.5,
   },
-  // 768x1024 — the tablet class (< 1024) — session-209 re-derivation
+  // 768x1024 — the tablet class (< 1024) — session-209 re-derivation.
+  // Session-238 (R-35, F-238a) re-derivation: expenses 29.1→30.5 — the
+  // history-width restoration hoisted the Tabs wrapper out of the
+  // page-header flex row (the reference's own stacked form), which
+  // reshapes the zero-data empty-state construction the sweep compares
+  // (the tablist renders below the title, the empty message
+  // full-width below it — the layout the reference itself renders, so
+  // the construction delta moved, not drifted away from parity).
   tablet: {
     dashboard: 7.2,
     income: 31.0,
-    expenses: 29.1,
+    expenses: 30.5,
     accounts: 10.2,
     investments: 20.3,
     import: 8.8,

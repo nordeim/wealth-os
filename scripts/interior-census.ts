@@ -1561,7 +1561,13 @@ export const STANDING_CENSUS: Readonly<
   phone: {
     dashboard: { unexplained: 271, mainH: 217 },
     income: { unexplained: 41, mainH: -15 },
-    expenses: { unexplained: 112, mainH: -261 },
+    // Session-238 (R-35, F-238a) re-derivation: mainH -261→-273 — the
+    // history-width restoration hoisted the Tabs wrapper out of the
+    // header flex row (the reference's own stacked form): the tablist
+    // renders below the title, the list full-width below it — the
+    // stacked construction is TALLER than the squeezed one it replaces
+    // (the element census is unchanged: same nodes, different nesting).
+    expenses: { unexplained: 112, mainH: -273 },
     accounts: { unexplained: 23, mainH: -15 },
     investments: { unexplained: 131, mainH: -625 },
     import: { unexplained: 32, mainH: -15 },
@@ -1587,7 +1593,10 @@ export const STANDING_CENSUS: Readonly<
   landscape: {
     dashboard: { unexplained: 255, mainH: 35 },
     income: { unexplained: 43, mainH: 49 },
-    expenses: { unexplained: 115, mainH: 103 },
+    // Session-238 (R-35, F-238a) re-derivation: mainH 103→119 — the
+    // stacked history construction's honest height (see the phone
+    // axis's decode; the element census is unchanged).
+    expenses: { unexplained: 115, mainH: 119 },
     accounts: { unexplained: 25, mainH: 49 },
     investments: { unexplained: 142, mainH: -455 },
     import: { unexplained: 31, mainH: 49 },

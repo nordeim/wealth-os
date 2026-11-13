@@ -126,6 +126,37 @@ export interface WealthOsState {
   askCoach: (question: string) => Promise<Result<{ answer: string }, string>>;
 }
 
+/** Session-238 (R-35, F-238c): the revocation wall's store commit — the
+ *  logout-clear parity. Both UNAUTHORIZED branches and the mutation
+ *  wrapper's 401 arm commit this shape: the user nulls WITH error-null
+ *  (the F-237a discriminator the shell gate reads — the wall fires),
+ *  and every domain slice empties exactly as the logout branch empties
+ *  them. Pre-cure the wall branches committed only the user/error pair,
+ *  leaving the previous user's ledger standing in the globalThis store:
+ *  on the compound path (revocation-without-logout → a different user
+ *  signs in → their first hydrate fails non-401) the error face
+ *  rendered the PREVIOUS user's financial data under the banner. The
+ *  wall never leaves a standing ledger. */
+function commitRevocationWall(
+  set: (partial: Partial<WealthOsState>) => void,
+  extra: Partial<WealthOsState> = {},
+): void {
+  set({
+    ...extra,
+    loading: false,
+    user: null,
+    error: null,
+    transactions: [],
+    incomeSources: [],
+    accounts: [],
+    investments: [],
+    goals: [],
+    budgets: [],
+    settings: null,
+    settingsSettled: false,
+  });
+}
+
 /** Shared post-mutation refresh: refetch the dashboard aggregate and
  * swap every slice (the replace contract — full-list replacement, no
  * partial PATCH merging). Session-216 (R-13, F-216d): the failure
@@ -166,10 +197,38 @@ async function refreshAll(
     // gate never fired). Mirrors hydrate's UNAUTHORIZED branch: the
     // user nulls, the error stays null, and the shell re-establishes
     // the login wall with the from_url round-trip — the F-236f intent
-    // completed on both windows.
-    set({ loading: false, user: null, error: null });
+    // completed on both windows. Session-238 (R-35, F-238c): the
+    // commit rides the shared wall shape — the slices clear too.
+    commitRevocationWall(set);
   } else {
     set({ loading: false, error: res.error });
+  }
+  return res;
+}
+
+/** Session-238 (R-35, F-238b): the third revocation window. The
+ *  F-236f/F-237a wall covered hydrate and refreshAll — but every
+ *  mutation action refreshed only on success, so a revocation (the TTL
+ *  crossed, a password reset in another tab) surfacing on the mutation
+ *  POST itself returned 401 to the page, which toasted "Save failed —
+ *  Sign in required" over a dead stale workspace: the store committed
+ *  nothing, the user survived, the gate never fired, and section pages
+ *  carry no Refresh control — the wall was unreachable without a
+ *  navigation. The wrapper keeps the F-217l entry-captured token and
+ *  the F-216d post-success refresh; a failure arm carrying
+ *  UNAUTHORIZED commits the wall behind the token guard, and every
+ *  mutation action inherits it. */
+async function mutate<T>(
+  path: string,
+  init: RequestInit,
+  set: (partial: Partial<WealthOsState>) => void,
+): Promise<Result<T, string>> {
+  const token = sessionWriteToken; // F-217l: captured at entry
+  const res = await call<T>(path, init);
+  if (res.ok) {
+    await refreshAll(token, set);
+  } else if (res.code === "UNAUTHORIZED" && token === sessionWriteToken) {
+    commitRevocationWall(set);
   }
   return res;
 }
@@ -240,7 +299,10 @@ function createStore() {
       } else if (res.code === "UNAUTHORIZED") {
         // Session-220 (R-17, F-220j): the code-keyed branch (was a
         // message-substring match on "authenticate"/"Sign in").
-        set({ hydrated: true, loading: false, user: null, error: null });
+        // Session-238 (R-35, F-238c): the commit rides the shared
+        // wall shape — hydrated stays true (the wall's semantics) and
+        // the slices clear (the logout-clear parity).
+        commitRevocationWall(set, { hydrated: true });
       } else {
         set({ hydrated: true, loading: false, error: res.error });
       }
@@ -290,168 +352,100 @@ function createStore() {
       return refreshAll(token, set);
     },
 
-    createTransaction: async (body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<Transaction>("/api/transactions", {
+    // Session-238 (R-35, F-238b): every refreshAll-family action rides
+    // the shared mutate wrapper — the F-217l entry token, the F-216d
+    // post-success refresh, and the third-window 401 wall all live in
+    // one place (a future action cannot forget the arm).
+    createTransaction: (body) =>
+      mutate<Transaction>("/api/transactions", {
         method: "POST",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    updateTransaction: async (id, body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<Transaction>(`/api/transactions/${id}`, {
+      }, set),
+    updateTransaction: (id, body) =>
+      mutate<Transaction>(`/api/transactions/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    deleteTransaction: async (id) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<{ id: string }>(`/api/transactions/${id}`, {
+      }, set),
+    deleteTransaction: (id) =>
+      mutate<{ id: string }>(`/api/transactions/${id}`, {
         method: "DELETE",
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    importTransactions: async (rows) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<{ imported: number }>("/api/import", {
+      }, set),
+    importTransactions: (rows) =>
+      mutate<{ imported: number }>("/api/import", {
         method: "POST",
         body: JSON.stringify({ rows }),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
+      }, set),
 
-    createIncomeSource: async (body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<IncomeSource>("/api/income-sources", {
+    createIncomeSource: (body) =>
+      mutate<IncomeSource>("/api/income-sources", {
         method: "POST",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    updateIncomeSource: async (id, body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<IncomeSource>(`/api/income-sources/${id}`, {
+      }, set),
+    updateIncomeSource: (id, body) =>
+      mutate<IncomeSource>(`/api/income-sources/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    deleteIncomeSource: async (id) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<{ id: string }>(`/api/income-sources/${id}`, {
+      }, set),
+    deleteIncomeSource: (id) =>
+      mutate<{ id: string }>(`/api/income-sources/${id}`, {
         method: "DELETE",
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
+      }, set),
 
-    createAccount: async (body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<BankAccount>("/api/accounts", {
+    createAccount: (body) =>
+      mutate<BankAccount>("/api/accounts", {
         method: "POST",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    updateAccount: async (id, body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<BankAccount>(`/api/accounts/${id}`, {
+      }, set),
+    updateAccount: (id, body) =>
+      mutate<BankAccount>(`/api/accounts/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    deleteAccount: async (id) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<{ id: string }>(`/api/accounts/${id}`, {
+      }, set),
+    deleteAccount: (id) =>
+      mutate<{ id: string }>(`/api/accounts/${id}`, {
         method: "DELETE",
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
+      }, set),
 
-    createInvestment: async (body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<Investment>("/api/investments", {
+    createInvestment: (body) =>
+      mutate<Investment>("/api/investments", {
         method: "POST",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    updateInvestment: async (id, body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<Investment>(`/api/investments/${id}`, {
+      }, set),
+    updateInvestment: (id, body) =>
+      mutate<Investment>(`/api/investments/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    deleteInvestment: async (id) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<{ id: string }>(`/api/investments/${id}`, {
+      }, set),
+    deleteInvestment: (id) =>
+      mutate<{ id: string }>(`/api/investments/${id}`, {
         method: "DELETE",
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
+      }, set),
 
-    createGoal: async (body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<Goal>("/api/goals", {
+    createGoal: (body) =>
+      mutate<Goal>("/api/goals", {
         method: "POST",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    updateGoal: async (id, body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<Goal>(`/api/goals/${id}`, {
+      }, set),
+    updateGoal: (id, body) =>
+      mutate<Goal>(`/api/goals/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    deleteGoal: async (id) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<{ id: string }>(`/api/goals/${id}`, {
+      }, set),
+    deleteGoal: (id) =>
+      mutate<{ id: string }>(`/api/goals/${id}`, {
         method: "DELETE",
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
+      }, set),
 
-    upsertBudget: async (body) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<Budget>("/api/budgets", {
+    upsertBudget: (body) =>
+      mutate<Budget>("/api/budgets", {
         method: "POST",
         body: JSON.stringify(body),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
-    deleteBudget: async (category) => {
-      const token = sessionWriteToken; // F-217l: captured at entry
-      const res = await call<{ category: string }>("/api/budgets", {
+      }, set),
+    deleteBudget: (category) =>
+      mutate<{ category: string }>("/api/budgets", {
         method: "DELETE",
         body: JSON.stringify({ category }),
-      });
-      if (res.ok) await refreshAll(token, set);
-      return res;
-    },
+      }, set),
 
     updateSettings: async (body) => {
       // F-218e: the write-guard family's one missing member — the
@@ -463,15 +457,35 @@ function createStore() {
         method: "PUT",
         body: JSON.stringify(body),
       });
-      if (res.ok && token === sessionWriteToken) set({ settings: res.data });
+      if (res.ok) {
+        if (token === sessionWriteToken) set({ settings: res.data });
+        return res;
+      }
+      // Session-238 (R-35, F-238b): the third window joins here too —
+      // this action sets its slice directly instead of refreshing, so
+      // the arm rides inline: a revoked settings PUT walls instead of
+      // toasting over the stale shell.
+      if (res.code === "UNAUTHORIZED" && token === sessionWriteToken) {
+        commitRevocationWall(set);
+      }
       return res;
     },
 
     askCoach: async (question) => {
-      return call<{ answer: string }>("/api/ai/coach", {
+      // Session-238 (R-35, F-238b): the third window — a revoked coach
+      // POST walls instead of toasting inside the dialog over a dead
+      // workspace. The token guard is the F-217l race family: a coach
+      // answer landing after a logout → different-user sign-in must
+      // never clear the NEW session.
+      const token = sessionWriteToken; // F-217l: captured at entry
+      const res = await call<{ answer: string }>("/api/ai/coach", {
         method: "POST",
         body: JSON.stringify({ question }),
       });
+      if (!res.ok && res.code === "UNAUTHORIZED" && token === sessionWriteToken) {
+        commitRevocationWall(set);
+      }
+      return res;
     },
 
   }));

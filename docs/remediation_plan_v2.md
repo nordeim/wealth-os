@@ -7,7 +7,70 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.34.0** (session 237 — the error-face,
+> **Current version: v2.35.0** (session 238 — the history-width,
+> third-window, and slice-hygiene round R-35: the owner's
+> standing directive — refresh → review → validate → audit →
+> parity iteration → remediation plan → TDD execution →
+> captures → docs lockstep → commit → push, with the reference
+> STABLE on all standing drift layers and the TRUE-390 mobile
+> menu re-verified this session; the cold-baseline gate GREEN
+> at HEAD 7a66465 — no discovery this round, the v2.34.0 ship
+> state reproduced exactly: lint 0/0 · tsc 0 · 1421/1421 unit
+> (86 files) · build · smoke 15/15 · 143/143 e2e · census
+> MATCH). The session-238 fresh-eyes audit (three Mode-C
+> passes: the R-34 cure surfaces driven by the session, the
+> API/auth/security layer, and the UI/a11y/shell layer —
+> 0 Critical / 1 High / 2 Medium / 2 Low / 10 Informational
+> raw after dedup, every material claim re-verified at
+> file:line by the driving session; R-34's nine cures verified
+> holding — the round's High is a session-199 original, not a
+> regression). The round's flagship: THE HISTORY-WIDTH
+> RESTORATION (F-238a High — the Expenses history list has
+> rendered inside the page-header flex row since the original
+> build: the Tabs wrapper (tablist AND all four panels) is the
+> row's second flex item, so at every viewport ≥ sm the entire
+> 71-row list collapses to a ~427px right-side column while the
+> h2 floats vertically centered beside it — live-measured on
+> the standalone (ul x=957 w=427 inside the 1120px card at
+> 1440) and against the reference (its own card renders the
+> tablist full-width BELOW the title, the content full-width
+> below that); invisible to every gate — the sweeps capture
+> the zero-data state where the squeezed element's computed
+> classes are unchanged, and the e2e legs are functional-only;
+> the cure hoists the Tabs out of the header row to a direct
+> section child, with a GEOMETRY-based e2e pin (the class
+> fingerprints cannot see this genus) and the touched page's
+> census/fullpage allowances re-derived same-commit per the
+> F-236e doctrine); THE THIRD REVOCATION WINDOW (F-238b
+> Medium — the F-236f/F-237a wall covers hydrate and
+> refreshAll, but all 18 mutation actions only refresh on
+> success: a revocation surfacing on the mutation POST itself
+> returns 401 to the page, the caller toasts "Save failed —
+> Sign in required" over a dead stale workspace, and the wall
+> is unreachable without a navigation — the mutation actions
+> now check the failure arm's code and commit the wall shape
+> behind the captured write token); THE SLICE HYGIENE
+> (F-238c Medium — neither UNAUTHORIZED branch clears the
+> domain slices, so the compound path revocation-without-
+> logout → different-user sign-in → failed first hydrate
+> renders the PREVIOUS user's financial data under the error
+> banner — both branches now clear the slices the logout
+> branch clears); plus the async uploads walk (F-238d — the
+> F-235d genus' fs edition: readdirSync+statSync per entry and
+> a per-call mkdirSync on the request path), the dead
+> dompurify override retirement (F-238e), the popover
+> scroll-close (F-238f), the stale-docblock set (F-238g/l/o),
+> the transient-arm unification (F-238k — the three
+> hand-rolled inline arms join the isTransientDbError seam),
+> the no-explicit-any net re-enable (F-238m — the F-214k
+> precedent, tree verified clean), the dead NEO_ arm (F-238n),
+> the isTransientDbError behavioral rider (F-238i), and the
+> mobile-nav e2e completion (F-238p — the Shift+Tab backward
+> leg + the scroller-lock assertion). Adjudicated and
+> recorded, not cured: the render-path session-read posture
+> (F-238h). §5 carries the execution history.)
+>
+> **Previous version: v2.34.0** (session 237 — the error-face,
 > transient-seam, and remount-gate round R-34: the owner's
 > standing directive — refresh → review → validate → audit →
 > parity iteration → remediation plan → TDD execution →
@@ -1328,6 +1391,35 @@ each re-verified by the driving session before the row was written.
 | F-237p | Informational | **avatarTextColor uses gamma-encoded (non-linearized) luminance.** The 0.2126/0.7152/0.0722 weights on raw sRGB channels with a 0.55 threshold — boundary colors classify differently than true WCAG relative luminance would. Its only consumer is the sidebar chip whose initial is aria-hidden with the name adjacent — no live text consumer. | `src/components/ui/avatar.tsx:14-22` | recorded (linearize when a live consumer appears) |
 | F-237q | Informational | **A dead `?` arm in isAuthFace (and the bootstrap regex).** `pathname.startsWith(\`${p}?\`)` can never match — pathname excludes query strings. Pure defensive dead code; the `=== p` and `/`-suffix arms carry all real cases. | `src/lib/theme-default.ts:34-39`; the mirror in `src/app/layout.tsx:110` | recorded (defensive) |
 | F-237r | Informational | **Auth-face placeholder colors are sub-AA** (≈2.2:1 / ≈2.9:1) — the reference's own mirrored genus, each input carrying a visible associated label, axe not evaluating `::placeholder`. Joins the F-224y/F-226m exemption-register family. | `src/lib/page-layout.ts:419`; `src/lib/login-reset.ts:110-116` | recorded (exemption register) |
+
+### session-238 audit (R-35's findings ledger — every row re-verified at file:line by the driving session)
+
+Three Mode-C passes (the R-34 cure surfaces driven by the session · the
+API/auth/security layer · the UI/a11y/shell layer). Raw after dedup:
+**0 Critical / 1 High / 2 Medium / 2 Low / 10 Informational.** R-34's
+nine cures verified holding (pass A, cure-by-cure); the recorded tail
+(F-237j-r) re-verified at its recorded status. The round's High is a
+session-199 original that every gate modeled as normal for 39 sessions.
+
+| ID | Severity | Finding | Location | Disposition |
+|---|---|---|---|---|
+| F-238a | High | **The Expenses history list renders inside the page-header flex row — the whole list collapses to a ~427px right-side column at every viewport ≥ sm.** The history section's only child is the header-style flex row (`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between`), and the `<Tabs>` wrapper — whose four `TabsPanel`s carry the entire list body — is the row's SECOND flex item. Below `sm` the row stacks full-width (correct); from `sm` up the tablist AND the whole history list become a width-squeezed flex item beside the h2, which itself floats vertically centered at mid-list height. Live-measured on the standalone (seeded): at 1440 the `<ul>` renders x=957 w=427 h=4330 inside the 1120px card, the h2 at y=2525; at 1280 the same squeeze (ul x=797 w=427); at 390 correct (flex-col, w=310). The reference's own history card renders the tablist full-width BELOW the title and the content full-width below that (live-probed: CardHeader flex-col holding a grid w-full tablist; content in a separate sibling). Shipped since the session-199 original; the F-218o panel-per-trigger rework preserved the nesting. Invisible to every gate: the drift sweeps capture the ZERO-DATA state (the empty-state message's computed classes are unchanged by the squeeze — the genus is geometry, not classes), the interior census counts elements (unchanged by nesting moves), and the e2e legs are functional-only. The F-221f/F-225d gate-blind-spot genus: a visible defect no gate models. | `src/app/(app)/expenses/page.tsx:349-380` (the section; the list body at `:157-224`); control twin `src/app/(app)/analytics/page.tsx:254-266` (Tabs as a direct container child) | **R-35** (the Tabs hoists out of the header row to a direct section child — the reference's own form; a GEOMETRY-based e2e pin (active tabpanel width ≥ ~90% of the card content width at ≥ sm — the class fingerprints cannot see this genus); the touched page's interior-census + fullpage-sweep allowances re-derived same-commit per the F-236e doctrine) |
+| F-238b | Medium | **The revocation wall covers two of three client windows — a mutation POST that itself 401s never reaches the wall.** Every mutation action refreshes only on success (`if (res.ok) await refreshAll(...)`); a mid-session revocation (TTL crossed, a password reset in another tab) surfacing on the mutation POST returns the 401 `Result` to the page, which renders a toast ("Save failed — Sign in required") — the store commits nothing, `user` survives, the F-237a gate never fires. A revoked user attempting any write sees a misleading toast over a dead stale workspace; section pages carry no Refresh control, so the wall is unreachable without navigating or reloading. The F-237a store comment claims the intent "completed on both windows" — there are three: hydrate ✓, refreshAll ✓, mutation-POST ✗. | `src/stores/wealthos-store.ts:293-452` (all 18 mutation actions); exemplar caller `src/app/(app)/accounts/page.tsx:245` | **R-35** (the mutation actions check the failure arm's code — on UNAUTHORIZED, commit the wall shape behind the captured write token via one shared helper so all 18 inherit it; store battery legs + an e2e leg intercepting a mutation POST with 401, asserting the wall) |
+| F-238c | Medium | **Neither UNAUTHORIZED branch clears the domain slices — a compound path renders the previous user's financial data.** Both 401 branches commit only `{ user: null, error: null }` (+hydrated/loading), retaining transactions/accounts/investments/goals/budgets/settings in the globalThis store. The logout branch clears the slices; the wall path does not. Chain: user A live → 401 wall (A's slices retained) → user B signs in on `/login` (the login card never touches the store — verified) → B's hydrate takes the first-load path but only flips `loading: true` (slices still A's) → B's dashboard fetch fails non-401 → the error face renders children with A's slices under the "Couldn't load your data" banner (the gate correctly suppressed by `storeError`). Cross-user exposure of a personal-finance ledger on the compound path revocation-without-logout → different-user login → failed hydrate (the exact transient class F-237b maps). Same-user variants are stale-data cosmetics. The shape predates R-34 (F-236f's branch was identical) but sits inside the code R-34 touched; no test covers it (the multi-user e2e is API-level only). | `src/stores/wealthos-store.ts:170` (refreshAll's 401 set), `:243` (hydrate's 401 set); the clear contrast `:266-279` (logout) | **R-35** (both UNAUTHORIZED sets clear the domain slices + settings/settingsSettled, mirroring logout's clear while keeping the wall-firing semantics; a battery leg: first-load 401 ⇒ slices empty) |
+| F-238d | Low | **Synchronous filesystem I/O in the uploads request paths — the F-235d genus, fs edition.** `uploadsCapacity()` walks the uploads directory with `readdirSync` + per-entry `statSync` — and the POST route runs it TWICE (pre-write guard + post-write re-check) — plus `uploadsDir()` executes `mkdirSync` on EVERY call (the root is memoized; the mkdir is not). At the recorded ceiling (MAX_UPLOAD_FILES = 4096) one upload POST performs up to ~8,192 blocking stat syscalls — an event-loop stall in the same availability genus F-235d cured for scrypt. Bounded and rare (uploads capped 20/15min/IP; GETs only pay the mkdir), hence Low — but it is the largest remaining blocking-call surface in any request path. | `src/lib/uploads.ts:49-75` (the walk), `:155-159` (the per-call mkdir); consumers `src/app/api/upload/route.ts:129,149,160`, `src/app/api/uploads/[name]/route.ts:47` | **R-35** (the mkdir memoizes behind a module-level ensured flag; the capacity walk goes async via fs/promises — both call sites already await-compatible; the seam stays testable) |
+| F-238e | Low | **The `dompurify` override in package.json is dead — the package does not exist in the dependency graph.** bun.lock carries only the override declaration (no resolved entry) and src/ has zero references. A pin for a nonexistent package misleads the pre-ship audit re-triage story and will silently mask a future transitive introduction at a version never re-evaluated. | `package.json:65-67`; `bun.lock` (overrides block only) | **R-35** (the override retires; the lockfile regenerates through the package manager) |
+| F-238f | Low | **The Expenses filters popover (z-20, non-portal) slides under the sticky mobile header (z-50) when the scroller moves.** The popover is an in-flow absolute div anchored to the button; freshly opened it renders below the header, but scrolling while open travels its top region under the sticky header (unclickable/hidden). Standard non-portal behavior; the outside-close still works; content reachable by scrolling back. Minor mobile/short-viewport UX edge. | `src/app/(app)/expenses/page.tsx:305-311` (the popover); `src/lib/page-layout.ts:85` (MOBILE_HEADER.root, sticky z-50) | **R-35** (the popover closes on main-scroller scroll — a one-line scroll listener alongside the existing Escape/outside-close effect; no z-map change) |
+| F-238g | Low | **The sitemap route's docblock justifies the CAPITAL locs with a stale premise.** It claims the lowercase pages "cannot export metadata, so the lowercase locs rendered root-canonical + root-title" — but F-226b added pass-through layout metadata to every lowercase section, so the stated rationale is obsolete (the capital locs themselves remain correct — the reference's own casing). A future reader could re-derive the casing from a false premise or wrongly remove the lowercase layouts. | `src/app/sitemap.xml/route.ts:11-17` | **R-35** (the docblock rewords to the current truth) |
+| F-238h | Informational | **The render-path session reads have no transient arm.** The two server layouts call `getSessionUser()` bare; a P2024/P2028 there bubbles to the error boundary — an honest face, but the generic 500-class one, not the family's 503 semantics. Render-path vs API-path is a defensible split. | `src/app/page.tsx:14`; `src/app/(app)/layout.tsx:19` | recorded (posture; rethrow-with-digest if an operator ever needs the class distinguished in logs) |
+| F-238i | Informational | **No behavioral test exercises `isTransientDbError`'s true positive.** All F-236b/F-237b pins are source-form regexes; the helper's actual semantics (instanceof PrismaClientKnownRequestError + code P2024/P2028) have no unit driver. A future refactor of the helper ships green. The functional load is carried by the e2e legs (the identical store branch). | `src/lib/db.ts:74-79`; the pins `tests/parity-236.test.ts`, `tests/parity-237.test.ts` | **R-35** (the behavioral rider: a constructed P2024 → true, a P2001 → false — adjacent to the prisma-7-contract family) |
+| F-238j | Informational | **The mid-session wall (refreshAll-401) has no end-to-end leg.** The composition (refreshAll's 401 commit + the shell gate) is implied by two independent pins but never driven together in a browser. | `tests/e2e/wealthos.spec.ts:700-753` (both legs intercept the hydrate path) | folded into F-238b's e2e leg (the mutation-401 intercept drives the same composition) |
+| F-238k | Informational | **Three routes hand-roll the transient check the `isTransientDbError` seam hoisted.** forgot-password (×2 arms), reset-password (×2), and reset (×1) inline `error instanceof Prisma.PrismaClientKnownRequestError && (error.code === "P2024" || …)` with the copy duplicated verbatim. Behavior byte-identical today; the risk is pure drift — a future seam edit (adding a code, rewording the copy) won't propagate, silently forking the family the doctrine names. | `src/app/api/auth/forgot-password/route.ts:97-101,133-137`; `src/app/api/auth/reset-password/route.ts:66-70,110-114`; `src/app/api/reset/route.ts:63-67` | **R-35** (the five inline arms join the seam — mechanical, envelope-pinned) |
+| F-238l | Informational | **The health route's docblock was garbled by the F-225i splice.** The session-225 bracketed note sits in the middle of the F-221t rationale sentence; the reader must mentally reassemble it. | `src/app/api/health/route.ts:14-22` | **R-35** (the note moves below the completed sentence) |
+| F-238m | Informational | **`@typescript-eslint/no-explicit-any` is off while AGENTS.md claims "no `any`" as gate-enforced.** Only discipline enforces the convention; the tree is clean today (the generated prisma client is eslint-ignored; src/tests/scripts carry zero explicit any). The F-214k precedent re-enabled four clean-but-off rules exactly this way. | `eslint.config.mjs:12` | **R-35** (the rule re-enables as warn — `--max-warnings 0` makes it the hard net the docs already claim) |
+| F-238n | Informational | **A dead arm in bootEnvCheck's NEO_* loop.** `!key.startsWith("NEO_") || key === "NODE_ENV"` — the second disjunct is unreachable ("NODE_ENV" never starts with "NEO_"). Same genus as F-237q, different site. | `src/lib/boot-env.ts:74` | **R-35** (the dead disjunct drops) |
+| F-238o | Informational | **The uploads.ts F-234e comment describes the pre-F-237d call-site layout.** "the pre-write call site sits outside the route's try" — F-237d moved it inside; the rationale text is one remediation behind the code. | `src/lib/uploads.ts:61-66` | **R-35** (the comment rewords — rides the F-238d file touch) |
+| F-238p | Informational | **Mobile-nav e2e coverage gaps: no Shift+Tab backward-wrap leg; no direct scroller-lock assertion.** The Tab interceptor implements both directions and the main-scroller lock is a kept superset, but the spec only walks forward Tab and never asserts the lock. The behaviors were live-verified during the audit. | `tests/e2e/mobile-navigation.spec.ts:86-125` | **R-35** (the backward leg + the overflow assertion join the spec — the operator's standing mobile-menu ask gets its full keyboard coverage) |
+| F-238q | Informational | **The mutation-failure toast rides the wall's redirect face for its auto-dismiss window.** Post-F-238b, a revoked mutation still toasts the action's own failure ("Delete failed — Sign in required") while the wall commits and redirects — the toast is the honest delete-failure notice, transient (~4s), and the wall owns the screen (no stale workspace — VLM-verified in capture 157); curing it means res.code-aware toast suppression at 20+ call sites for a cosmetic redirect-window artifact. | the mutation callers (e.g. `src/app/(app)/expenses/page.tsx` deleteExpense's toast arm); capture `docs/screenshots/157-session238-mutation-401-wall.png` | recorded (posture; the toast is accurate feedback for the failed action itself) |
 
 ## 3. The remediation program (R-items)
 
@@ -4197,6 +4289,117 @@ post-cure tree. The captures and the docs lockstep per the
 standing rhythm; the recorded tail (F-237j-r + the standing
 families) stays documented in the ledger above.
 
+### R-35 — The history-width, third-window, and slice-hygiene round (session 238) — Status: Done(v2.35.0)
+
+The session-238 fresh-eyes audit (three Mode-C passes over the
+R-34 cure surfaces driven by the session, the API/auth/security
+layer, and the UI/a11y/shell layer — 0 Critical / 1 High /
+2 Medium / 2 Low / 10 Informational raw after dedup, every
+material claim re-verified at file:line by the driving
+session; R-34's nine cures verified holding; the recorded tail
+F-237j-r re-verified at its recorded status). The cold
+baseline GREEN at HEAD 7a66465 — the v2.34.0 ship state
+reproduced exactly (lint 0/0 · tsc 0 · 1421/1421 unit (86
+files) · build · smoke 15/15 · 143/143 e2e · census MATCH), no
+discovery this round. The standing layers re-verified:
+probe:ref STABLE on every layer (the bundle fingerprint
+unchanged, the demo data zero, the desktop nav 256/9, the
+TRUE-390 mobile menu opens with 9 destination links), `bun
+audit` unchanged (1 moderate dev-chain), neo-crm upstream
+unchanged (b3d0fbe), the SEO surface green (smoke leg 12),
+the .env contract, the vitest/playwright configs, and the
+.env.example standing.
+
+**R-35.1 — the pins born RED.** The parity-238 source pins
+(the Expenses history structure — the Tabs as a direct section
+child with the panels OUTSIDE the header flex row; the shared
+mutation-revocation helper wired into all 18 actions; the
+slice-clearing UNAUTHORIZED sets; the memoized uploads mkdir
++ the async capacity walk; the dompurify-free manifest; the
+popover scroll-close; the seam-joined transient arms; the
+warn-enabled explicit-any net; the dead-arm-free boot loop)
++ the store-hydrate behavioral extensions (the mutation-401
+wall: user nulls, error nulls, behind the captured token; the
+slice clear: a first-load 401 empties every domain slice) +
+the isTransientDbError behavioral rider (a constructed P2024
+→ true; a P2001 → false) + two e2e legs (the mutation-401
+wall — intercept a section mutation POST with 401, assert the
+login-wall face + the from_url round-trip, never the stale
+workspace; the Expenses history GEOMETRY pin — the active
+tabpanel's width ≥ ~90% of the card content width at ≥ sm,
+the first pin of the geometry genus the class fingerprints
+cannot see) + the mobile-nav spec extensions (the Shift+Tab
+backward wrap; the main-scroller lock assertion while open
+and restored after close).
+
+**R-35.2 — the cures.** THE HISTORY-WIDTH RESTORATION
+(F-238a — the `<Tabs>` wrapper hoists out of the header flex
+row to a direct child of the section: the h2 keeps its header
+row alone, the tablist renders below it, the four panels carry
+the list full-width — the reference's own form, live-probed;
+the interior-census + fullpage-sweep allowances for the
+expenses page re-derive same-commit per the F-236e/R-7.10
+doctrine, decode documented in the tables); THE THIRD
+REVOCATION WINDOW (F-238b — one shared helper commits the
+wall shape behind the captured write token on a mutation
+failure arm carrying UNAUTHORIZED; all 18 actions inherit it;
+the misleading "Save failed — Sign in required" toast over a
+dead workspace retires); THE SLICE HYGIENE (F-238c — both
+UNAUTHORIZED branches clear the domain slices +
+settings/settingsSettled exactly as the logout branch does,
+keeping the wall-firing hydrated/loading semantics; the
+compound cross-user path renders empty data, never the
+previous user's ledger); the async uploads walk (F-238d — the
+ensured-mkdir memoization + the fs/promises capacity walk,
+the F-235d availability doctrine applied to its fs edition;
+the stale F-234e comment rewords in the same touch —
+F-238o); the dompurify override retirement (F-238e — the
+lockfile regenerates through bun install, never hand-edits);
+the popover scroll-close (F-238f — the main-scroller listener
+joins the Escape/outside-close effect); the sitemap docblock
+truth (F-238g — the F-226b pass-through layouts are the
+current rationale); the transient-arm unification (F-238k —
+the five inline arms across forgot-password, reset-password,
+and reset join the isTransientDbError seam); the health
+docblock reflow (F-238l); the explicit-any net (F-238m — the
+rule re-enables as warn under --max-warnings 0, the F-214k
+precedent; the tree verified clean); the dead boot-loop arm
+(F-238n); the isTransientDbError rider (F-238i); the
+mobile-nav e2e completion (F-238p).
+
+**R-35.3 — the verification.** The full offline gate: lint
+0/0 (under the strengthened any-net) · tsc 0 · **1450/1450 unit
+(88 files, +29: 20 parity-238 + 4 store-hydrate extensions + 6
+db-transient riders − 1 superseded auth-reset form)** · build ·
+smoke 15/15 · **147/147 e2e** (+4: the mutation-401 wall and the
+history-geometry legs RED-proven against the pre-cure build; the
+two mobile-nav genus legs green at birth) · **all six parity
+drift gates CLEAN** — the expenses page's allowances re-derived
+same-commit with the decode documented (the F-236e doctrine's
+geometry edition: the tablet sweep baseline 29.1→30.5; the census
+mainH phone −261→−273, landscape 103→119; the element census
+itself unchanged — same nodes, different nesting), every other
+page CLEAN at its standing allowance · census MATCH · `bun
+audit` unchanged (the override retirement is lockfile-neutral to
+the advisory census). The captures 155-157 (the mobile drawer
+at 390 — the standing operator ask; the restored full-width
+history at 1440 — 70 rows at 1072px inside the 1120px card;
+the mutation-401 wall face, held by the route-delay pattern)
+verified in-DOM with the census tripwire, pixel- and
+VLM-verified — the round's live rider: the action's own failure
+toast rides the wall's redirect face for its auto-dismiss
+window (F-238q, recorded). The docs lockstep: README (the badge
+1597, the counts, the R-35 program row), AGENTS (the counts +
+five new gotchas: the geometry-genus pin, the shared-wrapper
+cure, the redirect-outcome e2e form, the carrier-comment
+catches), CLAUDE (the gate contract), PAD (the v2.35.0 revision
+block, the §7.1 rows + the pins row 56→58, the §7.4 checklist,
+the §9/§10 sites), SKILL (the header, the stack table, the
+commands, the pre-ship checklist), this plan (R-35 → Done, the
+§5 execution row), the worklog entry, and the session record.
+The recorded tail stays documented (F-238h + F-238q + the
+F-237j-r/standing families).
+
 ## 5. Execution history
 
 | Version | Session | R-items executed | Gate at ship | Commit |
@@ -4239,6 +4442,7 @@ families) stays documented in the ledger above.
 | v2.32.0 | 235 | **R-32** (the oracle-reorder, async-scrypt, and live-region-seed round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD — the v2.31.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-235 fresh-eyes audit (three Mode-C passes: the R-31 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 1 Medium / 9 Low / 5 Informational raw, every material claim re-verified at file:line by the driving session; R-31's nine pinned cures all verified holding). The plan v2.32.0 written (the F-235a-o ledger + the R-32 section) and validated against the tree (the blast-radius sweep: every cure DOM-inert on the captured faces by construction — the filter Select defaults to the plain option, the dialog Selects are closed, the padding/role/aria changes touch no measured census axis). **R-32.1** the pins born RED (the parity-235 source pins + the password-seam async riders; the auth-reset + http-headers pins recalibrated in the same commit; the F-218a e2e leg extends with the request-level oracle probe — zero new signups) → **R-32.2** the cures: THE AI-COACH GREETING LIVE-REGION SEED (F-235a); THE LOGIN VERIFICATION ORACLE REORDER (F-235b — gate above verify, equalizer burned on the gate branch); THE RESET HONEST-FAILURE ARM (F-235c — the P2024/P2028 → 503 arm); THE ASYNC-SCRYPT SEAM (F-235d — promisified crypto.scrypt, format byte-identical, every call site already async); the functional busy clears (F-235e, six sites); the dialog-close hit area (F-235f); the aria-hidden emoji wraps (F-235g, four sites); the tablist naming (F-235h); the KPI glyph decoupling (F-235i); the guest-wall status face (F-235j); the low tail (F-235k/l/m/n) → **R-32.3** the verification: lint 0/0 · tsc 0 · unit (the parity-235 + recalibrated counts, the docs-counts lockstep in the same commit) · build · smoke 15/15 · 140 e2e (the oracle probe extends the existing leg) · ALL SIX drift gates CLEAN at 0-event margin · census MATCH · `bun audit` unchanged; the captures per the standing rhythm with the census tripwire; the recorded tail stays documented (F-235o + the F-234l-n + standing families) | lint 0/0 · tsc 0 · unit (docs-counts lockstep) · build · smoke 15/15 · 140 e2e · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.33.0 | 236 | **R-33** (the empty-put, transient-503, and revocation-face round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD — the v2.32.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-236 fresh-eyes audit (three Mode-C passes: the R-32 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 1 Medium / 8 Low / 11 Informational raw after dedup, every material claim re-verified at file:line by the driving session; R-32's fourteen pinned cures all verified holding; the empty-put 404 live-reproduced against the exact client before planning). The plan v2.33.0 written (the F-236a-r ledger + the R-33 section) and validated against the tree. **R-33.1** the pins born RED (the parity-236 source pins — 39 checks, 38 RED + 1 green-by-design genus guard; the schemas-finance riders — 14 checks, all RED at the missing seams; the parity-235 timer pin; two e2e legs RED against the pre-cure build — the empty-put probe answered 404 and the revocation face never rendered, the stash-free proof via the standing pre-cure .next artifact) → **R-33.2** the cures: THE EMPTY-PUT 400 (F-236a — the updateSchema guard on the five update schemas, `{}` and unknown-only bodies answer the honest 400); THE TRANSIENT-503 FAMILY COMPLETION (F-236b — isTransientDbError joins src/lib/db, ERR.UNAVAILABLE joins the envelope, every DB-touching catch arm across the 19 route files); THE FIELD-CLEAR NORMALIZATION (F-236c — the clearable-date seam at all eight sites, the nullable create twins, color/icon on both twins); the toast-dismiss hit area (F-236d); the dashboard glyph wrap (F-236e); THE MID-FLIGHT REVOCATION FACE (F-236f — the shell's post-hydrate null-user gate renders the guest-wall face); the stale comment reword (F-236g); the parity-235 timer pins (F-236h); the goals valuenow precision (F-236i); the dead-arm register (F-236j); the PAD retrospective forms (F-236k) → **R-33.3** the verification: lint 0/0 · tsc 0 · **1391 unit (84 files, +54)** · build · smoke 15/15 · **142 e2e** (+2, both RED-proven) · ALL SIX drift gates CLEAN at 0-event margin (the interior census after the F-236e standing-allowance re-derivation per the R-7.10 doctrine — +1 unexplained on desktop/phone/landscape, the tablet axis classifies the span into the wrapper-twin genus; the tool-test pins recalibrated same-commit); census MATCH · `bun audit` unchanged; the captures 149-151 verified in-DOM with the census tripwire (the mobile drawer 390 — the standing ask; the revocation face — the round's live lesson: the dev-server face window is sub-poll, the capture holds the /login navigation briefly; the toast dismiss at 26×26px), all three VLM-verified; the F-220f + F-222o pin recalibrations rode the same commit; the recorded tail stays documented (F-236l-r + the standing families) | lint 0/0 · tsc 0 · **1391 unit (84 files)** · build · smoke 15/15 · **142 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.34.0 | 237 | **R-34** (the error-face, transient-seam, and remount-gate round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD 0773de0 — the v2.33.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-237 fresh-eyes audit (three Mode-C passes: the R-33 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 1 High / 3 Medium / 8 Low / 12 Informational raw after dedup, every material claim re-verified at file:line by the driving session; R-33's cures verified holding — ONE REGRESSION among them: the F-236f gate swallowed the first-load error face, live-reproduced by the audit against the standalone). The plan v2.34.0 written (the F-237a-r ledger + the R-34 section) and validated against the tree. **R-34.1** the pins born RED (the parity-237 source pins + the store-hydrate behavioral battery + the schemas-finance whitespace riders + the 500-hydrate e2e leg extension, RED against the pre-cure build — the failure face bounced to the login wall) → **R-34.2** the cures: THE ERROR-FACE RESTORATION (F-237a — the gate's auth-specific discriminator `&& !storeError`, refreshAll's UNAUTHORIZED branch joins the wall on the mid-session window); THE TRANSIENT-SEAM COMPLETION (F-237b — requireSession's catch + the six auth routes' catches gain the arm, the parity-237 family pin with the tightened form, the parity-236 comment drift corrects); THE REMOUNT GATE (F-237c — the remount-aware hydrate entry refreshes in place without the loading re-gate); the upload pre-write wrap (F-237d); the whitespace-clear normalization (F-237e — five trim-aware guards); the import pending face (F-237f); the refresh busy riders (F-237g); the redirect-face live-region seed (F-237h); the register completion (F-237i) → **R-34.3** the verification: lint 0/0 · tsc 0 · unit (the parity-237 + store-hydrate + rider counts, docs-counts lockstep same-commit) · build · smoke 15/15 · e2e (the 500-hydrate probe extends the revocation describe, RED-proven) · ALL SIX drift gates CLEAN at 0-event margin · census MATCH · `bun audit` unchanged; the captures verified in-DOM with the census tripwire, VLM-verified; the F-236c/F-236f pin recalibrations (parity-236) + the F-217k entry-write recalibration (parity-217) rode the same commit; the recorded tail stays documented (F-237j-r + the standing families) | lint 0/0 · tsc 0 · **1421 unit (86 files)** · build · smoke 15/15 · **143 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
+| v2.35.0 | 238 | **R-35** (the history-width, third-window, and slice-hygiene round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD 7a66465 — the v2.34.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-238 fresh-eyes audit (three Mode-C passes: the R-34 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 1 High / 2 Medium / 2 Low / 10 Informational raw after dedup, every material claim re-verified at file:line by the driving session; R-34's nine cures verified holding — the round's High was a session-199 ORIGINAL, not a regression: the Expenses history list rendered inside the page-header flex row, the whole list collapsing to a ~427px column at every viewport ≥ sm, live-measured on the standalone AND against the reference, invisible to every gate — the geometry genus). The plan v2.35.0 written (the F-238a-q ledger + the R-35 section) and validated against the tree. **R-35.1** the pins born RED (the parity-238 source pins — 19 RED + 1 genus guard; the store-hydrate behavioral extensions — 3 RED + 1 genus guard; the db-transient behavioral rider — 6 green at birth pinning the helper's acceptance set; the mutation-401 e2e leg + the history-geometry e2e leg, both RED-proven against the pre-cure build via the standing .next artifact; the mobile-nav Shift+Tab + scroller-lock legs, green at birth) → **R-35.2** the cures: THE HISTORY-WIDTH RESTORATION (F-238a — the Tabs wrapper hoists out of the header flex row to a direct section child, the reference's own stacked form); THE THIRD REVOCATION WINDOW (F-238b — the shared mutate wrapper owns the entry token + the post-success refresh + the 401 wall commit; all 18 actions ride it; updateSettings + askCoach carry the arm inline); THE SLICE HYGIENE (F-238c — the shared commitRevocationWall clears every domain slice on all three 401 surfaces, the logout-clear parity); the async uploads walk (F-238d + the F-238o comment reword); the dompurify override retirement (F-238e); the popover scroll-close (F-238f); the sitemap docblock truth (F-238g); the transient-arm unification (F-238k — the five inline arms join the seam); the health docblock reflow (F-238l); the explicit-any net (F-238m — warn under --max-warnings 0); the dead boot-loop arm (F-238n); the isTransientDbError rider (F-238i); the mobile-nav e2e completion (F-238p) → **R-35.3** the verification: lint 0/0 · tsc 0 · **1450 unit (88 files)** · build · smoke 15/15 · **147 e2e** · ALL SIX drift gates CLEAN (the expenses allowances re-derived same-commit — the tablet sweep 29.1→30.5, the census mainH phone −261→−273 / landscape 103→119, decodes documented) · census MATCH · `bun audit` unchanged; the captures 155-157 verified in-DOM with the census tripwire, pixel- and VLM-verified (the F-238q toast rider recorded); the same-commit pin recalibrations rode the round (auth-reset ×3, parity-217, parity-218, parity-220, parity-229-carrier, parity-233, parity-234, parity-235, parity-237, sweep-tool, interior-census-tool, uploads-path, docs-counts); the recorded tail stays documented (F-238h + F-238q + the F-237j-r/standing families) | lint 0/0 · tsc 0 · **1450 unit (88 files)** · build · smoke 15/15 · **147 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 
 > The next iteration session (238) has **no open R-item by default** —
 > the R-4 ladder CLOSED at v2.8.0, the R-7 card arc at v2.6.0, the R-8

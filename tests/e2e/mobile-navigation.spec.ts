@@ -124,6 +124,52 @@ test.describe("mobile navigation drawer", () => {
     }
   });
 
+  // Session-238 (R-35, F-238p): the interceptor implements BOTH
+  // directions (Shift+Tab at the cycle's head wraps to its tail) but
+  // the spec only ever walked forward Tab — the backward arm rode
+  // implementation trust alone. The operator's standing mobile-menu
+  // ask gets its full keyboard coverage.
+  test("Shift+Tab from the first drawer link wraps to the cycle's last item (F-238p — the backward direction)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/Dashboard");
+
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    // Focus sits on the sheet's first link (the open-focus contract);
+    // Shift+Tab at idx 0 must wrap to the cycle's LAST item — never
+    // run under the overlay into the page content.
+    await page.keyboard.press("Shift+Tab");
+    const escaped = await page.evaluate(() => {
+      const el = document.activeElement;
+      const inHeader = !!el?.closest("header");
+      const inSheet = !!el?.closest('[role="dialog"]');
+      return !(inHeader || inSheet);
+    });
+    expect(escaped, "Shift+Tab at the cycle's head ran under the overlay").toBe(false);
+  });
+
+  // Session-238 (R-35, F-238p): the main-scroller lock is a kept
+  // superset (`main` owns scrolling in the shell model) — but no leg
+  // ever asserted it. Pin both halves: locked while open, restored
+  // after close.
+  test("the main scroller locks while the drawer is open and restores after close (F-238p — the kept superset)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/Dashboard");
+
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    expect(await page.evaluate(() => document.querySelector("main")?.style.overflow)).toBe("hidden");
+
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    expect(await page.evaluate(() => document.querySelector("main")?.style.overflow)).toBe("");
+  });
+
   test("closing the drawer returns focus to the trigger (F-217e)", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/Dashboard");

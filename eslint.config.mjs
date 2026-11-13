@@ -9,7 +9,12 @@ const __dirname = dirname(__filename);
 const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
   rules: {
     // TypeScript rules
-    "@typescript-eslint/no-explicit-any": "off",
+    // Session-238 (R-35, F-238m): the explicit-any net re-enabled as
+    // warn — the F-214k precedent (a clean-but-off rule switched on
+    // so the guardrail is live). The tree carries zero explicit any
+    // (the generated prisma client is eslint-ignored); under
+    // --max-warnings 0 this is the hard net AGENTS.md already claims.
+    "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/ban-ts-comment": "off",

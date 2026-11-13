@@ -1,6 +1,4 @@
-import { Prisma } from "@/generated/prisma/client";
-
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { ERR, fail, logApiError, ok, parseBody } from "@/lib/api";
 import { hashPassword, hashResetToken } from "@/lib/password";
 import { resetPasswordSchema } from "@/lib/schemas";
@@ -63,12 +61,9 @@ export async function POST(req: Request) {
     user = await db.user.findFirst({ where: { resetToken: hashResetToken(resetToken) } });
   } catch (error) {
     logApiError("auth/reset-password POST", error);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      (error.code === "P2024" || error.code === "P2028")
-    ) {
-      return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
-    }
+    // Session-238 (R-35, F-238k): the seam arm replaces the hand-rolled
+    // inline form (the F-236b hoist this route predated).
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
   const alive =
@@ -107,12 +102,8 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     logApiError("auth/reset-password POST", error);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      (error.code === "P2024" || error.code === "P2028")
-    ) {
-      return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
-    }
+    // Session-238 (R-35, F-238k): the seam arm (the F-236b hoist).
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL(); // F-218q: the no-bare-throw discipline the comment claims
   }
 

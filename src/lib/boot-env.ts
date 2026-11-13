@@ -70,8 +70,11 @@ export function bootEnvCheck(env: Record<string, string | undefined>): BootEnvRe
   }
 
   // ---- The NEO_* family: the flag-typo guard (warn form) ----------------
+  // Session-238 (R-35, F-238n): the guard reads the prefix alone — the
+  // old second disjunct (a NODE_ENV equality check) was unreachable
+  // dead code, same genus as the F-237q arm.
   for (const key of Object.keys(env)) {
-    if (!key.startsWith("NEO_") || key === "NODE_ENV") continue;
+    if (!key.startsWith("NEO_")) continue;
     if (!KNOWN_NEO_VARS.has(key)) {
       warnings.push(
         `[boot] Unknown NEO_* environment variable ${key} — the known knobs are: ${[...KNOWN_NEO_VARS].join(", ")}. A typo here silently no-ops (the closed set is read verbatim).`,

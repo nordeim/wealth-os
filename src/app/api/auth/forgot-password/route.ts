@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { Prisma } from "@/generated/prisma/client";
 
-import { db } from "@/lib/db";
+import { db, isTransientDbError } from "@/lib/db";
 import { ERR, fail, logApiError, ok, parseBody } from "@/lib/api";
 import { forgotPasswordSchema } from "@/lib/schemas";
 import { hashResetToken } from "@/lib/password";
@@ -94,12 +94,9 @@ export async function POST(req: Request) {
     user = await db.user.findUnique({ where: { email } });
   } catch (error) {
     logApiError("auth/forgot-password POST", error);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      (error.code === "P2024" || error.code === "P2028")
-    ) {
-      return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
-    }
+    // Session-238 (R-35, F-238k): the seam arm replaces the hand-rolled
+    // inline form (the F-236b hoist this route predated).
+    if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
   if (user) {
@@ -130,11 +127,9 @@ export async function POST(req: Request) {
       logApiError("auth/forgot-password POST", error);
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
         stored = false;
-      } else if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        (error.code === "P2024" || error.code === "P2028")
-      ) {
-        return fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503);
+      } else if (isTransientDbError(error)) {
+        // Session-238 (R-35, F-238k): the seam arm (the F-236b hoist).
+        return ERR.UNAVAILABLE();
       } else {
         return ERR.INTERNAL(); // F-218q: the no-bare-throw discipline the comment claims
       }

@@ -50,8 +50,11 @@ const SIDEBAR = stripComments(read("src/components/layout/sidebar.tsx"));
 
 describe("R-15: updateSettings joins the write-guard family (F-218e)", () => {
   it("captures the token at entry and guards the set", () => {
+    // Session-238 (R-35, F-238b) recalibration: the guard nests under
+    // the ok arm (the failure arm now carries the third-window 401
+    // wall — the compound condition could not narrow the union).
     expect(STORE).toMatch(
-      /updateSettings: async \(body\) => \{\s*const token = sessionWriteToken;[\s\S]*?if \(res\.ok && token === sessionWriteToken\) set\(\{ settings: res\.data \}\)/,
+      /updateSettings: async \(body\) => \{[\s\S]*?const token = sessionWriteToken;[\s\S]*?if \(res\.ok\) \{\s*if \(token === sessionWriteToken\) set\(\{ settings: res\.data \}\);/,
     );
   });
 

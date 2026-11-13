@@ -36,7 +36,10 @@ describe("R-14: hydrate clears the stale error face (F-217k)", () => {
   });
 
   it("the 401 branch no longer leaves a stale error standing", () => {
-    expect(STORE).toMatch(/hydrated: true,\s*loading: false,\s*user: null,\s*error: null/);
+    // Session-238 (R-35, F-238c) recalibration: the 401 commit rides
+    // the shared wall shape — the helper carries the error-null the
+    // stale-face cure pinned (hydrated stays true for the wall).
+    expect(STORE).toMatch(/commitRevocationWall\(set, \{ hydrated: true \}\);/);
   });
 });
 

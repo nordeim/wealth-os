@@ -9,12 +9,13 @@ import { siteUrl } from "@/lib/site";
 // ("1.0" serializes as "1") — and its MetadataRoute type spells the field
 // changeFrequency, easy to mis-pin.
 // Session-217 (R-14, F-217f): the locs are the CAPITAL twins — the
-// reference's own casing (re-verified live 2026-11-10) AND the only form
-// that carries per-route metadata: the lowercase page.tsx files are
-// "use client" and cannot export metadata, so the lowercase locs rendered
-// root-canonical + root-title for every sitemap URL (functionally inert
-// for crawlers). The route twins (ADR-004) serve BOTH casings, so every
-// loc resolves; the Capital .jsx bridges own the pageMetadata() calls.
+// reference's own casing (re-verified live 2026-11-10). Both casings
+// carry per-route metadata since F-226b (the lowercase sections'
+// pass-through segment layouts mirror the capital bridges' own
+// pageMetadata() calls — the "use client" pages render unchanged
+// inside them), so the casing choice is the reference's parity, not
+// a metadata workaround. The route twins (ADR-004) serve BOTH
+// casings, so every loc resolves.
 // The reference lists NO /Dashboard (its root IS the dashboard for
 // signed-in visitors) and no auth pages — mirrored exactly.
 export const dynamic = "force-static";
