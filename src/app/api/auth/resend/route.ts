@@ -16,8 +16,8 @@ export const dynamic = "force-dynamic";
  * resend as the recovery path). Like the signup route, the fresh code is
  * stored hashed; delivery rides the digma ADR-014 in-band family — the
  * SERVER console log AND the response body while the knob is unset
- * (NEO_DISABLE_IN_APP_OTP nulls the response copy; see the signup
- * route's S21-P5 note).
+ * (NEO_DISABLE_IN_APP_OTP drops the console line to a code-less audit entry
+ * and nulls the response copy; see the signup route's S21-P5 note).
  */
 export async function POST(req: Request) {
   const limit = rateLimit(`resend:${clientKey(req)}`, 5, 15 * 60 * 1000);

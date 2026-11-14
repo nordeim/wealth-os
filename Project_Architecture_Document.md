@@ -16,6 +16,62 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.41.0 (session 244, R-41 — the guard-advance, upload-sniff, and
+  select-seam round): the fresh-eyes audit (three Mode-C passes — the
+  R-40 cure surfaces driven by the session, the API/auth/security layer,
+  and the UI/a11y/shell layer; 0 Critical / 0 High / 0 Medium / 5 Low /
+  9 Informational NEW after dedup, every material claim re-verified at
+  file:line by the driving session; all eight R-40 cure surfaces
+  verified holding — the logout burn after the session read inside the
+  sessioned arm, the docs-counts guard trio, the three OTP docblock
+  truths, the two scanner jsx admissions, the import label-in-name, the
+  readStoredTheme retirement, the globals prose rewords; the API layer
+  clean again — the burn-order sweep over all 22 sessioned mutating
+  handlers, parse-before-DB, owner-scoping, injection and enumeration
+  sweeps all clean; the UI layer clean — the drawer mechanics, the v4
+  scanner discipline (a live compile probe over every comment-carried
+  class token: zero dead emissions), the theme system, the store era
+  discipline, the a11y contracts all holding). The round's cures:
+  THE UPLOAD MAGIC-BYTE SNIFF (F-244b — the POST route's only content
+  gate on the stored bytes was the multipart part's client-declared
+  Content-Type; the pure sniffImageMagic seam joins src/lib/uploads.ts
+  and the route requires the sniffed family to match the declared MIME
+  family before writeFile — mismatch answers 400; the stored set stays
+  images by trusting the bytes, not the headers); THE F-243B
+  RECURRENCE GUARD ADVANCE (F-244a — the docs-counts trio aged out by
+  one block again with v2.40.0 unpinned at the live 1552/93 pair; the
+  trio advances to v2.38.0/v2.39.0/v2.40.0 green-by-design before the
+  lockstep pass per the F-242j lesson's own rule); THE SELECT-TRIGGER
+  APPENDAGE CONVERSION (F-244c — the one cn()-wrapped template-literal
+  class construction in src/ now the appendage form, with the
+  parity-242 genus guard widened to flag any backtick arriving inside
+  a cn( call; computed-identical by twMerge); THE OTP DOCBLOCK CONSOLE
+  TRUTHS (F-244d — the knob drops the console line to the code-less
+  audit entry, it does not leave the code console-recoverable); THE
+  PARITY-243 PIN HARDENING (F-244e — the scanner pins assert the walker
+  regex forms instead of comment-satisfiable prose; the F-243a battery
+  gains the arm-containment leg); THE SESSION-TOKEN TTL BOUND (F-244f
+  — verifySessionToken rejects exp-iat spans beyond the session TTL
+  plus slack); THE SIGNIN-ICONS ARIA-HIDDEN RIDERS (F-244g); THE
+  ROLE-DOCBLOCK TRUTH (F-244h — the role column carries NO authority).
+  The verification: lint 0/0 · tsc 0 · 1581 unit (95 files, +29) ·
+  build · smoke 15/15 · 150 e2e · ALL SIX parity drift gates CLEAN —
+  the standing allowances held UNMOVED at 0-event margin (the round's
+  surfaces are a server-side 400 on invalid bytes, a computed-identical
+  class-string join, docblocks, pins, attribute-only riders, and a
+  server-side span guard — all pixel-invisible) · census MATCH ·
+  `bun audit` unchanged · docs-counts 14/14 · captures 178-181 (the
+  mobile drawer at 390 — the standing operator ask; the Select open
+  face's computed-identical proof; the signin icons' riders; the
+  polyglot upload canary — HTML-as-png and JPEG-as-png both 400, the
+  valid PNG's round-trip 200 with the capability URL serving
+  image/png). Recorded, not cured: F-244i (the tee'd dev/server logs
+  carrying OTP lines — operator posture), F-244j (the __Host- cookie
+  prefix — deployment-shape decision), F-244k (whole-store
+  subscriptions), F-244l (per-render clocks), F-244m (the picked-state
+  label edge), F-244n (live-utility prose), plus the standing families
+  (F-242h/i, F-240k-n, F-239l-s).
+
 - [SR] v2.40.0 (session 243, R-40 — the logout-bucket, guard-advance,
   and label-truth round): the fresh-eyes audit (three Mode-C passes —
   the R-39 cure surfaces driven by the session, the API/auth/security
@@ -1680,7 +1736,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1552) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1581) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (150) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -2101,7 +2157,7 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 93 | 1552 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 95 | 1581 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
 | — architecture pins | 62 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 26 | auth, rate-limit, csv, uploads, headers, boot-env, search-query, store-logout, store-hydrate, … | `tests/` | behavior |
@@ -2136,7 +2192,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1552/1552 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1581/1581 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 150/150
@@ -2206,7 +2262,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1552 unit / 150 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1581 unit / 150 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -2241,7 +2297,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1552 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1581 unit · build · smoke 15/15 ·
 150 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

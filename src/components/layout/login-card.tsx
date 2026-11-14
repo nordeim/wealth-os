@@ -773,7 +773,12 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                     Email
                   </label>
                   <div className={LOGIN_LAYOUT.inputWrap}>
-                    <Mail className={LOGIN_LAYOUT.inputIcon} />
+                    {/* Session-244 (R-41, F-244g): the explicit rider —
+                        the reset/signup/verify/sent views carry it on the
+                        same icon genus; inert by the library's own
+                        auto-injection, explicit for the family's
+                        consistency. */}
+                    <Mail className={LOGIN_LAYOUT.inputIcon} aria-hidden="true" />
                     <input
                       id="email"
                       type="email"
@@ -792,7 +797,7 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                     Password
                   </label>
                   <div className={LOGIN_LAYOUT.inputWrap}>
-                    <Lock className={LOGIN_LAYOUT.inputIcon} />
+                    <Lock className={LOGIN_LAYOUT.inputIcon} aria-hidden="true" />
                     <input
                       id="password"
                       type="password"

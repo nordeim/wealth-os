@@ -71,6 +71,32 @@ describe("F-243a — the logout writes-bucket burn sits AFTER the session read",
     const src = read("src/app/api/auth/logout/route.ts");
     expect(src).toMatch(/rateLimit\(`writes:\$\{clientKey\(req\)\}`/);
   });
+
+  // Session-244 (R-41, F-244e): the arm-containment leg — the order-only
+  // legs above let a burn relocated after the session read but OUTSIDE
+  // the sessioned arm (a burn after the try block, still "after" the
+  // read) pass every pin while re-opening the guest-burn poisoning the
+  // cure exists to close. The containment form: the burn sits between
+  // the if-user arm's opening and the tokenVersion update it guards,
+  // and it is the route's ONLY rateLimit call.
+  it("the burn sits INSIDE the if-user arm, between its opening and the tokenVersion update", () => {
+    const src = read("src/app/api/auth/logout/route.ts");
+    // The F-239e lesson's own lesson: anchor the eviction on its CODE
+    // form (the increment site), not the identifier — the route's own
+    // docblock names the field BEFORE the arm, so a bare indexOf on the
+    // name matched the comment instead of the update.
+    const armAt = src.indexOf("if (user) {");
+    const burnAt = src.indexOf("rateLimit(`writes:");
+    const evictionAt = src.indexOf("tokenVersion: {");
+    expect(armAt, "the if-user arm not found").toBeGreaterThan(-1);
+    expect(evictionAt, "the tokenVersion eviction site not found").toBeGreaterThan(-1);
+    expect(burnAt).toBeGreaterThan(armAt);
+    expect(evictionAt).toBeGreaterThan(burnAt);
+    // The burn is the route's ONLY bucket call — a second call outside
+    // the sessioned arm re-opens the class regardless of ordering.
+    const calls = src.match(/rateLimit\(/g) ?? [];
+    expect(calls.length).toBe(1);
+  });
 });
 
 // ---- F-243b: the v2.39.0 block's docs-counts truth ---------------------------
@@ -92,17 +118,18 @@ describe("F-243b — the v2.39.0 revision block records the true docs-counts leg
     const t = read("tests/docs-counts.test.ts");
     // The F-242j doctrine: the three most recent revision blocks carry
     // their OWN ship counts — the next over-broad count replacement
-    // fails `bun run test`. After this round the trio is
-    // v2.37.0/v2.38.0/v2.39.0 (the v2.36.0 pin ages out; its counts
+    // fails `bun run test`. Session-244 (R-41, F-244a — the F-243b
+    // recurrence) advanced the trio: after this round it is
+    // v2.38.0/v2.39.0/v2.40.0 (the v2.37.0 pin ages out; its counts
     // no longer appear live anywhere a lockstep script would target).
     const guardIt = t.slice(
       t.indexOf("the historical revision blocks keep their OWN ship counts"),
     );
-    expect(guardIt).toContain("v2\\.37\\.0");
     expect(guardIt).toContain("v2\\.38\\.0");
     expect(guardIt).toContain("v2\\.39\\.0");
-    expect(guardIt).not.toContain("v2\\.36\\.0");
-    expect(guardIt).toContain("1539 unit \\(92 files\\)");
+    expect(guardIt).toContain("v2\\.40\\.0");
+    expect(guardIt).not.toContain("v2\\.37\\.0");
+    expect(guardIt).toContain("1552 unit \\(93 files");
   });
 });
 
@@ -134,13 +161,18 @@ describe("F-243d — both whole-tree class-string walkers scan the jsx bridges",
   it("the parity-229 walker's filter admits jsx (the nine capital bridges join the scan)", () => {
     const src = read("tests/parity-229.test.ts");
     const walker = sliceFunction(src, "walkSrc");
-    expect(walker).toContain("jsx");
+    // Session-244 (R-41, F-244e): the FILTER FORM, not prose — the
+    // pre-hardening leg matched the Session-243 comment inside the
+    // walker (the prose note about jsx joining the filter), so a
+    // regex revert that kept the comment passed both pins. The
+    // character class is the contract.
+    expect(walker).toContain("(ts|tsx|jsx|css)");
   });
 
   it("the parity-242 walker's filter admits jsx (the template-literal genus guard joins)", () => {
     const src = read("tests/parity-242.test.ts");
     const walker = sliceFunction(src, "listSrcFiles");
-    expect(walker).toContain("jsx");
+    expect(walker).toContain("(tsx?|jsx|css)");
   });
 });
 

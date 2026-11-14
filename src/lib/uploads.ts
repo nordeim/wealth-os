@@ -106,6 +106,70 @@ export const EXT_BY_MIME: Record<string, string> = {
   "image/gif": "gif",
 };
 
+/**
+ * The image family a buffer's magic bytes declare — the values match
+ * EXT_BY_MIME's (so the route compares the sniffed family directly
+ * against the declared MIME's extension).
+ *
+ * Session-244 (R-41, F-244b): the upload POST's only content gate on
+ * the STORED bytes used to be the multipart part's client-declared
+ * Content-Type — the buffer itself was never inspected, so a sessioned
+ * caller could store arbitrary non-image bytes (polyglots, HTML,
+ * binaries) under a pinned image extension while the GET served them
+ * with the extension's image content-type on immutable 1-year
+ * caching. Stored-XSS was already closed by three independent layers
+ * (the SVG-excluding MIME map, the nosniff header, the
+ * extension-pinned content-type that never serves text/html); the
+ * residual is arbitrary-content hosting on the app's own origin —
+ * this seam closes the declaration gap by trusting the bytes, not
+ * the headers. Pure and deterministic: same bytes, same family,
+ * every call — pinned by tests/upload-sniff.test.ts (the TDD battery
+ * born RED over the pre-cure tree).
+ */
+export type ImageFamily = "jpg" | "png" | "webp" | "gif";
+
+export function sniffImageMagic(bytes: Uint8Array): ImageFamily | null {
+  // Every accepted family's header fits in 12 bytes (JPEG 3 · PNG 8 ·
+  // GIF 4 · WEBP 12); a shorter buffer carries no family's magic. The
+  // floor also rejects the empty buffer.
+  if (bytes.length < 12) return null;
+  // JPEG: the FF D8 FF SOI marker.
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return "jpg";
+  // PNG: 89 50 4E 47 0D 0A 1A 0A (the 8-byte signature).
+  if (
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47 &&
+    bytes[4] === 0x0d &&
+    bytes[5] === 0x0a &&
+    bytes[6] === 0x1a &&
+    bytes[7] === 0x0a
+  ) {
+    return "png";
+  }
+  // GIF: "GIF8" — both the 87a and 89a dialects open with it.
+  if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x38) {
+    return "gif";
+  }
+  // WEBP: the RIFF container whose bytes 8-11 spell WEBP. A RIFF
+  // container without that payload is an AVI or WAV cousin, not an
+  // image — it nulls rather than reading as webp.
+  if (
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x57 &&
+    bytes[9] === 0x45 &&
+    bytes[10] === 0x42 &&
+    bytes[11] === 0x50
+  ) {
+    return "webp";
+  }
+  return null;
+}
+
 function validatedRoot(candidate: string): string | null {
   return existsSync(join(candidate, "prisma", "schema.prisma")) ? candidate : null;
 }

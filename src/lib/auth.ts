@@ -107,6 +107,16 @@ export function verifySessionToken(token: string | undefined | null, now = Date.
     const payload = JSON.parse(unb64url(body)) as Partial<SessionPayload>;
     if (typeof payload.uid !== "string" || typeof payload.exp !== "number") return null;
     if (payload.exp < now) return null;
+    // Session-244 (R-41, F-244f): the TTL span bound — the verifier used
+    // to honor any signed exp for its duration (only the HMAC guarded
+    // the field), so a future signer bug (a millisecond-vs-second unit
+    // slip, a wrong constant) would surface as honored sessions instead
+    // of rejected tokens. The bound: exp cannot sit further than the
+    // session TTL (plus a 60s clock-skew slack) past iat. A missing iat
+    // reads as 0 — the epoch — so a no-iat token with any modern exp
+    // nulls; strict by design, the minted form has ALWAYS carried iat,
+    // so only hand-forged or malformed tokens ride that arm.
+    if (payload.exp - (payload.iat ?? 0) > SESSION_TTL_MS + 60_000) return null;
     // Session-163: the version's own shape guard — a non-integer,
     // fractional, or negative v is rejected even under a valid signature
     // (unforgeable in practice — the v rides the HMAC payload — but the

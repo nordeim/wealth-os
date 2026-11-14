@@ -41,8 +41,18 @@ function SelectTrigger({
       // via SELECT_TRIGGER.placeholderState (the muted-ink token pair);
       // the s133 round's own protected face — the density select —
       // retired upstream at s148, so the restoration diverges nothing.
+      // Session-244 (R-41, F-244c): the appendage form — the trigger's
+      // class string joins through cn() as separate arguments, never
+      // through string interpolation (the F-242e doctrine; the
+      // pre-cure template form was the one cn( + backtick site in
+      // src/, invisible to the genus guard's className={ scan). A
+      // future runtime-value edit must trip the lint shape, not
+      // silently emit no CSS under the v4 JIT.
       className={cn(
-        `${SELECT_TRIGGER.base} ${SELECT_TRIGGER.placeholderState} ${SELECT_TRIGGER.focusRing} disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1`,
+        SELECT_TRIGGER.base,
+        SELECT_TRIGGER.placeholderState,
+        SELECT_TRIGGER.focusRing,
+        "disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
         className,
       )}
       {...props}

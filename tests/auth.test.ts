@@ -56,6 +56,38 @@ describe("session tokens", () => {
     expect(verifySessionToken("....")).toBeNull();
   });
 
+  // Session-244 (R-41, F-244f): the TTL bound — a far-future exp under a
+  // VALID signature nulls when its span past iat exceeds the session
+  // TTL (plus the clock-skew slack). The pre-cure verifier honored any
+  // signed exp; only the signature guarded the field, so a future
+  // signer bug (a ms-vs-s unit slip) would have surfaced as honored
+  // sessions instead of rejected tokens.
+  it("rejects a far-future exp beyond the TTL bound (F-244f)", () => {
+    const now = Date.now();
+    const payload = { uid: "user_123", iat: now, exp: now + 365 * 24 * 60 * 60 * 1000, v: 0 };
+    const body = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
+    const sig = createHmac("sha256", "neo-crm-dev-only-insecure-secret").update(body).digest("hex");
+    expect(verifySessionToken(`${body}.${sig}`, now)).toBeNull();
+  });
+
+  it("honors the minted TTL form (the bound never eats legitimate sessions)", () => {
+    const token = signSession("user_123");
+    expect(verifySessionToken(token)?.uid).toBe("user_123");
+  });
+
+  it("rejects a no-iat far-future exp (the ?? 0 arm is strict, not lenient)", () => {
+    // A payload with NO iat reads the span against 0 — the epoch — so
+    // any exp in the modern era fails the bound. Strict by design: the
+    // seam's minted form has ALWAYS carried iat (signSession since the
+    // scaffold), so the only tokens this arm can eat are hand-forged
+    // or malformed ones — exactly the population a bound should eat.
+    const now = Date.now();
+    const payload = { uid: "user_123", exp: now + 365 * 24 * 60 * 60 * 1000, v: 0 };
+    const body = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
+    const sig = createHmac("sha256", "neo-crm-dev-only-insecure-secret").update(body).digest("hex");
+    expect(verifySessionToken(`${body}.${sig}`, now)).toBeNull();
+  });
+
   it("exports the expected cookie name", () => {
     expect(SESSION_COOKIE).toBe("neo_session");
   });

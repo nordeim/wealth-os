@@ -96,8 +96,10 @@ export async function POST(req: Request) {
     // expiry. Delivery is the digma ADR-014 in-band family: with no mail
     // transport, the code rides BOTH the SERVER console log AND the
     // response body while NEO_DISABLE_IN_APP_OTP is unset (the F-217m /
-    // F-242i posture — the boot warning names the knob; setting it nulls
-    // the response copy and leaves the console log for the operator).
+    // F-242i posture — the boot warning names the knob; setting it
+    // drops the console line to a code-less audit entry and nulls the
+    // response copy — no copy of the code survives the response or the
+    // logs).
     const code = generateVerifyCode();
     const passwordHash = await hashPassword(password);
     const verificationCodeHash = await hashVerificationCode(code);
@@ -109,6 +111,14 @@ export async function POST(req: Request) {
           email,
           passwordHash,
           avatarColor: NAME_COLORS[count % NAME_COLORS.length],
+          // Session-244 (R-41, F-244h): this column carries NO authority.
+          // The first account on a fresh install reads "admin" and every
+          // later one "rep", but ZERO routes read the field for a
+          // decision — it is display metadata on /api/auth/me and
+          // /api/users, nothing more. Do not gate a route on it without
+          // a provisioning design: open signup makes a fresh install's
+          // FIRST VISITOR the "admin", which is not a trust model an
+          // authenticated surface can lean on.
           role: count === 0 ? "admin" : "rep",
           verificationCodeHash,
           verificationAttempts: 0,

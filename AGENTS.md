@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1552) | `bun run test` |
+| Unit tests (1581) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 150) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -866,4 +866,27 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   guard was green and blind to the next recurrence. A three-most-
   recent window must be ADVANCED in the same commit that adds a new
   revision block; the parity-243 pin asserts the trio follows the
-  newest block.
+  newest block. Session-244 (F-244a — the RECURRENCE itself recurred):
+  the session that advanced the guard also LANDED the v2.40.0 block,
+  so the trio was one block behind the very doctrine line it carried
+  ("the three most recent") before the next session even started —
+  the advance must ride FIRST in the next session (green-by-design,
+  before its own lockstep pass), not as a rider after it. The
+  discipline's honest form: a session that ships a revision block
+  leaves the trio already aged; the next session's FIRST docs act is
+  the advance.
+- **A PROSE-SATISFIABLE PIN PROVES PROSE, NOT THE FORM — pin the
+  regex/code shape the cure actually shipped (session 244, F-244e)**:
+  toContain("jsx") over a sliced walker matched the Session-243
+  comment INSIDE the walker (the prose note about jsx joining), so a
+  regex revert keeping the comment passed both scanner pins; and the
+  F-243a order pin (burnAt > readAt) let a burn relocated outside the
+  if-user arm re-open the guest poisoning while every pin stayed
+  green. The hardening: assert the walker's CHARACTER CLASS (the
+  literal filter form), and pin ARM CONTAINMENT (the burn between the
+  arm's opening and the tokenVersion update, the route's only bucket
+  call). Same genus as the F-239e indexOf-the-import lesson: anchor
+  pins on the code site's exact form, never on any string a comment
+  can also carry — and re-anchor when the identifier's first
+  occurrence is a docblock (the tokenVersion name matched the route's
+  own comment BEFORE the arm; the increment site is the anchor).

@@ -9,6 +9,7 @@ import {
   MAX_UPLOAD_BYTES,
   MAX_UPLOAD_FILES,
   MAX_UPLOADS_TOTAL_BYTES,
+  sniffImageMagic,
   uploadsCapacity,
   uploadsDir,
 } from "@/lib/uploads";
@@ -111,6 +112,27 @@ export async function POST(request: Request) {
     return ERR.BAD_REQUEST("File too large (max 5MB)");
   }
 
+  // Session-244 (R-41, F-244b): the magic-byte sniff — the stored
+  // bytes must carry the DECLARED family's magic, not merely a
+  // client-supplied Content-Type that says so. The pre-cure gate
+  // above trusted the multipart part's declared type completely: a
+  // sessioned caller could store arbitrary non-image bytes (polyglots,
+  // HTML, binaries) under a pinned image extension while the GET
+  // served them with the extension's image content-type on immutable
+  // 1-year caching. The buffer is already materialized by formData()
+  // (bounded by the stream gate above), so reading it here costs no
+  // extra network I/O — and the verdict (a null for unknown bytes, a
+  // cross-family mismatch for polyglots) answers the same 400 family
+  // the type gates use. The sniffed family must equal the declared
+  // MIME's extension exactly: bytes that are *an* image but not the
+  // *declared* one are still a declaration lie, and the stored set
+  // stays exactly what it advertises.
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const sniffed = sniffImageMagic(bytes);
+  if (sniffed !== ext) {
+    return ERR.BAD_REQUEST("File contents do not match the declared image type");
+  }
+
   // Session-38 (S38-P5): the write path joins the envelope — an
   // ENOSPC/EACCES on the uploadsDir() mkdir or the writeFile answers
   // ERR.INTERNAL inside { ok, error } instead of a raw non-JSON 500
@@ -138,7 +160,6 @@ export async function POST(request: Request) {
     }
 
     const name = `${randomUUID().replace(/-/g, "")}.${ext}`;
-    const bytes = Buffer.from(await file.arrayBuffer());
     await writeFile(join(dir, name), bytes);
 
     // Session-232 (R-29, F-232g): the POST-WRITE re-check — the

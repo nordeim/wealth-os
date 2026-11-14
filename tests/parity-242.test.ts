@@ -98,7 +98,15 @@ describe("F-242e — no template-literal class strings anywhere in src", () => {
     const offenders: string[] = [];
     for (const f of listSrcFiles(path.resolve(import.meta.dirname, "..", "src"))) {
       const text = readFileSync(f, "utf8");
-      if (text.includes("className={`")) offenders.push(path.basename(f));
+      // Session-244 (R-41, F-244c): the widened net — the F-242e scan
+      // flagged only the className-attribute backtick form, so the
+      // select trigger's interpolated cn( argument (a template literal
+      // arriving as cn's first ARGUMENT) was invisible to the genus
+      // guard the doctrine shipped. Both forms now offend: the
+      // attribute form and the cn-argument form. The appendage
+      // convention is the sanctioned join — separate string arguments,
+      // never interpolation.
+      if (text.includes("className={`") || text.includes("cn(`")) offenders.push(path.basename(f));
     }
     expect(offenders, `files still interpolating class strings:\n  ${offenders.join("\n  ")}`).toEqual([]);
   });
