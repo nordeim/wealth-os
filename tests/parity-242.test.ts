@@ -20,7 +20,10 @@ function listSrcFiles(dir: string): string[] {
     if (statSync(p).isDirectory()) {
       if (name === "generated") continue; // the regenerated prisma client
       out.push(...listSrcFiles(p));
-    } else if (/\.(tsx?|css)$/.test(name)) out.push(p);
+    // Session-243 (R-40, F-243d): jsx joins the filter — the nine
+    // capital-route .jsx bridges were invisible to this genus guard
+    // (the parity-229 walker's same gap, widened in the same commit).
+    } else if (/\.(tsx?|jsx|css)$/.test(name)) out.push(p);
   }
   return out;
 }

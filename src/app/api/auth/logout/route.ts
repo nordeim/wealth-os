@@ -23,6 +23,18 @@ export const dynamic = "force-dynamic";
  *
  * Session-223 (R-20, F-223k): the route now WRITES — the tokenVersion
  * eviction (below) is a one-row indexed update on the session's user.
+ *
+ * Session-243 (R-40, F-243a): the bucket burn rides the SESSIONED path,
+ * after the session read. The pre-243 order (gate → burn → session read)
+ * was the only writes-family shape whose burn preceded its auth guard:
+ * a cookie-less direct caller posting JSON content-type passed the
+ * F-234g gate, burned 60 slots of the SHARED writes bucket every
+ * sessioned mutation rides, and collected the guest-logout no-op 200 —
+ * on the default direct-exposure posture (no XFF, every browser keys
+ * the same client bucket) a renewable unauthenticated write-DoS across
+ * all users. Possession of the cookie IS the credential (this route's
+ * own doctrine), so the bucket guards the sessioned write and burns
+ * with it; a guest logout consumes nothing.
  */
 export async function POST(req: Request) {
   // Session-234 (R-31, F-234g): the gate moves ABOVE the bucket. The
@@ -40,9 +52,6 @@ export async function POST(req: Request) {
   if (!contentType.toLowerCase().includes("application/json")) {
     return ERR.BAD_REQUEST("Invalid request body");
   }
-  const limit = rateLimit(`writes:${clientKey(req)}`, 60, 15 * 60 * 1000);
-  sweepRateLimits();
-  if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
   try {
     // Session-223 (R-20, F-223k): "sign out" means REVOKE — the same
     // tokenVersion eviction the reset flow rides. An exfiltrated cookie
@@ -54,6 +63,14 @@ export async function POST(req: Request) {
     // for a finance app.
     const user = await getSessionUser();
     if (user) {
+      // Session-243 (R-40, F-243a): the burn rides HERE — after the
+      // session read, inside the sessioned arm. Only a live session
+      // consumes writes capacity; the guest no-op below burns nothing
+      // (the upload route's own doctrine: pre-auth bucketing lets a
+      // session-less caller exhaust the shared budget).
+      const limit = rateLimit(`writes:${clientKey(req)}`, 60, 15 * 60 * 1000);
+      sweepRateLimits();
+      if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
       await db.user.update({
         where: { id: user.id },
         data: { tokenVersion: { increment: 1 } },

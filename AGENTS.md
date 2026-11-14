@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1539) | `bun run test` |
+| Unit tests (1552) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 150) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -844,3 +844,26 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   a mechanism must assert the mechanism's observable (the reclaimed
   count, the own-bucket remaining) — the same F-239e authoring
   lesson in cleanup-clothes.
+- **A SHARED-FAMILY BUCKET BURNED BEFORE THE AUTH GUARD POISONS EVERY
+  RIDER (session 243, F-243a)**: logout was the only writes-family
+  route whose writes-bucket call preceded its session read — the
+  F-234g content-type gate closed the cross-site no-preflight
+  volley, but a plain cookie-less DIRECT caller posting JSON
+  content-type still burned 60 slots of the bucket every sessioned
+  mutation rides and collected the guest no-op 200 (on the default
+  direct-exposure posture every browser keys the same client bucket,
+  so the burn is a renewable unauthenticated write-DoS across all
+  users). The uniform rule the upload route states verbatim: burn on
+  the path that carries the cost the bucket bounds — after the
+  session read for sessioned families. The captures canary is the
+  verification pattern: volley 70 guest logouts, then prove a
+  sessioned write still lands.
+- **A GUARD THAT PINS FIXED BLOCKS AGES OUT — advance the window every
+  session or the recurrence walks past it (session 243, F-243b)**: the
+  F-242j over-replacement guard pinned the v2.36.0/37.0/38.0 blocks
+  while the documented defect pattern (each session's script corrupts
+  the then-most-recent block) had already moved to v2.39.0 — the
+  guard was green and blind to the next recurrence. A three-most-
+  recent window must be ADVANCED in the same commit that adds a new
+  revision block; the parity-243 pin asserts the trio follows the
+  newest block.

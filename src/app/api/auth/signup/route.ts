@@ -93,9 +93,11 @@ export async function POST(req: Request) {
     // a 6-digit verification code and the login card swaps to the verify
     // view ("Verify your email", live-verified on the reference). The code
     // is stored HASHED (scrypt, the auth layer's format) with a 15-minute
-    // expiry; a self-hosted deployment has no mail transport, so the code
-    // is logged to the SERVER console for the demo workflow (never shipped
-    // to the client, never committed).
+    // expiry. Delivery is the digma ADR-014 in-band family: with no mail
+    // transport, the code rides BOTH the SERVER console log AND the
+    // response body while NEO_DISABLE_IN_APP_OTP is unset (the F-217m /
+    // F-242i posture — the boot warning names the knob; setting it nulls
+    // the response copy and leaves the console log for the operator).
     const code = generateVerifyCode();
     const passwordHash = await hashPassword(password);
     const verificationCodeHash = await hashVerificationCode(code);

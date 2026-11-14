@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1539;
+const UNIT_TOTAL = 1552;
 const E2E_TOTAL = 150;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 92;
+const TEST_FILES = 93;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -177,16 +177,23 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   // the docs honest. Pinned now: every revision block that carries the
   // verification-line form keeps its OWN ship counts, so the next
   // over-broad replacement fails `bun run test`.
+  // Session-243 (R-40, F-243b — the guard advance): the pinned trio is
+  // the THREE MOST RECENT revision blocks; each session advances the
+  // window as a new block lands (v2.36.0's pin ages out this round —
+  // its counts no longer appear live anywhere a lockstep script would
+  // target; the v2.39.0 block joins as the then-most-recent, the
+  // exact block an over-broad replacement would corrupt next).
   it("the historical revision blocks keep their OWN ship counts (F-242j — the over-replacement guard)", () => {
     const p = norm(doc("Project_Architecture_Document.md"));
-    // v2.36.0 shipped 1469/89 (session 239's §5 row).
-    expect(p).toContain("[SR] v2.36.0 (session 239");
-    expect(p).toMatch(/\[SR\] v2\.36\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1469 unit \(89 files\)/);
     // v2.37.0 shipped 1485/90 (session 240's §5 row).
     expect(p).toMatch(/\[SR\] v2\.37\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1485 unit \(90 files\)/);
     // v2.38.0 shipped 1519/91 (session 241's §5 row) — the historical
     // form the live-tense pins never touch.
     expect(p).toMatch(/\[SR\] v2\.38\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1519 unit \(91 files\)/);
+    // v2.39.0 shipped 1539/92 (session 242's §5 row) — joined the
+    // guard at session 243 (F-243b): its counts were the live counts
+    // the next lockstep pass replaces, the exact recurrence shape.
+    expect(p).toMatch(/\[SR\] v2\.39\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1539 unit \(92 files\)/);
   });
 
   it("the SKILL's stack table carries NO deleted-dependency rows (F-216f, the retired-forms negative ladder)", () => {

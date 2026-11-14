@@ -31,7 +31,10 @@ function resolveTheme(value: string | null): Theme {
     : "system";
 }
 
-export function readStoredTheme(): Theme {
+// Session-243 (R-40, F-243f): module-local — consumed only inside this
+// file (the OS-flip label sync); the export keyword was vestigial, the
+// F-234j retirement one function later.
+function readStoredTheme(): Theme {
   if (typeof window === "undefined") return "system";
   return resolveTheme(window.localStorage.getItem(STORAGE_KEY));
 }

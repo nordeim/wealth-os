@@ -218,7 +218,7 @@ export default function ImportPage() {
               type="file"
               accept=".csv,.xls,.xlsx"
               className="sr-only"
-              aria-label="Upload a CSV file"
+              aria-label="Upload a file — CSV, XLS or XLSX up to 10MB"
               onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
             />
           </label>

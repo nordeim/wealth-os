@@ -18,9 +18,10 @@
  * directly. The code generator and the scrypt hashing ride
  * `src/lib/verification-server.ts` (server-only: node:crypto + the auth
  * layer). Self-hosted delivery: the reference emails the code through its
- * platform; a self-hosted clone has no mail transport, so the code is
- * logged to the SERVER console at signup/resend time (never shipped to the
- * client, never committed).
+ * platform; a self-hosted clone has no mail transport, so delivery rides
+ * the digma ADR-014 in-band family — the code rides the SERVER console
+ * log AND the signup/resend response body while the knob is unset (see
+ * the signup route's S21-P5 note).
  */
 
 /** The code length — six single-digit inputs on the reference's view. */

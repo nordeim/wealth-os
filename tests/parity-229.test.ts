@@ -105,7 +105,12 @@ function walkSrc(dir: string, files: string[] = []): string[] {
     const p = path.join(dir, name);
     const st = statSync(p);
     if (st.isDirectory()) walkSrc(p, files);
-    else if (/\.(ts|tsx|css)$/.test(name)) files.push(p);
+    // Session-243 (R-40, F-243d): jsx joins the filter — the nine
+    // capital-route .jsx bridges were invisible to this "whole-tree"
+    // invariant (the route-case precedent: a tsx-only filter left them
+    // invisible there too). The bridges are pure re-export components
+    // today; the widened net keeps them honest.
+    else if (/\.(ts|tsx|jsx|css)$/.test(name)) files.push(p);
   }
   return files;
 }

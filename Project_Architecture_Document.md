@@ -16,6 +16,59 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.40.0 (session 243, R-40 — the logout-bucket, guard-advance,
+  and label-truth round): the fresh-eyes audit (three Mode-C passes —
+  the R-39 cure surfaces driven by the session, the API/auth/security
+  layer, and the UI/a11y/shell layer; 0 Critical / 0 High / 1 Medium /
+  5 Low / 5 Informational NEW after dedup, every material claim
+  re-verified at file:line by the driving session; all eight R-39
+  cure surfaces verified holding — the CSP pin with its three e2e
+  legs, the rate-limit cleanup, the retitle, the popover truth, the
+  login-card conversion, the comment truths, the hydration
+  rationales, the count-lockstep restoration; the API layer clean
+  again — owner-scoping census, Zod sweep, bucket coverage,
+  injection and enumeration sweeps; the UI layer clean — the drawer
+  mechanics, the v4 scanner discipline, the theme system, the a11y
+  contracts). THE FLAGSHIP — THE LOGOUT WRITES-BUCKET POISONING CURE
+  (F-243a Medium): the one writes-family route whose bucket burn
+  preceded its session read — a cookie-less direct caller posting
+  JSON content-type passed the F-234g gate, burned 60 slots of the
+  SHARED writes bucket every sessioned mutation rides, and collected
+  the guest-logout no-op 200; on the default direct-exposure posture
+  (no XFF, every browser keys the same client bucket) a renewable
+  unauthenticated write-DoS across all users. The burn now rides the
+  sessioned path — after the session read, inside the if-user arm —
+  so a guest logout consumes nothing; the F-234g gate-first order
+  and the F-221r bucket form both preserved (pinned), and the
+  captures battery proves it live: a 70-request cookie-less JSON
+  logout volley answers 70 no-op 200s and the sessioned Add Expense
+  still lands (the pre-cure tree 429'd the write at request 61).
+  Plus: the F-242j guard advance (F-243b — the over-replacement
+  guard now pins the three-most-recent trio v2.37.0/v2.38.0/v2.39.0;
+  the v2.39.0 block's stale-at-birth "docs-counts 13/13" becomes the
+  true 14/14); the OTP delivery docblock truths (F-243c — the three
+  session-21-era "never shipped to the client" carriers reworded to
+  the ADR-014 in-band delivery they actually ship); the whole-tree
+  scanner jsx completion (F-243d — the parity-229 and parity-242
+  walkers both admit jsx, the nine capital-route bridges join both
+  scans); the import dropzone label-in-name cure (F-243e — the
+  sr-only input's accessible name now contains the visible
+  "Upload a file" text, WCAG 2.5.3 Level A); the readStoredTheme
+  export retirement (F-243f — the F-234j genus one function later);
+  and the globals prose-token rider (F-243g). Registered, not cured:
+  the committed docs-242.py constant (F-243h — inert by its own
+  assert guard), the PAD v2.36.0 block's pre-F-242g F-239c framing
+  (F-243i — defensible history), and the disabled-in-flight focus
+  drop (F-243j — Reasoned). The verification: lint 0/0 · tsc 0 ·
+  1552 unit (93 files, +13) · build · smoke 15/15 · 150 e2e · ALL
+  SIX parity drift gates CLEAN — the standing allowances held
+  UNMOVED at 0-event margin (the round's surfaces are server-side
+  ordering, guard internals, docblocks, one aria-label, and one
+  export keyword — all pixel-invisible) · census MATCH · `bun audit`
+  unchanged · docs-counts 14/14 · captures 174-177 (the mobile
+  drawer at 390 — the standing operator ask; the Import dropzone's
+  label-in-name at 1440 and 390; the logout-volley write canary).
+
 - [SR] v2.39.0 (session 242, R-39 — the CSP-inventory pin,
   test-hygiene, and carrier-truth round): the fresh-eyes audit (three
   Mode-C passes — the R-38 cure surfaces driven by the session, the
@@ -71,7 +124,7 @@ Every change is tagged with its source: `[RES]` = validated by web research,
   standing allowances held UNMOVED (the cn() conversion is
   computed-identical by construction, the comment rewords are
   prose-only, the CSP is a header change invisible to the DOM
-  gates) · census MATCH · `bun audit` unchanged · docs-counts 13/13
+  gates) · census MATCH · `bun audit` unchanged · docs-counts 14/14
   · captures 170-173 (the mobile drawer at 390 — the standing
   operator ask; the forgot link's appendage geometry; the six OTP
   boxes' appendage geometry; the Analytics CSV download fired under
@@ -1627,7 +1680,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1539) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1552) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (150) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -1759,7 +1812,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 92 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 93 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -2048,7 +2101,7 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 92 | 1539 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 93 | 1552 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
 | — architecture pins | 62 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 26 | auth, rate-limit, csv, uploads, headers, boot-env, search-query, store-logout, store-hydrate, … | `tests/` | behavior |
@@ -2083,7 +2136,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1539/1539 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1552/1552 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 150/150
@@ -2153,7 +2206,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1539 unit / 150 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1552 unit / 150 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -2188,7 +2241,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1539 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1552 unit · build · smoke 15/15 ·
 150 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

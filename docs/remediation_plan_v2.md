@@ -7,7 +7,71 @@
 > owner with the directive *"create validated remediation plan with versioning
 > for each iteration session"* — this document is that plan).
 >
-> **Current version: v2.39.0** (session 242 — the CSP-inventory,
+> **Current version: v2.40.0** (session 243 — the logout-bucket,
+> guard-advance, and label-truth round R-40: the owner's standing
+> directive — refresh → review → validate → audit → parity iteration →
+> remediation plan → TDD execution → captures → docs lockstep →
+> commit → push, with the reference STABLE on all standing drift
+> layers and the TRUE-390 mobile menu re-verified by probe:ref this
+> session; the cold-baseline gate GREEN at HEAD ddf2396 — no
+> discovery this round, the v2.39.0 ship state reproduced exactly:
+> lint 0/0 · tsc 0 · 1539/1539 unit (92 files) · build · smoke 15/15
+> · 150/150 e2e · census MATCH). The session-243 fresh-eyes audit
+> (three Mode-C passes: the R-39 cure surfaces driven by the session,
+> the API/auth/security layer, and the UI/a11y/shell layer — 0
+> Critical / 0 High / 1 Medium / 5 Low / 5 Informational NEW after
+> dedup, every material claim re-verified at file:line by the driving
+> session; all eight R-39 cure surfaces verified holding — the CSP
+> fetch-directive pin with its three e2e legs, the rate-limit
+> battery's crossing cleanup, the parity-240 retitle, the popover
+> docblock truth across all three carriers, the login-card cn()
+> conversion with zero template literals tree-wide, the globals/
+> page-layout comment truths, the hydration-rationale truths, and
+> the count-lockstep restoration; the API layer clean again —
+> owner-scoping census, Zod sweep, bucket coverage, injection and
+> enumeration sweeps all clean; the UI layer clean — the drawer
+> mechanics, the v4 scanner discipline, the theme system, the a11y
+> contracts all holding). The round's flagship: THE LOGOUT
+> WRITES-BUCKET POISONING CURE (F-243a Medium — the one `writes:`
+> family route that burned its bucket BEFORE the session read: a
+> cookie-less direct caller posting JSON content-type passed the
+> F-234g gate, burned 60 slots of the shared writes bucket every
+> sessioned mutation rides, and collected the guest-logout no-op 200
+> — on the default direct-exposure posture (no XFF, every browser
+> keys "unknown") a renewable unauthenticated write-DoS across all
+> users; the burn now rides the sessioned path, after the session
+> read, so a guest logout consumes nothing — possession of the
+> cookie IS the credential, the route's own doctrine). Plus: the
+> F-242j guard advance (F-243b — the over-replacement guard pinned
+> only v2.36.0/37.0/38.0, leaving the v2.39.0 block — the exact
+> block THIS session's own count replacement would corrupt —
+> unpinned; the guard now pins the three-most-recent trio
+> v2.37.0/v2.38.0/v2.39.0, and the v2.39.0 block's stale-at-birth
+> "docs-counts 13/13" becomes the true 14/14); the OTP
+> delivery docblock truths (F-243c — three session-21-era carriers
+> still claimed the verification code is "never shipped to the
+> client" while signup/resend ship it in-band by default, the
+> ADR-014/F-242i posture the escalation itself turns on); the
+> whole-tree scanner jsx completion (F-243d — the parity-229 and
+> parity-242 walkers both excluded jsx, leaving the nine
+> capital-route bridges invisible to both "whole-tree" guards; both
+> filters widen, the route-case precedent); the import dropzone
+> label-in-name cure (F-243e — the sr-only input's aria-label
+> "Upload a CSV file" overrode the wrapping label without
+> containing the visible "Upload a file" text, a WCAG 2.5.3 Level A
+> failure for speech-input users); the readStoredTheme export
+> retirement (F-243f — the F-234j genus one function later); and
+> the globals prose-token rider (F-243g — the two plain-prose
+> utility mentions reworded to token form). Registered, not cured:
+> the committed docs-242.py constant (F-243h — the script targets
+> 1538 where the tree shipped 1539; a session artifact, inert by
+> its own assert guard), the PAD v2.36.0 historical block's
+> pre-F-242g F-239c framing (F-243i — defensible history), and the
+> disabled-in-flight focus drop (F-243j — Reasoned; the house async
+> idiom, success paths self-heal). §5 carries the execution
+> history.)
+
+> **Previous version: v2.39.0** (session 242 — the CSP-inventory,
 > test-hygiene, and carrier-truth round R-39: the owner's standing
 > directive — refresh → review → validate → audit → parity iteration →
 > remediation plan → TDD execution → captures → docs lockstep →
@@ -1803,6 +1867,27 @@ lockstep pass).
 | F-242h | Informational | **The desktop sidebar's brand h2 precedes the page h1 in DOM order.** On desktop the document's first heading is the brand h2; the page's h1 follows inside `<main>` (the mobile header correctly uses a span). Axe's heading-order rule only flags upward skips (h1→h3), so the descent passes every gate; the landmark-scoped brand heading is a defensible reference-parity choice. A DOM change on censused/swept surfaces shifts the standing allowances (the F-236e doctrine), so the cure (a span, matching the mobile header) is not worth the re-derivation for an informational. | `src/components/layout/sidebar.tsx:55` | recorded (the span form if a future round touches the sidebar family; re-derive the interior census allowances same-commit) |
 | F-242i | Medium | **The in-band-delivery production default — the F-217m owner-decision family, with the pass-B escalation recorded.** In-app OTP/reset-link delivery is default-ON regardless of NODE_ENV (the knobs `NEO_DISABLE_IN_APP_OTP`/`NEO_DISABLE_IN_APP_RESET` gate it; boot-env warns loudly at production boot). The escalation: for a production deploy that ignores the boot warning, the posture is a working account-takeover vector (POST forgot-password with a known email → read `resetUrl` from the 200 → complete the reset → the F-239b cure clears verification too → full takeover). The flip (default OFF under NODE_ENV=production, opt-in via "0") trades the zero-config self-host demo posture — a self-hoster without a mail transport gets NO code delivery, signup unusable — for the hardening. The e2e battery would also need its env pins changed (it pins the empty string, i.e. enabled, and its signup/reset legs read the in-band payloads). This is a product decision, not a pure security hardening; it stays the owner's call. | `src/app/api/auth/{signup,forgot-password,resend}/route.ts`, `src/lib/boot-env.ts:103-110`, `playwright.config.ts:87-88` | recorded (the F-217m family; the escalation + the flip's blast radius documented — the owner's explicit ask flips it) |
 | F-242j | Low | **The count-lockstep replacement scripts of sessions 240 AND 241 each over-replaced the then-most-recent HISTORICAL revision block's verification line** (discovered during this round's own docs lockstep, at the F-242g reword pass). Session 240's 1469→1485 pass rewrote the v2.36.0 block's counts (1469/89 → 1485/90); session 241's 1485→1519 pass rewrote the v2.37.0 block's (1485/90 → 1519/91) — each session corrupted exactly the block the PREVIOUS session wrote, both times invisibly (the docs-counts pin checks only live-tense sites; the historical blocks are excluded by the doctrine's own scope note; git diff against the ship commits proved both). The assert-each-replacement scripts counted occurrences across the whole file instead of scoping to live-tense sections. Cure: both blocks restored to their own ship counts (verified against the plan §5 rows and the git ship states); docs-counts gains the over-replacement guard (the three most recent revision blocks must carry their OWN ship counts — the next over-broad replacement fails `bun run test`). The same pass also caught two unpinned blind-spot sites: the arch-pins §7.1 row had lagged two rounds (parity-240/241 unlisted; now 62 with parity-242) and the PAD's file-hierarchy line said 72 suites against 92 reality (both re-pinned same-commit). | `Project_Architecture_Document.md` (the v2.36.0 + v2.37.0 revision blocks; §7.1 arch-pins row; the file-hierarchy line), `tests/docs-counts.test.ts` | **cured in R-39** (both restorations + the guard pin + the two blind-spot re-pins) |
+
+### 2.3 Session-243 audit ledger (the fresh-eyes round over the v2.39.0 ship state)
+
+Three Mode-C passes (the R-39 cure surfaces · the API/auth/security layer ·
+the UI/a11y/shell layer); every material claim re-verified at file:line by
+the driving session before planning. NEW findings after dedup (the passes
+re-confirmed the documented postures without exception):
+0 Critical / 0 High / 1 Medium / 5 Low / 5 Informational.
+
+| ID | Severity | Finding (adjudicated) | Location | Disposition |
+|---|---|---|---|---|
+| F-243a | Medium | **THE LOGOUT WRITES-BUCKET POISONING.** `POST /api/auth/logout` is the only `writes:` family route whose bucket burn precedes its session read: the F-234g content-type gate (which closed the cross-site no-preflight volley) still admits a plain unauthenticated direct caller posting `Content-Type: application/json` with no cookie — the burn lands (60/15min on `writes:${clientKey(req)}`), `getSessionUser()` returns null, and the caller collects the guest-logout no-op 200. On the default direct-exposure posture (NEO_PROXY_HOPS unset, no proxy: browsers send no XFF/x-real-ip, so every legitimate user keys the shared "unknown" bucket — docs/DEPLOYMENT.md's documented `bun run start` path), 60 such requests 429 every user's CRUD for a renewable 15-minute window while the attacker mints their own XFF hop to keep their own writes alive. The upload route's own docblock states the violated doctrine verbatim ("bucketing pre-auth would let an attacker exhaust a legitimate IP's budget without ever holding a session"); the F-221r addition and the F-234g gate each closed a different surface and left this one. Availability only — no data exposure or integrity impact. | `src/app/api/auth/logout/route.ts:43` (the burn) vs `:55` (the session read) | **cured in R-40** (the burn rides the sessioned path, after the session read — a guest logout consumes nothing; the F-234g gate-first order and the F-221r bucket form both preserved) |
+| F-243b | Low | **The F-242j over-replacement guard omits the v2.39.0 block — the recurrence pattern is not intercepted.** The guard pins v2.36.0=1469/89, v2.37.0=1485/90, v2.38.0=1519/91, but not v2.39.0=1539/92 — and the documented defect pattern (sessions 240 and 241 each corrupted exactly the then-most-recent block) makes v2.39.0 the block session 243's own lockstep pass would corrupt. Its counts are the live counts (1539/92) the next replacement targets. Plus the v2.39.0 block's "docs-counts 13/13" verification claim was stale at birth: session 242 shipped 14 its (the F-242j guard itself added the 14th; session_67.md's delivery record says "docs-counts 14/14" while the PAD block says 13/13). | `tests/docs-counts.test.ts:180-190` (the guard), `Project_Architecture_Document.md:74` (the 13/13) | **cured in R-40** (the guard advances to the three-most-recent trio v2.37.0/v2.38.0/v2.39.0 — the v2.36.0 pin retires from the guard as the block ages out; the 13/13 becomes the true 14/14) |
+| F-243c | Low | **Three session-21-era docblocks claim the verification code is "never shipped to the client" — contradicted by the shipped in-band delivery.** signup/resend/verification.ts each carry the S21-P5 rationale ("logged to the SERVER console for the demo workflow (never shipped to the client, never committed)") while signup/route.ts and resend answer `verificationCode: inAppOtpEnabled ? code : null` — the digma ADR-014 in-band delivery (the F-217m/F-242i posture). A future auditor reading the S21-P5 comment would mis-read the exact exposure channel the F-242i escalation turns on. | `src/app/api/auth/signup/route.ts:92-98`, `src/app/api/auth/resend/route.ts:12-19`, `src/lib/verification.ts:21-23` | **cured in R-40** (all three reworded to the delivered truth: console log AND response while the knob is unset; the knob nulls both) |
+| F-243d | Low | **The two "whole-tree" class-string guards exclude the nine capital-route .jsx bridges.** The parity-229 comment-carrier walker (a ts/tsx/css-only filter) and the parity-242 template-literal genus walker (a tsx/css-only filter) both omit jsx — the nine `src/app/(app)/{Dashboard,…}/page.jsx` re-export bridges are invisible to both guards. The route-case test's own comment documents this exact filter class ("a .tsx-only filter left them invisible") and widened its own scan. The bridges are clean by inspection today (pure re-exports, zero className strings) — a latent guard-coverage gap, not a live violation. | `tests/parity-229.test.ts:108`, `tests/parity-242.test.ts:23` | **cured in R-40** (both filters admit jsx; the parity-243 pin asserts the walker forms — born RED against the pre-cure filters) |
+| F-243e | Low | **The import dropzone's accessible name does not contain the visible label text (WCAG 2.5.3 Label in Name, Level A).** The sr-only file input carries `aria-label="Upload a CSV file"`, which overrides the wrapping label's text as its accessible name; the visible label text is "Upload a file" (the picked filename after selection) — not a substring of "Upload a CSV file". Speech-input users saying "click Upload a file" get no match on the Import flow's primary control. axe-core's label-content-name-mismatch rule does not apply (the input has no visible own-content), so the two-gate e2e is blind to it. | `src/app/(app)/import/page.tsx:221` | **cured in R-40** (the aria-label becomes "Upload a file — CSV, XLS or XLSX up to 10MB": contains the visible phrase, keeps the format hint) |
+| F-243f | Informational | **readStoredTheme remains exported with zero importers outside its own module — the F-234j genus one function later.** The file's own theme.tsx:26-28 comment records the resolveTheme retirement ("module-local — consumed only by readStoredTheme in this file; the export keyword was vestigial") while readStoredTheme itself (:34) keeps its export keyword with the same shape: consumed only inside the file. | `src/components/layout/theme.tsx:34` | **cured in R-40** (the export keyword retires; the parity-234 pin form mirrored) |
+| F-243g | Informational | **Two plain-prose utility mentions survive in globals.css (the F-224v doctrine's non-backticked cousin).** The session-220 dark-flip comment says "every bg-background consumer now resolve…" and "its old bg-background read" — prose naming the utility form where the doctrine names the token. Both predate the F-242f round's scope (which cured the backticked citations). | `src/app/globals.css:361,363` | **cured in R-40** (reworded to token form — the background-token consumer, the old background-token read) |
+| F-243h | Informational | **The committed lockstep script is one count behind the tree it shipped.** scripts/docs-242.py targets NEW_UNIT=1538 while the shipped tree carries 1539 everywhere (the final +1 bump — the docs-counts pin's own test — happened outside the committed script). Re-running the committed script against the current tree fails its first assert (the swap guard), so it is inert; a future session copying it as a template inherits a stale example. | `scripts/docs-242.py:15-18` | recorded (session artifact; the assert guard makes it inert) |
+| F-243i | Informational | **The PAD's v2.36.0 historical block narrates F-239c in the pre-F-242g framing.** The two operative code carriers were reworded (F-242g), but the historical block still records the superseded "server and client diverge at the text level" mechanism as session-239's rationale. Defensible as history (it records what that session shipped and believed). | `Project_Architecture_Document.md:251-258` | recorded (history; a "(superseded by F-242g)" rider if a future docs round touches the block) |
+| F-243j | Informational | **Disabling an in-flight control drops keyboard focus to `<body>` (the async busy-state window).** The house async idiom (native `disabled` + opacity) blurs the focused element the moment it disables; on failure paths where the surface stays mounted, the next Tab restarts from the document top. Success paths mostly self-heal (row unmounts, Radix returns focus). Reasoned, not live-probed. | `src/app/(app)/expenses/page.tsx:245-246` (representative), the dialog submits | recorded (not worth a dedicated round; the aria-disabled + guarded-handler form if ever swept) |
 
 ## 3. The remediation program (R-items)
 
@@ -4852,6 +4937,48 @@ gate + the six parity drift legs.
    lockstep (README/AGENTS/CLAUDE/PAD/SKILL/this plan/worklog/the
    session record) in the same commit.
 
+### R-40 — The logout-bucket, guard-advance, and label-truth round (session 243) — Status: Done(v2.40.0)
+
+The session-243 findings-led round over the v2.39.0 ship state. Six cures
+(F-243a-g), three registrations (F-243h-j).
+
+1. **R-40.1 — the pins born RED**: tests/parity-243.test.ts (the source
+   battery: the logout burn AFTER the session read + the F-234g gate-first
+   order + the F-221r bucket form preserved; the v2.39.0 block's 14/14;
+   the three OTP docblock truths; the two scanner walker forms admitting
+   jsx; the import aria-label containing the visible phrase;
+   readStoredTheme module-local) + the docs-counts guard advance (the
+   three-most-recent trio, green-by-design — a guard, landed BEFORE this
+   session's own lockstep pass per the F-242j lesson).
+2. **R-40.2 — the cures**: THE LOGOUT WRITES-BUCKET POISONING CURE
+   (F-243a — the burn moves inside the `if (user)` block, after the
+   session read; guest logout consumes nothing; sessioned logout rides
+   the writes family exactly as before); THE F-242j GUARD ADVANCE +
+   THE 14/14 TRUTH (F-243b); THE OTP DELIVERY DOCBLOCK TRUTHS
+   (F-243c — three carriers); THE WHOLE-TREE SCANNER JSX COMPLETION
+   (F-243d — two filters); THE IMPORT DROPZONE LABEL-IN-NAME CURE
+   (F-243e); THE READSTOREDTHEME EXPORT RETIREMENT (F-243f); THE
+   GLOBALS PROSE-TOKEN RIDER (F-243g).
+3. **R-40.3 — the verification (shipped)**: lint 0/0 · tsc 0 ·
+   **1552 unit (93 files, +13)** · build · smoke 15/15 · **150 e2e** ·
+   ALL SIX parity drift gates CLEAN — the standing allowances held
+   UNMOVED at 0-event margin (the round's surfaces are server-side
+   ordering, guard internals, docblocks, one aria-label, and one
+   export keyword — all pixel-invisible, exactly as planned) · census
+   MATCH · `bun audit` unchanged (1 moderate dev-chain minimatch, the
+   documented deferral) · the captures **174-177** (the own-database
+   F-225e convention + the census tripwire MATCH): the mobile drawer
+   at 390 (the standing ask — 9 destinations + Sign Out asserted),
+   the Import dropzone's label-in-name at 1440 AND 390 (the accessible
+   name contains the visible phrase, asserted both widths), and the
+   logout-volley write canary (70 cookie-less JSON logouts all no-op
+   200 + the sessioned Add Expense still lands — the flagship's live
+   proof; the pre-cure tree 429'd the write at volley request 61).
+   The docs lockstep: docs-counts 14/14 (1539→1552 / 92→93 / badge
+   1689→1702), the PAD v2.40.0 revision block, the README program row,
+   AGENTS (+1 gotcha + the counts), CLAUDE, SKILL, the plan closed
+   (this row), worklog Task 243, docs/session_69.md.
+
 ### R-39 — The CSP-inventory pin, test-hygiene, and carrier-truth round (session 242) — Status: Done(v2.39.0)
 
 The session-242 findings-led round over the v2.38.0 ship state. Seven cures
@@ -5046,6 +5173,7 @@ six parity drift legs.
 
 | Version | Session | R-items executed | Gate at ship | Commit |
 |---|---|---|---|---|
+| v2.40.0 | 243 | **R-40** (the logout-bucket, guard-advance, and label-truth round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD ddf2396 — the v2.39.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — bundle md5 6d3779af… unchanged, demo data zero, desktop nav 256/9, the TRUE-390 menu 9 destinations; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-243 fresh-eyes audit (three Mode-C passes: the R-39 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 1 Medium / 5 Low / 5 Informational NEW after dedup, every material claim re-verified at file:line by the driving session; all eight R-39 cure surfaces verified holding). The plan v2.40.0 written (the F-243a-j ledger + the R-40 section) and validated against the tree. **R-40.1** the pins born RED (parity-243: 11 honest RED + 2 green-by-design regression guards — one false green caught and fixed at birth, the F-239e indexOf-the-import lesson; the docs-counts guard advance green-by-design, landed BEFORE the lockstep pass per the F-242j lesson) → **R-40.2** the cures (THE LOGOUT WRITES-BUCKET POISONING CURE — the burn rides the sessioned path, F-221r/F-234g forms preserved; THE GUARD ADVANCE + THE 14/14 TRUTH; THE OTP DOCBLOCK TRUTHS ×3; THE SCANNER JSX COMPLETION ×2; THE IMPORT LABEL-IN-NAME; THE EXPORT RETIREMENT; THE GLOBALS PROSE RIDER) → **R-40.3** the verification (the full gate + the six drift gates CLEAN at 0-event margin + census MATCH + captures 174-177 incl. the logout-volley write canary + the docs lockstep) | lint 0/0 · tsc 0 · **1552 unit (93 files, +13)** · build · smoke 15/15 · **150 e2e** · six drift gates CLEAN (0-event margin) · census MATCH | (this session's execution commit) |
 | v2.39.0 | 242 | **R-39** (the CSP-inventory, test-hygiene, and carrier-truth round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD 1b038d7 — the v2.38.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-242 fresh-eyes audit (three Mode-C passes: the R-38 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 1 Medium / 5 Low / 3 Informational NEW after dedup, every material claim re-verified at file:line by the driving session; all seven R-38 cure surfaces verified holding). The plan v2.39.0 written (the F-242a-i ledger + the R-39 section) and validated against the tree. **R-39.1** the pins born RED → **R-39.2** the cures (THE CSP FETCH-DIRECTIVE PIN — the F-241h rider closed with the pass-B source inventory; THE RATE-LIMIT CLEANUP FIX; THE PARITY-240 RETITLE; THE POPOVER DOCBLOCK TRUTH; THE LOGIN-CARD CONVERSION; THE GLOBALS/PAGE-LAYOUT COMMENT TRUTHS; THE HYDRATION-RATIONALE TRUTH; THE COUNT-LOCKSTEP HISTORICAL-BLOCK RESTORATION — F-242j, the round's own discovery) → **R-39.3** the verification (the full gate + the six drift gates + census + the captures + the docs lockstep) | lint 0/0 · tsc 0 · **1539 unit (92 files, +20)** · build · smoke 15/15 · **150 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.38.0 | 241 | **R-38** (the clear-era, creation-path, and seam-completion round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD 71a4d9f — the v2.37.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-241 fresh-eyes audit (three Mode-C passes: the R-37 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 2 Medium / 7 Low / 4 Informational raw after dedup, every material claim re-verified at file:line by the driving session; the R-37 cures verified holding across all six surfaces). The plan v2.38.0 written (the F-241a-i ledger + the R-38 section) and validated against the tree. **R-38.1** the pins born RED → **R-38.2** the cures (THE CLEAR-ERA CURE — the era counter + the six re-keyed arms + the four behavioral legs; THE SIGNUP CEILING HONESTY — the creation-path placement + the collision-free key; THE LIMITER CARDINALITY CAP; THE P2025 ARMS; THE POPOVER FOCUS RETURN; THE SEAM COMPLETION; THE PIN HARDENING) → **R-38.3** the verification (the full gate + the six drift gates + census + the captures + the docs lockstep) | lint 0/0 · tsc 0 · **1519 unit (91 files, +34)** · build · smoke 15/15 · **147 e2e** · six drift gates CLEAN (0-event margin) · census MATCH | (this session's execution commit) |
 | v2.37.0 | 240 | **R-37** (the revocation-signal, signup-ceiling, and form-seam round — findings-led, the standing directive with the reference STABLE on all standing drift layers and the TRUE-390 mobile menu re-verified by probe:ref; the cold baseline GREEN at HEAD 884a4ff — the v2.36.0 ship state reproduced exactly, no discovery). The audit round first: the standing layers re-verified (probe:ref STABLE — the bundle md5 unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390 menu opens with 9 links; `bun audit` unchanged (1 moderate dev-chain, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface green (smoke leg 12); the .env contract, the vitest/playwright configs, the .env.example standing). The session-240 fresh-eyes audit (three Mode-C passes: the R-36 cure surfaces · API/auth/security · UI/a11y/shell — 0 Critical / 0 High / 1 Medium / 8 Low / 7 Informational raw after dedup, every material claim re-verified at file:line by the driving session; all nine R-36 cure surfaces verified holding; the API layer's owner-scoping census (60+ DB call sites), bucket coverage, and Zod boundary sweep all clean). The plan v2.37.0 written (the F-240a-n ledger + the R-37 section) and validated against the tree. **R-37.1** the pins born RED (the parity-240 source pins — 12 RED + 1 green-by-design genus guard; the store-hydrate behavioral extensions — 3 RED: the two-overlapping-refreshes leg, the mutation-401-with-hydrate-staled-token leg, the settings-tail-401 leg; the F-240f loading assertions + the F-240h forbidden-form pin green at birth as regression guards; the F-240g mechanism comment aligned) → **R-37.2** the cures: THE REVOCATION-SIGNAL DISCARD GENUS (F-240a — every 401 arm keys on the LIVE USER: refreshAll's arm hoisted above the combined token+sequence guard, mutate/updateSettings/askCoach re-keyed, hydrate's dashboard arm hoisted above the entry-token guard with the fresh-token disjunct, the helpers gain the get carrier — 19 call sites); the hydrate settings-tail wall (F-240b); THE SIGNUP PROCESS CEILING (F-240c — the non-IP-keyed global 20/15min bucket, the uploads capacity precedent, sized 2x the battery's ten-signup budget); THE FORM-INPUT SEAM (F-240d — FORM_INPUT ships WITH its sixteen consumers, byte-identical, the per-site modifiers as cn() appendages); the DialogFooter docblock truth (F-240e); the store-battery completions (F-240f/g); the F-239g pin hardening (F-240h); the verify lockout equalizer (F-240i); the wall docblock truth (F-240j) → **R-37.3** the verification: lint 0/0 · tsc 0 · **1485 unit (90 files, +16)** · build · smoke 15/15 · **147 e2e** · ALL SIX drift gates CLEAN (the standing allowances held UNMOVED — the seam swap is byte-identical by construction, the 401 arms store-internal, the ceiling + equalizer server-side) · census MATCH · `bun audit` unchanged; the same-commit pin recalibrations rode the round (parity-217/238 — the get carrier + the live-user key; parity-229 — the scanner's closing-quote fix, a latent tokenization defect surfaced by the cn() appendage form; parity-239 — the bulk-form ban); the captures 162-165 verified in-DOM with the census tripwire + pixel-verified (the standing mobile-drawer ask, the seam's computed geometry on three variant faces); the recorded tail stays documented (F-240k-n + the F-239l-s + standing families) | lint 0/0 · tsc 0 · **1485 unit (90 files)** · build · smoke 15/15 · **147 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |

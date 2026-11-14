@@ -358,9 +358,9 @@
      ride .dark untouched while the dead base-layer rule sat inert beside
      it (the shell's local dark:bg-[#0e1310] patch masked the gap). The
      flip closes the latent class: the CSS-canvas overscroll color and
-     every bg-background consumer now resolve the reference's dark wash.
+     every background token consumer now resolve the reference's dark wash.
      The settings switch thumb moved to bg-white in the same commit (its
-     old bg-background read was a deliberate use of the UNFLIPPED token
+     old background token read was a deliberate use of the UNFLIPPED token
      as the light knob). */
   --color-background: #0e1310;
   /* Session-214 (R-11, F-214e): the semantic set's dark flips — the
