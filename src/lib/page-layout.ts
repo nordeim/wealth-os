@@ -60,10 +60,10 @@ export const MOBILE_NAV_SHEET = {
   // veil whose light mode ships stone-300-on-light text) and adopt the
   // tint via the mobile-drawer-sheen utility (globals.css).
   content: "lg:hidden fixed inset-0 z-40 mobile-drawer-sheen",
-  // Session-219 (R-16, F-219h): overflow-y-auto — the sheet scrolls
-  // internally below ~800px viewport height (Sign Out live-measured
-  // UNREACHABLE at 390×667 before; the reference clips too — this is
-  // the functional superset, the Escape-to-close class).
+  // Session-219 (R-16, F-219h): the sheet scrolls internally below
+  // ~800px viewport height (Sign Out live-measured UNREACHABLE at
+  // 390×667 before; the reference clips too — this is the functional
+  // superset, the Escape-to-close class).
   inner: "flex flex-col h-full pt-20 overflow-y-auto",
   nav: "flex-1 px-4 py-6 space-y-2",
   link: "flex items-center gap-3 px-4 py-4 rounded-xl font-medium transition-all duration-200 text-stone-300 hover:bg-gradient-to-r hover:from-white/5 hover:to-amber-500/5 hover:text-amber-100",
@@ -179,7 +179,7 @@ export const GLASS_CARD = {
 } as const;
 
 // Session-209 (F-209a): the STOCK shadcn card — the reference's family for
-// Accounts + Import (`bg-card` on the --color-card token; the empty-state
+// Accounts + Import (the card surface token carries the wash; the empty-state
 // variant appends the centered dashed-border classes with a roomy 48px
 // pad).
 export const STOCK_CARD = "rounded-xl border bg-card text-card-foreground shadow";

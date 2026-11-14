@@ -151,7 +151,7 @@ describe("F-240a — every 401 arm keys on the clear era (the R-38 recalibration
 // ---- F-240b: the hydrate settings-tail wall --------------------------------------
 
 describe("F-240b — the hydrate settings-tail 401 walls instead of settling the amber face", () => {
-  it("the settings tail branches on UNAUTHORIZED behind the live-user key", () => {
+  it("the settings tail branches on UNAUTHORIZED behind the clear-era match (the R-38 recalibration)", () => {
     const src = read("src/stores/wealthos-store.ts");
     const start = src.indexOf("hydrate: async () => {");
     const end = src.indexOf("logout: async", start);

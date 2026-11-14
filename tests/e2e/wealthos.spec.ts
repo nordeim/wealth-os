@@ -820,3 +820,68 @@ test.describe("the mid-flight revocation face (F-236f)", () => {
     await page.unroute("**/api/transactions/*");
   });
 });
+
+// Session-242 (R-39, F-242a): the served-CSP legs. The pinned fetch
+// directives (default-src, style-src, img-src, font-src, connect-src —
+// all 'self' with the one style 'unsafe-inline' floor) closed the
+// exfil/beacon surface on the source inventory. These legs automate the
+// F-235k protocol: the BUILT header is what serves, and headers()
+// resolves at build time — so the served string is pinned on the
+// standalone artifact the battery boots, the core pages are swept for
+// violation console entries, and the analytics blob download (an
+// anchor-click DOWNLOAD, ungoverned by the fetch directives — the
+// inventory's canary) is exercised live.
+test.describe("session-242: the served CSP pin (F-242a)", () => {
+  test("the served header carries the pinned fetch directives in the strict production form", async ({
+    request,
+  }) => {
+    const res = await request.get("/login");
+    expect(res.status()).toBe(200);
+    const csp = res.headers()["content-security-policy"];
+    expect(csp, "the header must serve").toBeTruthy();
+    // The full pinned set: the frame rule + the containment backstop +
+    // the fetch directives (the inventory: zero third-party origins).
+    expect(csp).toContain("default-src 'self'");
+    expect(csp).toContain("frame-ancestors 'self'");
+    expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(csp).toContain("style-src 'self' 'unsafe-inline'");
+    expect(csp).toContain("img-src 'self'");
+    expect(csp).toContain("font-src 'self'");
+    expect(csp).toContain("connect-src 'self'");
+    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("base-uri 'self'");
+    expect(csp).toContain("form-action 'self'");
+    // The strict production form — the eval permission rides the DEV
+    // branch only (the build bakes it out; the F-235k live lesson).
+    expect(csp).not.toContain("unsafe-eval");
+  });
+
+  test("the core pages load with zero CSP violations under the pinned policy", async ({ page }) => {
+    const violations: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error" && msg.text().includes("Refused to")) {
+        violations.push(msg.text());
+      }
+    });
+    // The guest face (the logo image + the inline styles), the chart
+    // families (the dashboard's recharts surfaces + the analytics
+    // inline style attributes), and a form-heavy section.
+    await page.goto("/login");
+    await page.goto("/Dashboard");
+    await page.goto("/Analytics");
+    await page.goto("/Expenses");
+    expect(violations, `CSP violations:\n  ${violations.join("\n  ")}`).toEqual([]);
+  });
+
+  test("the analytics Export CSV download fires under the pinned policy (the blob canary)", async ({
+    page,
+  }) => {
+    await page.goto("/Analytics");
+    const [download] = await Promise.all([
+      page.waitForEvent("download"),
+      page.getByRole("button", { name: "Export" }).click(),
+    ]);
+    // The csvFilename convention: prefix_YYYY-MM-DD.
+    expect(download.suggestedFilename()).toMatch(/^wealthos-analytics_\d{4}-\d{2}-\d{2}\.csv$/);
+  });
+});

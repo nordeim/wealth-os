@@ -324,10 +324,20 @@ describe("the cardinality cap (F-241c)", () => {
     // still allowed (the verdict applies each caller's OWN limit —
     // conservative per-route bounding, never a global deny).
     expect(rateLimit(`cap-fresh-c-${Math.random()}`, 10, 60_000).allowed).toBe(true);
-    // Cleanup: sweep at a future now reclaims the fill keys (and the
-    // 60s-window stragglers), restoring headroom for any later legs.
-    sweepRateLimits(Date.now() + 120_000);
-    expect(rateLimit(`cap-after-sweep-${Math.random()}`, 10, 60_000).allowed).toBe(true);
+    // Cleanup: sweep at a now the earlier crossing leg's watermark
+    // cannot outrun (it pinned the watermark ~4,000,001 ms ahead of
+    // ITS wall clock — a +120s sweep never crossed it, the O(1) skip
+    // reclaimed nothing, and this comment's old form claimed it did).
+    // The reclaimed count is asserted: a gated no-op returns 0 and
+    // fails loudly. Session-242 (R-39, F-242b).
+    const reclaimed = sweepRateLimits(Date.now() + 5_000_000);
+    expect(reclaimed).toBeGreaterThan(0);
+    // Headroom actually restored: the fresh key earns its OWN bucket
+    // back (count 1, remaining 9 — the shared overflow would have
+    // answered with the accumulated shared count instead).
+    const fresh = rateLimit(`cap-after-sweep-${Math.random()}`, 10, 60_000);
+    expect(fresh.allowed).toBe(true);
+    expect(fresh.remaining).toBe(9);
   });
 
   it("the overflow bucket rides inside the cap check, not beside it (the source form)", () => {

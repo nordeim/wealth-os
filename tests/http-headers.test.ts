@@ -124,7 +124,7 @@ describe("session-217: the response-hardening pair (F-217g/F-217h)", () => {
     expect(ERR.RATE_LIMITED(30).headers.get("cache-control")).toBe("no-store");
   });
 
-  it("next.config.ts ships Content-Security-Policy: frame-ancestors 'self' (F-217h) + the containment backstop (F-235k)", () => {
+  it("next.config.ts ships Content-Security-Policy: the full pinned set (F-217h frame rule + F-235k backstop + F-242a fetch directives)", () => {
     const src = configSrc();
     // Session-235 (R-32, F-235k): the additive hardening — the frame rule
     // is joined by the script/object/base/form directives (the 'unsafe-
@@ -133,13 +133,21 @@ describe("session-217: the response-hardening pair (F-217g/F-217h)", () => {
     // branch only (React's dev tooling evals; the 390 sweep live-caught
     // the strict dev form painting the issue badge into every capture);
     // the build bakes the strict production header.
+    // Session-242 (R-39, F-242a): the fetch directives join the backstop
+    // on the source inventory (zero third-party origins consumed — every
+    // fetch same-origin, every image same-origin, no webfonts; the
+    // charts' inline style attributes need the style floor). The e2e
+    // battery pins the SERVED form (headers + zero violations + the
+    // CSV download canary).
     expect(src).toMatch(
-      /key:\s*"Content-Security-Policy",\s*value:\s*`frame-ancestors 'self'; script-src 'self' 'unsafe-inline'\$\{/,
+      /key:\s*"Content-Security-Policy",\s*value:\s*`default-src 'self'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline'\$\{/,
     );
     expect(src).toContain(
       'process.env.NODE_ENV === "production" ? "" : " \'unsafe-eval\'"',
     );
-    expect(src).toContain("; object-src 'none'; base-uri 'self'; form-action 'self'");
+    expect(src).toContain(
+      "; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'",
+    );
   });
 
   it("the bare-HSTS reference-parity pins survive the addition", () => {

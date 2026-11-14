@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-1666%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-1689%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,8 +59,8 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1519 checks incl. property tests |
-| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 147 checks; chromium; seeded `db/e2e.db` |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1539 checks incl. property tests |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 150 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
 ```mermaid
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 91 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 92 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,8 +166,8 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1519 checks / 91 files |
-| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 147 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
+| Unit (Vitest) | `bun run test` | 1539 checks / 92 files |
+| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 150 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
 | Parity sweeps | `bun run gate:full` | **active** (re-activated v2.8.0 / R-4.5): the standing gate + six WealthOS-native drift gates — the four sweep classes (1440×900 · 390×844 · 768×1024 · 1024×768, theme-matched zero-data baselines), the fullpage sweep (the 11-page below-the-fold axis with the zero-data sentinel), and the interior census (four-axis standing allowances at margin 0) — green end-to-end from cold at v2.8.0; run it when parity surfaces changed or per the standing cadence (the pre-push bar stays `bun run gate`; the sweep legs need the live reference, so `gate` remains the offline gate) |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1519 unit · 147 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1539 unit · 150 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 241: **R-38 shipped — the clear-era, creation-path, and seam-completion round**: the fresh-eyes audit (three Mode-C passes over the R-37 cure surfaces, the API/auth/security layer, and the UI/a11y/shell layer — 0 Critical / 0 High / 2 Medium / 7 Low / 4 Informational raw after dedup, every material claim re-verified at file:line; all six R-37 cure surfaces verified holding); the cold baseline GREEN at HEAD 71a4d9f (the v2.37.0 ship state reproduced exactly); the reference STABLE on every drift layer incl. the TRUE-390 mobile menu with 9 destinations); the **clear-era cure** (F-241a Medium — the R-37 live-user re-key had removed the session-era dimension: a previous user's late 401 walled a live new user's face, a 401 inside logout's POST window aborted the clear, a first-load concurrent-hydrate twin slipped a revoked 200 past the wall, and a dead session's 401 on the error face skipped the wall — four interleavings, one cure: a module-level clear-era counter advanced only by the wall's commit and logout's entry, captured at every fetch's entry and compared before walling); the **signup creation-path ceiling** (F-241b — the R-37 global bucket counted every attempt that reached the handler (ten per-IP-denied requests blocked all signups app-wide) and its colon-carried key was client-mintable from the per-IP keyspace; the ceiling now rides the creation path under the hyphenated key — only fresh-email creation attempts count); plus the limiter's cardinality cap (F-241c — a fail-closed shared overflow bucket at the 10k cap), the P2025 arms on the auth writers (F-241d — verify/resend answer the no-enumeration miss forms, logout completes), the popover focus return (F-241e — the drawer's own cleanup pattern), and the FORM-INPUT-family seam completion (F-241f — FORM_TEXTAREA re-enters WITH its two consumers; the settings inline input joins as the width appendage; the icon-bearing search input registered as the deliberate single-site genus). Registered, not cured: the CSP default-src headroom (F-241g — needs a source inventory) and the seeded demo credentials posture (F-241h — the documented demo posture). Gate: lint 0/0 · tsc 0 · **1519 unit / 91 files** · build · smoke 15/15 · 147 e2e · all six parity drift gates CLEAN (the standing allowances unmoved) · census MATCH · captures 166-169) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 242: **R-39 shipped — the CSP-inventory pin, test-hygiene, and carrier-truth round**: the fresh-eyes audit (three Mode-C passes over the R-38 cure surfaces, the API/auth/security layer, and the UI/a11y/shell layer — 0 Critical / 0 High / 1 Medium / 5 Low / 3 Informational NEW after dedup, every material claim re-verified at file:line; all seven R-38 cure surfaces verified holding); the cold baseline GREEN at HEAD 1b038d7 (the v2.38.0 ship state reproduced exactly); the reference STABLE on every drift layer incl. the TRUE-390 mobile menu with 9 destinations); the **CSP fetch-directive pin** (F-242a, closing the registered F-241h rider — the pass-B source inventory delivered what the rider waited for: zero third-party origins consumed, so default-src / style-src / img-src / font-src / connect-src all pin to self (the one style 'unsafe-inline' floor for the charts' inline attributes), the dev eval branch preserved; verified by the served-header e2e leg + the zero-violation sweep + the CSV download canary + the live curl on the standalone); the **rate-limit battery cleanup fix** (F-242b — the cardinality battery's cleanup sweep was watermark-gated off while its comment claimed "restoring headroom"; now it crosses the pinned watermark, asserts its reclaimed count, and proves the fresh key earns its own bucket back); the **login-card template-literal conversion** (F-242e — the only two interpolated class strings in src now ride the cn() appendage form, twMerge byte-identical, guarded by a whole-tree genus pin); the **count-lockstep historical-block restoration** (F-242j — the v2.36.0 and v2.37.0 revision blocks had been overwritten by the two prior sessions' over-broad count replacements; both restored to their own ship counts and pinned); plus the parity-240 title recalibration, the popover docblock truth, the globals/page-layout comment truths, and the hydration-rationale truths. Registered, not cured: the sidebar brand heading order (F-242h) and the in-band-delivery production default (F-242i — the F-217m owner-decision family with the escalation recorded). Gate: lint 0/0 · tsc 0 · **1539 unit / 92 files** · build · smoke 15/15 · 150 e2e · all six parity drift gates CLEAN · census MATCH · captures 170-173) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

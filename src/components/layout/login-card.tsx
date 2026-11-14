@@ -4,6 +4,7 @@ import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Lock, Mail, ShieldCheck } from "lucide-react";
 import { LOGIN_LAYOUT } from "@/lib/page-layout";
+import { cn } from "@/lib/utils";
 import {
   canSubmitReset,
   LOGIN_ERROR_CALLOUT,
@@ -582,7 +583,17 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                                   value={digit}
                                   onChange={(e) => onCodeDigit(idx, e.target.value)}
                                   onKeyDown={(e) => onCodeKeyDown(idx, e)}
-                                  className={`flex rounded-lg border border-input bg-white px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${LOGIN_VERIFY_LAYOUT.codeInput}`}
+                                  // Session-242 (R-39, F-242e): the appendage
+                                  // form — the base genus and the layout
+                                  // constant join through cn(), never string
+                                  // interpolation (the v4 JIT cannot see a
+                                  // runtime-built class string; both parts are
+                                  // static today, and the genus pin keeps them
+                                  // that way). twMerge byte-identical.
+                                  className={cn(
+                                    "flex rounded-lg border border-input bg-white px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                    LOGIN_VERIFY_LAYOUT.codeInput,
+                                  )}
                                 />
                               ))}
                             </div>
@@ -805,7 +816,7 @@ export function LoginCard({ mode = "signin" }: { mode?: Mode }) {
                 <div className={LOGIN_LAYOUT.footer}>
                   <button
                     type="button"
-                    className={`${LOGIN_LAYOUT.footerLink} font-medium`}
+                    className={cn(LOGIN_LAYOUT.footerLink, "font-medium")}
                     onClick={() => goto("forgot")}
                   >
                     Forgot password?

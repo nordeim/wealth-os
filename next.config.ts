@@ -127,11 +127,28 @@ const nextConfig: NextConfig = {
           // decode found the badge). Production NEVER evals (React's own
           // contract), and the build bakes the strict form: headers()
           // resolves at build time under NODE_ENV=production.
+          // Session-242 (R-39, F-242a — the F-241h rider closed): the
+          // fetch directives join the backstop on the session-242 source
+          // inventory (every external URL, fetch, script, image, font,
+          // and style swept): the app consumes ZERO third-party origins
+          // — every fetch is a same-origin relative path (the store, the
+          // auth faces), every image same-origin (the logo, the
+          // metadata icons, the og-image, the /api/uploads capability
+          // URLs), no webfonts ship, and the charts' inline style
+          // attributes need only the style 'unsafe-inline' floor. The
+          // analytics CSV export is an anchor-click DOWNLOAD, not a
+          // fetch — ungoverned by the fetch directives (the download
+          // canary rides the e2e battery). ONE deployment caveat: the
+          // PWA manifest builds its icon URLs from the configured site
+          // origin — a deployment whose serving origin differs from
+          // NEXT_PUBLIC_SITE_URL must fix the env (or add that origin
+          // to the image directive), never silently serve the icons
+          // cross-origin.
           {
             key: "Content-Security-Policy",
-            value: `frame-ancestors 'self'; script-src 'self' 'unsafe-inline'${
+            value: `default-src 'self'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline'${
               process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"
-            }; object-src 'none'; base-uri 'self'; form-action 'self'`,
+            }; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'`,
           },
         ],
       },

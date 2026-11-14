@@ -334,8 +334,10 @@ describe("F-241e — the expenses filters popover restores focus on close", () =
     expect(start).toBeGreaterThan(-1);
     // The drawer's own pattern: cleanups run AFTER the commit that
     // removed the popover, so focus that died to <body> is detectable
-    // exactly there. The toggle path (focus on the trigger) and the
-    // outside-pointer path (focus elsewhere) are naturally spared.
+    // exactly there. The toggle path (focus on the trigger) is spared
+    // by construction; the outside-pointer path can also fire the
+    // return (a non-focusable pointerdown moves focus to <body> in
+    // Chrome/Firefox — the F-242d truth reword).
     expect(src).toContain("document.activeElement === document.body");
     expect(src).toContain("trigger?.focus()");
   });

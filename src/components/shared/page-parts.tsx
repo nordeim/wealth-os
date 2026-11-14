@@ -29,14 +29,19 @@ export function PageHeader({
     <div className={PAGE_HEADER.root}>
       <div className="space-y-1">
         <h1 className={tone === "navy" ? PAGE_HEADER.titleNavy : PAGE_HEADER.title}>{title}</h1>
-        {/* Session-239 (R-36, F-239c): the subtitle carrier opts out of
-            the hydration text comparison — the dashboard's date
-            subtitle derives from a render-time clock, and a server and
-            client on different calendar dates (the daily TZ window)
-            diverge at the text level: a React 19 hydration error in
-            that window. The theme bootstrap's own pattern for inherent
-            server/client divergence — inert for every static-string
-            consumer (the texts agree, nothing is compared). */}
+        {/* Session-239 (R-36, F-239c; reworded session-242/R-39,
+            F-242g): the subtitle carrier opts out of the hydration
+            text comparison — the dashboard's date subtitle derives
+            from a render-time clock. The AppShell loading gate means
+            page content only renders AFTER the client hydrate()
+            resolves — no page markup ever server-renders — so the
+            text comparison cannot fire today. The suppression stays
+            as belt-and-suspenders (the theme bootstrap's own pattern
+            for inherent server/client divergence): if the loading
+            gate is ever relaxed (SSR-ing store data), the clock
+            becomes a live hydration risk again and this carrier is
+            already covered — inert for every static-string consumer
+            either way. */}
         {subtitle ? <p className={PAGE_HEADER.subtitle} suppressHydrationWarning>{subtitle}</p> : null}
       </div>
       {actions ? <div className={PAGE_HEADER.actions}>{actions}</div> : null}

@@ -152,8 +152,13 @@ export default function ExpensesPage() {
       // <body> with the unmount is detectable exactly here. The ✕
       // button, the Escape key, and the scroller all close over an
       // interior-focused control; the toggle path (focus already on the
-      // trigger) and the outside pointerdown path (focus elsewhere) are
-      // naturally spared.
+      // trigger) is spared by construction. Session-242 (R-39, F-242d —
+      // the truth reword): the outside-pointerdown path is NOT spared —
+      // a pointerdown on non-focusable page space moves focus to
+      // <body> in Chrome/Firefox (the mousedown default), so that close
+      // path can also satisfy the identity check and fire the return;
+      // outside pointerdowns keep whatever focus the mousedown lands
+      // on.
       if (document.activeElement === document.body) {
         trigger?.focus();
       }

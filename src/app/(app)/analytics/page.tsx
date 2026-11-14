@@ -190,11 +190,17 @@ export default function AnalyticsPage() {
                 aria-label="From date"
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
-                // Session-239 (R-36, F-239c): the initial range derives
-                // from a render-time clock — a server/client calendar
-                // divergence is an attribute mismatch in the daily TZ
-                // window; the comparison opts out (the client value
-                // wins, the texts agree outside the window).
+                // Session-239 (R-36, F-239c; reworded session-242/R-39,
+                // F-242g): the initial range derives from a render-time
+                // clock. The AppShell loading gate means page content
+                // only renders AFTER the client hydrate() resolves — no
+                // page markup ever server-renders — so the attribute
+                // comparison the suppression opts out of cannot fire
+                // today. The suppression stays as belt-and-suspenders:
+                // if the loading gate is ever relaxed (SSR-ing store
+                // data), the render-time clock becomes a live
+                // hydration risk again and this attribute is already
+                // covered.
                 suppressHydrationWarning
                 className="input-base h-10 w-36"
               />

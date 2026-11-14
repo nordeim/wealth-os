@@ -76,8 +76,11 @@ describe("R-15: the trigger-scoped guard exists (F-218b)", () => {
 // instead of the Filters trigger. The drawer's own cleanup pattern
 // (cleanups run AFTER the commit that removed the surface): when
 // activeElement is <body>, land focus back on the trigger; the toggle
-// path (focus already on the trigger) and the outside-pointerdown
-// path (focus elsewhere) are naturally spared.
+// path (focus already on the trigger) is spared by construction.
+// Session-242 (R-39, F-242d — the truth reword): the outside-pointer
+// path can also fire the return — a pointerdown on non-focusable
+// space moves focus to <body> in Chrome/Firefox — so outside
+// pointerdowns keep whatever focus the mousedown lands on.
 describe("R-38: the filters popover restores focus on close (F-241e)", () => {
   it("the open-effect's cleanup returns focus that died to body", () => {
     expect(PAGE).toContain("document.activeElement === document.body");

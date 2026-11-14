@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1519;
-const E2E_TOTAL = 147;
+const UNIT_TOTAL = 1539;
+const E2E_TOTAL = 150;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 91;
+const TEST_FILES = 92;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -75,7 +75,7 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // session-237 added parity-237 — 56 rows, and the store-hydrate
     // battery joined the infrastructure family (25 → 26); session-239 added parity-239 — 59 rows.)
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 59 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, db-transient) |",
+      "| — architecture pins | 62 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, db-transient) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99
@@ -165,6 +165,28 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     expect(s).toContain(`\`bun run test\` — ${UNIT_TOTAL} passed / ${TEST_FILES} files`);
     expect(s).toContain(`\`CI=1 bun run test:e2e\` — ${E2E_TOTAL}/${E2E_TOTAL} (7 specs)`);
     expect(s).toContain(`\`bun run smoke\` — ${SMOKE_TOTAL}/${SMOKE_TOTAL} (boot-gate`);
+  });
+
+
+  // Session-242 (R-39, F-242j): the count-lockstep replacement scripts
+  // of sessions 240 AND 241 each over-replaced the then-most-recent
+  // HISTORICAL revision block's verification line (v2.36.0's 1469/89
+  // became 1485/90; v2.37.0's 1485/90 became 1519/91) — the doctrine's
+  // own scope note ("HISTORICAL count mentions keep the counts that
+  // were true at their time") violated by the mechanism meant to keep
+  // the docs honest. Pinned now: every revision block that carries the
+  // verification-line form keeps its OWN ship counts, so the next
+  // over-broad replacement fails `bun run test`.
+  it("the historical revision blocks keep their OWN ship counts (F-242j — the over-replacement guard)", () => {
+    const p = norm(doc("Project_Architecture_Document.md"));
+    // v2.36.0 shipped 1469/89 (session 239's §5 row).
+    expect(p).toContain("[SR] v2.36.0 (session 239");
+    expect(p).toMatch(/\[SR\] v2\.36\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1469 unit \(89 files\)/);
+    // v2.37.0 shipped 1485/90 (session 240's §5 row).
+    expect(p).toMatch(/\[SR\] v2\.37\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1485 unit \(90 files\)/);
+    // v2.38.0 shipped 1519/91 (session 241's §5 row) — the historical
+    // form the live-tense pins never touch.
+    expect(p).toMatch(/\[SR\] v2\.38\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1519 unit \(91 files\)/);
   });
 
   it("the SKILL's stack table carries NO deleted-dependency rows (F-216f, the retired-forms negative ladder)", () => {

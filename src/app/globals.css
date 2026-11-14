@@ -61,8 +61,9 @@
      a systemic AA failure the a11y register's stale citation hid. */
   --color-primary-foreground: #1c1917;
   /* Session-207 (F-207e): the reference's H1 navy token — live-computed
-     rgb(15,20,25) on its seven non-dashboard section H1s
-     (`text-primary-navy`); a literal hex per the v4 tokens doctrine. */
+     rgb(15,20,25) on its seven non-dashboard section H1s (the navy
+     heading utility, pinned below); a literal hex per the v4 tokens
+     doctrine. */
   --color-primary-navy: #0f1419;
 
   /* Neutrals — warm stone family + the light page wash */
@@ -72,8 +73,9 @@
   --color-muted: #78716c;
 
   /* Session-209 (F-209a, the A-209 cure): the shadcn card tokens the
-     reference's card families read (`text-card-foreground` / `bg-card`).
-     Live-decoded from its :root (hsl 0 0% 3.9% / 0 0% 100%); the .dark
+     reference's card families read (the card ink and card surface
+     utilities). Live-decoded from its :root (hsl 0 0% 3.9% / 0 0% 100%);
+     the .dark
      block below flips both at runtime — the reference's own mechanism.
      Before this pin the classes were INERT here (v4 drops unknown
      tokens without warning — the F-207a lesson, token edition). */
@@ -84,8 +86,8 @@
      session 228/R-25, F-228b): of the shadcn neutral semantic set
      only the two LIVE members remain — input (the login OTP boxes'
      border token) and secondary (the Settings badge family's /80
-     hover wash). The other six (the secondary, accent, muted, popover, and
-     popover ink pairs)
+     hover wash). The retired set (the accent family, the muted pair,
+     and the popover pair)
      had zero code consumers and were kept alive ONLY by comment
      strings naming their utilities (the F-224v doctrine violation) —
      retired with the comments reworded; the computed-equal literals
@@ -336,18 +338,18 @@
 
   /* Session-220 (R-17, F-220d): the old base-layer dark-body rule
      (session-199) is DELETED — it was INERT (a utilities-layer
-     `bg-background` on <body> always beats a base-layer rule; the
+     background utility on <body> always beats a base-layer rule; the
      F-217c mechanism) and the visible dark wash actually came from
      SHELL_LAYOUT.root's local `dark:bg-[#0e1310]` patch. The token
      flip in the .dark block below now carries the wash properly
      (body, the CSS-canvas overscroll color, and any future
-     bg-background consumer). */
+     background-token consumer). */
 }
 
 /* Session-209 (F-209a): the card tokens' dark flip — the reference's own
    `.dark { --card-foreground: 0 0% 98%; --card: 0 0% 3.9% }` mechanism.
    Source order places this AFTER the @theme :root emission, so under
-   .dark every `text-card-foreground` / `bg-card` resolves flipped. */
+   .dark both card utilities resolve flipped. */
 .dark {
   --color-card-foreground: #fafafa;
   --color-card: #0a0a0a;

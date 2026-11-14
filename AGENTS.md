@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1519) | `bun run test` |
+| Unit tests (1539) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 147) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 150) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -799,4 +799,48 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   and never coin a hyphenated layering nickname the scanner will
   read as a class. Same genus as the closing-quote lesson: the
   scanner's exactness is the point — write prose that passes it
-  honestly.
+  honestly.- **A CSP FETCH-DIRECTIVE PIN NEEDS A SOURCE INVENTORY FIRST — and the
+  verification is the SERVED form (session 242, R-39, F-242a closing
+  the registered F-241h rider)**: the fetch directives
+  (default/style/img/font/connect) close the exfil/beacon surface
+  only if they match what the app ACTUALLY consumes — pin from an
+  inventory (every external URL, fetch, script, image, font, style
+  swept), never from assumption. This app consumes zero third-party
+  origins, so everything pins to self (the one style 'unsafe-inline'
+  floor covers the charts' inline attributes; an anchor-click
+  DOWNLOAD like the analytics CSV export is NOT a fetch — the fetch
+  directives never govern it). And `headers()` resolves at BUILD
+  time: the served string is what proves the pin — the battery now
+  carries the served-header leg, the zero-violation sweep, and the
+  download canary (the F-235k curl protocol, automated). ONE
+  deployment caveat lives in the pin's comment: the PWA manifest
+  builds icon URLs from the configured site origin — a serving
+  origin that differs from the env must fix the env, not serve the
+  icons cross-origin.
+- **A COUNT-LOCKSTEP REPLACEMENT MUST BE SCOPED TO LIVE-TENSE SITES —
+  two consecutive sessions' scripts each over-replaced the
+  then-most-recent HISTORICAL revision block (session 242, R-39,
+  F-242j)**: session 240's 1469→1485 pass rewrote the v2.36.0 block's
+  verification line, and session 241's 1485→1519 pass rewrote the
+  v2.37.0 block's — each session corrupted exactly the block the
+  PREVIOUS session wrote, because the assert-each-replacement
+  counted occurrences across the WHOLE file instead of scoping to
+  live-tense sites. The docs-counts doctrine's own scope note
+  ("HISTORICAL count mentions keep the counts that were true at
+  their time") was violated by the mechanism meant to keep the docs
+  honest. Pinned now: the three most recent revision blocks carry
+  their OWN ship counts (the next over-broad replacement fails
+  `bun run test`). The general rule: a lockstep replacement script
+  slices per-section and asserts the OLD form inside the slice, or it
+  is an unscoped sed wearing a safety harness.
+- **A SWEEP'S `now` MUST CROSS THE PINNED WATERMARK — a gated sweep
+  is a silent no-op wearing a comment that claims otherwise (session
+  242, R-39, F-242b)**: the rate-limit cardinality battery's cleanup
+  called the sweep at +120s while an earlier leg had pinned the
+  watermark ~66 minutes ahead — the O(1) skip returned 0, nothing
+  was reclaimed, and the closing comment claimed "restoring
+  headroom". The final assertion passed ONLY because the fresh key
+  routed to the shared overflow bucket. A test whose comment claims
+  a mechanism must assert the mechanism's observable (the reclaimed
+  count, the own-bucket remaining) — the same F-239e authoring
+  lesson in cleanup-clothes.
