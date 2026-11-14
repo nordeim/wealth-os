@@ -16,6 +16,76 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.38.0 (session 241, R-38 — the clear-era, creation-path,
+  and seam-completion round): the fresh-eyes audit (three Mode-C
+  passes — the R-37 cure surfaces driven by the session, the
+  API/auth/security layer, and the UI/a11y/shell layer; 0 Critical /
+  0 High / 2 Medium / 7 Low / 4 Informational raw after dedup, every
+  material claim re-verified at file:line by the driving session;
+  all six R-37 cure surfaces verified holding — the user-keyed 401
+  arms, the signup process ceiling's bucket form, the FORM_INPUT
+  seam's sixteen byte-identical consumers, the verify equalizer's
+  twin burns, the DialogFooter docblock, both R-37 test batteries
+  green; the API layer clean again — owner-scoping census, bucket
+  coverage, Zod sweep, injection and enumeration sweeps; the UI
+  layer clean — the drawer mechanics, the v4 scanner discipline,
+  the theme system, the live-region contracts). THE CLEAR-ERA CURE
+  (F-241a Medium — the R-37 live-user re-key removed the
+  session-era dimension the old entry-token check carried: a
+  previous user's late 401 walled a live new user's face, a 401
+  inside logout's POST window aborted the clear and returned a
+  false negative, a first-load concurrent-hydrate twin slipped a
+  revoked 200 past the wall, and a dead session's 401 on the error
+  face skipped the wall — four interleavings, one root cause, one
+  cure: the module-level sessionClearSeq counter, advanced only by
+  the wall's commit and logout's ENTRY, captured at every fetch's
+  entry and compared before walling; the fresh-token disjunct
+  retired as subsumed; the dead get carrier retired with it; four
+  behavioral legs born RED over the live-user tree); THE SIGNUP
+  CREATION-PATH CEILING (F-241b Medium — the R-37 entry form
+  counted every attempt that reached the handler, so one client's
+  ten per-IP-denied requests saturated the global bucket and
+  blocked every signup app-wide, and the colon-carried key was
+  client-mintable from the per-IP keyspace; the ceiling now rides
+  the creation path — after the parse and the duplicate check,
+  before the double scrypt — under the hyphenated
+  signup-process-ceiling key, with only fresh-email creation
+  attempts consuming capacity); the limiter's cardinality cap
+  (F-241c — the per-account buckets minted unbounded in-memory
+  keys on the unauthenticated routes; MAX_BUCKETS 10k with a
+  fail-closed shared overflow bucket, existing keys spared); the
+  P2025 arms on the auth writers (F-241d — verify/resend answer
+  the no-enumeration miss forms, logout completes when its row
+  vanished); the popover focus return (F-241e — the drawer's own
+  cleanup pattern; the exhaustive-deps net drove the capture-at-
+  open form); the FORM-INPUT-family seam completion (F-241f —
+  FORM_TEXTAREA re-enters WITH its two consumers per the F-229f
+  rule, the settings inline input joins as the w-auto/flex-1
+  appendage, the icon-bearing search input registered as the
+  deliberate single-site genus); the pin hardening (F-241g — the
+  parity-240 no-op assertion repaired, the exact ceiling form
+  pinned, the docblock anchor tightened). Registered, not cured:
+  the CSP default-src headroom (F-241g's rider — needs a source
+  inventory) and the seeded demo credentials posture (F-241h —
+  the documented demo posture), plus the standing families
+  (F-240k-n + F-239l-s + the F-236r-era registers). The
+  verification: lint 0/0 · tsc 0 · 1519 unit (91 files) · build ·
+  smoke 15/15 · 147 e2e · ALL SIX parity drift gates CLEAN — the
+  standing allowances held UNMOVED at 0-event margin (the round's
+  surfaces are store-internal, server-side, or computed-identical
+  by construction; the appendage and the textarea seam
+  capture-verified) · census MATCH · `bun audit` unchanged ·
+  docs-counts 13/13 · captures 166-169 (the mobile drawer at 390
+  — the standing operator ask; the Settings category appendage
+  with the row-grown 618px computed width; the notes textarea's
+  seam geometry; the popover focus return asserted by
+  activeElement identity). The same-commit recalibrations:
+  parity-217/224/238 (the era form, the widened logout window,
+  the retired carrier), parity-240 (the era re-key + the exact
+  ceiling + the no-op repair), and five parity-229 carrier-comment
+  catches (hyphenated nicknames the class-shape scanner flagged —
+  reworded to spaces and live tokens).
+
 - [SR] v2.37.0 (session 240, R-37 — the revocation-signal,
   signup-ceiling, and form-seam round): the fresh-eyes audit (three
   Mode-C passes — the R-36 cure surfaces driven by the session, the
@@ -68,8 +138,8 @@ Every change is tagged with its source: `[RES]` = validated by web research,
   (F-240m — the deliberate render-stability trade), the a11y
   open-state scroll gap (F-240n — latent; the faces are
   single-screen today), and the standing families (F-239l-s + the
-  F-236r-era registers). The verification: lint 0/0 · tsc 0 · 1485
-  unit (90 files) · build · smoke 15/15 · 147 e2e · ALL SIX parity
+  F-236r-era registers). The verification: lint 0/0 · tsc 0 · 1519
+  unit (91 files) · build · smoke 15/15 · 147 e2e · ALL SIX parity
   drift gates CLEAN — the standing allowances held UNMOVED (the
   round's surfaces are pixel-invisible: the seam swap is
   byte-identical by construction, the 401 arms are store-internal,
@@ -1496,7 +1566,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1485) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1519) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (147) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -1917,7 +1987,7 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 90 | 1485 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 91 | 1519 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
 | — architecture pins | 59 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 26 | auth, rate-limit, csv, uploads, headers, boot-env, search-query, store-logout, store-hydrate, … | `tests/` | behavior |
@@ -1952,7 +2022,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1485/1485 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1519/1519 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 147/147
@@ -2022,7 +2092,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1485 unit / 147 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1519 unit / 147 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -2057,7 +2127,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1485 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1519 unit · build · smoke 15/15 ·
 147 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

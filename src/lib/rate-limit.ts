@@ -8,7 +8,11 @@
 // Session-240 (R-37, F-240c): signup ALSO carries a process-level
 // creation ceiling (20 per 15 min, keyed WITHOUT the IP — the uploads
 // capacity precedent), bounding the direct-exposure worst case the
-// per-IP key alone cannot.
+// per-IP key alone cannot. Session-241 (R-38, F-241b): the ceiling
+// rides the CREATION PATH (after the body parse and the duplicate-
+// email check) under the hyphenated signup-process-ceiling key — the
+// entry form counted denied/invalid attempts and its colon-carried
+// key was client-mintable from the per-IP keyspace.
 //
 // Session-173 (F-173a): rateLimit takes `now = Date.now()` — the
 // session-164 sweepRateLimits form extended to the rateLimit path, the
@@ -24,6 +28,21 @@ interface Bucket {
 }
 
 const buckets = new Map<string, Bucket>();
+
+// Session-241 (R-38, F-241c): the cardinality cap — the per-account
+// buckets (login-acct:, verify-acct:, resend-acct:, forgot-acct:)
+// mint keys from CALLER-SUPPLIED strings on unauthenticated routes,
+// and the sweep bounds entry LIFETIME, never entry COUNT within a
+// window: a sustained random-email flood held an unbounded live set
+// (~R×900 entries at 15 min) regardless of proxy depth — memory
+// amplification on the single-process self-hosted posture. The cap
+// is far above legit single-node scale; a FRESH key arriving at cap
+// joins the shared overflow bucket (fail-closed: the degradation
+// never widens to fail-open — the flood's keys churn in overflow
+// while EXISTING keys keep their own buckets and count normally, and
+// the overflow verdict still applies each caller's own limit).
+const MAX_BUCKETS = 10_000;
+const OVERFLOW_KEY = "__overflow__";
 
 // Session-164 (the digma S76-G port): the sweep WATERMARK — the earliest
 // live resetAt seen at the last sweep. Every auth route calls
@@ -43,10 +62,26 @@ export interface RateLimitResult {
 }
 
 export function rateLimit(key: string, limit: number, windowMs: number, now = Date.now()): RateLimitResult {
-  const existing = buckets.get(key);
+  let existing = buckets.get(key);
   if (!existing || existing.resetAt <= now) {
-    buckets.set(key, { count: 1, resetAt: now + windowMs });
-    return { allowed: true, remaining: limit - 1, retryAfterSec: 0 };
+    // Session-241 (R-38, F-241c): the cap rides the INSERTION path
+    // only (existing-key updates never pay the routing cost, and the
+    // check is O(1) — no eviction scan for a flood to abuse). A fresh
+    // key at cap degrades onto the shared overflow bucket; the
+    // overflow key itself is exempt so the degradation carrier can
+    // always land.
+    if (
+      !existing &&
+      key !== OVERFLOW_KEY &&
+      buckets.size >= MAX_BUCKETS
+    ) {
+      key = OVERFLOW_KEY;
+      existing = buckets.get(key);
+    }
+    if (!existing || existing.resetAt <= now) {
+      buckets.set(key, { count: 1, resetAt: now + windowMs });
+      return { allowed: true, remaining: limit - 1, retryAfterSec: 0 };
+    }
   }
   existing.count += 1;
   if (existing.count > limit) {

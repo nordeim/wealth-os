@@ -7,6 +7,14 @@ import { describe, expect, it } from "vitest";
 // pre-cure tree (the F-240 ledger rows in docs/remediation_plan_v2.md
 // carry the verified evidence). Source-scanning contracts per the house
 // convention: read the file, assert the contract.
+//
+// Session-241 (R-38, F-241a/b/g): the same-commit recalibrations — the
+// 401 arms re-keyed from the live user to the CLEAR-ERA match (the
+// F-241a cure: the era key restores the cross-era contract the
+// live-user form lost), the signup ceiling moved to the creation path
+// under the hyphenated key (F-241b — its exact form now pinned), the
+// get carrier retired from the helpers (the era key reads module
+// state), and the F-240b no-op assertion repaired (F-241g).
 
 function read(rel: string): string {
   const p = path.resolve(import.meta.dirname, "..", rel);
@@ -25,23 +33,23 @@ function listSrcFiles(dir: string): string[] {
 
 // ---- F-240a: the user-keyed 401 arms -------------------------------------------
 
-describe("F-240a — every 401 arm keys on the live user, not the entry token", () => {
+describe("F-240a — every 401 arm keys on the clear era (the R-38 recalibration of the live-user key)", () => {
   it("refreshAll's 401 arm is hoisted above the combined token+sequence guard", () => {
     const src = read("src/stores/wealthos-store.ts");
     const start = src.indexOf("async function refreshAll(");
     expect(start).toBeGreaterThan(-1);
     // The wrapper's declaration is generic — match through the type
     // parameter, not the bare call-form paren.
-    const end = src.indexOf("async function mutate<T>(", start);
+    const end = src.indexOf("async function mutate", start);
     expect(end).toBeGreaterThan(start);
     const body = src.slice(start, end);
     // A live-session 401 discarded on the SEQUENCE dimension alone left
     // a fresher-seq pre-revocation 200 committing the old user's ledger
     // over the live store (the F-239a threat model through the sequence
-    // dimension). The arm must sit ABOVE the combined guard and key on
-    // the live user — the wall and the logout are the only clear-owners
-    // that null the user, so user-standing means no deliberate clear
-    // owns the face and a 401 always walls.
+    // dimension). The arm must sit ABOVE the combined guard; its key is
+    // the CLEAR-ERA match (session 241: the live-user form could not
+    // distinguish "no deliberate clear owns the face" from "a clear
+    // happened and a new session owns it").
     const armIndex = body.indexOf('res.code === "UNAUTHORIZED"');
     expect(armIndex).toBeGreaterThan(-1);
     const guardIndex = body.indexOf(
@@ -49,7 +57,7 @@ describe("F-240a — every 401 arm keys on the live user, not the entry token", 
     );
     expect(guardIndex).toBeGreaterThan(-1);
     expect(armIndex).toBeLessThan(guardIndex);
-    expect(body.slice(armIndex, guardIndex)).toContain("get().user !== null");
+    expect(body.slice(armIndex, guardIndex)).toContain("sessionClearSeq === entryClearSeq");
     // The arm commits the wall (not just the error face).
     const armBlock = body.slice(armIndex, body.indexOf("return res;", armIndex));
     expect(armBlock).toContain("commitRevocationWall(set)");
@@ -58,7 +66,7 @@ describe("F-240a — every 401 arm keys on the live user, not the entry token", 
   it("refreshAll keeps the combined guard for the SUCCESS arm (the last-request-wins contract)", () => {
     const src = read("src/stores/wealthos-store.ts");
     const start = src.indexOf("async function refreshAll(");
-    const end = src.indexOf("async function mutate<T>(", start);
+    const end = src.indexOf("async function mutate", start);
     const body = src.slice(start, end);
     // The sequence guard's own job (F-220l — two quick mutations
     // resolving out of order) is untouched: only the 401 arm moved
@@ -68,37 +76,42 @@ describe("F-240a — every 401 arm keys on the live user, not the entry token", 
     );
   });
 
-  it("refreshAll and mutate carry the get parameter (the live-user key's carrier)", () => {
+  it("the helpers' signatures carry the set carrier (the R-38 recalibration: the get carrier retired with the live-user key)", () => {
     const src = read("src/stores/wealthos-store.ts");
+    // Session-241 (R-38): the era key reads module state — the get
+    // param R-37 added for the live-user read became dead weight and
+    // retired with the same-commit call-site sweep.
     expect(src).toMatch(
-      /async function refreshAll\(\s*token: number,\s*set: \(partial: Partial<WealthOsState>\) => void,\s*get: \(\) => WealthOsState,?\s*\)/,
+      /async function refreshAll\(\s*token: number,\s*set: \(partial: Partial<WealthOsState>\) => void,?\s*\)/,
     );
     expect(src).toMatch(
-      /async function mutate<T>\(\s*path: string,\s*init: RequestInit,\s*set: \(partial: Partial<WealthOsState>\) => void,\s*get: \(\) => WealthOsState,?\s*\)/,
+      /async function mutate<T>\(\s*path: string,\s*init: RequestInit,\s*set: \(partial: Partial<WealthOsState>\) => void,?\s*\)/,
     );
+    expect(src).not.toMatch(/refreshAll\(token, set, get\)/);
   });
 
-  it("mutate's 401 arm keys on the live user (the F-217l logout contract preserved)", () => {
+  it("mutate's 401 arm keys on the clear era (the F-217l logout contract preserved)", () => {
     const src = read("src/stores/wealthos-store.ts");
-    const start = src.indexOf("async function mutate<T>(");
+    const start = src.indexOf("async function mutate");
     const end = src.indexOf("function createStore()", start);
     const body = src.slice(start, end);
-    // A refresh's own ENTRY bump stales mutate's captured token without
-    // any clear happening — the mutation POST's 401 must still wall
-    // while the user stands. The logout contract survives the re-key:
-    // logout nulls the user before the late landing can check.
+    // A concurrent hydrate's own ENTRY bump stales mutate's captured
+    // token without any clear happening — the mutation POST's 401 must
+    // still wall (the era is unchanged). The logout contract survives
+    // the re-key: logout advances the era at entry, before the late
+    // landing can check.
     const arm = body.indexOf('res.code === "UNAUTHORIZED"');
     expect(arm).toBeGreaterThan(-1);
     const armBlock = body.slice(arm, body.indexOf("return res;", arm));
-    expect(armBlock).toContain("get().user !== null");
+    expect(armBlock).toContain("sessionClearSeq === entryClearSeq");
     expect(armBlock).toContain("commitRevocationWall(set)");
-    // The stale-token mutation landing must NOT reach the arm's wall
-    // once the logout cleared (user null) — the token equality form is
+    // The stale-era mutation landing must NOT reach the arm's wall
+    // once the clear advanced the era — the token equality form is
     // retired from this arm.
     expect(armBlock).not.toContain("token === sessionWriteToken");
   });
 
-  it("updateSettings' and askCoach's inline 401 arms key on the live user", () => {
+  it("updateSettings' and askCoach's inline 401 arms key on the clear era", () => {
     const src = read("src/stores/wealthos-store.ts");
     for (const anchor of ["updateSettings: async", "askCoach: async"]) {
       const start = src.indexOf(anchor);
@@ -108,7 +121,7 @@ describe("F-240a — every 401 arm keys on the live user, not the entry token", 
       const arm = body.indexOf('res.code === "UNAUTHORIZED"');
       expect(arm).toBeGreaterThan(-1);
       const armBlock = body.slice(arm, body.indexOf("return res;", arm));
-      expect(armBlock).toContain("get().user !== null");
+      expect(armBlock).toContain("sessionClearSeq === entryClearSeq");
       expect(armBlock).not.toContain("token === sessionWriteToken");
     }
   });
@@ -119,18 +132,18 @@ describe("F-240a — every 401 arm keys on the live user, not the entry token", 
     expect(start).toBeGreaterThan(-1);
     const end = src.indexOf("logout: async", start);
     const body = src.slice(start, end);
-    // The user-or-fresh-token condition: a standing user's 401 walls
+    // Session-241 (R-38): the era match — a standing user's 401 walls
     // even when a concurrent refresh staled the entry token; a
-    // first-load 401 (user null, fresh token) still walls; a 401 under
-    // a deliberate clear (user null, stale token) still skips.
+    // first-load 401 walls by the same match (nothing cleared since
+    // the fetch was issued); a 401 under a deliberate clear is
+    // era-stale and skips.
     const arm = body.indexOf('res.code === "UNAUTHORIZED"');
     expect(arm).toBeGreaterThan(-1);
     const guard = body.indexOf("if (token !== sessionWriteToken) return;");
     expect(guard).toBeGreaterThan(-1);
     expect(arm).toBeLessThan(guard);
     const armBlock = body.slice(arm, guard);
-    expect(armBlock).toContain("get().user !== null");
-    expect(armBlock).toContain("token === sessionWriteToken");
+    expect(armBlock).toContain("sessionClearSeq === entryClearSeq");
     expect(armBlock).toContain("commitRevocationWall(set, { hydrated: true })");
   });
 });
@@ -152,20 +165,22 @@ describe("F-240b — the hydrate settings-tail 401 walls instead of settling the
       tail.indexOf('settingsRes.code === "UNAUTHORIZED"'),
       tail.indexOf("}", tail.indexOf("commitRevocationWall", tail.indexOf('settingsRes.code === "UNAUTHORIZED"'))) + 1,
     );
-    expect(arm).toContain("get().user !== null");
+    expect(arm).toContain("sessionClearSeq === entryClearSeq");
     expect(arm).toContain("commitRevocationWall(set)");
     // The F-234a settled contract survives for NON-auth failures: the
-    // settled flag still flips in the non-401 arm.
-    const settledArm = tail.slice(tail.indexOf("settingsSettled: true"));
-    expect(settledArm.length).toBeGreaterThan(0);
+    // settled flag still flips in the non-401 arm. (Session-241,
+    // F-241g: the first draft's slice-of-indexOf was a NO-OP — an
+    // absent target made indexOf return −1 and slice(−1) yield the
+    // last character, so the length assertion could never fail
+    // independently; the indexOf assertion below is the real pin.)
     expect(tail.indexOf("settingsSettled: true")).toBeGreaterThan(-1);
   });
 });
 
 // ---- F-240c: the signup process ceiling --------------------------------------------
 
-describe("F-240c — the signup POST carries an IP-independent process ceiling", () => {
-  it("a non-IP-keyed global bucket rides beside the per-IP one", () => {
+describe("F-240c — the signup POST carries an IP-independent process ceiling (the R-38 creation-path recalibration)", () => {
+  it("a non-IP-keyed global bucket rides the creation path beside the per-IP one", () => {
     const src = read("src/app/api/auth/signup/route.ts");
     const start = src.indexOf("export async function POST");
     expect(start).toBeGreaterThan(-1);
@@ -176,19 +191,27 @@ describe("F-240c — the signup POST carries an IP-independent process ceiling",
     // process-level ceiling is keyed WITHOUT the IP — the uploads
     // family's capacity precedent.
     expect(head).toMatch(/rateLimit\(`signup:\$\{clientKey\(req\)\}`/);
-    expect(head).toMatch(/rateLimit\(\s*"signup:/);
-    // The ceiling's limit sits above the e2e battery's ten-signup
-    // budget (retries: 0 — the F-229a census).
-    const globalCall = head.match(/rateLimit\(\s*"signup:[^"]*",\s*(\d+)/);
-    expect(globalCall).not.toBeNull();
-    expect(Number(globalCall![1])).toBeGreaterThanOrEqual(20);
-    // Both denials answer the family's 429 envelope.
-    const postSweep = src.slice(
-      src.indexOf("sweepRateLimits()", start),
-      src.indexOf("const parsed", start),
+    // Session-241 (R-38, F-241b): the ceiling moved to the CREATION
+    // path — the entry form counted every attempt (ten per-IP-DENIED
+    // requests saturated it app-wide) and its colon-carried key was
+    // client-mintable. The head now carries ONLY the per-IP call.
+    expect(head.match(/rateLimit\(/g)?.length).toBe(1);
+    // The exact 20-per-15-minute form, on the creation path (after the
+    // duplicate-email early-return, before the double scrypt) under
+    // the hyphenated, collision-free key. The R-37 pin asserted only
+    // ≥20 with the window unpinned — a 20/1min regression passed.
+    expect(src).toContain(
+      'rateLimit("signup-process-ceiling", 20, 15 * 60 * 1000)',
     );
-    expect(postSweep).toContain("ERR.RATE_LIMITED(limit.retryAfterSec)");
-    expect(postSweep.match(/RATE_LIMITED/g)?.length).toBe(2);
+    const ceiling = src.indexOf('rateLimit("signup-process-ceiling"');
+    const dup = src.indexOf("A user with this email already exists", start);
+    const scrypt = src.indexOf("await hashPassword", start);
+    expect(dup).toBeLessThan(ceiling);
+    expect(ceiling).toBeLessThan(scrypt);
+    // Both denials answer the family's 429 envelope with their own
+    // Retry-After.
+    expect(src).toContain("ERR.RATE_LIMITED(limit.retryAfterSec)");
+    expect(src).toContain("ERR.RATE_LIMITED(totalLimit.retryAfterSec)");
   });
 });
 
@@ -251,8 +274,10 @@ describe("F-240e — the DialogFooter docblock describes the constant it documen
     // Pre-cure the comment claimed the stock no-gap form while the
     // constant carried the gap superset at every width — the F-232b
     // mis-audit genus. The reword describes the actual construction.
+    // (Session-241, F-241g: the anchor names the construction phrase,
+    // not any gap mention.)
     expect(docblock).not.toContain("no gap class");
-    expect(docblock).toMatch(/gap/i);
+    expect(docblock).toMatch(/gap superset|8px gap/i);
   });
 });
 

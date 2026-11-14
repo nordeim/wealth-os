@@ -38,7 +38,7 @@ import {
 } from "@/lib/constants";
 import { budgetCategorySplit, formatMoney, toDate } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, GLASS_CARD, PAGE_ROOT, CTA, FORM_INPUT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT, CTA, FORM_INPUT, FORM_TEXTAREA } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/types";
@@ -106,6 +106,12 @@ export default function ExpensesPage() {
   // the ref is stable across renders).
   React.useEffect(() => {
     if (!filtersOpen) return;
+    // Capture the trigger node at OPEN time — the cleanup reads it
+    // after the popover's unmount commit, and the ref-read form trips
+    // the exhaustive-deps net (the ref value "will likely have changed
+    // by the time this cleanup runs"). The node is stable (the
+    // Filters button renders in every state), so the capture is exact.
+    const trigger = filtersTriggerRef.current;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (document.querySelector("[data-radix-popper-content-wrapper]")) return;
@@ -140,6 +146,17 @@ export default function ExpensesPage() {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("pointerdown", onPointer);
       document.querySelector("main")?.removeEventListener("scroll", onScroll);
+      // Session-241 (R-38, F-241e): the focus return on close — the
+      // drawer's own pattern (mobile-nav's cleanup): cleanups run AFTER
+      // the DOM commit that removed the popover, so focus that died to
+      // <body> with the unmount is detectable exactly here. The ✕
+      // button, the Escape key, and the scroller all close over an
+      // interior-focused control; the toggle path (focus already on the
+      // trigger) and the outside pointerdown path (focus elsewhere) are
+      // naturally spared.
+      if (document.activeElement === document.body) {
+        trigger?.focus();
+      }
     };
   }, [filtersOpen]);
 
@@ -687,7 +704,7 @@ function ExpenseDialog({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
-                className="min-h-16 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={FORM_TEXTAREA}
               />
             </div>
 

@@ -60,6 +60,24 @@ async function call<T>(path: string, init?: RequestInit): Promise<CallResult<T>>
 // the cleared slices with the previous user's data.
 let sessionWriteToken = 0;
 
+// Session-241 (R-38, F-241a): the CLEAR-ERA counter — the deliberate-
+// clear generation. The R-37 live-user key could not distinguish "no
+// deliberate clear owns the face" from "a clear happened and a NEW
+// session now owns it": a previous user's late-landing 401 walled a
+// live new user's face, a 401 inside logout's POST window aborted the
+// clear, a first load concurrent-hydrate twin slipped a revoked 200
+// past the wall, and a dead session's 401 on the first load error
+// face skipped the wall entirely. The era advances ONLY on deliberate
+// clears — the wall's commit and logout's ENTRY. Hydrate's entry bump
+// (the F-240a token-staleness source) deliberately does NOT advance
+// it, so a concurrent same-era hydrate cannot stale a genuine 401.
+// Every 401 arm captures the era at entry and walls IFF it is
+// unchanged: a match means no wall/logout intervened since the fetch
+// was issued (the 401 is live for the current face-owner → wall); a
+// mismatch means the 401 belongs to the pre-clear session → discard
+// (the clear already owns the face — the idempotent skip).
+let sessionClearSeq = 0;
+
 // Session-220 (R-17, F-220l): the refreshAll sequence — monotonic,
 // last-request-wins (see refreshAll).
 let refreshSeq = 0;
@@ -153,22 +171,23 @@ function commitRevocationWall(
   // arms' own token-equality re-checks) evaluates against the
   // advanced token and discards the late landing.
   //
-  // Session-240 (R-37, F-240a): the CALLER contract is the live user,
-  // not the entry token — every 401 caller (refreshAll, mutate,
-  // hydrate's dashboard arm, hydrate's settings tail, updateSettings,
-  // askCoach — six sites) keys on `get().user !== null` (hydrate's
-  // dashboard arm adds the fresh-token disjunct for the first load's
-  // revocation window). The token equality form was a skip-hole: a
-  // concurrent hydrate's own ENTRY bump (the shell-remount re-hydrate)
-  // stales the captured token without any clear happening, so a
-  // genuine session-death 401 was discarded alongside the stale
-  // writes it was meant to guard. The wall and the logout are the
-  // only clear-owners that null the user — user-standing is exactly
-  // "no deliberate clear owns the face" — so a 401 under a standing
-  // user always walls, the F-217l logout contract survives (logout
-  // nulls the user before the late landing can check), and the wall
-  // stays idempotent for later 401s (the user is already null).
+  // Session-240 (R-37, F-240a): the CALLER contract is the clear era,
+  // not the entry token or the live user — every 401 caller
+  // (refreshAll, mutate, hydrate's dashboard arm, hydrate's settings
+  // tail, updateSettings, askCoach — six sites) captures the era at
+  // entry and compares before walling. The token equality form was a
+  // skip-hole (a concurrent hydrate's own ENTRY bump stales the
+  // captured token without any clear happening — the F-240a
+  // requirement that hydrate's bump never advance the era preserves);
+  // the live-user form was a cross-era hole (a clear happened and a
+  // NEW user stands — user-standing alone cannot say whose 401 it
+  // was). Era-standing is exactly "no deliberate clear intervened
+  // since the fetch was issued": the F-217l logout contract survives
+  // (logout advances the era at entry, before any late landing can
+  // check), and the wall stays idempotent for later 401s (the wall
+  // itself advanced the era — a pre-wall landing is era-stale).
   sessionWriteToken += 1;
+  sessionClearSeq += 1;
   set({
     ...extra,
     loading: false,
@@ -195,7 +214,6 @@ function commitRevocationWall(
 async function refreshAll(
   token: number,
   set: (partial: Partial<WealthOsState>) => void,
-  get: () => WealthOsState,
 ): Promise<Result<DashboardData, string>> {
   // Session-220 (R-17, F-220l): the sequence guard — two quick
   // mutations A→B can resolve out of order (A's fetch landing after
@@ -204,20 +222,21 @@ async function refreshAll(
   // whose sequence is older than the latest issued is discarded
   // (last-request-wins).
   const seq = ++refreshSeq;
+  // Session-241 (R-38, F-241a): the entry era — captured BEFORE the
+  // fetch; a match at the 401 landing means no wall/logout intervened
+  // since this fetch was issued.
+  const entryClearSeq = sessionClearSeq;
   const res = await call<DashboardData>("/api/dashboard");
-  // Session-240 (R-37, F-240a): a 401 keys on the LIVE USER, above
-  // the combined guard — pre-cure, a live-session 401 was discarded
-  // on the stale-SEQUENCE dimension alone (two overlapping dashboard
-  // fetches whose server reads straddle a revocation: the older-seq
-  // read postdating it → 401 discarded, the newer-seq read predating
-  // it → 200 committing the old user's ledger over the live store —
-  // the F-239a threat model through the sequence dimension), and a
-  // concurrent hydrate's own entry bump stales the token without any
-  // clear happening. User-standing means no deliberate clear owns the
-  // face → wall; user-null means the wall or logout already owns it
-  // → the idempotent skip.
+  // Session-241 (R-38, F-241a): the 401 arm rides ABOVE the combined
+  // guard, keyed on the era match — pre-R-37 a live-session 401 was
+  // discarded on the stale-SEQUENCE dimension alone (the F-240a
+  // genus), pre-R-38 the live-user key skipped genuine 401s on the
+  // user-null faces the wall did not own (the error face) and walled
+  // the wrong era's sessions (the cross-era leg). Era-match means no
+  // deliberate clear owns the face → wall; era-stale means the clear
+  // owns it → the idempotent skip.
   if (!res.ok && res.code === "UNAUTHORIZED") {
-    if (get().user !== null) commitRevocationWall(set);
+    if (sessionClearSeq === entryClearSeq) commitRevocationWall(set);
     return res;
   }
   if (token !== sessionWriteToken || seq !== refreshSeq) return res;
@@ -255,20 +274,22 @@ async function mutate<T>(
   path: string,
   init: RequestInit,
   set: (partial: Partial<WealthOsState>) => void,
-  get: () => WealthOsState,
 ): Promise<Result<T, string>> {
   const token = sessionWriteToken; // F-217l: captured at entry
+  // Session-241 (R-38, F-241a): the entry era (see the counter's
+  // declaration block for the full contract).
+  const entryClearSeq = sessionClearSeq;
   const res = await call<T>(path, init);
   if (res.ok) {
-    await refreshAll(token, set, get);
-  } else if (res.code === "UNAUTHORIZED" && get().user !== null) {
+    await refreshAll(token, set);
+  } else if (res.code === "UNAUTHORIZED" && sessionClearSeq === entryClearSeq) {
     // Session-238 (R-35, F-238b): the third revocation window — the
-    // wall behind the guard. Session-240 (R-37, F-240a): the guard is
-    // the LIVE USER, not the entry token — a concurrent hydrate's own
-    // entry bump stales the captured token without any clear
-    // happening, so the token equality form skipped genuine
-    // session-death 401s; the logout contract survives the re-key
-    // (the logout clear nulls the user before this landing checks).
+    // wall behind the guard. Session-241 (R-38, F-241a): the guard is
+    // the clear-era match — a concurrent hydrate's entry bump stales
+    // the captured TOKEN without any clear happening (the era stays
+    // live, the 401 walls), while a logout or wall that landed since
+    // the fetch was issued owns the face (the era moved, the 401 is
+    // the pre-clear session's echo — discarded).
     commitRevocationWall(set);
   }
   return res;
@@ -291,6 +312,11 @@ function createStore() {
 
     hydrate: async () => {
       const token = ++sessionWriteToken;
+      // Session-241 (R-38, F-241a): the entry era — hydrate is the
+      // non-clearing bumper (its TOKEN bump is the F-240a staleness
+      // source the era key exists to survive); the era capture below
+      // is what its two 401 arms compare at landing.
+      const entryClearSeq = sessionClearSeq;
       // Session-237 (R-34, F-237c): the remount discriminator. The root
       // dashboard route and the (app) group render two AppShell tree
       // positions — the post-login landing on `/` makes the first
@@ -313,14 +339,16 @@ function createStore() {
           : { loading: true, error: null, settingsSettled: false },
       );
       const res = await call<DashboardData>("/api/dashboard");
-      // Session-240 (R-37, F-240a): the 401 arm rides ABOVE the
-      // entry-token guard — a concurrent hydrate's own entry bump
-      // (this action's remount twin) stales the token without any
-      // clear happening, so a standing user's 401 walls regardless of
-      // the token; the fresh-token disjunct keeps the FIRST-LOAD
-      // revocation walling (user null, no clear owns the face yet).
+      // Session-241 (R-38, F-241a): the 401 arm keys on the ERA MATCH
+      // — a concurrent hydrate's own entry bump stales the token
+      // without any clear happening (the F-240a requirement: hydrate's
+      // bump never advances the era), so a genuine 401 walls
+      // regardless of token staleness; a first load 401 walls by the
+      // same match (nothing cleared since the fetch was issued — the
+      // retired fresh token disjunct's job, subsumed); a 401 under a
+      // deliberate clear is era-stale and skips (the idempotent form).
       if (!res.ok && res.code === "UNAUTHORIZED") {
-        if (get().user !== null || token === sessionWriteToken) {
+        if (sessionClearSeq === entryClearSeq) {
           // Session-220 (R-17, F-220j): the code-keyed branch (was a
           // message-substring match). Session-238 (R-35, F-238c): the
           // commit rides the shared wall shape — hydrated stays true
@@ -349,8 +377,11 @@ function createStore() {
         // landed between hydrate's two calls (the dashboard 200
         // predated it, the settings GET postdates it) — the wall, not
         // the amber could-not-load settle the old arm rendered over
-        // the revoked user's standing ledger.
-        if (!settingsRes.ok && settingsRes.code === "UNAUTHORIZED" && get().user !== null) {
+        // the revoked user's standing ledger. Session-241 (R-38,
+        // F-241a): the era match is the guard — a clear that landed
+        // since hydrate's entry owns the face (the settings-tail 401
+        // is its echo — skipped).
+        if (!settingsRes.ok && settingsRes.code === "UNAUTHORIZED" && sessionClearSeq === entryClearSeq) {
           commitRevocationWall(set);
           return;
         }
@@ -379,6 +410,16 @@ function createStore() {
     // navigation on it.
     logout: async (): Promise<boolean> => {
       const token = ++sessionWriteToken;
+      // Session-241 (R-38, F-241a): the clear-intent era bump at ENTRY
+      // — the moment the clear is declared, before the POST await. A
+      // 401 landing inside the POST window is era-stale (every arm
+      // discards it) and the clear completes: pre-R-38 the wall fired
+      // mid-window, staled this action's own token guard, and a
+      // server-side-SUCCESSFUL logout returned false with no clear.
+      // The failed-logout staleness (an in-flight fetch issued
+      // pre-entry finds the era moved) matches the token guard's own
+      // pre-existing F-217l shape — a live session answers no 401s.
+      sessionClearSeq += 1;
       const res = await call("/api/auth/logout", { method: "POST" });
       if (token !== sessionWriteToken) return false;
       if (!res.ok) {
@@ -409,7 +450,7 @@ function createStore() {
       // post-fetch guard passed, writing the previous user's payload
       // into the cleared store.
       const token = sessionWriteToken;
-      return refreshAll(token, set, get);
+      return refreshAll(token, set);
     },
 
     // Session-238 (R-35, F-238b): every refreshAll-family action rides
@@ -420,92 +461,92 @@ function createStore() {
       mutate<Transaction>("/api/transactions", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     updateTransaction: (id, body) =>
       mutate<Transaction>(`/api/transactions/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     deleteTransaction: (id) =>
       mutate<{ id: string }>(`/api/transactions/${id}`, {
         method: "DELETE",
-      }, set, get),
+      }, set),
     importTransactions: (rows) =>
       mutate<{ imported: number }>("/api/import", {
         method: "POST",
         body: JSON.stringify({ rows }),
-      }, set, get),
+      }, set),
 
     createIncomeSource: (body) =>
       mutate<IncomeSource>("/api/income-sources", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     updateIncomeSource: (id, body) =>
       mutate<IncomeSource>(`/api/income-sources/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     deleteIncomeSource: (id) =>
       mutate<{ id: string }>(`/api/income-sources/${id}`, {
         method: "DELETE",
-      }, set, get),
+      }, set),
 
     createAccount: (body) =>
       mutate<BankAccount>("/api/accounts", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     updateAccount: (id, body) =>
       mutate<BankAccount>(`/api/accounts/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     deleteAccount: (id) =>
       mutate<{ id: string }>(`/api/accounts/${id}`, {
         method: "DELETE",
-      }, set, get),
+      }, set),
 
     createInvestment: (body) =>
       mutate<Investment>("/api/investments", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     updateInvestment: (id, body) =>
       mutate<Investment>(`/api/investments/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     deleteInvestment: (id) =>
       mutate<{ id: string }>(`/api/investments/${id}`, {
         method: "DELETE",
-      }, set, get),
+      }, set),
 
     createGoal: (body) =>
       mutate<Goal>("/api/goals", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     updateGoal: (id, body) =>
       mutate<Goal>(`/api/goals/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     deleteGoal: (id) =>
       mutate<{ id: string }>(`/api/goals/${id}`, {
         method: "DELETE",
-      }, set, get),
+      }, set),
 
     upsertBudget: (body) =>
       mutate<Budget>("/api/budgets", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set, get),
+      }, set),
     deleteBudget: (category) =>
       mutate<{ category: string }>("/api/budgets", {
         method: "DELETE",
         body: JSON.stringify({ category }),
-      }, set, get),
+      }, set),
 
     updateSettings: async (body) => {
       // F-218e: the write-guard family's one missing member — the
@@ -513,6 +554,9 @@ function createStore() {
       // logout/hydrate landing mid-PUT writes the PREVIOUS user's
       // settings into the cleared store (the docblock's own contract).
       const token = sessionWriteToken;
+      // Session-241 (R-38, F-241a): the entry era (the 401 arm's key
+      // below).
+      const entryClearSeq = sessionClearSeq;
       const res = await call<Settings>("/api/settings", {
         method: "PUT",
         body: JSON.stringify(body),
@@ -524,11 +568,11 @@ function createStore() {
       // Session-238 (R-35, F-238b): the third window joins here too —
       // this action sets its slice directly instead of refreshing, so
       // the arm rides inline: a revoked settings PUT walls instead of
-      // toasting over the stale shell. Session-240 (R-37, F-240a): the
-      // guard is the LIVE USER (a concurrent hydrate's entry bump
-      // stales the token without a clear; the logout nulls the user
-      // first, so its contract survives the re-key).
-      if (res.code === "UNAUTHORIZED" && get().user !== null) {
+      // toasting over the stale shell. Session-241 (R-38, F-241a): the
+      // guard is the clear-era match — a concurrent hydrate's entry
+      // bump stales the token without a clear; a clear that landed
+      // since the PUT was issued owns the face (its 401 is discarded).
+      if (res.code === "UNAUTHORIZED" && sessionClearSeq === entryClearSeq) {
         commitRevocationWall(set);
       }
       return res;
@@ -537,17 +581,19 @@ function createStore() {
     askCoach: async (question) => {
       // Session-238 (R-35, F-238b): the third window — a revoked coach
       // POST walls instead of toasting inside the dialog over a dead
-      // workspace. The token guard is the F-217l race family: a coach
-      // answer landing after a logout → different-user sign-in must
-      // never clear the NEW session.
-      const token = sessionWriteToken; // F-217l: captured at entry
+      // workspace. Session-241 (R-38, F-241a): the ERA is the guard — a
+      // coach answer landing after a logout → different-user sign-in
+      // is era-stale and must never clear the NEW session (the R-37
+      // live-user key lost this contract; the era key restores it).
+      const entryClearSeq = sessionClearSeq;
       const res = await call<{ answer: string }>("/api/ai/coach", {
         method: "POST",
         body: JSON.stringify({ question }),
       });
-      // Session-240 (R-37, F-240a): the live-user key (the hydrate-bump
-      // staleness window; the logout nulls the user first).
-      if (!res.ok && res.code === "UNAUTHORIZED" && get().user !== null) {
+      // Session-241 (R-38, F-241a): the era match walls (no clear
+      // since the question was asked); the mismatch is the pre-clear
+      // session's echo — discarded.
+      if (!res.ok && res.code === "UNAUTHORIZED" && sessionClearSeq === entryClearSeq) {
         commitRevocationWall(set);
       }
       return res;

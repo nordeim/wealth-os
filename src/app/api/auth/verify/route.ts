@@ -1,4 +1,4 @@
-import { db, isTransientDbError } from "@/lib/db";
+import { db, isRecordNotFound, isTransientDbError } from "@/lib/db";
 import { ERR, fail, logApiError, ok, parseBody } from "@/lib/api";
 import { setSessionCookie } from "@/lib/auth";
 import { verifySchema } from "@/lib/schemas";
@@ -153,6 +153,20 @@ export async function POST(req: Request) {
     return ok({ id: user.id, email: user.email, verified: true });
   } catch (error) {
     logApiError("auth/verify POST", error);
+    // Session-241 (R-38, F-241d): the vanished-row arm — a user row
+    // that disappears mid-request (the out-of-band class the users
+    // PATCH's own comment names) is a MISS for this funnel's purposes,
+    // answered by the no-enumeration invalid-code 400 the miss arm
+    // already answers (never the generic 500 — the F-222o doctrine).
+    // The code compare on the request's own path already burned its
+    // scrypt shape, so no equalizer is needed here.
+    if (isRecordNotFound(error)) {
+      return fail(
+        "VERIFICATION_INVALID",
+        verificationRemainingMessage(VERIFICATION_MAX_ATTEMPTS - 1),
+        400,
+      );
+    }
     // Session-237 (R-34, F-237b): the transient arm joins the auth
     // family — the sibling forgot-password/reset-password/reset routes
     // already answered a pool/transaction timeout with the honest 503;

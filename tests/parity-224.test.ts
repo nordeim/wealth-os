@@ -45,7 +45,10 @@ describe("F-224b — the verify no-pending branch carries no numeric tell", () =
 describe("F-224e — a failed logout POST is not silently treated as success", () => {
   it("the store's logout checks the call result before clearing", () => {
     const src = read("src/stores/wealthos-store.ts");
-    expect(src).toMatch(/logout: async \(\)[\s\S]{0,400}const res = await call\("\/api\/auth\/logout"/);
+    // Session-241 (R-38, F-241a): the window widened — logout's entry
+    // now carries the clear intent era bump (its own rationale block)
+    // between the declaration and the POST call.
+    expect(src).toMatch(/logout: async \(\)[\s\S]{0,900}const res = await call\("\/api\/auth\/logout"/);
     expect(src).toMatch(/if \(!res\.ok\)/);
   });
 

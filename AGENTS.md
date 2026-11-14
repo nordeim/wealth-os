@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1485) | `bun run test` |
+| Unit tests (1519) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 147) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -730,13 +730,11 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   overlapping dashboard fetches whose server reads straddle a
   revocation: the older-seq 401 discarded, the newer-seq
   pre-revocation 200 committed over the live store — the F-239a
-  threat model through the sequence dimension). The honest key is
-  the LIVE USER: the wall and the logout are the only
-  clear-owners that null it, so user-standing is exactly "no
-  deliberate clear owns the face" — a 401 under a standing user
-  always walls, the logout contract survives (logout nulls the
-  user before the late landing checks), and later 401s skip
-  idempotently (user already null).
+  threat model through the sequence dimension). The R-37 key was
+  the LIVE USER (user-standing = "no deliberate clear owns the
+  face"); session 241 (F-241a) proved that form loses the ERA —
+  see the clear-era gotcha below for the superseding lesson (the
+  current contract: a clear-era counter captured at entry).
 - **AN IP-KEYED BOUND IS VOIDABLE UNDER THE DEFAULT DIRECT-EXPOSURE
   POSTURE — persistent-state public routes need a process-level
   ceiling (session 240, F-240c)**: signup's per-IP 10/15min was
@@ -758,3 +756,47 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   bugs surface only when a legitimate code form moves (the bare
   literal became a cn() appendage and the latent defect paid
   out).
+
+- **USER-STANDING CANNOT DISCRIMINATE FACE-OWNERSHIP ERAS — key 401
+  arms on a deliberate-clear generation, not on who stands (session
+  241, F-241a)**: the R-37 live-user form walled a live NEW user's
+  face on the PREVIOUS user's late 401 (a clear happened and someone
+  else now stands), aborted its own logout on a mid-window 401, and
+  skipped genuine 401s on every user-null face the wall did not own
+  (the first-load twin, the error face). The honest discriminator is
+  a module-level CLEAR-ERA counter: advanced ONLY by the wall's
+  commit and logout's ENTRY (the clear-intent moment — this alone
+  cures the mid-logout abort); every 401 arm captures it at fetch
+  entry and walls IFF unchanged. The counterfeits that failed
+  before: the entry TOKEN (a concurrent hydrate's own entry bump
+  stales it without any clear — hydrate is the non-clearing bumper
+  and must NEVER advance the era) and the live USER (standing says
+  nothing about WHO issued the fetch). A generation counter keyed to
+  the operation that invalidates the stale class — the F-217l
+  family's own shape, one level up.
+- **A CAPACITY BUCKET MUST COUNT THE SURFACE IT BOUNDS — entry-side
+  counting inverts an availability bound into a kill-switch (session
+  241, F-241b)**: the R-37 signup ceiling ran at the handler's entry,
+  so ten per-IP-DENIED requests from one client consumed the global
+  budget and blocked every signup app-wide; junk bodies counted the
+  same. Count on the PATH that creates the bounded cost (after the
+  parse, after the cheap early-returns, before the expensive work) —
+  an attacker must then pay the real creation price to exhaust the
+  bound. And the bucket's KEY must live outside every
+  client-mintable namespace: `signup:process` was one
+  client-suppliable XFF hop away from colliding with the per-IP key
+  (`signup:${clientKey}`), doubling every request's count — prefix
+  families that interpolate caller input can never be a global
+  bucket's neighbor (hyphenate or rename the namespace).
+- **HYPHENATED NICKNAMES IN CURE COMMENTS TRIP THE CLASS-SHAPE
+  SCANNER (session 241, the parity-229 catches)**: "focus-return",
+  "scroll-close", "first-load", and the slashed "w-auto/flex-1" /
+  "pl-9/pr-3" pairs each tokenize as utility-shaped compounds a
+  comment cannot prove live — five flags on the first full-suite run
+  of the round. The F-229d rule binds cure comments AND docblocks:
+  describe with spaces ("the focus return", "a first load"), name
+  utilities as separate live tokens ("w-auto overriding w-full"),
+  and never coin a hyphenated layering nickname the scanner will
+  read as a class. Same genus as the closing-quote lesson: the
+  scanner's exactness is the point — write prose that passes it
+  honestly.

@@ -49,12 +49,12 @@ describe("F-238b — a mutation 401 commits the wall (the third window)", () => 
     expect(end).toBeGreaterThan(start);
     const body = src.slice(start, end);
     expect(body).toMatch(/const token = sessionWriteToken;/);
-    expect(body).toMatch(/await refreshAll\(token, set, get\)/);
-    // Session-240 (R-37, F-240a): the arm's guard is the LIVE USER
-    // (the entry token is staled by a concurrent hydrate's bump
-    // without any clear; the F-217l logout contract survives the
-    // re-key — logout nulls the user first).
-    expect(body).toMatch(/res\.code === "UNAUTHORIZED" && get\(\)\.user !== null/);
+    expect(body).toMatch(/await refreshAll\(token, set\)/);
+    // Session-241 (R-38, F-241a): the arm's guard is the CLEAR-ERA
+    // match (the entry token is staled by a concurrent hydrate's bump
+    // without any clear — the era is not; the F-217l logout contract
+    // survives the re-key — logout advances the era at entry).
+    expect(body).toMatch(/res\.code === "UNAUTHORIZED" && sessionClearSeq === entryClearSeq/);
     expect(body).toMatch(/commitRevocationWall\(set\)/);
   });
 
@@ -80,14 +80,15 @@ describe("F-238b — a mutation 401 commits the wall (the third window)", () => 
 
   it("updateSettings and askCoach carry the inline 401 arm (the non-refreshing pair)", () => {
     const src = read("src/stores/wealthos-store.ts");
-    // Session-240 (R-37, F-240a): the inline arms share the live-user
+    // Session-241 (R-38, F-241a): the inline arms share the clear-era
     // key with the wrapper (the token equality form was the hydrate-
-    // bump skip-hole; the re-key is uniform across every 401 arm).
+    // bump skip-hole, the live-user form the cross-era hole; the era
+    // key is uniform across every 401 arm).
     const settings = src.match(/updateSettings: async \(body\) => \{[\s\S]*?\n    \},/);
-    expect(settings?.[0] ?? "").toMatch(/res\.code === "UNAUTHORIZED" && get\(\)\.user !== null/);
+    expect(settings?.[0] ?? "").toMatch(/res\.code === "UNAUTHORIZED" && sessionClearSeq === entryClearSeq/);
     expect(settings?.[0] ?? "").toMatch(/commitRevocationWall\(set\)/);
     const coach = src.match(/askCoach: async \(question\) => \{[\s\S]*?\n    \},/);
-    expect(coach?.[0] ?? "").toMatch(/res\.code === "UNAUTHORIZED" && get\(\)\.user !== null/);
+    expect(coach?.[0] ?? "").toMatch(/res\.code === "UNAUTHORIZED" && sessionClearSeq === entryClearSeq/);
     expect(coach?.[0] ?? "").toMatch(/commitRevocationWall\(set\)/);
   });
 });

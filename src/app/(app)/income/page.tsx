@@ -27,7 +27,7 @@ import {
 } from "@/lib/constants";
 import { formatMoney, relativeDays, toDate, totalMonthlyIncome } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, GLASS_CARD, PAGE_ROOT, CTA, FORM_INPUT } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT, CTA, FORM_INPUT, FORM_TEXTAREA } from "@/lib/page-layout";
 import { useIsDark } from "@/components/layout/theme";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
@@ -367,7 +367,7 @@ function IncomeSourceDialog({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="min-h-16 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className={FORM_TEXTAREA}
             />
           </div>
           <DialogFooter>

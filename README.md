@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-1632%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-1666%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1485 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1519 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 147 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 90 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 91 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1485 checks / 90 files |
+| Unit (Vitest) | `bun run test` | 1519 checks / 91 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 147 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1485 unit · 147 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1519 unit · 147 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔄 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 240: **R-37 shipped — the revocation-signal, signup-ceiling, and form-seam round**: the fresh-eyes audit (three Mode-C passes over the R-36 cure surfaces, the API/auth/security layer, and the UI/a11y/shell layer — 0 Critical / 0 High / 1 Medium / 8 Low / 7 Informational raw after dedup, every material claim re-verified at file:line; all nine R-36 cure surfaces verified holding); the cold baseline GREEN at HEAD 884a4ff (the v2.36.0 ship state reproduced exactly); the reference STABLE on every drift layer incl. the TRUE-390 mobile menu with 9 destinations); the **revocation-signal discard genus** (F-240a Medium — refreshAll's combined token+sequence guard discarded a live-session 401 on the sequence dimension alone, and the same staleness window rode every 401 arm keyed on the entry token, because a concurrent hydrate's own entry bump stales the token without any clear happening; the uniform cure keys every 401 arm on the LIVE USER — the wall and the logout are the only clear-owners that null it); the **signup process ceiling** (F-240c — a non-IP-keyed global bucket, 20/15min per process, bounding the direct-exposure account-creation + double-scrypt surface the per-IP key alone cannot); the **FORM_INPUT seam** (F-240d — the sixteen-site byte-identical input literal unified, the F-229f re-entry rule honored: the constant ships WITH its consumers); plus the hydrate settings-tail wall (F-240b), the store-battery leg completions (F-240f/g), the F-239g pin hardening (F-240h), the verify lockout equalizer (F-240i), and the wall docblock truth (F-240j). Registered, not cured: the upload declared-MIME trust (F-240k — the F-219v posture), the inert native-validation attributes on the noValidate auth forms (F-240l), the dashboard's pinned clock (F-240m), and the a11y open-state scroll gap (F-240n). Gate: lint 0/0 · tsc 0 · **1485 unit / 90 files** · build · smoke 15/15 · 147 e2e · all six parity drift gates CLEAN (the standing allowances unmoved) · census MATCH · captures 162-165) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 241: **R-38 shipped — the clear-era, creation-path, and seam-completion round**: the fresh-eyes audit (three Mode-C passes over the R-37 cure surfaces, the API/auth/security layer, and the UI/a11y/shell layer — 0 Critical / 0 High / 2 Medium / 7 Low / 4 Informational raw after dedup, every material claim re-verified at file:line; all six R-37 cure surfaces verified holding); the cold baseline GREEN at HEAD 71a4d9f (the v2.37.0 ship state reproduced exactly); the reference STABLE on every drift layer incl. the TRUE-390 mobile menu with 9 destinations); the **clear-era cure** (F-241a Medium — the R-37 live-user re-key had removed the session-era dimension: a previous user's late 401 walled a live new user's face, a 401 inside logout's POST window aborted the clear, a first-load concurrent-hydrate twin slipped a revoked 200 past the wall, and a dead session's 401 on the error face skipped the wall — four interleavings, one cure: a module-level clear-era counter advanced only by the wall's commit and logout's entry, captured at every fetch's entry and compared before walling); the **signup creation-path ceiling** (F-241b — the R-37 global bucket counted every attempt that reached the handler (ten per-IP-denied requests blocked all signups app-wide) and its colon-carried key was client-mintable from the per-IP keyspace; the ceiling now rides the creation path under the hyphenated key — only fresh-email creation attempts count); plus the limiter's cardinality cap (F-241c — a fail-closed shared overflow bucket at the 10k cap), the P2025 arms on the auth writers (F-241d — verify/resend answer the no-enumeration miss forms, logout completes), the popover focus return (F-241e — the drawer's own cleanup pattern), and the FORM-INPUT-family seam completion (F-241f — FORM_TEXTAREA re-enters WITH its two consumers; the settings inline input joins as the width appendage; the icon-bearing search input registered as the deliberate single-site genus). Registered, not cured: the CSP default-src headroom (F-241g — needs a source inventory) and the seeded demo credentials posture (F-241h — the documented demo posture). Gate: lint 0/0 · tsc 0 · **1519 unit / 91 files** · build · smoke 15/15 · 147 e2e · all six parity drift gates CLEAN (the standing allowances unmoved) · census MATCH · captures 166-169) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

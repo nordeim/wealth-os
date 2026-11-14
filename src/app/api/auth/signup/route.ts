@@ -27,15 +27,6 @@ function nameFromEmail(email: string): string {
 
 export async function POST(req: Request) {
   const limit = rateLimit(`signup:${clientKey(req)}`, 10, 15 * 60 * 1000);
-  // Session-240 (R-37, F-240c): the process-level creation ceiling —
-  // the per-IP key above is voidable under the documented default
-  // direct-exposure posture (a client-suppliable XFF hop, the F-218t
-  // boot warning), and unlike the sibling public routes (per-email
-  // secondaries) every successful signup here creates PERSISTENT state
-  // (a User row) and burns TWO scrypts. The uploads family's own
-  // capacity precedent: a global bucket keyed WITHOUT the IP, sized
-  // 2x the e2e battery's ten-signup budget (retries: 0).
-  const totalLimit = rateLimit("signup:process", 20, 15 * 60 * 1000);
   // Session-38 (S38-P6): the opportunistic bucket sweep — the audit
   // found it ran ONLY from login, so the signup/verify/resend buckets
   // were cleaned only when someone next logged in (bounded, but
@@ -48,7 +39,6 @@ export async function POST(req: Request) {
   // Session-67 (N-67h): the denied 429 carries the Retry-After header
   // like the rest of the family.
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
-  if (!totalLimit.allowed) return ERR.RATE_LIMITED(totalLimit.retryAfterSec);
 
   // Session-163: the Zod parse seam — the pre-gate + the name/email/
   // password contract (the s38/s39/s21 semantics: optional trimmed name
@@ -74,6 +64,28 @@ export async function POST(req: Request) {
       // probes on both apps).
       return ERR.BAD_REQUEST("A user with this email already exists");
     }
+
+    // Session-241 (R-38, F-241b): the process-level creation ceiling —
+    // the per-IP key above is voidable under the documented default
+    // direct-exposure posture (a client-suppliable XFF hop, the F-218t
+    // boot warning), and unlike the sibling public routes (per-email
+    // secondaries) every successful signup here creates PERSISTENT
+    // state (a User row) and burns TWO scrypts. The uploads family's
+    // own capacity precedent: a global bucket keyed WITHOUT the IP,
+    // sized 2x the e2e battery's ten-signup budget (retries: 0).
+    // The CREATION-PATH placement (session 241): the R-37 entry form
+    // counted every attempt that reached the handler — one client's
+    // ten per-IP-DENIED requests saturated the global bucket and
+    // blocked every signup app-wide for fifteen minutes (an
+    // availability bound inverted into a kill-switch), and the
+    // colon-carried key was mintable from the client-suppliable per-IP
+    // keyspace (an XFF hop of "process" made both calls share one
+    // bucket). Here only fresh-email creation attempts consume
+    // capacity: junk bodies die at the parse, duplicate-email floods
+    // die at the check above, and the hyphenated key is unreachable
+    // from the `signup:<hop>` namespace.
+    const totalLimit = rateLimit("signup-process-ceiling", 20, 15 * 60 * 1000);
+    if (!totalLimit.allowed) return ERR.RATE_LIMITED(totalLimit.retryAfterSec);
 
     const count = await db.user.count();
 

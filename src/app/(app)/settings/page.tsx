@@ -244,7 +244,7 @@ export default function SettingsPage() {
                 onChange={(e) => setBudgetCategory(e.target.value)}
                 placeholder="Category (e.g. Groceries)"
                 aria-label="Budget category"
-                className="h-10 flex-1 rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={cn(FORM_INPUT, "w-auto flex-1")}
               />
               <datalist id="budget-category-options">
                 {EXPENSE_CATEGORIES.map((c) => (

@@ -1,6 +1,6 @@
 import { ERR, logApiError, ok } from "@/lib/api";
 import { clearSessionCookie, getSessionUser } from "@/lib/auth";
-import { db, isTransientDbError } from "@/lib/db";
+import { db, isRecordNotFound, isTransientDbError } from "@/lib/db";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -61,6 +61,16 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     logApiError("auth/logout POST", error);
+    // Session-241 (R-38, F-241d): the vanished-row arm — the session's
+    // user row disappeared between the session read and the
+    // tokenVersion eviction. The session cannot outlive its row (the
+    // next getSessionUser misses either way), so the logout COMPLETES:
+    // clear the cookie and answer the guest-logout no-op 200 form
+    // (never the generic 500 — the F-222o doctrine).
+    if (isRecordNotFound(error)) {
+      await clearSessionCookie();
+      return ok({ signedOut: true });
+    }
     // Session-237 (R-34, F-237b): the transient arm joins the auth
     // family — the sibling forgot-password/reset-password/reset routes
     // already answered a pool/transaction timeout with the honest 503;

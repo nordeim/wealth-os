@@ -285,3 +285,63 @@ describe("the reset-family bucket keys are disjoint (F-219l)", () => {
     expect(pw).not.toContain("`reset:");
   });
 });
+
+// ---- session-241 (R-38, F-241c): the cardinality cap -------------------------
+// The per-account buckets (login-acct:, verify-acct:, resend-acct:,
+// forgot-acct:) mint keys from CALLER-SUPPLIED strings on unauthenticated
+// routes — a sustained random-email flood held ~R×900 live entries at 15
+// minutes regardless of proxy depth (the sweep bounds entry LIFETIME,
+// never entry COUNT within a window). The cure: a MAX_BUCKETS cap with
+// fail-closed overflow routing — a FRESH key arriving at cap joins the
+// shared overflow bucket (whose count the caller's own limit bounds);
+// EXISTING keys keep their own buckets and count normally.
+describe("the cardinality cap (F-241c)", () => {
+  it("a fresh key at cap joins the shared overflow bucket; an existing key keeps its own", () => {
+    // Seed the "existing" key BEFORE the fill: it must keep its OWN
+    // bucket when the map later hits the cap.
+    const existingKey = `cap-existing-${Math.random()}`;
+    expect(rateLimit(existingKey, 10, 60_000).allowed).toBe(true);
+    // Fill the map past the cap with distinct EXPIRED-window keys (the
+    // injectable-now seam's own trick): they occupy cardinality, and
+    // their expired windows keep the overflow bucket they briefly
+    // route through itself expired (each overflow landing replaces it
+    // fresh), so the post-fill overflow state is deterministic.
+    for (let i = 0; i < 10_000; i += 1) {
+      rateLimit(`cap-fill-${i}`, 10, -1); // already-expired window
+    }
+    // The EXISTING key counts against its OWN bucket (count 2 of 10,
+    // remaining 8 — not the overflow count).
+    const existing = rateLimit(existingKey, 10, 60_000);
+    expect(existing.allowed).toBe(true);
+    expect(existing.remaining).toBe(8);
+    // FRESH keys at cap share the OVERFLOW bucket: the first
+    // replaces it fresh (deterministic count 1)…
+    expect(rateLimit(`cap-fresh-a-${Math.random()}`, 10, 60_000).allowed).toBe(true);
+    // …the second at a limit of 1 sees the shared count of 2 and is
+    // DENIED (fail-closed: the degradation never widens to fail-open)…
+    expect(rateLimit(`cap-fresh-b-${Math.random()}`, 1, 60_000).allowed).toBe(false);
+    // …while a limit-10 caller against the same shared count of 3 is
+    // still allowed (the verdict applies each caller's OWN limit —
+    // conservative per-route bounding, never a global deny).
+    expect(rateLimit(`cap-fresh-c-${Math.random()}`, 10, 60_000).allowed).toBe(true);
+    // Cleanup: sweep at a future now reclaims the fill keys (and the
+    // 60s-window stragglers), restoring headroom for any later legs.
+    sweepRateLimits(Date.now() + 120_000);
+    expect(rateLimit(`cap-after-sweep-${Math.random()}`, 10, 60_000).allowed).toBe(true);
+  });
+
+  it("the overflow bucket rides inside the cap check, not beside it (the source form)", () => {
+    const src = readFileSync(
+      path.resolve(import.meta.dirname, "..", "src/lib/rate-limit.ts"),
+      "utf-8",
+    );
+    // The cap check lives in the INSERTION path (a new key), so
+    // existing-key updates never pay the routing cost and the check
+    // is O(1) — no eviction scan for a flood to abuse.
+    const start = src.indexOf("export function rateLimit(");
+    const body = src.slice(start, src.indexOf("export function clientKey", start));
+    expect(body).toContain("buckets.size >= MAX_BUCKETS");
+    expect(body).toContain("OVERFLOW_KEY");
+    expect(src).toMatch(/const MAX_BUCKETS = 10_000;/);
+  });
+});

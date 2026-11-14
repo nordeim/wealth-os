@@ -68,3 +68,19 @@ describe("R-15: the trigger-scoped guard exists (F-218b)", () => {
     expect(PAGE).toMatch(/ref=\{filtersTriggerRef\}/);
   });
 });
+
+// Session-241 (R-38, F-241e — the popover's focus return): every
+// interior-focus close path (the ✕ click/Enter, the Escape close, the
+// scroll-close) unmounted the focused control with no restoration —
+// focus died to <body> and the next Tab restarted at the document top
+// instead of the Filters trigger. The drawer's own cleanup pattern
+// (cleanups run AFTER the commit that removed the surface): when
+// activeElement is <body>, land focus back on the trigger; the toggle
+// path (focus already on the trigger) and the outside-pointerdown
+// path (focus elsewhere) are naturally spared.
+describe("R-38: the filters popover restores focus on close (F-241e)", () => {
+  it("the open-effect's cleanup returns focus that died to body", () => {
+    expect(PAGE).toContain("document.activeElement === document.body");
+    expect(PAGE).toContain("trigger?.focus()");
+  });
+});

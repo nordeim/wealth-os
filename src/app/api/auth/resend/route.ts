@@ -1,4 +1,4 @@
-import { db, isTransientDbError } from "@/lib/db";
+import { db, isRecordNotFound, isTransientDbError } from "@/lib/db";
 import { ERR, logApiError, ok, parseBody } from "@/lib/api";
 import { resendSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -107,6 +107,15 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     logApiError("auth/resend POST", error);
+    // Session-241 (R-38, F-241d): the vanished-row arm — a user row
+    // that disappears between the findUnique and the re-arm update is
+    // a "nothing to resend" miss, answered by the same non-leaking
+    // info banner the miss arm answers (never the generic 500 — the
+    // F-222o doctrine; the known branch already burned its scrypt
+    // shape before the update threw, so the timing matches too).
+    if (isRecordNotFound(error)) {
+      return ok({ resent: true, message: verificationResentMessage() });
+    }
     // Session-237 (R-34, F-237b): the transient arm joins the auth
     // family — the sibling forgot-password/reset-password/reset routes
     // already answered a pool/transaction timeout with the honest 503;

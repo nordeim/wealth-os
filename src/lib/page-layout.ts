@@ -342,9 +342,23 @@ export const DIALOG_CLOSE =
 // per-site modifiers (the symbol field's mono-caps pair, the budget
 // field's small-width override) ride cn() appendages at the call
 // sites, never edits to the base.
+//
+// Session-241 (R-38, F-241f): the family's completion — the
+// dialog-textarea genus had re-grown the same way (a byte-identical
+// two-site paste, the notes fields) and re-enters below as
+// FORM_TEXTAREA WITH its consumers; the settings inline input joins
+// FORM_INPUT as a width-freeing appendage (w-auto overriding w-full,
+// flex-1 governing the flex row). The ICON-BEARING SEARCH input (the
+// expenses page's asymmetric pl-9 pr-3 padding pair and placeholder
+// arms) stays a literal by design: a single site is not a divergence
+// point, and folding it would carry the dead px-3 the appendage form
+// cannot drop — the deliberate single-site genus.
 
 export const FORM_INPUT =
   "h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100" as const;
+
+export const FORM_TEXTAREA =
+  "min-h-16 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100" as const;
 
 export const SELECT_TRIGGER = {
   base: "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-line bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background",

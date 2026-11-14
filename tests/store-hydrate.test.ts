@@ -686,3 +686,189 @@ describe("F-240a/b — the revocation signal is never discarded", () => {
     expect(s.loading).toBe(false);
   });
 });
+
+// Session-241 (R-38): the clear-era genus. F-241a: the R-37 live-user
+// re-key removed the session-ERA dimension the old entry-token check
+// carried — user-standing cannot distinguish "no deliberate clear owns
+// the face" from "a clear happened and a NEW session now owns it".
+// Four interleavings, one root cause, one cure: a module-level
+// clear-era counter (advanced by the wall's commit and at logout's
+// ENTRY — hydrate's entry bump, the F-240a staleness source,
+// deliberately does NOT advance it) that every 401 arm captures at
+// entry and compares before walling.
+describe("F-241a — the 401 era key (four interleavings, one cure)", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  const userB = {
+    id: "u2",
+    email: "b@example.com",
+    name: "Second User",
+    avatarColor: "#2563eb",
+    photoUrl: null,
+    role: "user",
+  };
+
+  function dashboardEnvelopeB(): Response {
+    return jsonRes({
+      ok: true,
+      data: {
+        transactions: [{ id: "t-b" }],
+        incomeSources: [],
+        accounts: [],
+        investments: [],
+        goals: [],
+        budgets: [],
+        user: userB,
+      },
+    });
+  }
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("a previous user's late 401 must not wall the NEW user's live session (the cross-era leg)", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    // The coach POST is in flight under user A when A logs out and
+    // user B signs in and hydrates (the shared-kiosk sign-out →
+    // sign-in chain; a multi-second-lagged 401 crossing it).
+    let releaseCoach!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseCoach = resolve;
+        }),
+    );
+    const pendingCoach = store.getState().askCoach("how am I doing?");
+    // A logs out, B signs in + hydrates — B's data commits.
+    fetchMock.mockResolvedValueOnce(jsonRes({ ok: true, data: {} }));
+    await store.getState().logout();
+    fetchMock.mockResolvedValueOnce(dashboardEnvelopeB());
+    fetchMock.mockResolvedValueOnce(
+      jsonRes({ ok: true, data: { currency: "USD" } }),
+    );
+    await store.getState().hydrate();
+    expect(store.getState().user?.id).toBe("u2");
+    // A's coach 401 lands LATE — pre-cure the live-user key found B
+    // standing and WALLED B's live session face.
+    releaseCoach(unauthorized401());
+    await pendingCoach;
+    const s = store.getState();
+    expect(s.user?.id).toBe("u2");
+    expect(s.transactions).toEqual([{ id: "t-b" }] as never);
+    expect(s.error).toBeNull();
+  });
+
+  it("a 401 landing inside logout's POST window must not abort the clear (the mid-logout leg)", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    // The mutation's 401 is in flight when the logout starts; the
+    // logout's POST is held so the 401 lands INSIDE its window.
+    let releaseMutation!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseMutation = resolve;
+        }),
+    );
+    const pendingMutation = store.getState().createTransaction({
+      description: "x",
+    });
+    let releaseLogout!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseLogout = resolve;
+        }),
+    );
+    const pendingLogout = store.getState().logout();
+    // The mutation's 401 lands mid-POST — pre-cure the wall fired
+    // (the user still stood), staled logout's token guard, and the
+    // server-side-SUCCESSFUL logout returned false with no clear.
+    releaseMutation(unauthorized401());
+    await pendingMutation;
+    releaseLogout(jsonRes({ ok: true, data: {} }));
+    const loggedOut = await pendingLogout;
+    expect(loggedOut).toBe(true);
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.hydrated).toBe(false);
+    // The logout face (the login-transition loading gate), not the
+    // wall face — the F-240f discriminator.
+    expect(s.loading).toBe(true);
+  });
+
+  it("a first-load concurrent-hydrate twin cannot slip a revoked 200 past the wall (the twin leg)", async () => {
+    // Two concurrent first-load hydrates (a double-clicked Try-again):
+    // H1's dashboard read postdates the revocation (401), H2's
+    // predates it (200, the revoked user's data). Pre-cure H1's 401
+    // failed BOTH disjuncts (user null — H2 hasn't committed; the
+    // fresh-token form staled by H2's own entry bump) and H2's 200
+    // committed the revoked ledger with a fresh token.
+    let releaseH1!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseH1 = resolve;
+        }),
+    );
+    const pendingH1 = store.getState().hydrate();
+    let releaseH2!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseH2 = resolve;
+        }),
+    );
+    const pendingH2 = store.getState().hydrate();
+    releaseH1(unauthorized401());
+    await pendingH1;
+    releaseH2(dashboardEnvelope());
+    await pendingH2;
+    const s = store.getState();
+    // The wall face — H2's revoked 200 discarded by the wall's own
+    // token bump (the F-239a contract).
+    expect(s.user).toBeNull();
+    expect(s.transactions).toEqual([]);
+    expect(s.hydrated).toBe(true);
+    expect(s.loading).toBe(false);
+    expect(s.error).toBeNull();
+  });
+
+  it("a dead session's Refresh 401 on the error face walls over the stale banner (the error-face leg)", async () => {
+    // The first-load hydrate fails non-401 (the error face: user
+    // null, error set, children rendered — the Refresh control is
+    // live). The session is dead; the Refresh's dashboard GET
+    // answers 401. Pre-cure the user-null key skipped the wall and
+    // only the caller's toast fired over the stale banner.
+    fetchMock.mockResolvedValueOnce(internal500());
+    await store.getState().hydrate();
+    expect(store.getState().error).not.toBeNull();
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    await store.getState().refresh();
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.error).toBeNull();
+    expect(s.loading).toBe(false);
+    expect(s.transactions).toEqual([]);
+  });
+});
