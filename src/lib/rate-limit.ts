@@ -5,6 +5,10 @@
 // verify 20. Session-67 (N-67e) added the sessioned upload route at 20
 // (post-guard); session-68 (F-68a3) recorded it here. Session-163 added
 // forgot 10 + reset 10 (the reset funnel's own buckets).
+// Session-240 (R-37, F-240c): signup ALSO carries a process-level
+// creation ceiling (20 per 15 min, keyed WITHOUT the IP — the uploads
+// capacity precedent), bounding the direct-exposure worst case the
+// per-IP key alone cannot.
 //
 // Session-173 (F-173a): rateLimit takes `now = Date.now()` — the
 // session-164 sweepRateLimits form extended to the rateLimit path, the

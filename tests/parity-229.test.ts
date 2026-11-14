@@ -41,7 +41,13 @@ function splitSource(src: string): { code: string; comments: string } {
         if (src[i] === "\\") code.push(src[i++]);
         code.push(src[i++]);
       }
-      i++;
+      // Session-240 (R-37): the CLOSING quote joins the code portion —
+      // dropping it fused a quoted token with the characters that
+      // follow the string (a cn() appendage's closing call punctuation),
+      // so the token never matched the clean live form and a genuine
+      // code-site carrier read as comment-only. The quote is a split
+      // boundary in tokens(); keeping it makes live-detection exact.
+      if (i < n) code.push(src[i++]);
     } else {
       code.push(src[i++]);
     }

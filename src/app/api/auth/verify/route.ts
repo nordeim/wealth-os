@@ -109,6 +109,14 @@ export async function POST(req: Request) {
     // lockout lifts only on a RESEND (no deterministic retry instant
     // exists; the code is VERIFICATION_LOCKED, not RATE_LIMITED).
     if (isVerificationLockedOut(user.verificationAttempts)) {
+      // Session-240 (R-37, F-240i): the locked arm joins the
+      // timing-equalizer family — every other arm of the
+      // verify/resend/login family burns one scrypt shape, and a ~0 ms
+      // 429 beside the miss arm's ~28 ms 400 was the family's one
+      // uncovered arm (zero marginal disclosure today — the status and
+      // lockout text already openly distinguish the state — but the
+      // latency channel closes with the burn).
+      await verifyVerificationCode(code, await timingEqualizerHash());
       return fail("VERIFICATION_LOCKED", verificationLockoutMessage(), 429);
     }
 

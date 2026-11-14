@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1469) | `bun run test` |
+| Unit tests (1485) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 147) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -720,3 +720,41 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   matching (the F-239f pin tripped on its own mid-phrase line
   wrap), and a JSX-attribute regex must split on the opening tag
   (arrow handlers end naive `[^>]*` matches early).
+- **A 401 ARM KEYED ON THE ENTRY TOKEN IS A SKIP-HOLE — key the
+  wall on the LIVE USER (session 240, F-240a)**: every token guard
+  assumes only CLEARING bumps (wall/logout) stale the token — but
+  hydrate's own ENTRY bump (the shell-remount re-hydrate) stales
+  every earlier-captured token while the session still lives, and
+  refreshAll's combined token+sequence guard discarded a
+  live-session 401 on the SEQUENCE dimension alone (two
+  overlapping dashboard fetches whose server reads straddle a
+  revocation: the older-seq 401 discarded, the newer-seq
+  pre-revocation 200 committed over the live store — the F-239a
+  threat model through the sequence dimension). The honest key is
+  the LIVE USER: the wall and the logout are the only
+  clear-owners that null it, so user-standing is exactly "no
+  deliberate clear owns the face" — a 401 under a standing user
+  always walls, the logout contract survives (logout nulls the
+  user before the late landing checks), and later 401s skip
+  idempotently (user already null).
+- **AN IP-KEYED BOUND IS VOIDABLE UNDER THE DEFAULT DIRECT-EXPOSURE
+  POSTURE — persistent-state public routes need a process-level
+  ceiling (session 240, F-240c)**: signup's per-IP 10/15min was
+  its ONLY bound while the sibling public routes carry per-email
+  secondaries — and each success creates a User row + burns two
+  scrypts, so an XFF-rotating caller gets unbounded persistent
+  growth. The uploads family's own capacity precedent applies: a
+  global bucket keyed WITHOUT the IP (20/15min per process, sized
+  above the e2e battery's ten-signup budget — count the battery
+  before sizing, the F-229a census).
+- **A TOKEN-QUOTING SCANNER MUST KEEP THE CLOSING QUOTE in the code
+  portion (session 240, the parity-229 fix)**: dropping it fused a
+  quoted token with the characters after the string (a cn()
+  appendage's closing call punctuation), so the token never
+  matched the clean live form and a genuine code-site carrier read
+  as comment-only. The quote is a split boundary in tokens();
+  keeping it makes live-detection exact. Same authoring family as
+  the F-239e extraction lessons: a scanner's own tokenization
+  bugs surface only when a legitimate code form moves (the bare
+  literal became a cn() appendage and the latent defect paid
+  out).

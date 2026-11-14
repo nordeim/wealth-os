@@ -332,6 +332,19 @@ export const DIALOG_CLOSE =
 // with the vendored input/label stock — zero consumers after the file
 // retirement (the F-231h Avatar precedent, the F-229f re-entry rule;
 // reintroduce WITH a consumer).
+//
+// Session-240 (R-37, F-240d): the re-entry, honored — the
+// SECTION-PAGE form input genus (the height-10 rounded-lg stone
+// family the six section pages' dialogs and inline forms render) had
+// re-grown as a byte-identical literal pasted at sixteen sites, the
+// exact divergence-point genus F-232h cured for the sidebar. The
+// value below is byte-identical to what those sites carried; the
+// per-site modifiers (the symbol field's mono-caps pair, the budget
+// field's small-width override) ride cn() appendages at the call
+// sites, never edits to the base.
+
+export const FORM_INPUT =
+  "h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100" as const;
 
 export const SELECT_TRIGGER = {
   base: "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-line bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background",

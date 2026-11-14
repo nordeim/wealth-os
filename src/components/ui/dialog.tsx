@@ -82,9 +82,14 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
-  // Session-15 (S15-P5): the STOCK footer — the column-reverse stack
-  // flipping to a row with end-justified buttons at sm (no gap class:
-  // the buttons touch when stacked on phones, 8px margin at sm).
+  // Session-15 (S15-P5): the footer — the column-reverse stack
+  // flipping to a row with end-justified buttons at sm.
+  // Session-240 (R-37, F-240e): the constant carries the GAP SUPERSET
+  // — an 8px gap at EVERY width, stacked and row alike (the stock
+  // shadcn form the reference mirrors ships without one and leans on
+  // the row's own spacing; ours keeps the stacked phone form
+  // breathable and was already sweep-baselined this way — the earlier
+  // stock-form note here described the wrong construction).
   // Session-231 (R-28, F-231h): the between-justified footer twin cited
   // here retired with its family — zero consumers, the F-229f re-entry
   // rule; reintroduce WITH a consumer if a between-footer dialog ever

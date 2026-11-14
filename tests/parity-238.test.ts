@@ -49,8 +49,12 @@ describe("F-238b — a mutation 401 commits the wall (the third window)", () => 
     expect(end).toBeGreaterThan(start);
     const body = src.slice(start, end);
     expect(body).toMatch(/const token = sessionWriteToken;/);
-    expect(body).toMatch(/await refreshAll\(token, set\)/);
-    expect(body).toMatch(/res\.code === "UNAUTHORIZED" && token === sessionWriteToken/);
+    expect(body).toMatch(/await refreshAll\(token, set, get\)/);
+    // Session-240 (R-37, F-240a): the arm's guard is the LIVE USER
+    // (the entry token is staled by a concurrent hydrate's bump
+    // without any clear; the F-217l logout contract survives the
+    // re-key — logout nulls the user first).
+    expect(body).toMatch(/res\.code === "UNAUTHORIZED" && get\(\)\.user !== null/);
     expect(body).toMatch(/commitRevocationWall\(set\)/);
   });
 
@@ -76,11 +80,14 @@ describe("F-238b — a mutation 401 commits the wall (the third window)", () => 
 
   it("updateSettings and askCoach carry the inline 401 arm (the non-refreshing pair)", () => {
     const src = read("src/stores/wealthos-store.ts");
+    // Session-240 (R-37, F-240a): the inline arms share the live-user
+    // key with the wrapper (the token equality form was the hydrate-
+    // bump skip-hole; the re-key is uniform across every 401 arm).
     const settings = src.match(/updateSettings: async \(body\) => \{[\s\S]*?\n    \},/);
-    expect(settings?.[0] ?? "").toMatch(/res\.code === "UNAUTHORIZED" && token === sessionWriteToken/);
+    expect(settings?.[0] ?? "").toMatch(/res\.code === "UNAUTHORIZED" && get\(\)\.user !== null/);
     expect(settings?.[0] ?? "").toMatch(/commitRevocationWall\(set\)/);
     const coach = src.match(/askCoach: async \(question\) => \{[\s\S]*?\n    \},/);
-    expect(coach?.[0] ?? "").toMatch(/res\.code === "UNAUTHORIZED" && token === sessionWriteToken/);
+    expect(coach?.[0] ?? "").toMatch(/res\.code === "UNAUTHORIZED" && get\(\)\.user !== null/);
     expect(coach?.[0] ?? "").toMatch(/commitRevocationWall\(set\)/);
   });
 });

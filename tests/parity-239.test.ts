@@ -166,6 +166,12 @@ describe("F-239g — the settings PUT rides the upsert (the budgets-POST house f
     const put = src.slice(putStart);
     expect(put).toContain("db.setting.upsert({");
     expect(put).not.toMatch(/db\.setting\.update\(/);
+    // Session-240 (R-37, F-240h): the count-mapped bulk form joins the
+    // forbidden set — that form short-circuits an empty data object to
+    // count 0 without executing (the F-236a class), and a count-mapped
+    // 404 arm built on it would answer NOT_FOUND for an existing,
+    // owned row while passing the single-record ban above.
+    expect(put).not.toMatch(/db\.setting\.updateMany\(/);
     // The create arm seeds the owner (the lazy-create contract the
     // pair carried) and the update arm carries the parsed fields.
     expect(put).toMatch(/create:\s*\{\s*ownerId:/);

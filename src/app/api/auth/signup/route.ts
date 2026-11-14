@@ -27,6 +27,15 @@ function nameFromEmail(email: string): string {
 
 export async function POST(req: Request) {
   const limit = rateLimit(`signup:${clientKey(req)}`, 10, 15 * 60 * 1000);
+  // Session-240 (R-37, F-240c): the process-level creation ceiling —
+  // the per-IP key above is voidable under the documented default
+  // direct-exposure posture (a client-suppliable XFF hop, the F-218t
+  // boot warning), and unlike the sibling public routes (per-email
+  // secondaries) every successful signup here creates PERSISTENT state
+  // (a User row) and burns TWO scrypts. The uploads family's own
+  // capacity precedent: a global bucket keyed WITHOUT the IP, sized
+  // 2x the e2e battery's ten-signup budget (retries: 0).
+  const totalLimit = rateLimit("signup:process", 20, 15 * 60 * 1000);
   // Session-38 (S38-P6): the opportunistic bucket sweep — the audit
   // found it ran ONLY from login, so the signup/verify/resend buckets
   // were cleaned only when someone next logged in (bounded, but
@@ -39,6 +48,7 @@ export async function POST(req: Request) {
   // Session-67 (N-67h): the denied 429 carries the Retry-After header
   // like the rest of the family.
   if (!limit.allowed) return ERR.RATE_LIMITED(limit.retryAfterSec);
+  if (!totalLimit.allowed) return ERR.RATE_LIMITED(totalLimit.retryAfterSec);
 
   // Session-163: the Zod parse seam — the pre-gate + the name/email/
   // password contract (the s38/s39/s21 semantics: optional trimmed name

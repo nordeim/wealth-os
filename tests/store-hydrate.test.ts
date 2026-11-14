@@ -410,8 +410,12 @@ describe("F-239a — a late-landing 200 cannot re-populate the walled store", ()
 
   it("a SECOND 401 landing after the wall stays walled (the idempotent skip)", async () => {
     // Genus guard: the bump must not break the wall's own idempotence —
-    // a later 401 (the refresh's own arm) compares its stale token,
-    // skips the wall commit, and the store stays on the wall face.
+    // a later 401 (the refresh's own arm) finds the user already
+    // nulled by the wall, and the live-user key (R-37, F-240a) skips
+    // the wall commit — the store stays on the wall face. (Session-240
+    // note: this leg issues the refresh AFTER the wall, so it drives
+    // the user-null skip, not a stale-token skip; the token-stale
+    // interleaving has its own leg in the F-240a battery below.)
     store.setState({
       user,
       hydrated: true,
@@ -535,13 +539,150 @@ describe("F-239d — the inline 401 arms and the refreshAll-wall composition", (
     expect(loggedOut).toBe(true);
     expect(store.getState().user).toBeNull();
     expect(store.getState().hydrated).toBe(false);
-    // The mutation's 401 lands LATE — the wrapper's token guard must
-    // skip the wall (the logout already owns the store's face).
+    // Session-240 (R-37, F-240f): the logout clear's login-transition
+    // gate — the ONE key that distinguishes the logout face from a
+    // spurious wall (the wall clears loading; the logout sets it). A
+    // regression that re-walls after logout flips this to false.
+    expect(store.getState().loading).toBe(true);
+    // The mutation's 401 lands LATE — the wrapper's guard must skip
+    // the wall (the logout already owns the store's face).
     releaseMutation(unauthorized401());
     await pendingMutation;
     const s = store.getState();
     expect(s.user).toBeNull();
     expect(s.hydrated).toBe(false);
+    expect(s.loading).toBe(true);
     expect(s.transactions).toEqual([]);
+  });
+});
+
+// Session-240 (R-37): the revocation-signal discard genus. F-240a: a
+// live-session 401 was discarded on the SEQUENCE dimension alone (two
+// overlapping dashboard fetches whose server reads straddle a
+// revocation — the older-seq read postdates it → 401, the newer-seq
+// read predates it → 200 carrying the old user's data), and the same
+// staleness window rode every 401 arm keyed on the entry token (a
+// refresh's own ENTRY bump stales the token without any clear
+// happening). The cure keys every 401 arm on the LIVE USER — the wall
+// and the logout are the only clear-owners that null it. F-240b: the
+// hydrate settings-tail 401 settled the amber face instead of walling.
+describe("F-240a/b — the revocation signal is never discarded", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("an OLDER refresh's 401 walls before a NEWER refresh's pre-revocation 200 can commit", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    // Two overlapping refreshes: A (older sequence) and B (newer). The
+    // server read B's GET BEFORE the revocation (200, the old user's
+    // data) and A's AFTER it (401) — the reads reorder across two
+    // connections; A's 401 lands at the client first.
+    let releaseA!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseA = resolve;
+        }),
+    );
+    const pendingA = store.getState().refresh();
+    let releaseB!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseB = resolve;
+        }),
+    );
+    const pendingB = store.getState().refresh();
+    // A's 401 lands — pre-cure the combined guard discarded it on the
+    // stale SEQUENCE alone (the token was still live), deferring the
+    // wall to a fetch that never fires it.
+    releaseA(unauthorized401());
+    await pendingA;
+    expect(store.getState().user).toBeNull();
+    // B's pre-revocation 200 lands LAST — pre-cure it passed BOTH
+    // guards (fresh sequence, live token) and re-populated the ledger
+    // over the wall face (the F-239a threat model, sequence edition).
+    releaseB(dashboardEnvelope());
+    await pendingB;
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.transactions).toEqual([]);
+    expect(s.settings).toBeNull();
+    expect(s.error).toBeNull();
+  });
+
+  it("a mutation 401 walls even when a concurrent hydrate staled its entry token", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+    });
+    // The mutation's POST is in flight when the shell remounts and
+    // re-hydrates (the `/` ↔ section-route tree positions) — the
+    // hydrate's own ENTRY bump stales the mutation's captured token
+    // without any clear happening (refresh captures WITHOUT bumping;
+    // hydrate is the non-clearing bumper).
+    let releaseMutation!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseMutation = resolve;
+        }),
+    );
+    const pendingMutation = store.getState().createTransaction({
+      description: "x",
+    });
+    // The remount hydrate lands first: its dashboard + settings reads
+    // predate the revocation (200s — the old user's data commits).
+    fetchMock.mockResolvedValueOnce(dashboardEnvelope());
+    fetchMock.mockResolvedValueOnce(
+      jsonRes({ ok: true, data: { currency: "USD" } }),
+    );
+    await store.getState().hydrate();
+    expect(store.getState().user).not.toBeNull();
+    // The mutation's 401 lands LATE — pre-cure the arm's token
+    // equality check skipped the wall (the hydrate's bump staled the
+    // captured token), leaving the revoked session's ledger standing.
+    releaseMutation(unauthorized401());
+    await pendingMutation;
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.transactions).toEqual([]);
+    expect(s.error).toBeNull();
+  });
+
+  it("a settings GET 401 in hydrate's tail walls instead of settling the amber face", async () => {
+    // F-240b: the dashboard 200 predates the revocation (commits the
+    // user), the settings GET postdates it (401). Pre-cure the tail
+    // treated the 401 like any failure — settled flag up, settings
+    // null, no wall — rendering the Settings page's could-not-load
+    // amber card over the revoked user's standing ledger.
+    fetchMock.mockResolvedValueOnce(dashboardEnvelope());
+    fetchMock.mockResolvedValueOnce(unauthorized401());
+    await store.getState().hydrate();
+    const s = store.getState();
+    expect(s.user).toBeNull();
+    expect(s.settings).toBeNull();
+    expect(s.settingsSettled).toBe(false);
+    expect(s.error).toBeNull();
+    expect(s.loading).toBe(false);
   });
 });

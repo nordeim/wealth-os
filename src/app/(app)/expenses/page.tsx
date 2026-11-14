@@ -38,7 +38,7 @@ import {
 } from "@/lib/constants";
 import { budgetCategorySplit, formatMoney, toDate } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, GLASS_CARD, PAGE_ROOT, CTA } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT, CTA, FORM_INPUT } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/types";
@@ -595,7 +595,7 @@ function ExpenseDialog({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. Whole Foods run"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={FORM_INPUT}
               />
             </div>
 
@@ -612,7 +612,7 @@ function ExpenseDialog({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={FORM_INPUT}
               />
               <div className="flex flex-wrap gap-1.5 pt-1" role="group" aria-label="Quick amount adders">
                 {QUICK_ADDS.map((n) => (

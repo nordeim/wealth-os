@@ -53,7 +53,10 @@ describe("R-14: the mutation actions capture the write token at entry (F-217l)",
 
   it("every action captures the token before its first await", () => {
     expect(STORE).toMatch(/const token = sessionWriteToken;/);
-    expect(STORE).toMatch(/refreshAll\(token, set\)/);
+    // Session-240 (R-37, F-240a): refreshAll gained the `get` carrier
+    // for the live-user 401 key — the entry-token capture contract is
+    // unchanged.
+    expect(STORE).toMatch(/refreshAll\(token, set, get\)/);
   });
 
   it("refresh captures the token at entry too", () => {

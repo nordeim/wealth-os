@@ -148,13 +148,26 @@ function commitRevocationWall(
   // answers 200 with the old user's data) still held the live token
   // and committed AFTER the wall — re-populating the just-cleared
   // ledger over the login wall until the next fetch 401s and
-  // re-walls. Every in-flight guard (refreshAll's token+sequence
+  // re-walls. Every in-flight success-guard (refreshAll's token+sequence
   // pair, hydrate's dashboard and settings-tail guards, the inline
   // arms' own token-equality re-checks) evaluates against the
-  // advanced token and discards the late landing. All three wall
-  // callers compare their captured token BEFORE invoking the wall, so
-  // the advance is sequencing-safe; a second 401 landing later simply
-  // skips its (idempotent) wall commit.
+  // advanced token and discards the late landing.
+  //
+  // Session-240 (R-37, F-240a): the CALLER contract is the live user,
+  // not the entry token — every 401 caller (refreshAll, mutate,
+  // hydrate's dashboard arm, hydrate's settings tail, updateSettings,
+  // askCoach — six sites) keys on `get().user !== null` (hydrate's
+  // dashboard arm adds the fresh-token disjunct for the first load's
+  // revocation window). The token equality form was a skip-hole: a
+  // concurrent hydrate's own ENTRY bump (the shell-remount re-hydrate)
+  // stales the captured token without any clear happening, so a
+  // genuine session-death 401 was discarded alongside the stale
+  // writes it was meant to guard. The wall and the logout are the
+  // only clear-owners that null the user — user-standing is exactly
+  // "no deliberate clear owns the face" — so a 401 under a standing
+  // user always walls, the F-217l logout contract survives (logout
+  // nulls the user before the late landing can check), and the wall
+  // stays idempotent for later 401s (the user is already null).
   sessionWriteToken += 1;
   set({
     ...extra,
@@ -182,6 +195,7 @@ function commitRevocationWall(
 async function refreshAll(
   token: number,
   set: (partial: Partial<WealthOsState>) => void,
+  get: () => WealthOsState,
 ): Promise<Result<DashboardData, string>> {
   // Session-220 (R-17, F-220l): the sequence guard — two quick
   // mutations A→B can resolve out of order (A's fetch landing after
@@ -191,6 +205,21 @@ async function refreshAll(
   // (last-request-wins).
   const seq = ++refreshSeq;
   const res = await call<DashboardData>("/api/dashboard");
+  // Session-240 (R-37, F-240a): a 401 keys on the LIVE USER, above
+  // the combined guard — pre-cure, a live-session 401 was discarded
+  // on the stale-SEQUENCE dimension alone (two overlapping dashboard
+  // fetches whose server reads straddle a revocation: the older-seq
+  // read postdating it → 401 discarded, the newer-seq read predating
+  // it → 200 committing the old user's ledger over the live store —
+  // the F-239a threat model through the sequence dimension), and a
+  // concurrent hydrate's own entry bump stales the token without any
+  // clear happening. User-standing means no deliberate clear owns the
+  // face → wall; user-null means the wall or logout already owns it
+  // → the idempotent skip.
+  if (!res.ok && res.code === "UNAUTHORIZED") {
+    if (get().user !== null) commitRevocationWall(set);
+    return res;
+  }
   if (token !== sessionWriteToken || seq !== refreshSeq) return res;
   if (res.ok) {
     set({
@@ -204,17 +233,6 @@ async function refreshAll(
       loading: false,
       error: null,
     });
-  } else if (res.code === "UNAUTHORIZED") {
-    // Session-237 (R-34, F-237a): the mid-session revocation window.
-    // Pre-cure this arm set only the error — a session revoked between
-    // mutations rendered "Sign in required" in the banner over a stale
-    // workspace (the user object survived, so the shell's revocation
-    // gate never fired). Mirrors hydrate's UNAUTHORIZED branch: the
-    // user nulls, the error stays null, and the shell re-establishes
-    // the login wall with the from_url round-trip — the F-236f intent
-    // completed on both windows. Session-238 (R-35, F-238c): the
-    // commit rides the shared wall shape — the slices clear too.
-    commitRevocationWall(set);
   } else {
     set({ loading: false, error: res.error });
   }
@@ -237,12 +255,20 @@ async function mutate<T>(
   path: string,
   init: RequestInit,
   set: (partial: Partial<WealthOsState>) => void,
+  get: () => WealthOsState,
 ): Promise<Result<T, string>> {
   const token = sessionWriteToken; // F-217l: captured at entry
   const res = await call<T>(path, init);
   if (res.ok) {
-    await refreshAll(token, set);
-  } else if (res.code === "UNAUTHORIZED" && token === sessionWriteToken) {
+    await refreshAll(token, set, get);
+  } else if (res.code === "UNAUTHORIZED" && get().user !== null) {
+    // Session-238 (R-35, F-238b): the third revocation window — the
+    // wall behind the guard. Session-240 (R-37, F-240a): the guard is
+    // the LIVE USER, not the entry token — a concurrent hydrate's own
+    // entry bump stales the captured token without any clear
+    // happening, so the token equality form skipped genuine
+    // session-death 401s; the logout contract survives the re-key
+    // (the logout clear nulls the user before this landing checks).
     commitRevocationWall(set);
   }
   return res;
@@ -287,6 +313,23 @@ function createStore() {
           : { loading: true, error: null, settingsSettled: false },
       );
       const res = await call<DashboardData>("/api/dashboard");
+      // Session-240 (R-37, F-240a): the 401 arm rides ABOVE the
+      // entry-token guard — a concurrent hydrate's own entry bump
+      // (this action's remount twin) stales the token without any
+      // clear happening, so a standing user's 401 walls regardless of
+      // the token; the fresh-token disjunct keeps the FIRST-LOAD
+      // revocation walling (user null, no clear owns the face yet).
+      if (!res.ok && res.code === "UNAUTHORIZED") {
+        if (get().user !== null || token === sessionWriteToken) {
+          // Session-220 (R-17, F-220j): the code-keyed branch (was a
+          // message-substring match). Session-238 (R-35, F-238c): the
+          // commit rides the shared wall shape — hydrated stays true
+          // (the wall's semantics) and the slices clear (the
+          // logout-clear parity).
+          commitRevocationWall(set, { hydrated: true });
+        }
+        return;
+      }
       if (token !== sessionWriteToken) return;
       if (res.ok) {
         set({
@@ -302,6 +345,15 @@ function createStore() {
           error: null,
         });
         const settingsRes = await call<Settings>("/api/settings");
+        // Session-240 (R-37, F-240b): a 401 here means the revocation
+        // landed between hydrate's two calls (the dashboard 200
+        // predated it, the settings GET postdates it) — the wall, not
+        // the amber could-not-load settle the old arm rendered over
+        // the revoked user's standing ledger.
+        if (!settingsRes.ok && settingsRes.code === "UNAUTHORIZED" && get().user !== null) {
+          commitRevocationWall(set);
+          return;
+        }
         if (token === sessionWriteToken) {
           // Session-234 (R-31, F-234a): flip the settled flag in BOTH
           // arms — the in-flight window renders nothing on the Settings
@@ -311,13 +363,6 @@ function createStore() {
             ...(settingsRes.ok ? { settings: settingsRes.data } : {}),
           });
         }
-      } else if (res.code === "UNAUTHORIZED") {
-        // Session-220 (R-17, F-220j): the code-keyed branch (was a
-        // message-substring match on "authenticate"/"Sign in").
-        // Session-238 (R-35, F-238c): the commit rides the shared
-        // wall shape — hydrated stays true (the wall's semantics) and
-        // the slices clear (the logout-clear parity).
-        commitRevocationWall(set, { hydrated: true });
       } else {
         set({ hydrated: true, loading: false, error: res.error });
       }
@@ -364,7 +409,7 @@ function createStore() {
       // post-fetch guard passed, writing the previous user's payload
       // into the cleared store.
       const token = sessionWriteToken;
-      return refreshAll(token, set);
+      return refreshAll(token, set, get);
     },
 
     // Session-238 (R-35, F-238b): every refreshAll-family action rides
@@ -375,92 +420,92 @@ function createStore() {
       mutate<Transaction>("/api/transactions", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     updateTransaction: (id, body) =>
       mutate<Transaction>(`/api/transactions/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     deleteTransaction: (id) =>
       mutate<{ id: string }>(`/api/transactions/${id}`, {
         method: "DELETE",
-      }, set),
+      }, set, get),
     importTransactions: (rows) =>
       mutate<{ imported: number }>("/api/import", {
         method: "POST",
         body: JSON.stringify({ rows }),
-      }, set),
+      }, set, get),
 
     createIncomeSource: (body) =>
       mutate<IncomeSource>("/api/income-sources", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     updateIncomeSource: (id, body) =>
       mutate<IncomeSource>(`/api/income-sources/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     deleteIncomeSource: (id) =>
       mutate<{ id: string }>(`/api/income-sources/${id}`, {
         method: "DELETE",
-      }, set),
+      }, set, get),
 
     createAccount: (body) =>
       mutate<BankAccount>("/api/accounts", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     updateAccount: (id, body) =>
       mutate<BankAccount>(`/api/accounts/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     deleteAccount: (id) =>
       mutate<{ id: string }>(`/api/accounts/${id}`, {
         method: "DELETE",
-      }, set),
+      }, set, get),
 
     createInvestment: (body) =>
       mutate<Investment>("/api/investments", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     updateInvestment: (id, body) =>
       mutate<Investment>(`/api/investments/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     deleteInvestment: (id) =>
       mutate<{ id: string }>(`/api/investments/${id}`, {
         method: "DELETE",
-      }, set),
+      }, set, get),
 
     createGoal: (body) =>
       mutate<Goal>("/api/goals", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     updateGoal: (id, body) =>
       mutate<Goal>(`/api/goals/${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     deleteGoal: (id) =>
       mutate<{ id: string }>(`/api/goals/${id}`, {
         method: "DELETE",
-      }, set),
+      }, set, get),
 
     upsertBudget: (body) =>
       mutate<Budget>("/api/budgets", {
         method: "POST",
         body: JSON.stringify(body),
-      }, set),
+      }, set, get),
     deleteBudget: (category) =>
       mutate<{ category: string }>("/api/budgets", {
         method: "DELETE",
         body: JSON.stringify({ category }),
-      }, set),
+      }, set, get),
 
     updateSettings: async (body) => {
       // F-218e: the write-guard family's one missing member — the
@@ -479,8 +524,11 @@ function createStore() {
       // Session-238 (R-35, F-238b): the third window joins here too —
       // this action sets its slice directly instead of refreshing, so
       // the arm rides inline: a revoked settings PUT walls instead of
-      // toasting over the stale shell.
-      if (res.code === "UNAUTHORIZED" && token === sessionWriteToken) {
+      // toasting over the stale shell. Session-240 (R-37, F-240a): the
+      // guard is the LIVE USER (a concurrent hydrate's entry bump
+      // stales the token without a clear; the logout nulls the user
+      // first, so its contract survives the re-key).
+      if (res.code === "UNAUTHORIZED" && get().user !== null) {
         commitRevocationWall(set);
       }
       return res;
@@ -497,7 +545,9 @@ function createStore() {
         method: "POST",
         body: JSON.stringify({ question }),
       });
-      if (!res.ok && res.code === "UNAUTHORIZED" && token === sessionWriteToken) {
+      // Session-240 (R-37, F-240a): the live-user key (the hydrate-bump
+      // staleness window; the logout nulls the user first).
+      if (!res.ok && res.code === "UNAUTHORIZED" && get().user !== null) {
         commitRevocationWall(set);
       }
       return res;

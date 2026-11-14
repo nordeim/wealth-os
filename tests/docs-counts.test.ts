@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1469;
+const UNIT_TOTAL = 1485;
 const E2E_TOTAL = 147;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 89;
+const TEST_FILES = 90;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 

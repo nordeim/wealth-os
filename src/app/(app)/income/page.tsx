@@ -27,7 +27,7 @@ import {
 } from "@/lib/constants";
 import { formatMoney, relativeDays, toDate, totalMonthlyIncome } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, GLASS_CARD, PAGE_ROOT, CTA } from "@/lib/page-layout";
+import { CARD, GLASS_CARD, PAGE_ROOT, CTA, FORM_INPUT } from "@/lib/page-layout";
 import { useIsDark } from "@/components/layout/theme";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
@@ -292,7 +292,7 @@ function IncomeSourceDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Software Engineering Salary"
-              className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className={FORM_INPUT}
             />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -341,7 +341,7 @@ function IncomeSourceDialog({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={FORM_INPUT}
               />
             </div>
             <div className="space-y-1.5">

@@ -25,7 +25,7 @@ import {
 import { PageHeader } from "@/components/shared/page-parts";
 import { useWealthOs } from "@/stores/wealthos-store";
 import { CURRENCIES, DATE_FORMATS, EXPENSE_CATEGORIES } from "@/lib/constants";
-import { PAGE_ROOT, SETTINGS_CARD } from "@/lib/page-layout";
+import { PAGE_ROOT, SETTINGS_CARD, FORM_INPUT } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
@@ -259,7 +259,7 @@ export default function SettingsPage() {
                 onChange={(e) => setBudgetAmount(e.target.value)}
                 placeholder="Monthly $"
                 aria-label="Monthly budget amount"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-32 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={cn(FORM_INPUT, "sm:w-32")}
               />
               <Button variant="outline" onClick={() => void addBudget()} disabled={busyAdd}>
                 <PlusCircle className="h-4 w-4" />

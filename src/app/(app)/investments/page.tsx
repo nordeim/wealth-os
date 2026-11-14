@@ -48,7 +48,7 @@ import {
   toDate,
 } from "@/lib/finance";
 import { toDateInputValue } from "@/lib/format";
-import { CARD, PAGE_ROOT, CTA } from "@/lib/page-layout";
+import { CARD, PAGE_ROOT, CTA, FORM_INPUT } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Investment } from "@/types";
@@ -468,7 +468,7 @@ function InvestmentDialog({
                 value={symbol}
                 onChange={(e) => setSymbol(e.target.value.toUpperCase())}
                 placeholder="AAPL"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 font-mono text-sm uppercase text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={cn(FORM_INPUT, "font-mono uppercase")}
               />
             </div>
             <div className="space-y-1.5">
@@ -498,7 +498,7 @@ function InvestmentDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Apple Inc."
-              className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+              className={FORM_INPUT}
             />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -515,7 +515,7 @@ function InvestmentDialog({
                 value={shares}
                 onChange={(e) => setShares(e.target.value)}
                 placeholder="0"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={FORM_INPUT}
               />
             </div>
             <div className="space-y-1.5">
@@ -531,7 +531,7 @@ function InvestmentDialog({
                 value={avgCost}
                 onChange={(e) => setAvgCost(e.target.value)}
                 placeholder="0.00"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={FORM_INPUT}
               />
             </div>
             <div className="space-y-1.5">
@@ -547,7 +547,7 @@ function InvestmentDialog({
                 value={currentValue}
                 onChange={(e) => setCurrentValue(e.target.value)}
                 placeholder="0.00"
-                className="h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                className={FORM_INPUT}
               />
             </div>
           </div>
