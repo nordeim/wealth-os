@@ -18,7 +18,7 @@
 //     #faf9f7 wash — live-measured).
 //
 // The seam is PURE (no React, no window): the no-FOUC bootstrap in the
-// root layout mirrors it inline (pre-paint JS cannot import — the
+// root layout mirrors it verbatim (pre-paint JS cannot import — the
 // theme-default.test.ts source pins keep the two honest), and the
 // ThemeProvider pathname effect calls it on every client navigation
 // (closing the login→dashboard and logout→login holes the bootstrap

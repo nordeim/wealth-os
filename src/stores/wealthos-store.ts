@@ -167,7 +167,7 @@ function commitRevocationWall(
   // and committed AFTER the wall — re-populating the just-cleared
   // ledger over the login wall until the next fetch 401s and
   // re-walls. Every in-flight success-guard (refreshAll's token+sequence
-  // pair, hydrate's dashboard and settings-tail guards, the inline
+  // pair, hydrate's dashboard and settings-tail guards, the in-place
   // arms' own token-equality re-checks) evaluates against the
   // advanced token and discards the late landing.
   //
@@ -567,7 +567,7 @@ function createStore() {
       }
       // Session-238 (R-35, F-238b): the third window joins here too —
       // this action sets its slice directly instead of refreshing, so
-      // the arm rides inline: a revoked settings PUT walls instead of
+      // the arm rides in place: a revoked settings PUT walls instead of
       // toasting over the stale shell. Session-241 (R-38, F-241a): the
       // guard is the clear-era match — a concurrent hydrate's entry
       // bump stales the token without a clear; a clear that landed

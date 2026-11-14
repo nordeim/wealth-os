@@ -30,8 +30,13 @@ function SelectTrigger({
       // Session-81 (M-81c3, bundle re-decoded + live-DOM-confirmed on the
       // settings x2 + dashboard x3 selects): the span arm is the
       // reference's [&>span]:line-clamp-1 — its trigger span computes
-      // display flow-root / overflow hidden / text-overflow clip /
-      // line-clamp 1 where our truncate computed block/ellipsis/none.
+      // the flow root display value, overflow hidden, text-overflow
+      // clip, and line-clamp 1 where our truncate computed
+      // block/ellipsis/none. Session-245 (R-42, F-245e): the display
+      // value is written as two words — the hyphenated token was the
+      // sole carrier of a dead rule in the production stylesheet (a
+      // comment citing the class shape emits it under the v4 content
+      // scanner).
       // Session-133 (D-133a0, F-133c1) → Session-185 (D-185a1, the
       // walk58 live find): the s133 retirement REVERSED — the walk58
       // two-app census proved the reference's CURRENT trigger carries
@@ -45,7 +50,7 @@ function SelectTrigger({
       // class string joins through cn() as separate arguments, never
       // through string interpolation (the F-242e doctrine; the
       // pre-cure template form was the one cn( + backtick site in
-      // src/, invisible to the genus guard's className={ scan). A
+      // src/, unseen by the genus guard's className={ scan). A
       // future runtime-value edit must trip the lint shape, not
       // silently emit no CSS under the v4 JIT.
       className={cn(

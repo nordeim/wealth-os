@@ -10,7 +10,7 @@ import { CARD, PAGE_ROOT, STOCK_CARD } from "@/lib/page-layout";
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 // Session-215 (R-12, F-215a — the live-seam convergence): the page’s
-// inline parser copy (pre-214 bare-quote defect, no BOM strip) is
+// local parser copy (pre-214 bare-quote defect, no BOM strip) is
 // RETIRED — the shared, unit-tested seam owns the machine (the BOM
 // strip + the RFC 4180 §2.7 bare-quote rule go live on this surface).
 import { parseCsv, stageCsvDate } from "@/lib/csv";

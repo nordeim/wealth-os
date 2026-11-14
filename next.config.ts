@@ -118,7 +118,7 @@ const nextConfig: NextConfig = {
           // does not carry it, and headers are function, not visuals.
           // Session-235 (R-32, F-235k): the additive containment backstop
           // — script/object/base/form directives join the frame rule.
-          // 'unsafe-inline' on scripts is the Next.js floor (the inline
+          // 'unsafe-inline' on scripts is the Next.js floor (the embedded
           // bootstrap/hydration scripts); retiring it needs a nonce
           // architecture. 'unsafe-eval' rides the DEV branch ONLY:
           // React's dev tooling evals for callstack reconstruction, and a
@@ -134,7 +134,7 @@ const nextConfig: NextConfig = {
           // — every fetch is a same-origin relative path (the store, the
           // auth faces), every image same-origin (the logo, the
           // metadata icons, the og-image, the /api/uploads capability
-          // URLs), no webfonts ship, and the charts' inline style
+          // URLs), no webfonts ship, and the charts' in-markup style
           // attributes need only the style 'unsafe-inline' floor. The
           // analytics CSV export is an anchor-click DOWNLOAD, not a
           // fetch — ungoverned by the fetch directives (the download

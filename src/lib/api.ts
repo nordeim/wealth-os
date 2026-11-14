@@ -51,7 +51,7 @@ export const ERR = {
   INTERNAL: () => fail("INTERNAL", "Something went wrong. Please try again.", 500),
   // Session-236 (R-33, F-236b): the transient-DB family's honest answer —
   // a pool/transaction timeout is 503 with the auth family's byte-identical
-  // copy (F-221g's inline arms hoisted into the envelope; the sessioned
+  // copy (F-221g's in-place arms hoisted into the envelope; the sessioned
   // CRUD routes join the family through isTransientDbError in src/lib/db).
   UNAVAILABLE: () =>
     fail("UNAVAILABLE", "The request took too long — the database timed out. Try again.", 503),
@@ -263,6 +263,39 @@ export async function readBoundedJson(
   } catch {
     return { tooLarge: false, value: null };
   }
+}
+
+// ---- the pre-burn content-type gate (session-245, R-42, F-245a) ----------
+
+/** Session-245 (R-42, F-245a): the public auth family's gate-first
+ *  ordering. The six public routes burned their per-IP bucket BEFORE
+ *  this gate (which lives as Layer 1 inside readBoundedJson), so a
+ *  cross-site plain-text volley — hidden auto-submitting forms,
+ *  `mode:"no-cors"` fetches, the exact technique the F-234g logout
+ *  cure documents — burned the VICTIM's own IP budget at zero
+ *  attacker cost and 429'd every real login for a renewable 15-minute
+ *  window (the same renewable-DoS class the logout cure closed). The
+ *  F-243a doctrine's public-family edition: burn on the path that
+ *  carries the cost the bucket bounds — the credential path passes
+ *  the JSON content-type, the cross-site volley cannot, so the volley
+ *  now dies at this gate's 400 un-bucketed while every brute-force
+ *  bound is preserved (a guesser can trivially carry
+ *  application/json; the gate stops only the form-originated volley).
+ *
+ *  One seam for the whole family (the F-238b never-N-copies rule):
+ *  the same content-type predicate the bounded reader's own Layer 1
+ *  applies, the same 400 copy parseBody's gate-failure arm answers,
+ *  and the stream cancel (a kept-open stream would hold the
+ *  connection — the readBoundedJson contract). The per-IP burn moves
+ *  AFTER this call at every public route; the per-account secondary
+ *  buckets (already post-parse) are unchanged. */
+export async function requireJsonContentType(req: Request): Promise<NextResponse | null> {
+  const contentType = req.headers.get("content-type") ?? "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    await req.body?.cancel().catch(() => {});
+    return ERR.BAD_REQUEST("Invalid request body");
+  }
+  return null;
 }
 
 // ---- the Zod parse seam (session-163 — the auth family's validation) ----

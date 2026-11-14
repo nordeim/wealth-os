@@ -85,7 +85,7 @@ export function AppShell({ user, children }: { user: AppUser; children: React.Re
         header/drawer/dialog family, under the toasts) — the F-224s reveal painted the
         pill exactly where the sticky mobile header sits, and the
         equal z-50 + later-DOM header won the paint order: the
-        focused link was invisible below lg (keyboard users at phone
+        focused link was hidden from view below lg (keyboard users at phone
         widths; the 1280-only leg and axe could not see it). */}
       <a
         href="#main-content"

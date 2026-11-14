@@ -95,7 +95,7 @@ export function resolveDatabaseUrl(rawUrl: string): string {
   }
 
   // Unvalidated last resort: only accept when the target already exists —
-  // never mkdir from an unproven root (a stray CWD must not grow a db/).
+  // never mkdir from an unproven root (a stray CWD must not create a db/).
   const candidate = join(process.cwd(), "prisma", ref);
   if (existsSync(candidate) || existsSync(dirname(candidate))) {
     return `file:${candidate}`;

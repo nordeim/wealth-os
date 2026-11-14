@@ -14,8 +14,8 @@ import { fileURLToPath } from "url";
 // of the process working directory.
 
 // Session-57 (N-57b): the `export` keyword narrowed off this constant —
-// zero external consumers repo-wide (the N-56a lint-invisible class,
-// EXPORT variant). The constant itself stays: uploadsDir()'s repo-root
+// zero external consumers repo-wide (the N-56a class the linter cannot
+// see, EXPORT variant). The constant itself stays: uploadsDir()'s repo-root
 // resolution below consumes it.
 const UPLOADS_DIR_NAME = "uploads";
 

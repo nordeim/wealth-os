@@ -22,10 +22,21 @@ type Params = { params: Promise<{ name: string }> };
  * with immutable caching.
  */
 export async function GET(req: Request, { params }: Params) {
+  const { name } = await params;
+  // Session-245 (R-42, F-245a — the F-243a sibling): the name check
+  // carries no cost (a regex against the pinned charset — no I/O);
+  // the readFile does. The check rides BEFORE the burn so an
+  // invalid-name volley of image tags answers the 404 without
+  // burning the victim's 240-slot uploads budget (the export
+  // precedent's own doctrine: burn on the path that carries the cost
+  // the bucket bounds). Valid capability names burn as before.
+  if (!UPLOAD_NAME_RE.test(name)) {
+    return fail("NOT_FOUND", "File not found", 404);
+  }
   // Session-225 (R-22, F-225i): the light per-IP bucket — the export
   // precedent (240/15). The health route's F-221t note claimed this
   // was the only unthrottled public family; now every public family
-  // carries a bucket. The name charset is pinned below (no traversal),
+  // carries a bucket. The name charset is pinned above (no traversal),
   // immutable caching rides the 200s, and no seeded upload files
   // exist — the bucket cannot trip any test battery.
   const limit = rateLimit(`uploads:${clientKey(req)}`, 240, 15 * 60 * 1000);
@@ -35,10 +46,6 @@ export async function GET(req: Request, { params }: Params) {
     // carries Retry-After and the family copy (this hand-built 429 was
     // the one drift site among the 36).
     return ERR.RATE_LIMITED(limit.retryAfterSec);
-  }
-  const { name } = await params;
-  if (!UPLOAD_NAME_RE.test(name)) {
-    return fail("NOT_FOUND", "File not found", 404);
   }
 
   const ext = name.slice(name.lastIndexOf(".") + 1);

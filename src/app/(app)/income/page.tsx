@@ -53,7 +53,7 @@ export default function IncomePage() {
   // Session-221 (R-18, F-221q): the card-level busy rider — a rapid
   // double-click on Pause/Activate fired two requests (the second
   // toasting a spurious failure). The dialog submits were already
-  // guarded; this covers the inline card buttons.
+  // guarded; this covers the in-place card buttons.
   const [busyId, setBusyId] = React.useState<string | null>(null);
 
   const sources = store.incomeSources;

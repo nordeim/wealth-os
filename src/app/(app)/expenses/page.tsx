@@ -386,7 +386,7 @@ export default function ExpensesPage() {
               ≥ sm the entire history list collapsed to a ~427px
               right-side column while the h2 floated vertically centered
               beside it (live-measured: the list ul x=957 w=427 inside
-              the 1120px card at 1440 — invisible to every gate: the
+              the 1120px card at 1440 — unseen by every gate: the
               sweeps capture the zero-data state, where the squeezed
               element's computed classes are unchanged). The reference's
               own card stacks the title, the tablist, and the content

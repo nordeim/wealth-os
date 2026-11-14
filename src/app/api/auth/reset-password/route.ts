@@ -1,5 +1,5 @@
 import { db, isTransientDbError } from "@/lib/db";
-import { ERR, fail, logApiError, ok, parseBody } from "@/lib/api";
+import { ERR, fail, logApiError, ok, parseBody, requireJsonContentType } from "@/lib/api";
 import { hashPassword, hashResetToken } from "@/lib/password";
 import { resetPasswordSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -32,6 +32,11 @@ const INVALID_TOKEN_MESSAGE = "Invalid or expired reset token";
  * longer outlives the reset performed specifically to kill it.
  */
 export async function POST(req: Request) {
+  // Session-245 (R-42, F-245a): the gate-first ordering — the
+  // content-type CSRF check rides BEFORE the per-IP burn (the
+  // F-234g doctrine; the cross-site volley dies at 400 un-bucketed).
+  const gate = await requireJsonContentType(req);
+  if (gate) return gate;
   const limit = rateLimit(`pw-reset:${clientKey(req)}`, 10, 15 * 60 * 1000);
   // Session-163: the family's sweep placement (denied requests sweep too).
   sweepRateLimits();
@@ -62,7 +67,7 @@ export async function POST(req: Request) {
   } catch (error) {
     logApiError("auth/reset-password POST", error);
     // Session-238 (R-35, F-238k): the seam arm replaces the hand-rolled
-    // inline form (the F-236b hoist this route predated).
+    // in-place form (the F-236b hoist this route predated).
     if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }

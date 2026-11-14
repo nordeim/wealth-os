@@ -54,12 +54,12 @@ export async function POST(req: Request) {
     // Session-235 (R-32, F-235c): the honest-failure arm the sibling auth
     // routes already carry — this wipe is the app's BIGGEST transaction
     // (six owner-scoped deleteManys over the dataset the recorded growth
-    // posture allows to grow unbounded), precisely where the interactive
+    // posture allows to accumulate unbounded), precisely where the interactive
     // timeout fires first. A generic 500 tells the user "try again" —
     // advice that cannot succeed until the dataset shrinks; the 503
     // family copy names the timeout honestly.
     // Session-238 (R-35, F-238k): the seam arm replaces the hand-rolled
-    // inline form (the F-236b hoist this route predated).
+    // in-place form (the F-236b hoist this route predated).
     if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }

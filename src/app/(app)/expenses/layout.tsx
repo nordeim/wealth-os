@@ -1,4 +1,4 @@
-// Session-226 (R-23, F-226b): the lowercase route's own head. The
+// Session-226 (R-23, F-226b): the lower-case route's own head. The
 // section page below is a client component ("use client" — metadata
 // export forbidden), so /expenses inherited the ROOT layout's family
 // (title "WealthOS", canonical "/") and declared itself a duplicate

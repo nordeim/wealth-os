@@ -12,7 +12,7 @@ import { LOGIN_LAYOUT } from "@/lib/page-layout";
  * param: only a NON-EMPTY token opens the "Set new password" form; a
  * missing, empty, or differently-named param renders the "Invalid reset
  * link" card. The submit's invalid/expired/consumed token answers 400
- * "Invalid or expired reset token" rendered as the inline destructive
+ * "Invalid or expired reset token" rendered as the in-place destructive
  * alert; the mismatch guard ("Passwords do not match") blocks the submit
  * client-side (the signup view's own family). Success renders the
  * confirmation card and returns to /login — NO session opens (the user

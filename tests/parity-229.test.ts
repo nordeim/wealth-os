@@ -314,6 +314,65 @@ describe("F-229d — the whole-tree carrier invariant (the genus cure)", () => {
   });
 });
 
+// ---- F-245e: the bare-word dead-carrier invariant -----------------------
+
+/** Session-245 (R-42, F-245e): single-word Tailwind utilities carry no
+ *  hyphen and no colon, so the class-shape heuristic above is blind to
+ *  them — six dead rules shipped through that gap (the font-smoothing
+ *  class, the display-flow class, the case-transform class, the
+ *  display shorthand, the visibility class, and the flex-grow default;
+ *  the emission-verified census in the F-245e ledger row). A comment
+ *  carrying one of these words that is not live code emits a dead
+ *  rule in the production stylesheet.
+ *
+ *  Known derivation blind spot, recorded (not fixed — the splitter is
+ *  load-bearing across the parity-229/242 walkers and the F-240
+ *  closing-quote tuning): a REGEX LITERAL carrying a quote character
+ *  (csv.ts's character class) mis-tracks the splitter's string spans,
+ *  and docblock text in the swallowed span lands in the LIVE side,
+ *  fabricating liveness for words carried there. The leg is the net;
+ *  the before/after build probe is the proof of any round that cures
+ *  carriers. Reword, never allowlist — a real utility quoted in a
+ *  comment is a regression (the F-229d rule). */
+const BARE_UTILITY_WORDS = new Set([
+  "antialiased", "italic", "underline", "overline", "uppercase",
+  "lowercase", "capitalize", "truncate", "flow-root", "block",
+  "inline", "flex", "grid", "table", "contents", "hidden", "static",
+  "fixed", "absolute", "relative", "sticky", "isolate", "visible",
+  "invisible", "collapse", "transform", "filter", "container",
+  "grow", "shrink", "resize",
+]);
+
+describe("F-245e — the bare-word dead-carrier invariant (the genus net)", () => {
+  // The COMMENT_TOKENS map above collects only CLASS-SHAPED comment
+  // tokens (its own collection loop filters on isClassShaped) — bare
+  // words never enter it, so the leg derives its own unfiltered census
+  // over the same files with the same splitter. (The first authoring of
+  // this leg iterated COMMENT_TOKENS and false-greened — the F-244e
+  // lesson's own trap, caught before any cure landed.)
+  const BARE_COMMENT_TOKENS = new Map<string, Set<string>>();
+  for (const f of SRC_FILES) {
+    const { comments } = splitSource(readFileSync(f, "utf8"));
+    const toks = tokens(comments);
+    if (toks.size) BARE_COMMENT_TOKENS.set(SRC_REL(f), toks);
+  }
+
+  it("no comment under src carries a bare single-word utility that is not live code", () => {
+    const offenders: string[] = [];
+    for (const [file, toks] of BARE_COMMENT_TOKENS) {
+      for (const tok of toks) {
+        if (!BARE_UTILITY_WORDS.has(tok)) continue;
+        if (LIVE_TOKENS.has(tok)) continue;
+        offenders.push(`${file}: ${tok}`);
+      }
+    }
+    expect(
+      offenders,
+      `dead bare-word carriers (reword the comment; a real utility quoted in prose is a regression):\n  ${offenders.join("\n  ")}`,
+    ).toEqual([]);
+  });
+});
+
 // ---- F-229e: the DialogHeader docblock truth --------------------------
 
 describe("F-229e — the DialogHeader docblock records the left-aligned genus", () => {

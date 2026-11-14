@@ -119,17 +119,18 @@ describe("F-243b — the v2.39.0 revision block records the true docs-counts leg
     // The F-242j doctrine: the three most recent revision blocks carry
     // their OWN ship counts — the next over-broad count replacement
     // fails `bun run test`. Session-244 (R-41, F-244a — the F-243b
-    // recurrence) advanced the trio: after this round it is
-    // v2.38.0/v2.39.0/v2.40.0 (the v2.37.0 pin ages out; its counts
+    // recurrence) advanced the trio; Session-245 (R-42, F-245b — the
+    // THIRD edition) advanced it again: after this round it is
+    // v2.39.0/v2.40.0/v2.41.0 (the v2.38.0 pin ages out; its counts
     // no longer appear live anywhere a lockstep script would target).
     const guardIt = t.slice(
       t.indexOf("the historical revision blocks keep their OWN ship counts"),
     );
-    expect(guardIt).toContain("v2\\.38\\.0");
     expect(guardIt).toContain("v2\\.39\\.0");
     expect(guardIt).toContain("v2\\.40\\.0");
-    expect(guardIt).not.toContain("v2\\.37\\.0");
-    expect(guardIt).toContain("1552 unit \\(93 files");
+    expect(guardIt).toContain("v2\\.41\\.0");
+    expect(guardIt).not.toContain("v2\\.38\\.0");
+    expect(guardIt).toContain("1581 unit \\(95 files");
   });
 });
 

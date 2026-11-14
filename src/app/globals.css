@@ -466,7 +466,7 @@
 }
 
 /* The mobile drawer sheet (session-207, F-207d): the reference layers a
-   3%-alpha gold→emerald tint (extracted verbatim from its inline style)
+   3%-alpha gold→emerald tint (extracted verbatim from its style attribute)
    over the stone-900→800→900 diagonal. We keep the OPAQUE base — the
    reference's sheet is a transparent veil whose light mode ships
    stone-300-on-light text (unreadable); the sheen rides as the top

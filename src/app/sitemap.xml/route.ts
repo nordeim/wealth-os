@@ -10,7 +10,7 @@ import { siteUrl } from "@/lib/site";
 // changeFrequency, easy to mis-pin.
 // Session-217 (R-14, F-217f): the locs are the CAPITAL twins — the
 // reference's own casing (re-verified live 2026-11-10). Both casings
-// carry per-route metadata since F-226b (the lowercase sections'
+// carry per-route metadata since F-226b (the lower-case sections'
 // pass-through segment layouts mirror the capital bridges' own
 // pageMetadata() calls — the "use client" pages render unchanged
 // inside them), so the casing choice is the reference's parity, not

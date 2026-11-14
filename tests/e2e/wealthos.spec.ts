@@ -603,6 +603,52 @@ test.describe("the per-account verify/resend buckets (F-225c — the F-222n mirr
   });
 });
 
+// Session-245 (R-42, F-245a): the public-family gate-order canary —
+// the plain-text volley the F-234g logout cure documents, fired at the
+// login route. Pre-cure, ten text/plain POSTs burned the victim's own
+// 10-slot per-IP login bucket (the content-type gate lived inside
+// parseBody, AFTER the burn) and the next JSON login on the same
+// client key 429'd for a renewable 15-minute window — the cross-site
+// DoS the doctrine ("burn on the path that carries the cost") closed
+// for logout and the writes family. Post-cure, the gate answers 400
+// un-bucketed: the volley consumes nothing and the JSON login still
+// lands (401 — the timing-equalized unknown-email miss). Rides a
+// pinned fake XFF so the localhost bucket other legs share is never
+// touched.
+test.describe("the public-family gate-order canary (F-245a — the plain-text volley)", () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
+  const ORIGIN = `http://localhost:${e2ePort()}`;
+
+  test("ten text/plain login volleys answer 400 un-bucketed; the JSON login on the same client key still lands", async ({ request }) => {
+    const XFF = "203.0.113.77";
+    const statuses: number[] = [];
+    for (let i = 0; i < 10; i++) {
+      const res = await request.post(`${ORIGIN}/api/auth/login`, {
+        headers: { "content-type": "text/plain", "x-forwarded-for": XFF },
+        data: "email=volley-probe&password=volley-probe",
+      });
+      statuses.push(res.status());
+    }
+    // The gate's own 400 family — identical pre- and post-cure (the
+    // pre-cure tree answered 400 from the gate inside parseBody, after
+    // burning the slot; the assertion that flips is the one below).
+    expect(statuses.filter((s) => s === 400)).toHaveLength(10);
+    // The credential-carrying login on the SAME client key: 401 (the
+    // timing-equalized miss), NOT the 429 the pre-cure volley earned.
+    // A brute-force guesser can trivially carry application/json, so
+    // the anti-brute-force bound is untouched — only the cross-site
+    // volley's free burn is gone.
+    const res = await request.post(`${ORIGIN}/api/auth/login`, {
+      headers: { "x-forwarded-for": XFF },
+      data: {
+        email: "gate-order-probe@example.com",
+        password: "wrong-password-probe",
+      },
+    });
+    expect(res.status()).toBe(401);
+  });
+});
+
 // Session-225 (R-22, F-225h): the route-level search strip pin — the
 // end-to-end seam the sanitizer-only pin cannot see. A literal "%"
 // query is stripped to the empty string and the route's length gate

@@ -21,6 +21,13 @@ export const dynamic = "force-dynamic";
 // uploads GET gained its 240/15 bucket; health stays the only
 // deliberate exception. Session-238, R-35, F-238l: the note moved
 // below the sentence it interrupted (the F-225i splice garbled it).]
+// Session-245 (R-42, F-245f): the enumeration's second member, recorded
+// — /api/auth/me is the second deliberate exception (session-optional,
+// no bucket): a garbage cookie fails the HMAC in microseconds and
+// never reaches the DB, and only a valid signed cookie triggers the
+// findUnique, so the unauthenticated-flood concern that justified
+// health's exception does not apply. Two unbucketed public families,
+// both recorded.
 export async function GET() {
   try {
     await db.$queryRaw`SELECT 1`;

@@ -21,9 +21,9 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1581) | `bun run test` |
+| Unit tests (1591) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
-| E2E (boots own server, 150) | `CI=1 bun run test:e2e` |
+| E2E (boots own server, 151) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
 | Build (standalone) | `bun run build` |
 | Smoke (needs build first) | `bun run smoke` |
@@ -890,3 +890,40 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   can also carry — and re-anchor when the identifier's first
   occurrence is a docblock (the tokenVersion name matched the route's
   own comment BEFORE the arm; the increment site is the anchor).
+
+- **A BARE SINGLE-WORD UTILITY IS INVISIBLE TO THE CLASS-SHAPE
+  HEURISTIC — and the carrier census must cover the ROOT CONFIG FILES
+  too (session 245, R-42, F-245e)**: the parity-229 heuristic keys on
+  hyphen/colon segments, so `antialiased`, `flow-root`, `lowercase`,
+  `inline`, `invisible`, and `grow` (real one-word Tailwind utilities)
+  rode plain English in 49 comment sites, and six dead rules shipped in
+  the production stylesheet with the whole-tree invariant green — its
+  class-shape net cannot even SEE a word with no hyphen. The
+  BARE_UTILITY_WORDS leg now flags comment-carried bare utilities that
+  are not live code; the census lesson is bigger: the walker is
+  src/-scoped but the content detection set scans the ROOT config
+  files (the @source not directives exclude only directories and
+  *.md) — next.config.ts and tsconfig.json carried three of the sites.
+  Two splitter blind spots are recorded (not fixed — it is
+  load-bearing): a regex literal carrying a quote (csv.ts's character
+  class) mis-tracks the string spans and fabricates liveness for
+  docblock words in the swallow; for a fake-live word the reword proof
+  needs its own zero-match pin (the parity-245 form). And when
+  rewording the carriers: the token must VANISH — "display: flow-root"
+  still carries the hyphenated candidate; write "flow root". The
+  before/after build probe is the emission proof, and the CSP
+  `'unsafe-inline'` strings are CODE (proven non-extracting by the
+  same probe).
+- **A LOCKSTEP LEG THAT RIDES ONLY IN THE SCRIPT ROTS THE SITE — pin
+  the site itself (session 245, R-42, F-245c/F-245d — the F-242j
+  genus's structural cure)**: the docs-243 lockstep carried the PAD
+  hierarchy line's correction; docs-244 dropped the leg and the line
+  rotted 93-vs-95 with no failing test, and the §7.1 family rows
+  lagged two rounds the same way while the docs-counts pin pinned the
+  exact STALE row string — the pin enshrined the rot instead of
+  catching it. The cure is structural: the PAD hierarchy line and the
+  §7.1 sub-row ARITHMETIC (domain + arch + infra must equal the Unit
+  row) are now legs of tests/docs-counts.test.ts, so a future
+  lockstep script that drops a leg fails `bun run test` instead of
+  silently rotting the doc. A correction that lives only in a
+  one-shot script is a correction that already stopped happening.

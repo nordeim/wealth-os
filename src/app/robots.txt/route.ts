@@ -1,7 +1,7 @@
 import { siteUrl } from "@/lib/site";
 
 // Session-18 (S18-P4): /robots.txt — the reference's exact format
-// (byte-verified 2026-10-01: LF-only, no trailing newline, lowercase
+// (byte-verified 2026-10-01: LF-only, no trailing newline, lower-case
 // "User-agent", one blank line before the Sitemap entry). Served through
 // an explicit route handler because Next's robots.ts serializer emits
 // "User-Agent" (capital A) — a cosmetic drift from the reference's

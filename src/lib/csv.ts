@@ -203,7 +203,7 @@ export function parseCsv(text: string): string[][] {
  *
  * Session-222 (R-19, F-222a/b/c/d): the R-18 branch's completion.
  * The UTC_DESIGNATED test was case-sensitive (RFC-3339-legal
- * lowercase z fell to the locale branch — a day off on both zone
+ * lower-case z fell to the locale branch — a day off on both zone
  * edges, live-reproduced) and it recognized only ±00:00 (a +09:00
  * cell staged the VIEWER's calendar date — the identical file
  * imported different books for different users, live-reproduced at
@@ -226,8 +226,8 @@ const BARE_ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 // staged the VIEWER's calendar — a wrong day west of the designation
 // (live-reproduced session 225; see the locale-designated family
 // below for the non-ISO shapes).
-// Session-226 (R-23, F-226a): the `i` flag — V8 accepts lowercase
-// "utc"/"gmt" on the space-separated shape ("2026-11-01 10:00 utc"),
+// Session-226 (R-23, F-226a): the `i` flag — V8 accepts the lower-case
+// "utc"/"gmt" spellings on the space-separated shape ("2026-11-01 10:00 utc"),
 // and the case-sensitive tail let it fall to the locale arm (a zone
 // split at the evening hours east of UTC). The designator stays
 // REQUIRED — a bare ISO datetime is a LOCAL form, not designated.
@@ -244,7 +244,7 @@ const PARTIAL_ISO = /^\d{4}(-\d{2})?$/;
 // as year/11/-01-offset) match the partial rejector and null the most
 // common form in the seam. The bare-offset partials ("Nov 2026 +09:00")
 // are V8-NaN and null through the locale arm's whole-parse check
-// (probed, session 226). The `i` flag: V8 accepts lowercase utc/gmt.
+// (probed, session 226). The `i` flag: V8 accepts lower-case utc/gmt.
 const DESIGNATED_NAMED_TAIL =
   "(?:\\s*(?:[Zz]|(?:UTC|GMT|UT|EST|EDT|CST|CDT|MST|MDT|PST|PDT)(?:\\s*[+-]\\d{1,2}(?::?\\d{2})?)?))?$";
 // Session-225 (R-22, F-225a): the NUMERIC year-month partials —

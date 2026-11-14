@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1581;
-const E2E_TOTAL = 150;
+const UNIT_TOTAL = 1591;
+const E2E_TOTAL = 151;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 95;
+const TEST_FILES = 96;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -74,8 +74,13 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // parity-235 — 54 rows; session-236 added parity-236 — 55 rows;
     // session-237 added parity-237 — 56 rows, and the store-hydrate
     // battery joined the infrastructure family (25 → 26); session-239 added parity-239 — 59 rows.)
+    // Session-245 (R-42, F-245d): the family rows complete — parity-243,
+    // parity-244, and parity-245 join the architecture family (62 → 65),
+    // and upload-sniff joins the infrastructure family (26 → 27): the
+    // sub-rows now sum to the Unit row (4 + 65 + 27 = 96), and the
+    // arithmetic leg below pins the sum so a future lag fails loudly.
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 62 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, db-transient) |",
+      "| — architecture pins | 65 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, db-transient) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99
@@ -194,18 +199,17 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   // that adds a new revision block — the recurrence walks otherwise.
   it("the historical revision blocks keep their OWN ship counts (F-242j — the over-replacement guard)", () => {
     const p = norm(doc("Project_Architecture_Document.md"));
-    // v2.38.0 shipped 1519/91 (session 241's §5 row) — the historical
-    // form the live-tense pins never touch.
-    expect(p).toMatch(/\[SR\] v2\.38\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1519 unit \(91 files\)/);
-    // v2.39.0 shipped 1539/92 (session 242's §5 row) — joined the
-    // guard at session 243 (F-243b).
+    // Session-245 (R-42, F-245b): the trio advances to
+    // v2.39.0/v2.40.0/v2.41.0 — the F-243b/F-244a recurrence's third
+    // edition cured (session 244 landed the v2.41.0 block while the
+    // guard still pinned v2.38.0/v2.39.0/v2.40.0; the advance landed
+    // green-by-design BEFORE this session's own lockstep pass, the
+    // F-244a lesson's own rule). The next session that ships a
+    // revision block advances the trio again — first docs act, before
+    // its own lockstep.
     expect(p).toMatch(/\[SR\] v2\.39\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1539 unit \(92 files\)/);
-    // v2.40.0 shipped 1552/93 (session 243's §5 row) — joined the
-    // guard at session 244 (F-244a): its counts were the live counts
-    // the next lockstep pass replaces, the exact recurrence shape
-    // (the F-243b genus, one session later). The block's historical
-    // form carries the +13 delta the session itself shipped.
     expect(p).toMatch(/\[SR\] v2\.40\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1552 unit \(93 files, \+13\)/);
+    expect(p).toMatch(/\[SR\] v2\.41\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1581 unit \(95 files, \+29\)/);
   });
 
   it("the SKILL's stack table carries NO deleted-dependency rows (F-216f, the retired-forms negative ladder)", () => {
@@ -219,5 +223,43 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     expect(s).not.toContain("jspdf");
     expect(s).not.toContain("html2canvas");
     expect(s).not.toContain("pdf-export");
+  });
+});
+
+// Session-245 (R-42): the F-245c/F-245d legs — the PAD truth sites the
+// lockstep scripts dropped. The docs-243 lockstep carried the PAD
+// hierarchy leg; docs-244 dropped it and the line rotted 93-vs-95 with
+// no failing test; the §7.1 family rows lagged two rounds the same way
+// (the pin enshrined the stale row string). Both sites now carry their
+// own structural legs, so a future lockstep that drops a leg fails
+// here instead of silently rotting.
+
+describe("session-245: the PAD hierarchy and family-row truth (F-245c/F-245d)", () => {
+  it("the PAD's file-hierarchy line carries the live suite count (F-245c)", () => {
+    // The line rotted once before (72-vs-92, re-pinned at R-39) and
+    // again now (93-vs-95): a live-tense census site whose lockstep
+    // leg came and went with the script that carried it. The pin is
+    // the structural cure — the leg can never drop again.
+    expect(norm(doc("Project_Architecture_Document.md"))).toContain(
+      `# ${TEST_FILES} unit suites (incl. architecture pins)`,
+    );
+  });
+
+  it("the §7.1 family rows sum to the Unit row (F-245d — the arithmetic leg)", () => {
+    // The F-242j genus's structural cure: a family census that lags
+    // (rows unlisted, sums short of the Unit row) fails loudly instead
+    // of relying on the next lockstep script to carry the leg. The
+    // domain-seams + architecture-pins + infrastructure rows must sum
+    // to the pinned Unit files total.
+    const p = norm(doc("Project_Architecture_Document.md"));
+    const domainRow = p.match(/\| — domain seams \| (\d+) \|/);
+    const archRow = p.match(/\| — architecture pins \| (\d+) \|/);
+    const infraRow = p.match(/\| — infrastructure \| (\d+) \|/);
+    expect(domainRow, "the domain-seams row").not.toBeNull();
+    expect(archRow, "the architecture-pins row").not.toBeNull();
+    expect(infraRow, "the infrastructure row").not.toBeNull();
+    const sum =
+      Number(domainRow?.[1] ?? 0) + Number(archRow?.[1] ?? 0) + Number(infraRow?.[1] ?? 0);
+    expect(sum).toBe(TEST_FILES);
   });
 });

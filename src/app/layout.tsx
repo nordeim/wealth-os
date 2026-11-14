@@ -87,11 +87,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* Session-22 (S22-P2): the antialiased utility is RETIRED — the
-          reference ships no font-smoothing (computed auto) and no
+      {/* Session-22 (S22-P2): the font-smoothing utility is RETIRED — the
+          reference ships no smoothing override (computed auto) and no
           text-rendering override; the scaffold-era shadcn double-smoothing
           (this class + the retired html rule in globals.css) rendered
-          thinner text than the reference on macOS. */}
+          thinner text than the reference on macOS. Session-245 (R-42,
+          F-245e): the prose no longer names the retired token — the
+          v4 content scanner emits a rule for any class-shaped word a
+          comment carries, and this comment was the sole carrier keeping
+          the dead rule in the production stylesheet. */}
       <body className="min-h-screen bg-background font-sans text-foreground">
         {/* The no-FOUC theme bootstrap: applies the theme class BEFORE
             first paint. Session-219 (R-16, F-219c + F-219t — the

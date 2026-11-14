@@ -1,5 +1,5 @@
 import { db, isTransientDbError } from "@/lib/db";
-import { ERR, fail, logApiError, ok, parseBody } from "@/lib/api";
+import { ERR, fail, logApiError, ok, parseBody, requireJsonContentType } from "@/lib/api";
 import { verifyPassword, timingEqualizerHash, setSessionCookie } from "@/lib/auth";
 import { loginSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -8,6 +8,13 @@ import { verificationRequiredMessage } from "@/lib/verification";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  // Session-245 (R-42, F-245a): the gate-first ordering — the
+  // content-type CSRF check rides BEFORE the per-IP burn, so a
+  // cross-site plain-text volley dies at the gate's 400 un-bucketed
+  // (the F-234g doctrine, closed here on its last surface: the
+  // volley must not burn the victim's own login budget).
+  const gate = await requireJsonContentType(req);
+  if (gate) return gate;
   const limit = rateLimit(`login:${clientKey(req)}`, 10, 15 * 60 * 1000);
   sweepRateLimits();
   // Session-67 (N-67h): the 429 joins the ERR family — the hand-built

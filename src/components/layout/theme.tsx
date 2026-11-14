@@ -3,13 +3,13 @@
 // The WealthOS theme seam — session-199. The reference toggles dark mode
 // by writing `dark` on <html> (live-observed) from BOTH the user menu's
 // "Dark Mode" item and the mobile header's moon button. The choice
-// persists in localStorage under "wealthos-theme"; the no-FOUC inline
+// persists in localStorage under "wealthos-theme"; the no-FOUC in-page
 // script in the root layout applies it before first paint. "system"
 // follows prefers-color-scheme live.
 // Session-219 (R-16, F-219c + F-219t): the DEFAULT is now the parity
 // default — app routes resolve DARK for fresh visitors (the reference's
 // own posture, live-measured), the auth faces FORCE light (the
-// reference's always-light pre-login genus). The inline bootstrap owns
+// reference's always-light pre-login genus). The embedded bootstrap owns
 // full page loads; the provider's pathname effect below owns CLIENT
 // navigations (the login→dashboard and logout→login holes the bootstrap
 // cannot see). The resolution logic lives in src/lib/theme-default.ts
@@ -57,7 +57,7 @@ export interface ThemeContextValue {
 
 const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
-/** The external store: <html>.classList — the no-FOUC inline script (and
+/** The external store: <html>.classList — the no-FOUC in-page script (and
  *  every setTheme call) mutates it; useSyncExternalStore subscribes every
  *  consumer to the SAME source of truth with no effect-setState. */
 function subscribeToDarkClass(callback: () => void): () => void {
@@ -85,7 +85,7 @@ export function useIsDark(): boolean {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // The theme LABEL rides localStorage (the choice), the RESOLVED state
-  // rides the DOM class (the effect) — the inline bootstrap script has
+  // rides the DOM class (the effect) — the embedded bootstrap script has
   // already applied the class before hydration.
   const [theme, setThemeState] = React.useState<Theme>("system");
   const isDark = useIsDark();

@@ -69,7 +69,7 @@ export function isForeignKeyViolation(error: unknown): boolean {
  * generic 500's "something went wrong" (a retry cannot succeed until
  * the contention clears — the auth family's own F-220k/F-221g doctrine,
  * completed across the sessioned CRUD family). The forgot/reset/reset
- * routes carried the arm inline since F-221g; this seam is its hoist.
+ * routes carried the arm in place since F-221g; this seam is its hoist.
  */
 export function isTransientDbError(error: unknown): boolean {
   return (

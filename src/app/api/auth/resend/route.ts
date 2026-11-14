@@ -1,5 +1,5 @@
 import { db, isRecordNotFound, isTransientDbError } from "@/lib/db";
-import { ERR, logApiError, ok, parseBody } from "@/lib/api";
+import { ERR, logApiError, ok, parseBody, requireJsonContentType } from "@/lib/api";
 import { resendSchema } from "@/lib/schemas";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
 import { VERIFICATION_TTL_MS, verificationResentMessage } from "@/lib/verification";
@@ -20,6 +20,11 @@ export const dynamic = "force-dynamic";
  * and nulls the response copy; see the signup route's S21-P5 note).
  */
 export async function POST(req: Request) {
+  // Session-245 (R-42, F-245a): the gate-first ordering — the
+  // content-type CSRF check rides BEFORE the per-IP burn (the
+  // F-234g doctrine; the cross-site volley dies at 400 un-bucketed).
+  const gate = await requireJsonContentType(req);
+  if (gate) return gate;
   const limit = rateLimit(`resend:${clientKey(req)}`, 5, 15 * 60 * 1000);
   // Session-38 (S38-P6): the opportunistic bucket sweep (login's
   // placement — see the signup note; S39-P7 moved it before the denied

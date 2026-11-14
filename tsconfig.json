@@ -13,7 +13,7 @@
     // Session-174 (F-174b): the noImplicitAny: false escape hatch is
     // RETIRED — full TS strictness (the digma graft, per the repo's own
     // evaluation report §9.2). The flip surfaced exactly three
-    // stragglers repo-wide (scripts/sweep.ts's inline union-find twin —
+    // stragglers repo-wide (scripts/sweep.ts's in-file union-find twin —
     // now typed like its pure seam); the src/ tree was already clean.
     "esModuleInterop": true,
     "module": "esnext",

@@ -23,7 +23,7 @@ export const NAV_LAYOUT = {
   // viewports — the F-219h drawer cure's desktop twin. Content ≈620px
   // (brand + 9 links + footer) inside the h-screen overflow-hidden
   // root: without the overflow pair the footer (user row, Synced pill)
-  // is unreachable at e.g. 1024×600. Pixel-invisible when content fits
+  // is unreachable at e.g. 1024×600. Pixel-unseen when content fits
   // (no scrollbar renders); the container's min-h-0 groundwork above
   // plus overflow ⇒ the automatic flex minimum releases.
   nav: "flex-1 px-4 py-6 space-y-2 relative z-10 overflow-y-auto scrollbar-thin",
@@ -323,7 +323,7 @@ export const DIALOG_CLOSE =
   // resting / 300 hover mirror keeps the affordance rising in both modes.
   // Session-235 (R-32, F-235f): the hit area — the button's box was the
   // bare 16px glyph; the padding lifts the touch target toward the 24px
-  // floor (the toast dismiss's own p-1 superset family), invisible to
+  // floor (the toast dismiss's own p-1 superset family), unseen by
   // every captured class axis.
   "absolute right-4 top-4 rounded-md p-1.5 text-stone-500 transition-colors hover:text-stone-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none dark:text-stone-400 dark:hover:text-stone-300" as const;
 
@@ -335,7 +335,7 @@ export const DIALOG_CLOSE =
 //
 // Session-240 (R-37, F-240d): the re-entry, honored — the
 // SECTION-PAGE form input genus (the height-10 rounded-lg stone
-// family the six section pages' dialogs and inline forms render) had
+// family the six section pages' dialogs and in-place forms render) had
 // re-grown as a byte-identical literal pasted at sixteen sites, the
 // exact divergence-point genus F-232h cured for the sidebar. The
 // value below is byte-identical to what those sites carried; the
@@ -346,7 +346,7 @@ export const DIALOG_CLOSE =
 // Session-241 (R-38, F-241f): the family's completion — the
 // dialog-textarea genus had re-grown the same way (a byte-identical
 // two-site paste, the notes fields) and re-enters below as
-// FORM_TEXTAREA WITH its consumers; the settings inline input joins
+// FORM_TEXTAREA WITH its consumers; the settings in-place input joins
 // FORM_INPUT as a width-freeing appendage (w-auto overriding w-full,
 // flex-1 governing the flex row). The ICON-BEARING SEARCH input (the
 // expenses page's asymmetric pl-9 pr-3 padding pair and placeholder
