@@ -72,18 +72,34 @@ interface Usage {
   files: Set<string>;
 }
 
+// Session-251 (R-48, F-251f): the census reads CODE, not prose — comment
+// spans are stripped before matching so a docblock citation can never
+// register as live usage (the F-224v/F-229d carrier-comment genus; the
+// gray-500 pin hid behind one for nine sessions while the reverse leg
+// passed on the phantom consumer). Full-line and block comments both
+// strip; a `//` inside a string literal is rare in class strings and the
+// strip is deliberately conservative (it can only UNDERCOUNT usage,
+// never invent it — an undercount fails the forward leg loudly rather
+// than silently passing the reverse).
+function stripComments(text: string): string {
+  return text
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^[ \t]*\/\/.*$/gm, "");
+}
+
 const pairUsage = new Map<string, Usage>();
 const semanticUsage = new Map<string, Usage>();
 
 for (const file of collectSrcFiles(path.join(ROOT, "src"))) {
   const rel = path.relative(ROOT, file);
   const text = readFileSync(file, "utf-8");
-  for (const m of text.matchAll(PAIR_RE)) {
+  const code = stripComments(text);
+  for (const m of code.matchAll(PAIR_RE)) {
     const token = `${m[1]}-${m[2]}`;
     if (!pairUsage.has(token)) pairUsage.set(token, { token, files: new Set() });
     pairUsage.get(token)!.files.add(rel);
   }
-  for (const m of text.matchAll(SEMANTIC_RE)) {
+  for (const m of code.matchAll(SEMANTIC_RE)) {
     const token = m[1];
     if (!semanticUsage.has(token)) semanticUsage.set(token, { token, files: new Set() });
     semanticUsage.get(token)!.files.add(rel);

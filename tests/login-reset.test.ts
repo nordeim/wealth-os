@@ -62,10 +62,12 @@ describe("login reset flow — reference class vocabulary", () => {
     // directly. (Session-11 VLM round: the clone rendered -8px until the
     // re-pin; session-79: the flat mb-4 was 8px too tall at phones.)
     expect(LOGIN_RESET_LAYOUT.back).toBe(
-      // Session-222 (R-19, F-222g): the focus-ring arm joins the constant
-      // (the house amber genus — a legitimate contract change, updated
-      // in the same commit as the cure).
-      "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 sm:mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-md",
+      // Session-222 (R-19, F-222g): the focus-ring arm joins the constant.
+      // Session-251 (R-48, F-251a): the ring steps to ring-ring (the
+      // F-218i ink) — amber-400 measured 1.67:1 on the auth card; a
+      // legitimate contract change, updated in the same commit as the
+      // cure (the F-247d precedent).
+      "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 sm:mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md",
     );
     expect(LOGIN_RESET_LAYOUT.backIcon).toBe("h-4 w-4");
   });
@@ -143,10 +145,11 @@ describe("login reset flow — reference class vocabulary", () => {
     // DOM: <button class="w-full flex items-center justify-center gap-2
     // text-sm text-slate-500 hover:text-slate-700 font-medium
     // transition-colors"> — unlike the reset view's left-aligned -mb-2 one.
-    // Session-223 (R-20, F-223h): + the amber ring genus + rounded-md
-    // (the fourth back joins its three ringed siblings).
+    // Session-223 (R-20, F-223h): + the ring genus + rounded-md
+    // (the fourth back joins its three ringed siblings). Session-251
+    // (R-48, F-251a): the ring steps to ring-ring with the family.
     expect(LOGIN_RESET_LAYOUT.sentBack).toBe(
-      "w-full flex items-center justify-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2",
+      "w-full flex items-center justify-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
     );
   });
 

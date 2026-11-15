@@ -67,7 +67,7 @@ export default function GlobalError({
                 <button
                   type="button"
                   onClick={reset}
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-stone-900 bg-primary rounded-lg hover:bg-primary-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-stone-900 bg-primary rounded-lg hover:bg-primary-hover transition-colors duration-200 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
                 >
                   <RotateCcw className="h-4 w-4 mr-2" aria-hidden="true" />
                   Try again

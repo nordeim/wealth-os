@@ -443,8 +443,12 @@ function createStore() {
         // settings sequence at ISSUE time — the F-249c issue-order
         // rule on the settings slice. A read issued before a
         // settings write must not overwrite the write's commit; a
-        // read issued after it reads post-write data and wins
-        // honestly.
+        // read issued after it PRESUMPTIVELY reads post-write data
+        // (Session-251 truth rider, the F-250p generalized residual:
+        // without server version tokens, a read issued after the
+        // PUT's entry but processed server-side before its write
+        // commits can still land pre-write data — inherent to
+        // client-side LWW, no concrete interleaving demonstrated).
         const sseq = ++settingsSeq;
         const settingsRes = await call<Settings>("/api/settings");
         // Session-240 (R-37, F-240b): a 401 here means the revocation
@@ -664,7 +668,20 @@ function createStore() {
         // A deliberate clear (logout, the wall) advances the era and
         // still owns the face. The F-218e write-guard contract
         // survives in the era key.
-        if (sessionClearSeq === entryClearSeq) set({ settings: res.data });
+        // Session-251 (R-48, F-251c): the settle rider joins the commit —
+        // a superseded hydrate tail skips BOTH its settings commit and
+        // its settingsSettled flip, so without this rider the flag
+        // strands false over a fresh, committed slice until the next
+        // full hydrate (the F-234a both-arms contract's one uncovered
+        // arm). The PUT's own commit settles the cycle; a FAILED PUT
+        // (429/500) leaves the flag to the tail it staled, which is
+        // the honest pre-write state.
+        if (sessionClearSeq === entryClearSeq) {
+          set({
+            settings: res.data,
+            settingsSettled: true,
+          });
+        }
         return res;
       }
       // Session-238 (R-35, F-238b): the third window joins here too —

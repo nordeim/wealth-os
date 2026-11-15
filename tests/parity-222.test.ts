@@ -140,22 +140,28 @@ describe("F-222g — the hand-rolled interactives carry the house focus ring", (
     );
   });
 
-  it("the auth face's Google + footer links (page-layout): the amber ring genus", () => {
+  it("the auth face's Google + footer links (page-layout): the ring-ring family", () => {
+    // Session-251 (R-48, F-251a) recalibration: the constants step from
+    // the amber genus to ring-ring — amber-400 measured 1.67:1 on the
+    // forced-light auth card (below the 3:1 bar); a legitimate contract
+    // change, pin updated in the same commit as the cure (the F-247d
+    // precedent).
     const src = read("src/lib/page-layout.ts");
     expect(src).toContain(
-      "hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2",
+      "hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
     );
     expect(src).toContain(
-      "hover:text-[#1b2437] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-sm",
+      "hover:text-[#1b2437] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm",
     );
   });
 
-  it("the auth funnel's back buttons + resend (login-reset): the amber ring genus", () => {
+  it("the auth funnel's back buttons + resend (login-reset): the ring-ring family", () => {
     const src = read("src/lib/login-reset.ts");
     const ring =
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2";
-    // three back constants + the sent back (F-223h) + the resend button
-    expect(src.match(new RegExp(ring.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"))?.length).toBe(5);
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+    // three back constants + the sent back (F-223h) + the resend button,
+    // now sharing the submits' exact form (F-251a) — eight sites total
+    expect(src.match(new RegExp(ring.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"))?.length).toBe(8);
   });
 
   it("the Expenses chips (filters-close, quick-category, back-to-form, quick-amount): the ring", () => {

@@ -163,12 +163,17 @@ describe("F-223g — the investments type chips select a dark-surface ink", () =
 // ---- F-223h: the focus-ring family's tail -------------------------------------
 
 describe("F-223h — the four tail controls carry the house focus ring", () => {
-  it("login-reset: the sent view's Back joins the amber genus (5 ring sites)", () => {
+  // Session-251 (R-48, F-251a) recalibration: the five constants' ring
+  // steps from the amber genus to ring-ring (the F-218i ink the submits
+  // carry) — amber-400 measured 1.67:1 on the forced-light auth card,
+  // below the 3:1 non-text bar; a legitimate contract change, pin
+  // updated in the same commit as the cure (the F-247d precedent).
+  it("login-reset: the five tail controls join the submits at ring-ring (8 ring sites)", () => {
     const src = read("src/lib/login-reset.ts");
     const ring =
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2";
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
     const escaped = ring.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    expect(src.match(new RegExp(escaped, "g"))?.length).toBe(5);
+    expect(src.match(new RegExp(escaped, "g"))?.length).toBe(8);
   });
 
   it("ai-coach: the suggested-question chips and the Send button carry the ring", () => {
@@ -179,10 +184,10 @@ describe("F-223h — the four tail controls carry the house focus ring", () => {
     expect(src.match(new RegExp(escaped, "g"))?.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("reset-password: the Back to login carries the amber ring", () => {
+  it("reset-password: the Back to login joins the ring-ring family", () => {
     const src = read("src/components/layout/reset-password-screen.tsx");
     expect(src).toContain(
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
     );
   });
 });

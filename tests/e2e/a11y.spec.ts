@@ -153,6 +153,17 @@ const DARK_SECTIONS = [
 // side sanctions above; axe-core does not evaluate SVG stroke
 // contrast, so no register arm is needed — this note IS the citation.
 // The dark-mode legs pass (~5.9-6.8:1 on #0a0a0a).
+//
+// Session-251 (R-48, F-251h): the DOCUMENTED meter-fill deviation —
+// the goal/budget progress bars (goals/page.tsx, dashboard/page.tsx)
+// fill from-amber-400 to-amber-500 on stone-200 tracks, measuring
+// 1.33:1/1.71:1 in light mode (dark arms pass at ~6:1). The fills
+// are the reference's own genus (its meters carry the same amber
+// gradient), each bar carries role="progressbar" with
+// aria-valuenow/min/max plus an adjacent text value (the F-235n/
+// F-236i cures), so the information never rides color alone — the
+// same documented-deviation posture as the chart strokes above; this
+// note IS the citation.
 
 // Session-221 (R-18, F-221f): the two-gate's SCROLL cure — axe only
 // evaluates what is (or can be) rendered in view, and the loops' fixed

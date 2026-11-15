@@ -97,7 +97,7 @@ describe("F-250b — the settings sequence joins the tail's read and the PUT", (
     expect(bumpAt).toBeLessThan(putAt);
     expect(src).toMatch(
       new RegExp(
-        `if \\(sessionClearSeq === entryClearSeq\\) set\\(\\{ settings: res\\.data \\}\\);`,
+        `if \\(sessionClearSeq === entryClearSeq\\) \\{[\\s\\S]*?set\\(\\{[\\s\\S]*?settings: res\\.data,[\\s\\S]*?settingsSettled: true,[\\s\\S]*?\\}\\);`,
       ),
     );
     // The retired forms: the token capture and its guarded commit — a

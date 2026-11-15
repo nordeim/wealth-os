@@ -44,6 +44,14 @@ export async function GET() {
         name: guard.user.name,
         email: guard.user.email,
         avatarColor: guard.user.avatarColor,
+        // Session-251 (R-48, F-251d): the projection widens to the full
+        // User shape — the store commits this payload `as User`, and the
+        // narrowed four-field form left photoUrl/role runtime-undefined
+        // under the full-shape type (both fields already ride
+        // requireSession's F-228h select, so this adds no query and
+        // exposes nothing the session guard does not already carry).
+        photoUrl: guard.user.photoUrl,
+        role: guard.user.role,
       },
     });
   } catch (error) {

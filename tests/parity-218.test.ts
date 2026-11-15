@@ -61,7 +61,7 @@ describe("R-15: updateSettings joins the write-guard family (F-218e)", () => {
     // the face), and the settings sequence bumps at entry to stale
     // every in-flight older read.
     expect(STORE).toMatch(
-      /updateSettings: async \(body\) => \{[\s\S]*?const entryClearSeq = sessionClearSeq;[\s\S]*?\+\+settingsSeq;[\s\S]*?if \(res\.ok\) \{\s*if \(sessionClearSeq === entryClearSeq\) set\(\{ settings: res\.data \}\);/,
+      /updateSettings: async \(body\) => \{[\s\S]*?const entryClearSeq = sessionClearSeq;[\s\S]*?\+\+settingsSeq;[\s\S]*?if \(res\.ok\) \{[\s\S]*?if \(sessionClearSeq === entryClearSeq\) \{[\s\S]*?settings: res\.data,[\s\S]*?settingsSettled: true,[\s\S]*?\}\);/,
     );
   });
 

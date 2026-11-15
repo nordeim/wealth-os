@@ -183,7 +183,10 @@ describe("session-21: the signup view vocabulary (S21-P4)", () => {
     // computed 8px gap directly.
     expect(L.back).toBe(
       // Session-222 (R-19, F-222g): the focus-ring arm joins the constant.
-      "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-md",
+      // Session-251 (R-48, F-251a): the ring steps to ring-ring with the
+      // family (amber-400 measured 1.67:1 on the auth card — the F-247d
+      // same-commit recalibration).
+      "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md",
     );
     expect(L.backIcon).toBe(LOGIN_RESET_LAYOUT.backIcon);
   });
@@ -255,7 +258,9 @@ describe("session-21: the verify view vocabulary (S21-P5)", () => {
     expect(L.resendLine).toBe("text-sm text-slate-600");
     expect(L.resendButton).toBe(
       // Session-222 (R-19, F-222g): the focus-ring arm joins the constant.
-      "font-medium text-slate-700 hover:text-slate-900 disabled:opacity-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-sm",
+      // Session-251 (R-48, F-251a): the ring steps to ring-ring with the
+      // family (the F-247d same-commit recalibration).
+      "font-medium text-slate-700 hover:text-slate-900 disabled:opacity-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm",
     );
   });
 

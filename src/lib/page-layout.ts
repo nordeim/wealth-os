@@ -437,7 +437,7 @@ export const LOGIN_LAYOUT = {
     // face's hand-rolled buttons (the submit already carried it; the
     // UA-default outline was the only affordance here, tinted ≈3:1 by
     // the globals outline-color).
-    "flex w-full items-center justify-center gap-3 rounded-xl border border-[#e3e7ee] bg-white px-5 py-3 font-medium text-[#1b2437] text-[15px] transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2",
+    "flex w-full items-center justify-center gap-3 rounded-xl border border-[#e3e7ee] bg-white px-5 py-3 font-medium text-[#1b2437] text-[15px] transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
   googleIcon: "shrink-0",
   divider: "relative my-6",
   dividerLine: "shrink-0 h-[1px] w-full bg-[#e3e7ee]",
@@ -452,12 +452,12 @@ export const LOGIN_LAYOUT = {
   input:
     "h-11 w-full rounded-xl border border-[#e3e7ee] bg-white pl-10 pr-3 placeholder:text-[#a3adc2] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40 text-base md:text-sm",
   submit:
-    "flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-[#131b33] font-medium text-white shadow-sm transition-all duration-200 hover:bg-[#0f1630] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 text-sm",
+    "flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-[#131b33] font-medium text-white shadow-sm transition-all duration-200 hover:bg-[#0f1630] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-sm",
   footer: "flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0",
   footerLink:
     // Session-222 (R-19, F-222g): the house focus ring (the auth-face
     // amber genus, matching the submit/google pair).
-    "text-sm text-[#6b7688] transition-colors hover:text-[#1b2437] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-sm",
+    "text-sm text-[#6b7688] transition-colors hover:text-[#1b2437] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm",
   footerLinkStrong: "font-semibold text-[#1b2437]",
 } as const;
 export const NOT_FOUND_LAYOUT = {
@@ -481,7 +481,7 @@ export const NOT_FOUND_LAYOUT = {
   homeButton:
     // Session-222 (R-19, F-222g): the house focus ring (focus-visible,
     // not the legacy focus:) + the dark arms.
-    "inline-flex items-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:text-stone-200 dark:bg-stone-900 dark:border-stone-700 dark:hover:bg-stone-800 dark:hover:border-stone-600",
+    "inline-flex items-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors duration-200 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:text-stone-200 dark:bg-stone-900 dark:border-stone-700 dark:hover:bg-stone-800 dark:hover:border-stone-600",
   homeIcon: "w-4 h-4 mr-2",
   homeHref: "/",
 } as const;

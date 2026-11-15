@@ -257,7 +257,10 @@ async function main(): Promise<void> {
     const bundleUrl = pickAppBundle(candidates);
     if (!bundleUrl) {
       console.error("[probe] no scripts discovered post-login — the reference shell changed");
-      process.exit(1);
+      // Session-251 (F-251e): exitCode + return, never process.exit —
+      // the in-main exits skip the finally's browser.close().
+      process.exitCode = 1;
+      return;
     }
     const buf = bodies.get(bundleUrl)!;
     const md5 = createHash("md5").update(buf).digest("hex");
@@ -278,17 +281,26 @@ async function main(): Promise<void> {
       const css = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
         .map((l) => (l as HTMLLinkElement).href)
         .filter((u) => u && new URL(u, base).origin === new URL(base).origin);
-      return css[0] ?? null;
+      // Session-251 (F-251e): positively identify the app stylesheet —
+      // the post-login shell loads /assets/*.css, and a platform-
+      // inserted same-origin stylesheet ahead of it would silently
+      // re-target a positional pick (re-opening the F-250q blind spot
+      // this fingerprint exists to close). The positional form stays
+      // as the annotated fallback if the anatomy ever changes.
+      const app = css.filter((u) => new URL(u, base).pathname.includes("/assets/"));
+      return app[0] ?? css[0] ?? null;
     }, REF_URL);
     if (!styleUrl) {
       console.error("[probe] the reference's styling anatomy changed (no app stylesheet on the post-login shell)");
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     const cssResp = await page.request.get(styleUrl);
     const cssBody = cssResp.ok() ? await cssResp.body() : null;
     if (!cssBody) {
       console.error("[probe] could not fetch the app stylesheet — treating as CHANGED");
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     const cssFingerprint: BundleFingerprint = {
       md5: createHash("md5").update(cssBody).digest("hex"),
@@ -396,7 +408,8 @@ async function main(): Promise<void> {
       console.error(
         "[probe] CHANGED — a parity EVENT: re-run the maiden sweeps + re-walk the interactive families before trusting the drift gates",
       );
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     log("all standing layers verified — the reference is stable");
   } finally {

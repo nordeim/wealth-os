@@ -18,8 +18,8 @@ import { TABS_SEGMENTED } from "@/lib/page-layout";
 // factually wrong — no column utility rides that constant).
 //
 // Session-12 (S12-P4): the tracks carry text-muted-ink (the reference's
-// tablist muted-ink token — inactive tabs INHERIT #737373 instead
-// of carrying gray-500) and the triggers are the reference's STOCK Radix
+// tablist muted-ink token — inactive tabs INHERIT the token rather than
+// a neutral-gray utility step) and the triggers are the reference's STOCK Radix
 // classes: natural height (no 28px lock), transition-all, ring-offset-background,
 // the bare `shadow` on the active state (the s6 shadow-sm pin was one step
 // light), data-[state=active]:* variants riding a data-state attribute,
@@ -70,14 +70,18 @@ const TabsContext = React.createContext<{ uid: string; value: string } | null>(n
 // panel shell; the per-page mt-*/space-y-* classes are appended by the
 // pages (mt-4 space-y-2 on activities, mt-2 space-y-4 on settings, mt-2 on
 // reports — the mt-* collapses against the wrapper's space-y margin).
-// Session-129 (F-129c1): the extracted string's ring-offset-background is
-// the COMPUTED-CONTRACT EXCEPTION, retired per the s11 DIALOG_CLOSE
-// precedent — the reference's ride computes hsl(0 0% 100%) = #ffffff; OUR
-// --color-background is the page bg #f9fafb (the F-119c2 inverted-token
-// genus), so the class drifts the panel's 2px focus-visible halo; the v4
-// DEFAULT offset color is #fff — byte-equal with the class absent.
+// Session-129 (F-129c1) retired the extracted string's ring-offset-background
+// as a byte-parity adjudication in the light theme (the reference's ride
+// computed #ffffff against OUR then-unflipped token). Session-251 (R-48,
+// F-251g) supersedes that adjudication: the dark era (session 217+) flipped
+// --color-background, and in the fresh-visitor DARK default the retired
+// class leaves the v4 default #fff halo around the panel on
+// Expenses/Analytics — the reference's own stock class computes a dark
+// offset there. The token form returns (the F-226i cure shape), and the
+// delta in the light theme (#f9fafb vs its #ffffff) is a 1-step
+// near-match, imperceptible at 2px.
 const PANEL_BASE =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 function Tabs({ tabs, value, onValueChange, className, variant = "underline", ariaLabel, children }: TabsProps) {
   const uid = React.useId();

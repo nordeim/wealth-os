@@ -499,3 +499,70 @@ describe("F-250b — the settings sequence (the F-249h windows)", () => {
     expect(store.getState().settings).toEqual({ currency: "EUR" });
   });
 });
+
+// Session-251 (R-48, F-251c): the settingsSettled strand — the R-47
+// sequence's one uncovered arm. The settle guard skips BOTH the settings
+// commit and the settingsSettled flip when the tail is superseded, so a
+// remount hydrate in flight (entry flipped the flag false) whose tail is
+// then superseded by a PUT left the flag false over a fresh, committed
+// slice until the next full hydrate — the F-234a both-arms contract
+// silently violated. The rider: the PUT's own commit settles the cycle.
+describe("F-251c — a superseded tail cannot strand settingsSettled over fresh data", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("the settled flag rides the PUT's commit when the tail is superseded", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [] as never,
+      settings: { currency: "USD" } as never,
+      settingsSettled: true,
+    });
+    // The remount hydrate's dashboard GET lands ok; its settings tail
+    // is HELD (its read predates the PUT — the superseded case).
+    fetchMock.mockResolvedValueOnce(dashboardEnvelopeWithRow());
+    let releaseTail!: (r: Response) => void;
+    let tailIssued!: () => void;
+    const tailIssuedPromise = new Promise<void>((resolve) => {
+      tailIssued = resolve;
+    });
+    fetchMock.mockImplementationOnce(() => {
+      tailIssued();
+      return new Promise<Response>((resolve) => {
+        releaseTail = resolve;
+      });
+    });
+    const pendingHydrate = store.getState().hydrate();
+    await tailIssuedPromise;
+    // The hydrate's entry flipped settingsSettled false (the in-flight
+    // window); the PUT lands and commits the fresh slice.
+    fetchMock.mockResolvedValueOnce(settingsEnvelopeFor("EUR"));
+    const res = await store.getState().updateSettings({
+      currency: "EUR",
+    } as never);
+    expect(res.ok).toBe(true);
+    // The superseded tail lands LAST with the pre-PUT read — the
+    // sequence guard skips its settle AND its commit.
+    releaseTail(settingsEnvelopeFor("USD"));
+    await pendingHydrate;
+    // THE F-251c DEFECT: pre-cure the flag stayed false over the fresh
+    // EUR slice (nothing re-flipped it until the next full hydrate).
+    // The rider: the PUT's commit settles the cycle itself.
+    expect(store.getState().settings).toEqual({ currency: "EUR" });
+    expect(store.getState().settingsSettled).toBe(true);
+  });
+});

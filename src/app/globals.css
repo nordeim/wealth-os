@@ -207,7 +207,10 @@
   --color-emerald-900: #064e3b;
   --color-emerald-950: #022c22;
   --color-gray-300: #d1d5db;
-  --color-gray-500: #6b7280;
+  /* Session-251 (R-48, F-251f): the dead gray-500 step pin retired —
+     its only "consumer" was a docblock citation (the F-229d
+     carrier-comment genus); the palette census now strips comments,
+     so the dead pin could no longer hide behind prose. */
   --color-gray-700: #374151;
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;

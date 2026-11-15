@@ -87,8 +87,8 @@ describe("session-213: the prisma-7 migration contract (R-9 — the seam changes
     expect(config).toMatch(/schema:\s*"prisma\/schema\.prisma"/);
     expect(
       norm(config),
-      "the datasource URL must route through resolveDatabaseUrl (the db-path seam) so a relative URL can never ride the v7 CWD rule out of the repo",
-    ).toContain("resolveDatabaseUrl(");
+      "the datasource URL must route through runtimeDatabaseUrl (the signature-aware db-path seam) so no invocation pattern — including bun's absolutized DATABASE_URL on a direct `bun x prisma` call — can land the database outside <repo>/db/ (session-251, F-251b: the previous direct resolveDatabaseUrl(env) form passed the absolutized mirror path through untouched)",
+    ).toContain("runtimeDatabaseUrl()");
   });
 
   it("the e2e global-setup carries no removed --skip-generate flag and pins the e2e database by ABSOLUTE url", () => {

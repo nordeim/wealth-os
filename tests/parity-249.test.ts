@@ -153,9 +153,11 @@ describe("F-249c — the write paths (session-250: the settings write joins the 
     // keys on the era (the F-249c reasoning); the sequence bump at
     // entry stales every in-flight older read. Pinned in
     // parity-250's own battery; this pin keeps the recalibrated
-    // form honest here.
+    // form honest here. Session-251 (R-48, F-251c): the commit gains the
+    // settingsSettled rider (a superseded tail can no longer strand the
+    // flag false over fresh data) — the F-247d same-commit recalibration.
     expect(m?.[0] ?? "").toMatch(
-      /if \(sessionClearSeq === entryClearSeq\) set\(\{ settings: res\.data \}\);/,
+      /if \(sessionClearSeq === entryClearSeq\) \{[\s\S]*?settings: res\.data,[\s\S]*?settingsSettled: true,[\s\S]*?\}\);/,
     );
     expect(m?.[0] ?? "").toContain("++settingsSeq;");
   });
