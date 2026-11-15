@@ -56,9 +56,10 @@ test.describe("section navigation", () => {
   test("the fresh visitor's Dashboard renders DARK by default (F-219c)", async ({ page }) => {
     await page.goto("/Dashboard");
     await expect(page.locator("html")).toHaveClass(/dark/);
-    // The SHELL root carries the visible wash (`dark:bg-[#0e1310]` —
-    // page-layout.ts:7); the body's bg-background token never flips (the
-    // auth faces' light mechanism, F-219t).
+    // The SHELL root's visible wash rides the background token's dark flip
+    // (page-layout.ts:12, the F-220d mechanism; the former local dark
+    // patch retired session-252 per F-252g). The body's read stays the
+    // fallback (the auth faces' light mechanism, F-219t).
     const shellBg = await page.evaluate(() => {
       const shell = document.querySelector(".page-wash") ?? document.body;
       return getComputedStyle(shell).backgroundColor;
@@ -447,6 +448,36 @@ test.describe("the Expenses tabs + search", () => {
     // The pre-cure wash computed rgb(23, 23, 23) (neutral-900); the
     // cure's dark arm computes stone-100 rgb(245, 245, 244).
     expect(ink).toBe("rgb(245, 245, 244)");
+  });
+
+  test("the keyboard-highlighted Select option paints the focus ring (F-252a — the wash-only indicator)", async ({ page }) => {
+    // Session-252 (R-49): the wash was the ONLY focus affordance on the
+    // list-item families and computes 1.09:1 light / 1.31:1 dark
+    // against the panel it sits on — imperceptible as an indicator.
+    // The keyboard ring arm joins the wash (the ink token at
+    // 17.49:1 light / 18.15:1 dark). This leg asserts the computed
+    // ring layer on the keyboard-highlighted option: the default-run
+    // face is the fresh-visitor DARK posture, so the ring reads the
+    // flipped ink rgb(245, 245, 244) while the wash beneath it stays
+    // stone-800 rgb(41, 37, 36).
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    await expect(page.getByRole("group", { name: "Expense filters" })).toBeVisible();
+    await page.locator("#expense-category-filter").click();
+    const option = page.getByRole("option").first();
+    await expect(option).toBeVisible();
+    await page.keyboard.press("ArrowDown");
+    const highlighted = page.getByRole("option").nth(1);
+    await expect(highlighted).toBeFocused();
+    // The colors utility animates the wash, not the shadow — but give
+    // the paint a frame to settle before the computed read (the R-48
+    // captures lesson: an early read can false-negative mid-transition).
+    await page.waitForTimeout(300);
+    const shadow = await highlighted.evaluate((el) => getComputedStyle(el).boxShadow);
+    expect(shadow).toContain("rgb(245, 245, 244)");
+    // The wash stays beneath the ring (the pointer-user affordance).
+    const wash = await highlighted.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(wash).toBe("rgb(41, 37, 36)");
   });
 
   test("the filters TRIGGER toggles the popover closed (F-218b — the R-14 regression's own face)", async ({ page }) => {

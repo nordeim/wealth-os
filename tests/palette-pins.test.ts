@@ -73,18 +73,22 @@ interface Usage {
 }
 
 // Session-251 (R-48, F-251f): the census reads CODE, not prose — comment
-// spans are stripped before matching so a docblock citation can never
+// spans are stripped before matching so a comment citation can never
 // register as live usage (the F-224v/F-229d carrier-comment genus; the
 // gray-500 pin hid behind one for nine sessions while the reverse leg
-// passed on the phantom consumer). Full-line and block comments both
-// strip; a `//` inside a string literal is rare in class strings and the
-// strip is deliberately conservative (it can only UNDERCOUNT usage,
-// never invent it — an undercount fails the forward leg loudly rather
-// than silently passing the reverse).
+// passed on the phantom consumer). Full-line, trailing, and block
+// comments all strip — the trailing arm (session-252, R-49, F-252d)
+// is URL-colon-exempt so an https literal survives, and a
+// protocol-relative URL's leading quote guards it too; a quoted
+// double-slash mid-string remains the documented conservative
+// residual (it can only UNDERCOUNT usage, never invent it — an
+// undercount fails the forward leg loudly rather than silently
+// passing the reverse).
 function stripComments(text: string): string {
   return text
     .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/^[ \t]*\/\/.*$/gm, "");
+    .replace(/^[ \t]*\/\/.*$/gm, "")
+    .replace(/([^:"'])\/\/.*$/gm, "$1");
 }
 
 const pairUsage = new Map<string, Usage>();

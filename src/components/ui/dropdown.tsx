@@ -64,7 +64,13 @@ function DropdownItem({
       <button
         type="button"
         className={cn(
-          "flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none transition-colors hover:bg-line-soft focus-visible:bg-line-soft",
+          // Session-252 (R-49, F-252a): the keyboard ring arm joins the
+          // wash — the MENU_ITEM and SelectItem cure applied to the third
+          // of the list families (latent today, zero live consumers; the
+          // wash alone computes under 1.4:1 on both panels). The first
+          // consumer ships a compliant focus indicator, not the stock
+          // wash-only form the F-225l note below cites.
+          "flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none transition-colors hover:bg-line-soft focus-visible:bg-line-soft focus-visible:ring-2 focus-visible:ring-ring",
           // Session-225 (R-22, F-225l): the latent destructive ink's
           // measured value, cited where the next consumer will read
           // it — text-danger is --color-danger #ef4444, 3.76:1 on

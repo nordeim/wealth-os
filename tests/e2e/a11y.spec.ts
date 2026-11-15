@@ -164,6 +164,14 @@ const DARK_SECTIONS = [
 // F-236i cures), so the information never rides color alone — the
 // same documented-deviation posture as the chart strokes above; this
 // note IS the citation.
+//
+// Session-252 (R-49, F-252h): the register's red sibling — the
+// dashboard's over-budget meter arm (dashboard/page.tsx) fills
+// red-500 on the same stone-200 track, measuring 3.0:1 in light mode
+// (exactly at the bar; the dark arm passes comfortably) — the same
+// role="progressbar" + adjacent-text posture as the amber fills
+// above. This note is its citation, so a future contrast sweep
+// cannot "discover" the red arm as an unregistered miss.
 
 // Session-221 (R-18, F-221f): the two-gate's SCROLL cure — axe only
 // evaluates what is (or can be) rendered in view, and the loops' fixed

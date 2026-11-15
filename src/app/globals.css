@@ -325,7 +325,8 @@
      (session-199) is DELETED — it was INERT (a utilities-layer
      background utility on <body> always beats a base-layer rule; the
      F-217c mechanism) and the visible dark wash actually came from
-     SHELL_LAYOUT.root's local `dark:bg-[#0e1310]` patch. The token
+     SHELL_LAYOUT.root's local dark patch (session-252, R-49, F-252g:
+     retired — a byte-equal duplicate of the flip below). The token
      flip in the .dark block below now carries the wash properly
      (body, the CSS-canvas overscroll color, and any future
      background-token consumer). */
@@ -341,12 +342,13 @@
   /* Session-220 (R-17, F-220d): the background token's dark flip — the
      F-217c trap class, background edition. The light pin #faf9f7 used to
      ride .dark untouched while the dead base-layer rule sat inert beside
-     it (the shell's local dark:bg-[#0e1310] patch masked the gap). The
-     flip closes the latent class: the CSS-canvas overscroll color and
-     every background token consumer now resolve the reference's dark wash.
-     The settings switch thumb moved to bg-white in the same commit (its
-     old background token read was a deliberate use of the UNFLIPPED token
-     as the light knob). */
+     it (the shell's local dark patch masked the gap; retired session-252
+     per F-252g — the flip alone owns the wash). The flip closes the
+     latent class: the CSS-canvas overscroll color and every
+     background token consumer now resolve the reference's dark wash.
+     The settings switch thumb moved to bg-white in the same commit
+     (its old background token read was a deliberate use of the
+     UNFLIPPED token as the light knob). */
   --color-background: #0e1310;
   /* Session-214 (R-11, F-214e): the semantic set's dark flips — the
      shadcn neutral dark family (14.9% surfaces, 98% foregrounds).
@@ -513,6 +515,19 @@
   &::-webkit-scrollbar-thumb {
     background-color: #d1d5db;
     border-radius: 9999px;
+  }
+}
+
+/* Session-252 (R-49, F-252e): the dark arm — the scaffold-era utility
+   shipped the light thumb in both modes while every neighboring custom
+   utility carries its dark form. The stone-500 family reads 3.91:1 on
+   the dark wash (computed, not guessed); the light arm keeps its
+   1.4:1 genus (custom UA chrome, the documented posture). */
+.dark .scrollbar-thin {
+  scrollbar-color: #78716c transparent;
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #78716c;
   }
 }
 

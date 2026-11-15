@@ -283,7 +283,7 @@ async function refreshAll(
       investments: res.data.investments,
       goals: res.data.goals,
       budgets: res.data.budgets,
-      user: res.data.user as User,
+      user: res.data.user,
       loading: false,
       error: null,
     });
@@ -423,7 +423,7 @@ function createStore() {
           investments: res.data.investments,
           goals: res.data.goals,
           budgets: res.data.budgets,
-          user: res.data.user as User,
+          user: res.data.user,
           hydrated: true,
           loading: false,
           error: null,

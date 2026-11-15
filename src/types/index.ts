@@ -107,7 +107,12 @@ export interface DashboardData {
   investments: Investment[];
   goals: Goal[];
   budgets: Budget[];
-  user: Pick<User, "id" | "name" | "email" | "avatarColor">;
+  // Session-252 (R-49, F-252c): the full User shape — the F-251d
+  // route projection widened past this Pick and left the store's
+  // upcasts load-bearing (a future route narrowing would compile
+  // silently); the type seam now matches the wire, and the casts are
+  // gone from the store.
+  user: User;
 }
 
 // Session-217 (R-14, F-217i): the SearchResults interface retired —

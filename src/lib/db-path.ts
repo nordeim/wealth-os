@@ -34,7 +34,8 @@
 // design, e.g. for production deployments). effectiveDatabaseUrl detects
 // exactly that signature (env var == absolutization of the .env value) and
 // re-derives the URL from the RAW .env value via the schema rule. Any other
-// env value (a caller override such as the e2e suite's file:../db/e2e.db,
+// env value (a caller override such as the e2e suite's absolute db/e2e.db pin —
+// its global-setup builds the absolute form at runtime,
 // a postgres URL, a production absolute path) is respected as-is.
 
 import { existsSync, mkdirSync, readFileSync } from "fs";

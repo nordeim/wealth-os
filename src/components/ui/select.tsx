@@ -142,8 +142,14 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
       // combobox; every Select unreadable at the highlight moment in
       // the fresh-visitor default mode). The MENU_ITEM precedent:
       // stone-100 on stone-800 = 13.9:1.
+      // Session-252 (R-49, F-252a): the keyboard ring arm joins the
+      // wash — the wash alone indicates keyboard focus at 1.09:1
+      // light / 1.31:1 dark against the listbox panel (the ink leg
+      // above measured the text against the wash, a different axis);
+      // the ring ink reads 17.49:1 light / 18.15:1 dark, and the wash
+      // stays for pointer users.
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-line-soft focus:text-neutral-900 dark:focus:bg-stone-800 dark:focus:text-stone-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-line-soft focus:text-neutral-900 dark:focus:bg-stone-800 dark:focus:text-stone-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
       {...props}

@@ -544,7 +544,15 @@ export const budgetUpsertSchema = z.object({
 });
 
 export const budgetDeleteSchema = z.object({
-  category: z.string().trim().min(1).max(80),
+  // Session-252 (R-49, F-252j): the house copy reaches the delete
+  // family's one bare field — the sibling upsert schema messages every
+  // bound, and the raw library copy ("Too small: expected…") surfaced
+  // through the BAD_REQUEST envelope here.
+  category: z
+    .string({ message: "Category is required" })
+    .trim()
+    .min(1, "Category is required")
+    .max(80, "Category must be reasonably sized"),
 });
 
 // ---- settings (the singleton) ------------------------------------------------------------------
@@ -586,7 +594,11 @@ export const csvImportSchema = z.object({
           .max(200, "Description must be reasonably sized"),
         amount: moneyField("Amount is required"),
         type: enumField(["income", "expense"], "Invalid transaction type"),
-        category: z.string().trim().max(80).default("Other"),
+        category: z
+          .string()
+          .trim()
+          .max(80, "Category must be reasonably sized")
+          .default("Other"),
         budgetCategory: enumField(BUDGET_CATEGORIES, "Invalid budget category").default("needs"),
         date: dateField("Date is required"),
       }),
@@ -607,7 +619,7 @@ export const aiCoachSchema = z.object({
     .array(
       z.object({
         role: enumField(["user", "assistant"], "Invalid role"),
-        content: z.string().max(4000),
+        content: z.string().max(4000, "Message must be reasonably sized"),
       }),
     )
     .max(30)

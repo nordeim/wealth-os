@@ -4,7 +4,12 @@
 // docs/implementation-plan-session-199-wealthos.md §2.2).
 
 export const SHELL_LAYOUT = {
-  root: "flex h-screen overflow-hidden bg-background page-wash dark:bg-[#0e1310]",
+  // Session-252 (R-49, F-252g): the local dark wash arm retired — the
+  // background token's dark flip (session-220, F-220d) has carried the
+  // wash equally alone since it landed; the duplicate literal was the
+  // divergence genus F-232h retired for the sidebar, waiting on a
+  // future token edit to drift the shell wash.
+  root: "flex h-screen overflow-hidden bg-background page-wash",
   sidebar: "hidden lg:flex lg:w-64 lg:flex-col",
   mainColumn: "flex flex-1 flex-col overflow-hidden",
   main: "flex-1 overflow-y-auto scrollbar-thin",
@@ -384,8 +389,15 @@ export const BUTTON_BASE = {
 export const MENU_CONTENT =
   "z-50 min-w-44 overflow-hidden rounded-lg border border-line bg-surface p-1 shadow-lg" as const;
 
+// Session-252 (R-49, F-252a): the keyboard ring arm joins the wash.
+// The wash alone — the vendored stock indicator — computes 1.09:1
+// light / 1.31:1 dark against the panel it sits on (re-computed by
+// code this session): imperceptible as a focus affordance, and the
+// only one these items carry (the outline is suppressed). The ring
+// ink reads 17.49:1 light / 18.15:1 dark; the wash stays for pointer
+// users (the keyboard arm is the visible state they never see).
 export const MENU_ITEM =
-  "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-2 text-sm outline-none transition-colors focus:bg-stone-100 focus:text-stone-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-stone-800 dark:focus:text-stone-100" as const;
+  "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-2 text-sm outline-none transition-colors focus:bg-stone-100 focus:text-stone-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-stone-800 dark:focus:text-stone-100 focus-visible:ring-2 focus-visible:ring-ring" as const;
 
 export const TABS_SEGMENTED = {
   // Session-199: the inactive arm rides stone-600 (5.4:1 on the stone-100

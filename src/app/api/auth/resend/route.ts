@@ -87,7 +87,19 @@ export async function POST(req: Request) {
       // hides (login's S72-C pattern). The known branch's DB-write tail
       // remains a documented fsync-scale residual.
       await hashVerificationCode(generateVerifyCode());
-      return ok({ resent: true, message: verificationResentMessage() });
+      // Session-252 (R-49, F-252b): the envelope joins the miss arm
+      // too — the known arm always carries the third key (null under
+      // the production knob) while this arm omitted it, so key-set
+      // presence itself distinguished "never-verified account exists"
+      // from "unknown or already-verified" to any unauthenticated
+      // caller, surviving the delivery knob the in-band posture
+      // rides. The forgot-password route's always-present resetUrl
+      // key is the sibling form; both arms are three-key now.
+      return ok({
+        resent: true,
+        message: verificationResentMessage(),
+        verificationCode: null,
+      });
     }
 
     const code = generateVerifyCode();

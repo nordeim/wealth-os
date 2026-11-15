@@ -48,7 +48,11 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
   return (
     <div
       className={cn(
-        "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+        // Session-252 (R-49, F-252f): the offset token joins the focus
+        // frame — the stock form painted the white default halo on any
+        // consumer that renders in the dark theme (the F-251g genus;
+        // zero consumers today, cured before the first one ships it).
+        "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
         variants[variant],
         className,
       )}

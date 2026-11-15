@@ -154,7 +154,7 @@ function Tabs({ tabs, value, onValueChange, className, variant = "underline", ar
                   // variants, so the string is identical on every tab.
                   triggerClass,
                   underline &&
-                    "-mb-px whitespace-nowrap rounded-t-md border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    "-mb-px whitespace-nowrap rounded-t-md border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   // Session-221 (R-18, F-221t): the active arm's amber
                   // steps — the retired primary pair computed 2.15:1 on
                   // light (the F-220p stale-genus class: zero

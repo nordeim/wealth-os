@@ -17,7 +17,8 @@
 //     the repo db (live-probed). runtimeDatabaseUrl detects exactly that
 //     signature and re-anchors on the schema rule, while honoring every
 //     intentional override (the wrapper's absolute URL, a postgres URL,
-//     the e2e suite's file:../db/e2e.db pin) — no invocation pattern can
+//     the e2e suite's absolute db/e2e.db pin — its global-setup builds
+//     the absolute form at runtime) — no invocation pattern can
 //     land the database outside <repo>/db/.
 //   • dotenv loads the repo .env for node-run invocations (bun loads it
 //     natively). dotenv never overrides an already-set variable, so the
