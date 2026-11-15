@@ -291,13 +291,22 @@ export const TOLERANCE = 12;
  *       reference 0/Needs Work) and the mobile auth-face inner-content
  *       micro-deltas (login cardH 826 vs 848 at 390). */
 export const STANDING_BASELINES = {
-  // 1440x900 — the desktop class (>= 1280) — session-209 re-derivation
+  // 1440x900 — the desktop class (>= 1280) — session-209 re-derivation.
+  // Session-250 (R-47, F-250q): the reference-side STYLING EVENT
+  // re-derivation — the platform redeployed the reference's CSS
+  // 2026-11-15 while the JS bundle stayed byte-identical: every DOM
+  // census read STANDING, the pixel diff on the two pages grew,
+  // deterministic across 40 minutes of measurement; our side stood
+  // verified (the interior census clean at 0-event margin, the
+  // stash-test bisect reproduced the drift on the pre-cure tree). The
+  // probe now fingerprints the styling layer so the next such redeploy
+  // reads CHANGED, not STABLE.
   desktop: {
-    dashboard: 8.5,
+    dashboard: 12.3,
     income: 29.6,
     expenses: 13.3,
     accounts: 10.6,
-    investments: 8.1,
+    investments: 10.5,
     import: 9.3,
     analytics: 36.1,
     goals: 7.0,
@@ -305,13 +314,22 @@ export const STANDING_BASELINES = {
     login: 6.0,
     "reset-password": 3.9,
   },
-  // 390x844 — the phone class (< 768) — session-209 re-derivation
+  // 390x844 — the phone class (< 768) — session-209 re-derivation.
+  // Session-250 (R-47, F-250q): the reference-side STYLING EVENT
+  // re-derivation — the platform redeployed the reference's CSS
+  // 2026-11-15 while the JS bundle stayed byte-identical: every DOM
+  // census read STANDING, the pixel diff on the two pages grew,
+  // deterministic across 40 minutes of measurement; our side stood
+  // verified (the interior census clean at 0-event margin, the
+  // stash-test bisect reproduced the drift on the pre-cure tree). The
+  // probe now fingerprints the styling layer so the next such redeploy
+  // reads CHANGED, not STABLE.
   phone: {
-    dashboard: 14.5,
+    dashboard: 23.0,
     income: 40.0,
     expenses: 40.5,
     accounts: 16.6,
-    investments: 26.4,
+    investments: 28.7,
     import: 13.3,
     analytics: 53.1,
     goals: 11.3,
@@ -327,12 +345,15 @@ export const STANDING_BASELINES = {
   // (the tablist renders below the title, the empty message
   // full-width below it — the layout the reference itself renders, so
   // the construction delta moved, not drifted away from parity).
+  // Session-250 (R-47, F-250q): the reference styling event (the
+  // desktop table's note) — dashboard 7.2→12.7 · investments
+  // 20.3→24.9.
   tablet: {
-    dashboard: 7.2,
+    dashboard: 12.7,
     income: 31.0,
     expenses: 30.5,
     accounts: 10.2,
-    investments: 20.3,
+    investments: 24.9,
     import: 8.8,
     analytics: 48.9,
     goals: 6.5,
@@ -341,12 +362,15 @@ export const STANDING_BASELINES = {
     "reset-password": 6.5,
   },
   // 1024x768 — the landscape class (< 1280) — session-209 re-derivation
+  // Session-250 (R-47, F-250q): the reference styling event (the
+  // desktop table's note) — dashboard 10.5→14.3 · investments
+  // 23.2→26.3.
   landscape: {
-    dashboard: 10.5,
+    dashboard: 14.3,
     income: 33.0,
     expenses: 26.1,
     accounts: 13.9,
-    investments: 23.2,
+    investments: 26.3,
     import: 11.7,
     analytics: 30.9,
     goals: 9.6,

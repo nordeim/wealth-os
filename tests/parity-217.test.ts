@@ -51,16 +51,20 @@ describe("R-14: the mutation actions capture the write token at entry (F-217l)",
     expect(STORE).not.toMatch(/refreshAll\(sessionWriteToken, set\)/);
   });
 
-  it("the write-path actions capture the token before their first await", () => {
+  it("the write-path seams keep their entry captures (the era keys carry the guard family)", () => {
     // Session-249 (R-46, F-249c): the F-217l entry-capture contract
     // split along the guard re-key — refreshAll's commit re-keyed to
     // the caller's entry era + the sequence (a remount hydrate's
     // non-clearing token bump used to discard a mutation's fresher
     // post-write payload), so the token capture now lives only on
-    // the WRITE paths (updateSettings' commit; hydrate's landing
-    // guards). The era arrives at refreshAll as a parameter — the
-    // threading vehicle.
-    expect(STORE).toMatch(/const token = sessionWriteToken;/);
+    // the WRITE paths. The era arrives at refreshAll as a parameter —
+    // the threading vehicle.
+    // Session-250 (R-47, F-250b) recalibration: updateSettings' token
+    // capture retired with the era re-key (the settings write's guard
+    // is the era + the sequence bump, pinned in parity-250); the
+    // token's remaining captures are the bump-and-capture forms —
+    // hydrate's entry and the wall/logout advances.
+    expect(STORE).toMatch(/const token = \+\+sessionWriteToken;/);
     expect(STORE).toMatch(/refreshAll\(entryClearSeq, set\)/);
     expect(STORE).not.toMatch(/refreshAll\(token, set\)/);
   });

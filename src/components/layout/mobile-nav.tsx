@@ -137,13 +137,24 @@ function DrawerNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const logout = useWealthOs((s) => s.logout);
+  // Session-250 (R-47, F-250e): the busy rider — the pending-face
+  // family's tenth member (the sidebar MenuItem's twin). The drawer
+  // closes on activation, but a keyboard repeat or rapid refire could
+  // issue a second POST inside the first's window; the entry guard +
+  // the disabled arm close it (a failed POST re-arms for a retry).
+  const [busy, setBusy] = React.useState(false);
 
   const signOut = async () => {
+    if (busy) return;
+    setBusy(true);
     onNavigate?.();
     // Session-224 (R-21, F-224e): navigate only on a completed
     // sign-out — a failed POST leaves the session honest (the
     // store-error banner carries the failure).
-    if (!(await logout())) return;
+    if (!(await logout())) {
+      setBusy(false);
+      return;
+    }
     router.push("/login");
     router.refresh();
   };
@@ -175,6 +186,7 @@ function DrawerNav({ onNavigate }: { onNavigate?: () => void }) {
           type="button"
           className={MOBILE_NAV_SHEET.signOut}
           onClick={() => void signOut()}
+          disabled={busy}
         >
           <LogOut className="h-4 w-4" aria-hidden="true" />
           Sign Out

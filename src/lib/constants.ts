@@ -7,13 +7,18 @@ export type BudgetCategory = "needs" | "wants" | "savings";
 
 export const BUDGET_CATEGORIES: BudgetCategory[] = ["needs", "wants", "savings"];
 
+// Session-250 (R-47, F-250f): iconLight is the LIGHT-mode icon ink —
+// the one arm whose base color sat under the 3:1 non-text bar against
+// its soft tile (savings at 2.42:1; the step to #059669 measures
+// 3.58:1; needs and wants already pass, so they carry no override).
+// The budgets-legend dots and the dark-mode arms keep the base color.
 export const BUDGET_CATEGORY_META: Record<
   BudgetCategory,
-  { label: string; color: string; soft: string }
+  { label: string; color: string; soft: string; iconLight?: string }
 > = {
   needs: { label: "Needs", color: "#3b82f6", soft: "#eff6ff" },
   wants: { label: "Wants", color: "#a855f7", soft: "#faf5ff" },
-  savings: { label: "Savings", color: "#10b981", soft: "#ecfdf5" },
+  savings: { label: "Savings", color: "#10b981", soft: "#ecfdf5", iconLight: "#059669" },
 };
 
 /** The reference's Add Expense quick-select chips (live-observed, emoji

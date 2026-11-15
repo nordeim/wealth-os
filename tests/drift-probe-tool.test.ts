@@ -112,6 +112,46 @@ describe("session-206 (R-4.3): the drift probe re-anchored to the WealthOS refer
     expect("landing" in m.STANDING).toBe(false);
   });
 
+  // Session-250 (R-47, F-250q): the STYLING layer — the round's
+  // discovery. The platform redeployed the reference's stylesheets
+  // repeatedly on 2026-11-15 while the JS bundle stayed byte-identical:
+  // every DOM census read STANDING, the pixel sweeps drifted on two
+  // pages, and the probe could not see why. The POST-LOGIN app
+  // stylesheet's content hash closes the blind spot — a styling-only
+  // redeploy is a parity EVENT. (The post-login shell loads its own
+  // /assets stylesheet — the runtime Tailwind CDN script is the login
+  // face's loader, out of the probe's frame.)
+  it("STANDING: the styling fingerprint is pinned (the post-login app stylesheet — the session-250 layer)", async () => {
+    const { STANDING } = await probe();
+    expect(STANDING.stylesheet).toEqual({ md5: "96f24d456220a27873696acd9709d2f1", bytes: 105_036 });
+    expect("tailwindCdn" in STANDING).toBe(false);
+  });
+
+  it("stabilityVerdict: the styling layer rides the same exact-hash verdict (a CSS redeploy with an unchanged bundle reads CHANGED)", async () => {
+    const { stabilityVerdict, STANDING } = await probe();
+    expect(stabilityVerdict(STANDING.stylesheet, STANDING.stylesheet)).toBe("STABLE");
+    expect(
+      stabilityVerdict({ md5: "ffffffffffffffffffffffffffffffff", bytes: STANDING.stylesheet.bytes }, STANDING.stylesheet),
+    ).toBe("CHANGED");
+    expect(
+      stabilityVerdict({ md5: STANDING.stylesheet.md5, bytes: STANDING.stylesheet.bytes + 1 }, STANDING.stylesheet),
+    ).toBe("CHANGED");
+  });
+
+  it("the probe wires the styling fingerprint into the gate (the verdict joins the CHANGED disjunction + the JSON report)", () => {
+    const src = read("scripts/drift-probe.ts");
+    expect(src).toContain("STANDING.stylesheet");
+    expect(src).not.toContain("STANDING.tailwindCdn");
+    // The gate: a styling CHANGED trips the probe exactly like a
+    // bundle CHANGED.
+    const gate = src.slice(src.indexOf("const changed ="), src.indexOf("if (json)"));
+    expect(gate).toContain('cssStability === "CHANGED"');
+    // The report carries the fingerprint.
+    const report = src.slice(src.indexOf("if (json)"), src.indexOf("if (changed)"));
+    expect(report).toContain("stylesheet:");
+    expect(report).not.toContain("tailwindCdn:");
+  });
+
   it("the probe wires the seams: the WealthOS reference URL · package.json keeps probe:ref · the --json flag · NOT part of the offline gate", () => {
     const src = read("scripts/drift-probe.ts");
     expect(src).toContain('?? "https://wealth-os-d93bd04e.base44.app"');

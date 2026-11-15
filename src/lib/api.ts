@@ -235,20 +235,32 @@ export async function readBoundedJson(
   const reader = body.getReader();
   const chunks: Uint8Array[] = [];
   let total = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    if (value) {
-      total += value.byteLength;
-      if (total > maxBytes) {
-        // Stop the producer before returning — a kept-open stream
-        // would hold the connection and buffer the remaining chunks
-        // server-side.
-        await reader.cancel().catch(() => {});
-        return { tooLarge: true };
+  // Session-250 (R-47, F-250c): the loop carries its own catch — a
+  // read rejection (a client that disconnects mid-body, a transport
+  // fault) used to propagate out of this seam, past every route's
+  // handler (each route awaits parseBody BEFORE its own try), and
+  // answer the framework's raw non-JSON 500. The catch cancels the
+  // producer and resolves to the unparseable contract — the call
+  // sites' existing 400 arms answer the envelope.
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (value) {
+        total += value.byteLength;
+        if (total > maxBytes) {
+          // Stop the producer before returning — a kept-open stream
+          // would hold the connection and buffer the remaining chunks
+          // server-side.
+          await reader.cancel().catch(() => {});
+          return { tooLarge: true };
+        }
+        chunks.push(value);
       }
-      chunks.push(value);
     }
+  } catch {
+    await reader.cancel().catch(() => {});
+    return { tooLarge: false, value: null };
   }
   // The decode+parse tail keeps the null-on-unparseable contract, so
   // the call sites' field narrowing is untouched.

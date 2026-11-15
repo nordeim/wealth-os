@@ -95,12 +95,23 @@ function SidebarFooter({ user }: { user: User }) {
   // pattern; the visible label stays the reference's own string).
   const isDark = useIsDark();
   const initial = (user.name || user.email).charAt(0).toUpperCase();
+  // Session-250 (R-47, F-250e): the busy rider — the pending-face
+  // family's ninth member. The control dismisses its menu on
+  // activation, but a keyboard repeat or rapid refire could issue a
+  // second POST inside the first's window; the entry guard + the
+  // disabled arm close it (a failed POST re-arms for a retry).
+  const [busy, setBusy] = React.useState(false);
 
   const signOut = async () => {
+    if (busy) return;
+    setBusy(true);
     // Session-224 (R-21, F-224e): navigate only on a completed
     // sign-out — a failed POST leaves the session honest (the
     // store-error banner carries the failure).
-    if (!(await logout())) return;
+    if (!(await logout())) {
+      setBusy(false);
+      return;
+    }
     router.push("/login");
     router.refresh();
   };
@@ -153,6 +164,7 @@ function SidebarFooter({ user }: { user: User }) {
             // hydrated:false/loading:true and nothing re-renders the
             // server layout, dead-ending on the loading gate.
             onSelect={() => void signOut()}
+            disabled={busy}
             className="gap-2 text-red-600 focus:text-red-600 dark:text-red-400"
           >
             <LogOut className="h-4 w-4" aria-hidden="true" />

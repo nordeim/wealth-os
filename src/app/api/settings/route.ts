@@ -17,32 +17,45 @@ export const dynamic = "force-dynamic";
  * die on the Setting.ownerId unique constraint (P2002) and surface a
  * 500. The catch now re-reads the winner's row — the loser's answer is
  * identical to a single-touch read.
+ *
+ * Session-250 (R-47, F-250d): every query on this route selects its
+ * consumed fields — the F-228h insurance doctrine completed on its
+ * last unswept sites (a future return-the-row edit cannot leak the
+ * row's identifiers in one step).
  */
+const SETTINGS_SELECT = {
+  defaultCurrency: true,
+  dateFormat: true,
+  pushNotifications: true,
+  emailAlerts: true,
+  budgetWarnings: true,
+  monthlyReports: true,
+  theme: true,
+} as const;
+
 async function readSettings(ownerId: string) {
-  const existing = await db.setting.findUnique({ where: { ownerId } });
+  const existing = await db.setting.findUnique({
+    where: { ownerId },
+    select: SETTINGS_SELECT,
+  });
   const row =
     existing ??
     (await db.setting
-      .create({ data: { ownerId } })
+      .create({ data: { ownerId }, select: SETTINGS_SELECT })
       .catch((e: unknown) => {
         if (
           e instanceof Prisma.PrismaClientKnownRequestError &&
           e.code === "P2002"
         ) {
           // The unique-constraint race: the other first-touch request won.
-          return db.setting.findUniqueOrThrow({ where: { ownerId } });
+          return db.setting.findUniqueOrThrow({
+            where: { ownerId },
+            select: SETTINGS_SELECT,
+          });
         }
         throw e;
       }));
-  return {
-    defaultCurrency: row.defaultCurrency,
-    dateFormat: row.dateFormat,
-    pushNotifications: row.pushNotifications,
-    emailAlerts: row.emailAlerts,
-    budgetWarnings: row.budgetWarnings,
-    monthlyReports: row.monthlyReports,
-    theme: row.theme,
-  };
+  return row;
 }
 
 export async function GET() {
@@ -82,6 +95,7 @@ export async function PUT(req: Request) {
         where: { ownerId: guard.user.id },
         update: parsed.data,
         create: { ownerId: guard.user.id, ...parsed.data },
+        select: SETTINGS_SELECT,
       })
       .catch(async (e: unknown) => {
         // The budgets family's concurrent-first-touch race (F-229b):
@@ -98,19 +112,12 @@ export async function PUT(req: Request) {
             where: { ownerId: guard.user.id },
             update: parsed.data,
             create: { ownerId: guard.user.id, ...parsed.data },
+            select: SETTINGS_SELECT,
           });
         }
         throw e;
       });
-    return ok({
-      defaultCurrency: row.defaultCurrency,
-      dateFormat: row.dateFormat,
-      pushNotifications: row.pushNotifications,
-      emailAlerts: row.emailAlerts,
-      budgetWarnings: row.budgetWarnings,
-      monthlyReports: row.monthlyReports,
-      theme: row.theme,
-    });
+    return ok(row);
   } catch (error) {
     logApiError("settings PUT", error);
     if (isTransientDbError(error)) return ERR.UNAVAILABLE();

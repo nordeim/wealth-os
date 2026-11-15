@@ -49,12 +49,19 @@ const CONSTANTS = read("src/lib/constants.ts");
 const SIDEBAR = stripComments(read("src/components/layout/sidebar.tsx"));
 
 describe("R-15: updateSettings joins the write-guard family (F-218e)", () => {
-  it("captures the token at entry and guards the set", () => {
+  it("captures the era at entry and guards the set (the F-250b re-key)", () => {
     // Session-238 (R-35, F-238b) recalibration: the guard nests under
     // the ok arm (the failure arm now carries the third-window 401
     // wall — the compound condition could not narrow the union).
+    // Session-250 (R-47, F-250b) recalibration: the token key retired
+    // on the settings write — a remount hydrate's entry bump used to
+    // drop the PUT's fresh commit under its success toast. The guard
+    // now keys on the clear era (the F-218e write-guard contract
+    // survives in it: a logout or wall advances the era and still owns
+    // the face), and the settings sequence bumps at entry to stale
+    // every in-flight older read.
     expect(STORE).toMatch(
-      /updateSettings: async \(body\) => \{[\s\S]*?const token = sessionWriteToken;[\s\S]*?if \(res\.ok\) \{\s*if \(token === sessionWriteToken\) set\(\{ settings: res\.data \}\);/,
+      /updateSettings: async \(body\) => \{[\s\S]*?const entryClearSeq = sessionClearSeq;[\s\S]*?\+\+settingsSeq;[\s\S]*?if \(res\.ok\) \{\s*if \(sessionClearSeq === entryClearSeq\) set\(\{ settings: res\.data \}\);/,
     );
   });
 

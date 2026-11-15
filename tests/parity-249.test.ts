@@ -114,15 +114,21 @@ describe("F-249c — hydrate's dashboard GET joins the shared refresh sequence",
     expect(failureArm).toBeGreaterThan(supersededAt);
     // ...while the settings tail rides only the res-ok dimension —
     // a superseded remount landing still settles its F-234a cycle
-    // (the tail's own era/token guards no-op on dead sessions).
+    // (the tail's own era and sequence guards no-op on dead sessions
+    // and stale issues).
     const tailAt = body.indexOf('call<Settings>("/api/settings")');
     expect(tailAt).toBeGreaterThan(commitArm);
     expect(tailAt).toBeGreaterThan(failureArm);
-    // The tail's settle arm survives unchanged (the token key on the
-    // write path).
+    // The tail's settle arm: session-250 (R-47, F-250b) re-keyed it
+    // from the token to the era + the settings sequence — the
+    // recalibrated form (the token key let a pre-PUT read overwrite
+    // the PUT's commit; the F-247d precedent for a one-session-old
+    // pin whose watched form legitimately changed).
     const tail = body.slice(tailAt);
     expect(tail).toContain("settingsSettled: true");
-    expect(tail).toContain("if (token === sessionWriteToken) {");
+    expect(tail).toContain(
+      "if (sessionClearSeq === entryClearSeq && sseq === settingsSeq) {",
+    );
   });
 
   it("the dashboard 401 arm stays era-keyed above the landing guard", () => {
@@ -138,10 +144,20 @@ describe("F-249c — hydrate's dashboard GET joins the shared refresh sequence",
   });
 });
 
-describe("F-249c — the write paths keep the token key", () => {
-  it("updateSettings' commit stays token-guarded (the untouched write path)", () => {
+describe("F-249c — the write paths (session-250: the settings write joins the era key)", () => {
+  it("updateSettings' commit is era-guarded with a settings-sequence bump at entry (the F-250b re-key)", () => {
     const m = STORE.match(/updateSettings: async \(body\) => \{[\s\S]*?\n    \},/);
-    expect(m?.[0] ?? "").toMatch(/if \(token === sessionWriteToken\) set\(\{ settings: res\.data \}\);/);
+    // Session-250 (R-47, F-250b): the token key retired on the
+    // settings write — a remount hydrate's entry bump used to drop
+    // the PUT's fresh commit under its success toast. The commit now
+    // keys on the era (the F-249c reasoning); the sequence bump at
+    // entry stales every in-flight older read. Pinned in
+    // parity-250's own battery; this pin keeps the recalibrated
+    // form honest here.
+    expect(m?.[0] ?? "").toMatch(
+      /if \(sessionClearSeq === entryClearSeq\) set\(\{ settings: res\.data \}\);/,
+    );
+    expect(m?.[0] ?? "").toContain("++settingsSeq;");
   });
 
   it("refresh captures the era at action entry (the F-217l moment, the era key)", () => {

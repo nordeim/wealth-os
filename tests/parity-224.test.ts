@@ -65,7 +65,12 @@ describe("F-224e — a failed logout POST is not silently treated as success", (
   it("both signOut helpers gate their navigation on the logout result", () => {
     for (const f of ["src/components/layout/sidebar.tsx", "src/components/layout/mobile-nav.tsx"]) {
       const src = read(f);
-      expect(src).toMatch(/if \(!\(await logout\(\)\)\) return;/);
+      // Session-250 (R-47, F-250e) recalibration: the busy rider wraps
+      // the failure arm (a failed POST re-arms the control for a
+      // retry); the navigation still gates on the logout result.
+      expect(src).toMatch(/if \(!\(await logout\(\)\)\) \{/);
+      expect(src).toMatch(/setBusy\(false\);\s*\n\s*return;/);
+      expect(src).toMatch(/router\.push\("\/login"\);/);
     }
   });
 });

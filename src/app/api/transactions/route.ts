@@ -47,6 +47,9 @@ export async function POST(req: Request) {
     if (body.accountId) {
       const account = await db.bankAccount.findFirst({
         where: { id: body.accountId, ownerId: guard.user.id },
+        // Session-250 (R-47, F-250d): existence is the only consumer —
+        // the consumed-fields doctrine on the check's read.
+        select: { id: true },
       });
       if (!account) return ERR.BAD_REQUEST("Selected account does not exist");
     }

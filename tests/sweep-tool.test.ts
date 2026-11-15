@@ -74,27 +74,37 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     // re-derived to the fresh measurements in the same commit, per the
     // R-7.5 doctrine.
     const { STANDING_BASELINES } = await sweep();
+    // Session-250 (R-47, F-250q) re-derivation: the dashboard +
+    // investments columns moved at every class — the reference-side
+    // STYLING EVENT (the platform redeployed the reference's CSS with
+    // the JS bundle byte-identical; our side stood verified — the
+    // interior census clean, the stash-test bisect clean; decode in
+    // scripts/sweep.ts's tables).
     expect({ ...STANDING_BASELINES.desktop }).toEqual({
-      dashboard: 8.5, income: 29.6, expenses: 13.3, accounts: 10.6,
-      investments: 8.1, import: 9.3, analytics: 36.1, goals: 7.0,
+      dashboard: 12.3, income: 29.6, expenses: 13.3, accounts: 10.6,
+      investments: 10.5, import: 9.3, analytics: 36.1, goals: 7.0,
       settings: 19.9, login: 6.0, "reset-password": 3.9,
     });
     expect({ ...STANDING_BASELINES.phone }).toEqual({
-      dashboard: 14.5, income: 40.0, expenses: 40.5, accounts: 16.6,
-      investments: 26.4, import: 13.3, analytics: 53.1, goals: 11.3,
+      dashboard: 23.0, income: 40.0, expenses: 40.5, accounts: 16.6,
+      investments: 28.7, import: 13.3, analytics: 53.1, goals: 11.3,
       settings: 18.5, login: 11.0, "reset-password": 16.5,
     });
     expect({ ...STANDING_BASELINES.tablet }).toEqual({
       // Session-238 (R-35, F-238a) re-derivation: expenses 29.1→30.5
       // (the history-width restoration reshaped the zero-data
       // construction — decode in scripts/sweep.ts's table).
-      dashboard: 7.2, income: 31.0, expenses: 30.5, accounts: 10.2,
-      investments: 20.3, import: 8.8, analytics: 48.9, goals: 6.5,
+      // Session-250 (R-47, F-250q): dashboard 7.2→12.7 · investments
+      // 20.3→24.9 (the reference styling event).
+      dashboard: 12.7, income: 31.0, expenses: 30.5, accounts: 10.2,
+      investments: 24.9, import: 8.8, analytics: 48.9, goals: 6.5,
       settings: 32.3, login: 11.5, "reset-password": 6.5,
     });
     expect({ ...STANDING_BASELINES.landscape }).toEqual({
-      dashboard: 10.5, income: 33.0, expenses: 26.1, accounts: 13.9,
-      investments: 23.2, import: 11.7, analytics: 30.9, goals: 9.6,
+      // Session-250 (R-47, F-250q): dashboard 10.5→14.3 · investments
+      // 23.2→26.3 (the reference styling event).
+      dashboard: 14.3, income: 33.0, expenses: 26.1, accounts: 13.9,
+      investments: 26.3, import: 11.7, analytics: 30.9, goals: 9.6,
       settings: 19.5, login: 4.6, "reset-password": 6.4,
     });
   });

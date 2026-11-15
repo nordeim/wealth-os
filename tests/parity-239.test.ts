@@ -178,8 +178,12 @@ describe("F-239g — the settings PUT rides the upsert (the budgets-POST house f
     // The concurrent-first-touch race keeps its recovery (the budgets
     // family's single retry).
     expect(put).toMatch(/P2002/);
-    // The response projects the row's fields (the readSettings shape).
-    expect(put).toMatch(/defaultCurrency: row\.defaultCurrency/);
+    // Session-250 (R-47, F-250d) recalibration: the response IS the
+    // selected row now — the shared select carries exactly the seven
+    // consumed fields, so the hand projection collapsed to ok(row)
+    // (the select is pinned in parity-250's own battery).
+    expect(put).toMatch(/select: SETTINGS_SELECT,/);
+    expect(put).toContain("return ok(row);");
   });
 });
 

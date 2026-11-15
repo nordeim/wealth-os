@@ -167,9 +167,23 @@ export function demoDataVerdict(emptyByPage: Record<string, boolean>): "ZERO" | 
 
 /** The standing reference fingerprint + census the probe reports
  *  against (re-anchor deliberately — every value here is a decoded,
- *  live-measured constant from the session-206 maiden, not a guess). */
+ *  live-measured constant from the session-206 maiden, not a guess).
+ *  Session-250 (R-47, F-250q): the STYLING layer joins the standing
+ *  set — the POST-LOGIN app stylesheet's content hash. The round's
+ *  discovery: the platform redeployed the reference's stylesheets
+ *  repeatedly on 2026-11-15 (the login-face CSS at 10:11:55Z, the
+ *  app-shell CSS at 11:25:53Z) while the JS bundle stayed
+ *  byte-identical — every DOM census read STANDING, the pixel sweeps
+ *  drifted on two pages, and the probe could not see why. A
+ *  styling-only redeploy is a parity EVENT exactly like a bundle
+ *  redeploy; this hash makes it legible. (The POST-LOGIN anatomy is
+ *  the probe's own frame: the app shell loads its own
+ *  /assets/*.css — distinct from the login face's /static/*.css — and
+ *  carries NO runtime Tailwind CDN script; that script is the login
+ *  face's own loader, out of this layer's frame.) */
 export const STANDING = {
   bundle: { md5: "6d3779af85c060852d9b7cd10bacecab", bytes: 1_402_874 },
+  stylesheet: { md5: "96f24d456220a27873696acd9709d2f1", bytes: 105_036 },
   desktopNav: { width: 256, visibleLinks: 9 },
   mobileMenu: { opens: true, drawerLinks: 9 },
   mobileCensusPage: "/dashboard",
@@ -253,6 +267,39 @@ async function main(): Promise<void> {
     log(`app bundle: ${name} (${buf.byteLength.toLocaleString("en-US")} bytes)`);
     log(`bundle md5: ${md5} — ${stability}`);
 
+    // 3b. Session-250 (R-47, F-250q): the STYLING fingerprint — the
+    //     POST-LOGIN app stylesheet's content hash. A styling-only
+    //     redeploy keeps every DOM census STANDING while the pixel
+    //     baselines drift — this hash makes the event legible as a
+    //     CHANGED verdict instead of a mystery. (The post-login shell
+    //     loads its own /assets stylesheet; the runtime Tailwind CDN
+    //     script is the login face's loader, out of this frame.)
+    const styleUrl = await page.evaluate((base: string) => {
+      const css = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+        .map((l) => (l as HTMLLinkElement).href)
+        .filter((u) => u && new URL(u, base).origin === new URL(base).origin);
+      return css[0] ?? null;
+    }, REF_URL);
+    if (!styleUrl) {
+      console.error("[probe] the reference's styling anatomy changed (no app stylesheet on the post-login shell)");
+      process.exit(1);
+    }
+    const cssResp = await page.request.get(styleUrl);
+    const cssBody = cssResp.ok() ? await cssResp.body() : null;
+    if (!cssBody) {
+      console.error("[probe] could not fetch the app stylesheet — treating as CHANGED");
+      process.exit(1);
+    }
+    const cssFingerprint: BundleFingerprint = {
+      md5: createHash("md5").update(cssBody).digest("hex"),
+      bytes: cssBody.byteLength,
+    };
+    const cssStability = stabilityVerdict(cssFingerprint, STANDING.stylesheet);
+    const cssName = styleUrl.split("/").pop()!;
+    log(
+      `app stylesheet: ${cssName} (${cssFingerprint.bytes.toLocaleString("en-US")} bytes, md5 ${cssFingerprint.md5} — ${cssStability})`,
+    );
+
     // 4. the demo-data census (the walked surfaces, sentinel-settled)
     const emptyByPage: Record<string, boolean> = {};
     for (const [p, sentinel] of Object.entries(DEMO_SENTINELS)) {
@@ -325,6 +372,7 @@ async function main(): Promise<void> {
     // 7. the report + the gate
     const changed =
       stability === "CHANGED" ||
+      cssStability === "CHANGED" ||
       desktopVerdict === "CHANGED" ||
       mobileVerdict === "CHANGED" ||
       demo === "SEEDED";
@@ -334,6 +382,7 @@ async function main(): Promise<void> {
           {
             reference: REF_URL,
             bundle: { url: bundleUrl, ...fingerprint, verdict: stability },
+            stylesheet: { url: styleUrl, ...cssFingerprint, verdict: cssStability },
             demoData: { emptyByPage, verdict: demo },
             desktopNav: { ...desktop, verdict: desktopVerdict },
             mobileMenu: { ...menu, verdict: mobileVerdict },

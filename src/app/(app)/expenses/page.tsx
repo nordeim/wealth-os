@@ -207,9 +207,15 @@ export default function ExpensesPage() {
             <div className="flex min-w-0 items-center gap-3">
               <span
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                style={{ backgroundColor: isDark ? `${meta.color}1a` : meta.soft, color: meta.color }}
+                style={{ backgroundColor: isDark ? `${meta.color}1a` : meta.soft, color: !isDark && meta.iconLight ? meta.iconLight : meta.color }}
               >
-                <Receipt className="h-4 w-4" />
+                <Receipt className="h-4 w-4" aria-hidden="true" />
+                {/* Session-250 (R-47, F-250f): the bucket was color-only
+                    on every row (a Use of Color miss — the dimension the
+                    section's own tabs filter on was carried by color
+                    alone for screen readers). The label rides inside the tile, announced
+                    at the row head; visually inert. */}
+                <span className="sr-only">{meta.label}</span>
               </span>
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-stone-900 dark:text-stone-100">

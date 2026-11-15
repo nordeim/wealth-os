@@ -93,6 +93,19 @@ let sessionClearSeq = 0;
 // commit (the reverse leg of the remount stale-read genus).
 let refreshSeq = 0;
 
+// Session-250 (R-47, F-250b): the SETTINGS sequence — the F-249c
+// machinery on the settings slice. The tail's GET mints it at issue
+// and guards its settle and commit on it, so a read issued before a
+// write cannot overwrite the write's commit; updateSettings bumps it
+// at entry (staling every in-flight older read the moment the write
+// is declared) while its own commit keys on the clear era alone — a
+// concurrent hydrate's non-clearing entry bump must not discard the
+// fresher post-write settings commit (the F-249c reasoning, applied
+// to the one write path that sets its slice directly). Two
+// concurrent writes commit in landing order — the documented
+// residual (F-250p).
+let settingsSeq = 0;
+
 export interface WealthOsState {
   // session
   user: User | null;
@@ -399,8 +412,8 @@ function createStore() {
       // landing skips ONLY the slice commit. The settings tail
       // below still runs: its own cycle must settle (the F-234a
       // tri-state — a cancelled remount cannot strand the Settings
-      // in-flight face), and its era/token guards no-op on a dead
-      // session.
+      // in-flight face), and its era and sequence guards no-op on a
+      // dead session (session-250, F-250b).
       const superseded = token !== sessionWriteToken || seq !== refreshSeq;
       if (!superseded && res.ok) {
         set({
@@ -419,7 +432,20 @@ function createStore() {
       if (!superseded && !res.ok) {
         set({ hydrated: true, loading: false, error: res.error });
       }
+      // Session-250 (R-47, F-250a): the trailing else that used to
+      // live here re-committed the error for EVERY failed landing —
+      // superseded included — so a slow failing GET painted the
+      // could-not-load banner over a fully loaded workspace. The
+      // guarded conjunction above owns the legitimate failure
+      // landing; a superseded failure commits nothing.
       if (res.ok) {
+        // Session-250 (R-47, F-250b): the tail's GET mints the
+        // settings sequence at ISSUE time — the F-249c issue-order
+        // rule on the settings slice. A read issued before a
+        // settings write must not overwrite the write's commit; a
+        // read issued after it reads post-write data and wins
+        // honestly.
+        const sseq = ++settingsSeq;
         const settingsRes = await call<Settings>("/api/settings");
         // Session-240 (R-37, F-240b): a 401 here means the revocation
         // landed between hydrate's two calls (the dashboard 200
@@ -433,7 +459,15 @@ function createStore() {
           commitRevocationWall(set);
           return;
         }
-        if (token === sessionWriteToken) {
+        // Session-250 (R-47, F-250b): the settle and commit guard is
+        // the clear era + the settings sequence — the token key
+        // retired (a GET never bumped it, so a pre-PUT read landing
+        // after the PUT's commit passed it and reverted the saved
+        // preferences under their success toast). The era dimension
+        // no-ops the landing on a dead session; the sequence
+        // dimension no-ops it when a fresher settings read or write
+        // was issued after this one.
+        if (sessionClearSeq === entryClearSeq && sseq === settingsSeq) {
           // Session-234 (R-31, F-234a): flip the settled flag in BOTH
           // arms — the in-flight window renders nothing on the Settings
           // page; only a settled-and-missing slice is a failure face.
@@ -442,8 +476,6 @@ function createStore() {
             ...(settingsRes.ok ? { settings: settingsRes.data } : {}),
           });
         }
-      } else {
-        set({ hydrated: true, loading: false, error: res.error });
       }
     },
 
@@ -612,20 +644,27 @@ function createStore() {
       }, set),
 
     updateSettings: async (body) => {
-      // F-218e: the write-guard family's one missing member — the
-      // token must be captured at ENTRY and the set guarded, or a
-      // logout/hydrate landing mid-PUT writes the PREVIOUS user's
-      // settings into the cleared store (the docblock's own contract).
-      const token = sessionWriteToken;
       // Session-241 (R-38, F-241a): the entry era (the 401 arm's key
-      // below).
+      // below). Session-250 (R-47, F-250b): the settings sequence
+      // bumps HERE, at entry — every in-flight older settings read is
+      // staled the moment the write is declared (the tail's landing
+      // guard compares its own issue-time mint against this counter).
       const entryClearSeq = sessionClearSeq;
+      ++settingsSeq;
       const res = await call<Settings>("/api/settings", {
         method: "PUT",
         body: JSON.stringify(body),
       });
       if (res.ok) {
-        if (token === sessionWriteToken) set({ settings: res.data });
+        // Session-250 (R-47, F-250b): the commit re-keys from the
+        // entry token to the clear era — the F-249c reasoning on the
+        // settings write: the token's only non-clearing bumper is a
+        // concurrent hydrate's entry bump, which must not discard
+        // this fresher post-write commit (the dropped write window).
+        // A deliberate clear (logout, the wall) advances the era and
+        // still owns the face. The F-218e write-guard contract
+        // survives in the era key.
+        if (sessionClearSeq === entryClearSeq) set({ settings: res.data });
         return res;
       }
       // Session-238 (R-35, F-238b): the third window joins here too —

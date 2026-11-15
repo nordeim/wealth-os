@@ -129,16 +129,18 @@ describe("F-243b — the v2.39.0 revision block records the true docs-counts leg
     // F-249a/F-249b) advances it twice in one session (the round-start
     // green-by-design advance to v2.43.0/v2.44.0/v2.45.0, then the
     // lockstep's gate-enforced advance with the v2.46.0 block):
-    // v2.44.0/v2.45.0/v2.46.0 (the v2.43.0 pin ages out; its counts
-    // no longer appear live anywhere a lockstep script would target).
+    // v2.44.0/v2.45.0/v2.46.0. Session-250 (R-47, F-250q) advances it
+    // again with the v2.47.0 block: v2.45.0/v2.46.0/v2.47.0 (the
+    // v2.44.0 pin ages out; its counts no longer appear live anywhere
+    // a lockstep script would target).
     const guardIt = t.slice(
       t.indexOf("the historical revision blocks keep their OWN ship counts"),
     );
-    expect(guardIt).toContain("v2\\.44\\.0");
     expect(guardIt).toContain("v2\\.45\\.0");
     expect(guardIt).toContain("v2\\.46\\.0");
-    expect(guardIt).not.toContain("v2\\.43\\.0");
-    expect(guardIt).toContain("1645 unit \\(101 files");
+    expect(guardIt).toContain("v2\\.47\\.0");
+    expect(guardIt).not.toContain("v2\\.44\\.0");
+    expect(guardIt).toContain("1668 unit \\(102 files");
   });
 });
 

@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1645;
+const UNIT_TOTAL = 1668;
 const E2E_TOTAL = 151;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 101;
+const TEST_FILES = 102;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -90,7 +90,7 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // tests inside existing family files, no new rows): 4 + 68 +
     // 27 = 99.
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 69 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, db-transient) |",
+      "| — architecture pins | 70 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, db-transient) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99
@@ -209,19 +209,14 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   // that adds a new revision block — the recurrence walks otherwise.
   it("the historical revision blocks keep their OWN ship counts (F-242j — the over-replacement guard)", () => {
     const p = norm(doc("Project_Architecture_Document.md"));
-    // Session-249 (R-46, F-249a): the trio advances to
-    // v2.43.0/v2.44.0/v2.45.0 green-by-design FIRST (the SEVENTH
-    // edition cured before this session's own lockstep pass, the
-    // F-244a rule); the lockstep below then lands the v2.46.0 block
-    // and advances AGAIN to v2.44.0/v2.45.0/v2.46.0 in the same
-    // commit — the structural leg beneath now enforces the window at
-    // test time (F-249b: the PAD's newest block must sit inside the
-    // pinned window; the eighth edition fails `bun run test` inside
-    // its own ship commit — the manual first-docs-act convention
-    // retires).
-    expect(p).toMatch(/\[SR\] v2\.44\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1610 unit \(98 files, \+9\)/);
+    // Session-250 (R-47): the structural leg's second gate-enforced
+    // ride — the v2.47.0 block lands below together with the trio's
+    // advance to v2.45.0/v2.46.0/v2.47.0 in the SAME commit (the leg
+    // derives the PAD's newest block at test time and fails the unit
+    // gate if the window lags).
     expect(p).toMatch(/\[SR\] v2\.45\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1622 unit \(99 files, \+12\)/);
     expect(p).toMatch(/\[SR\] v2\.46\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1645 unit \(101 files, \+23\)/);
+    expect(p).toMatch(/\[SR\] v2\.47\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1668 unit \(102 files, \+23\)/);
   });
 
   // Session-249 (R-46, F-249b): the structural cure for the aging genus.

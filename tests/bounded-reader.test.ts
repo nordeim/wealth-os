@@ -137,3 +137,35 @@ describe("readBoundedJson (session-165 — the digma S148-A/S75-B port)", () => 
     expect(MAX_AUTH_BODY_BYTES).toBe(16 * 1024);
   });
 });
+
+// Session-250 (R-47, F-250c): the stream-rejection leg. Layer 3's read
+// loop awaited reader.read() unguarded — a rejection (a client that
+// disconnects mid-body, a transport fault) propagated OUT of
+// readBoundedJson, past every route's handler (each route awaits
+// parseBody BEFORE its own try), and answered the framework's raw
+// non-JSON 500: the exact envelope class the F-249f round barred on the
+// logout route, living on the one seam every body-consuming route
+// shares. The cure: the loop carries its own catch — cancel the
+// producer, resolve to the unparseable contract.
+describe("readBoundedJson (session-250 — the F-250c stream guard)", () => {
+  it("a mid-read stream rejection resolves to the unparseable contract (no throw)", async () => {
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(encoder.encode('{"a":'));
+        // The transport dies mid-body: the next read rejects.
+        controller.error(new Error("client disconnect"));
+      },
+    });
+    const req = new Request("http://x/api/accounts", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      body: stream,
+      ...({ duplex: "half" } as Record<string, unknown>),
+    });
+    // Pre-cure this await REJECTED (the error escaped the seam).
+    const read = await readBoundedJson(req);
+    expect(read.tooLarge).toBe(false);
+    if (!read.tooLarge) expect(read.value).toBeNull();
+  });
+});

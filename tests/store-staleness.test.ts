@@ -308,3 +308,194 @@ describe("F-249d — the logout return guard survives a remount hydrate inside t
     expect(s.loading).toBe(true);
   });
 });
+
+// Session-250 (R-47, F-250a/F-250b): the settings round's three legs.
+//
+// (a) THE SUPERSEDED-ERROR LEG (F-250a): hydrate's failure path carried
+//     a pre-R-46 leftover duplicate error commit OUTSIDE the F-249c
+//     superseded dimension — a slow-failing dashboard GET landing after
+//     a fresher refresh committed its stale error over a fully loaded
+//     workspace (the could-not-load banner over live data).
+// (b) THE SETTINGS STALE-OVERWRITE LEG (F-250b, window A): the hydrate
+//     tail's settings GET guarded its commit on the write token alone
+//     (a GET never bumps it), so a pre-PUT read landing after the PUT's
+//     commit silently reverted the saved preferences under their
+//     success toast (the Settings page's render-time form sync follows
+//     the revert).
+// (c) THE SETTINGS DROPPED-WRITE LEG (F-250b, window B): a remount
+//     hydrate's entry token bump staled updateSettings' captured token
+//     mid-PUT — the fresh commit was skipped while the page toasted
+//     success; convergence then depended on the tail's own read.
+//
+// The cure: a module-level settings sequence (the F-249c machinery on
+// the settings slice) — the tail's GET mints it at issue and guards its
+// settle and commit on era + sequence; the PUT bumps it at entry
+// (staling every in-flight older read) and re-keys its own commit from
+// the token to the era.
+
+function settingsEnvelopeFor(currency: string): Response {
+  return jsonRes({ ok: true, data: { currency } });
+}
+
+function error500(): Response {
+  return jsonRes(
+    { ok: false, error: { code: "INTERNAL", message: "boom" } },
+    500,
+  );
+}
+
+describe("F-250a — the superseded failure landing cannot commit a stale error", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("a failed hydrate GET landing after a fresher refresh keeps the loaded face", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [{ id: "t1" }] as never,
+      settings: { currency: "USD" } as never,
+      settingsSettled: true,
+    });
+    // The remount hydrate's dashboard GET is held and will FAIL (a
+    // transient 500, a network drop).
+    let releaseHydrate!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releaseHydrate = resolve;
+        }),
+    );
+    const pendingHydrate = store.getState().hydrate();
+    // The mutation completes: POST 200, then the refreshAll GET reads
+    // post-write (the row gone) and commits the fresh state.
+    fetchMock.mockResolvedValueOnce(okEnvelope());
+    fetchMock.mockResolvedValueOnce(dashboardEnvelopeWithoutRow());
+    const res = await store.getState().deleteTransaction("t1");
+    expect(res.ok).toBe(true);
+    expect(store.getState().transactions).toEqual([]);
+    expect(store.getState().error).toBeNull();
+    // The failed hydrate GET lands LAST — superseded on the sequence
+    // dimension (the mutation's refresh was issued after it).
+    releaseHydrate(error500());
+    await pendingHydrate;
+    const s = store.getState();
+    // THE F-250a DEFECT: pre-cure the trailing else arm committed the
+    // stale error over the fresh state — the guarded failure arm above
+    // it had correctly skipped. The cure: the else arm is retired.
+    expect(s.error).toBeNull();
+    expect(s.transactions).toEqual([]);
+    expect(s.loading).toBe(false);
+  });
+});
+
+describe("F-250b — the settings sequence (the F-249h windows)", () => {
+  let store: StoreModule["useWealthOs"];
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    fetchMock = vi.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    store = await freshStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("window A: a tail GET issued before the PUT cannot overwrite the PUT's commit", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [] as never,
+      settings: { currency: "USD" } as never,
+      settingsSettled: true,
+    });
+    // The hydrate's dashboard GET lands ok; its settings tail is HELD
+    // (issued BEFORE the PUT — its server read predates the write).
+    fetchMock.mockResolvedValueOnce(dashboardEnvelopeWithRow());
+    let releaseTail!: (r: Response) => void;
+    let tailIssued!: () => void;
+    const tailIssuedPromise = new Promise<void>((resolve) => {
+      tailIssued = resolve;
+    });
+    fetchMock.mockImplementationOnce(() => {
+      tailIssued();
+      return new Promise<Response>((resolve) => {
+        releaseTail = resolve;
+      });
+    });
+    const pendingHydrate = store.getState().hydrate();
+    await tailIssuedPromise;
+    // The PUT lands and commits the fresh settings (the page toasts
+    // its success).
+    fetchMock.mockResolvedValueOnce(settingsEnvelopeFor("EUR"));
+    const res = await store.getState().updateSettings({
+      currency: "EUR",
+    } as never);
+    expect(res.ok).toBe(true);
+    // The stale tail GET lands LAST with the pre-PUT read.
+    releaseTail(settingsEnvelopeFor("USD"));
+    await pendingHydrate;
+    // THE F-250b WINDOW-A DEFECT: pre-cure the tail's token guard was
+    // live (a GET never bumps it) and the stale read reverted the
+    // store under the success toast. The cure: the PUT's sequence bump
+    // stales the older issued read.
+    expect(store.getState().settings).toEqual({ currency: "EUR" });
+  });
+
+  it("window B: a remount hydrate's entry bump cannot drop the PUT's commit", async () => {
+    store.setState({
+      user,
+      hydrated: true,
+      loading: false,
+      error: null,
+      transactions: [] as never,
+      settings: { currency: "USD" } as never,
+      settingsSettled: true,
+    });
+    // The PUT is held mid-commit.
+    let releasePut!: (r: Response) => void;
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          releasePut = resolve;
+        }),
+    );
+    const pendingPut = store.getState().updateSettings({
+      currency: "EUR",
+    } as never);
+    // The remount hydrate enters INSIDE the PUT window: its dashboard
+    // GET and settings tail land (the tail reads PRE-PUT — the
+    // server-side out-of-order case).
+    fetchMock.mockResolvedValueOnce(dashboardEnvelopeWithRow());
+    fetchMock.mockResolvedValueOnce(settingsEnvelopeFor("USD"));
+    await store.getState().hydrate();
+    expect(store.getState().settings).toEqual({ currency: "USD" });
+    // The PUT completes server-side (its response carries the fresh
+    // row).
+    releasePut(settingsEnvelopeFor("EUR"));
+    await pendingPut;
+    // THE F-250b WINDOW-B DEFECT: pre-cure the hydrate's entry token
+    // bump staled the PUT's captured token and its commit was skipped
+    // — the store kept the pre-PUT settings under the success toast.
+    // The cure: the era key (a hydrate never advances it — the
+    // F-249c reasoning applied to the settings write).
+    expect(store.getState().settings).toEqual({ currency: "EUR" });
+  });
+});
