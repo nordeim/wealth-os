@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1601) | `bun run test` |
+| Unit tests (1610) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 151) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -951,3 +951,22 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   a cure, not just the ones a round audits: describe with spaces,
   never quote the retired token, and run the bare-word net + the
   build probe between every cure and its ship.
+- **A SOURCE PIN'S SLICE WINDOW MUST RIDE THROUGH THE CURE'S OWN
+  COMMENT (session 247, R-44, the F-247e authoring lesson)**: the
+  import rider pin sliced 400 chars forward from the input's
+  `type="file"` — the cure's own four-line docblock sat between the
+  anchor and the rider, and the pin went RED against its own cure at
+  GREEN-proof time (the rider was present, past the window). The
+  doctrine: size the window past the comment the same commit writes,
+  or anchor directly on the attribute's exact form — a window that
+  cannot see the cure's own documentation shape was never a pin on
+  the cure.
+- **A MARKDOWN TABLE CELL CARRIES ITS PIPES ESCAPED — the plan
+  writer's escape warning is the correct-form signal (session 247,
+  R-44, the F-247i authoring lesson)**: a ledger row's `||` inside a
+  code span must ride `\|\|` in the table cell (a raw pipe splits
+  the row into phantom cells); the python invalid-escape warning
+  fired on exactly the correct form, and the unescaped "fix" broke
+  the table. The doctrine: in generated markdown tables, escape every
+  literal pipe inside cell content, and silence the writer's warning
+  with the doubled-backslash form instead of removing the escape.

@@ -53,13 +53,16 @@ const SEMANTIC_RE = new RegExp(
   "g",
 );
 
-/** Recursively collect src/**\/*.{ts,tsx} (the generated client excluded). */
+/** Recursively collect src/**\/*.{ts,tsx,jsx} (the generated client excluded). */
 function collectSrcFiles(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
     if (entry === "generated" || entry.startsWith(".")) continue;
     const p = path.join(dir, entry);
     if (statSync(p).isDirectory()) collectSrcFiles(p, out);
-    else if (p.endsWith(".ts") || p.endsWith(".tsx")) out.push(p);
+    // Session-247 (R-44, F-247f): the jsx arm joins the filter — the
+    // F-243d whole-tree doctrine (the nine capital-route bridges are
+    // class-string carriers the walker must see).
+    else if (p.endsWith(".ts") || p.endsWith(".tsx") || p.endsWith(".jsx")) out.push(p);
   }
   return out;
 }

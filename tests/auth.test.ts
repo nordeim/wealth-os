@@ -88,6 +88,37 @@ describe("session tokens", () => {
     expect(verifySessionToken(`${body}.${sig}`, now)).toBeNull();
   });
 
+  // Session-247 (R-44, F-247b): the iat's own shape-and-present bound —
+  // the F-244f span guard closed only the exp half of the signer-bug
+  // class its own docblock names. Pre-cure, a future iat kept a valid
+  // exp−iat span and was honored iat+TTL (a ms-vs-s unit slip in the
+  // iat field — the docblock's own named threat, uncaught); a
+  // non-numeric iat NaN'd the span comparison into a silent pass while
+  // flowing the raw value into SessionPayload.
+  it("rejects a future iat beyond the skew slack (F-247b)", () => {
+    const now = Date.now();
+    // iat 1h ahead with a valid 7d span: pre-cure this token verified.
+    const payload = {
+      uid: "user_123",
+      iat: now + 3_600_000,
+      exp: now + 3_600_000 + 7 * 24 * 60 * 60 * 1000,
+      v: 0,
+    };
+    const body = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
+    const sig = createHmac("sha256", "neo-crm-dev-only-insecure-secret").update(body).digest("hex");
+    expect(verifySessionToken(`${body}.${sig}`, now)).toBeNull();
+  });
+
+  it("rejects a non-numeric iat even under a valid signature (F-247b)", () => {
+    const now = Date.now();
+    // "not-a-number": exp − iat NaN'd past the span bound (NaN >
+    // bound is false) and the raw string flowed into SessionPayload.
+    const payload = { uid: "user_123", iat: "not-a-number", exp: now + 60_000, v: 0 };
+    const body = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
+    const sig = createHmac("sha256", "neo-crm-dev-only-insecure-secret").update(body).digest("hex");
+    expect(verifySessionToken(`${body}.${sig}`, now)).toBeNull();
+  });
+
   it("exports the expected cookie name", () => {
     expect(SESSION_COOKIE).toBe("neo_session");
   });

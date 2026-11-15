@@ -123,7 +123,12 @@ describe("reset-password route contract (session-163, digma S67-A/S76-A/S124-A)"
 
   it("looks the row up by the HASHED token (a DB read compromise never mints live reset URLs — session-164)", () => {
     const src = resetRoute();
-    expect(src).toContain("findFirst({ where: { resetToken: hashResetToken(resetToken) } })");
+    // Session-247 (R-44, F-247d) recalibration: the read joined the
+    // F-228h select-narrowed family (id + expiry only); the hashed-token
+    // keying — this pin's contract — rides the WHERE unchanged.
+    expect(src).toMatch(
+      /findFirst\(\{\s*where: \{ resetToken: hashResetToken\(resetToken\) \},\s*select: \{ id: true, resetTokenExpiresAt: true \},?\s*\}\)/,
+    );
   });
 
   it("read path surfaces P2024/P2028 as 503 — the F-220k sibling the R-17 cure missed (F-221g)", () => {

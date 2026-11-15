@@ -219,6 +219,11 @@ export default function ImportPage() {
               accept=".csv,.xls,.xlsx"
               className="sr-only"
               aria-label="Upload a file — CSV, XLS or XLSX up to 10MB"
+              // Session-247 (R-44, F-247e): the commit-window guard — the
+              // F-234b parse token covers the parse window only; the input
+              // rides disabled through the import POST so a mid-commit
+              // re-pick cannot strand the newly staged preview.
+              disabled={busy}
               onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
             />
           </label>

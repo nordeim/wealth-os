@@ -107,6 +107,21 @@ export function verifySessionToken(token: string | undefined | null, now = Date.
     const payload = JSON.parse(unb64url(body)) as Partial<SessionPayload>;
     if (typeof payload.uid !== "string" || typeof payload.exp !== "number") return null;
     if (payload.exp < now) return null;
+    // Session-247 (R-44, F-247b): the iat's own shape-and-present bound —
+    // the F-244f span guard below closed only the exp half of the
+    // signer-bug class it names: a future iat (the docblock's own
+    // ms-vs-s unit-slip threat, sitting in the iat field instead of exp)
+    // kept a valid exp−iat span and was honored iat+TTL, and a
+    // non-numeric iat NaN'd the span comparison into a silent pass while
+    // flowing the raw value into SessionPayload. The bound mirrors the
+    // exp/v shape guards: a PRESENT iat must be a finite number and
+    // cannot sit further than the span guard's own 60s clock-skew slack
+    // past now. A MISSING iat still reads as the epoch against the span
+    // bound below (the F-244f strict posture — unchanged).
+    if (payload.iat !== undefined) {
+      if (typeof payload.iat !== "number" || !Number.isFinite(payload.iat)) return null;
+      if (payload.iat > now + 60_000) return null;
+    }
     // Session-244 (R-41, F-244f): the TTL span bound — the verifier used
     // to honor any signed exp for its duration (only the HMAC guarded
     // the field), so a future signer bug (a millisecond-vs-second unit

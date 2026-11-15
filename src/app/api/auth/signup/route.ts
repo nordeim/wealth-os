@@ -62,7 +62,10 @@ export async function POST(req: Request) {
   // { ok, error } instead of a raw non-JSON 500. The validation prefixes
   // above touch no DB and stay outside.
   try {
-    const existing = await db.user.findUnique({ where: { email } });
+    // Session-247 (R-44, F-247d): the existence check selects id only —
+    // the F-228h insurance form (the F-246d family completed); the
+    // row's secrets never enter handler scope.
+    const existing = await db.user.findUnique({ where: { email }, select: { id: true } });
     if (existing) {
       // Session-21 (S21-P6): the reference's banner text — "A user with this
       // email already exists" (ours said "An account with…"; existing-email

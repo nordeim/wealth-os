@@ -134,6 +134,12 @@ function ToastCard({ item }: { item: ToastItem }) {
       )}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      // Session-247 (R-44, F-247c): the keyboard arm of the pause —
+      // React's synthetic onFocus/onBlur bubble from the Dismiss button
+      // to the card, so a tabbed-to control no longer dies at 4s with
+      // the focus inside it (the hover pair's mouse arm, completed).
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
     >
       <span className="mt-0.5 shrink-0">{ICONS[item.variant]}</span>
       <div className="min-w-0 flex-1">

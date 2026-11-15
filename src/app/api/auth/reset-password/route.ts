@@ -61,9 +61,15 @@ export async function POST(req: Request) {
   // (the F-220k class forgot-password's read path cured; this route's
   // own update path cured it in F-218q). A MISSING row is not an error;
   // a broken DB is a 503, never a token verdict.
-  let user: Awaited<ReturnType<typeof db.user.findFirst>> = null;
+  // Session-247 (R-44, F-247d): the token read selects id + expiry —
+  // the F-228h insurance form (the F-246d family completed); the
+  // credential and verification secrets never enter handler scope.
+  let user: { id: string; resetTokenExpiresAt: Date | null } | null = null;
   try {
-    user = await db.user.findFirst({ where: { resetToken: hashResetToken(resetToken) } });
+    user = await db.user.findFirst({
+      where: { resetToken: hashResetToken(resetToken) },
+      select: { id: true, resetTokenExpiresAt: true },
+    });
   } catch (error) {
     logApiError("auth/reset-password POST", error);
     // Session-238 (R-35, F-238k): the seam arm replaces the hand-rolled
