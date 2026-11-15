@@ -48,7 +48,11 @@ describe("F-224e — a failed logout POST is not silently treated as success", (
     // Session-241 (R-38, F-241a): the window widened — logout's entry
     // now carries the clear intent era bump (its own rationale block)
     // between the declaration and the POST call.
-    expect(src).toMatch(/logout: async \(\)[\s\S]{0,900}const res = await call\("\/api\/auth\/logout"/);
+    // Session-249 (R-46, F-249d): widened again — the return guard's
+    // era re-key carries its own rationale block in the same stretch
+    // (the F-247e window doctrine: size the window past the comment
+    // the same commit writes).
+    expect(src).toMatch(/logout: async \(\)[\s\S]{0,1700}const res = await call\("\/api\/auth\/logout"/);
     expect(src).toMatch(/if \(!res\.ok\)/);
   });
 

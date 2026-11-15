@@ -54,10 +54,16 @@ async function call<T>(path: string, init?: RequestInit): Promise<CallResult<T>>
   }
 }
 
-// The logout write-guard: every fetch captures this token at entry and
-// may only write while it still matches; logout bumps it immediately
-// before clearing — a logout landing mid-fetch can never re-populate
-// the cleared slices with the previous user's data.
+// The write-guard token: the landing writers that must die on a
+// deliberate clear (hydrate's slice commit and settings settle,
+// updateSettings' write) capture this token at entry and compare
+// before committing; logout and the wall bump it in the same commit
+// as the clear era below, so a mid-fetch clear can never re-populate
+// the cleared slices with the previous user's data. Session-249
+// (R-46, F-249c): refreshAll's commit re-keyed to the era + the
+// sequence — a remount hydrate's non-clearing entry bump used to
+// discard a mutation's fresher post-write payload (the remount
+// stale-read leg). The token remains the WRITE-path key.
 let sessionWriteToken = 0;
 
 // Session-241 (R-38, F-241a): the CLEAR-ERA counter — the deliberate-
@@ -79,7 +85,12 @@ let sessionWriteToken = 0;
 let sessionClearSeq = 0;
 
 // Session-220 (R-17, F-220l): the refreshAll sequence — monotonic,
-// last-request-wins (see refreshAll).
+// last-request-wins (see refreshAll). Session-249 (R-46, F-249c):
+// hydrate's dashboard GET mints the same sequence at ISSUE time, so
+// the last issued dashboard read wins across BOTH families — a
+// remount's GET issued before a mutation's POST landed carries a
+// pre-write read that must not overwrite the mutation's fresher
+// commit (the reverse leg of the remount stale-read genus).
 let refreshSeq = 0;
 
 export interface WealthOsState {
@@ -208,38 +219,49 @@ function commitRevocationWall(
  * swap every slice (the replace contract — full-list replacement, no
  * partial PATCH merging). Session-216 (R-13, F-216d): the failure
  * branch — a failed refresh used to die silently (no else); the
- * error now lands in the store (behind the write-token guard) for
- * the shell's alert banner, and the Result rides back to the caller
- * so the Refresh buttons can toast. */
+ * error now lands in the store (behind the commit guard) for the
+ * shell's alert banner, and the Result rides back to the caller
+ * so the Refresh buttons can toast.
+ *
+ * Session-249 (R-46, F-249c): the commit guard re-keys from the
+ * entry token to the CALLER's entry era + the sequence. The token's
+ * only non-clearing bumper was a concurrent hydrate's entry bump —
+ * which is not a clear and must not discard a mutation's fresher
+ * post-write payload (the remount stale-read leg); logout and the
+ * wall advance the era in the same commit as the token, so the
+ * F-217l/F-239a contracts survive in the era key. The era arrives
+ * as a parameter: mutate threads its own ENTRY era (a mutation
+ * landing after a completed logout must not re-capture the
+ * post-logout era and wall over the logout face), refresh captures
+ * at action entry (the same moment it always captured the token). */
 async function refreshAll(
-  token: number,
+  entryClearSeq: number,
   set: (partial: Partial<WealthOsState>) => void,
 ): Promise<Result<DashboardData, string>> {
   // Session-220 (R-17, F-220l): the sequence guard — two quick
   // mutations A→B can resolve out of order (A's fetch landing after
-  // B's), overwriting B's fresher slices with stale ones; the
-  // write-token guard below protects against logout only. A response
+  // B's), overwriting B's fresher slices with stale ones. A response
   // whose sequence is older than the latest issued is discarded
   // (last-request-wins).
   const seq = ++refreshSeq;
-  // Session-241 (R-38, F-241a): the entry era — captured BEFORE the
-  // fetch; a match at the 401 landing means no wall/logout intervened
-  // since this fetch was issued.
-  const entryClearSeq = sessionClearSeq;
   const res = await call<DashboardData>("/api/dashboard");
   // Session-241 (R-38, F-241a): the 401 arm rides ABOVE the combined
-  // guard, keyed on the era match — pre-R-37 a live-session 401 was
-  // discarded on the stale-SEQUENCE dimension alone (the F-240a
-  // genus), pre-R-38 the live-user key skipped genuine 401s on the
-  // user-null faces the wall did not own (the error face) and walled
-  // the wrong era's sessions (the cross-era leg). Era-match means no
-  // deliberate clear owns the face → wall; era-stale means the clear
-  // owns it → the idempotent skip.
+  // guard, keyed on the CALLER's era match — pre-R-37 a live-session
+  // 401 was discarded on the stale-SEQUENCE dimension alone (the
+  // F-240a genus), pre-R-38 the live-user key skipped genuine 401s on
+  // the user-null faces the wall did not own (the error face) and
+  // walled the wrong era's sessions (the cross-era leg). Era-match
+  // means no deliberate clear owns the face → wall; era-stale means
+  // the clear owns it → the idempotent skip.
   if (!res.ok && res.code === "UNAUTHORIZED") {
     if (sessionClearSeq === entryClearSeq) commitRevocationWall(set);
     return res;
   }
-  if (token !== sessionWriteToken || seq !== refreshSeq) return res;
+  // Session-249 (R-46, F-249c): the era + sequence form — the entry
+  // token retired from this guard (see the docblock above: the only
+  // non-clearing token bumper is a concurrent hydrate's entry bump,
+  // which must not discard a fresher post-write commit).
+  if (sessionClearSeq !== entryClearSeq || seq !== refreshSeq) return res;
   if (res.ok) {
     set({
       transactions: res.data.transactions,
@@ -266,22 +288,27 @@ async function refreshAll(
  *  Sign in required" over a dead stale workspace: the store committed
  *  nothing, the user survived, the gate never fired, and section pages
  *  carry no Refresh control — the wall was unreachable without a
- *  navigation. The wrapper keeps the F-217l entry-captured token and
- *  the F-216d post-success refresh; a failure arm carrying
- *  UNAUTHORIZED commits the wall behind the token guard, and every
- *  mutation action inherits it. */
+ *  navigation. The wrapper keeps the F-216d post-success refresh and
+ *  the 401 wall; a failure arm carrying UNAUTHORIZED commits the wall
+ *  behind the era guard, and every mutation action inherits it.
+ *
+ * Session-249 (R-46, F-249c): the entry era replaces the entry token
+ *  (the F-217l capture at the same moment) and THREADS into the
+ *  post-success refresh — refreshAll re-capturing its own era after
+ *  the POST landed let a mutation landing post-logout wall over the
+ *  logout face (the era moved between the POST's issue and the
+ *  refresh's entry; the wrapper's entry era is the honest key). */
 async function mutate<T>(
   path: string,
   init: RequestInit,
   set: (partial: Partial<WealthOsState>) => void,
 ): Promise<Result<T, string>> {
-  const token = sessionWriteToken; // F-217l: captured at entry
   // Session-241 (R-38, F-241a): the entry era (see the counter's
   // declaration block for the full contract).
   const entryClearSeq = sessionClearSeq;
   const res = await call<T>(path, init);
   if (res.ok) {
-    await refreshAll(token, set);
+    await refreshAll(entryClearSeq, set);
   } else if (res.code === "UNAUTHORIZED" && sessionClearSeq === entryClearSeq) {
     // Session-238 (R-35, F-238b): the third revocation window — the
     // wall behind the guard. Session-241 (R-38, F-241a): the guard is
@@ -338,6 +365,14 @@ function createStore() {
           ? { error: null, settingsSettled: false }
           : { loading: true, error: null, settingsSettled: false },
       );
+      // Session-249 (R-46, F-249c): the dashboard read joins the
+      // shared refresh sequence at ISSUE time — the last issued
+      // dashboard read wins across the hydrate and refreshAll
+      // families (a remount's GET issued before a mutation's POST
+      // landed carries a pre-write read; without the ordering
+      // dimension its landing overwrote the mutation's fresher
+      // commit — the reverse leg of the remount stale-read genus).
+      const seq = ++refreshSeq;
       const res = await call<DashboardData>("/api/dashboard");
       // Session-241 (R-38, F-241a): the 401 arm keys on the ERA MATCH
       // — a concurrent hydrate's own entry bump stales the token
@@ -358,8 +393,16 @@ function createStore() {
         }
         return;
       }
-      if (token !== sessionWriteToken) return;
-      if (res.ok) {
+      // Session-249 (R-46, F-249c): the superseded landing — a
+      // fresher-issued dashboard read (a mutation's post-write
+      // refreshAll) or a deliberate clear owns the slices, so this
+      // landing skips ONLY the slice commit. The settings tail
+      // below still runs: its own cycle must settle (the F-234a
+      // tri-state — a cancelled remount cannot strand the Settings
+      // in-flight face), and its era/token guards no-op on a dead
+      // session.
+      const superseded = token !== sessionWriteToken || seq !== refreshSeq;
+      if (!superseded && res.ok) {
         set({
           transactions: res.data.transactions,
           incomeSources: res.data.incomeSources,
@@ -372,6 +415,11 @@ function createStore() {
           loading: false,
           error: null,
         });
+      }
+      if (!superseded && !res.ok) {
+        set({ hydrated: true, loading: false, error: res.error });
+      }
+      if (res.ok) {
         const settingsRes = await call<Settings>("/api/settings");
         // Session-240 (R-37, F-240b): a 401 here means the revocation
         // landed between hydrate's two calls (the dashboard 200
@@ -409,7 +457,22 @@ function createStore() {
     // the sign-out completed; the signOut helpers gate their
     // navigation on it.
     logout: async (): Promise<boolean> => {
-      const token = ++sessionWriteToken;
+      // Session-249 (R-46, F-249d): the return guard re-keys from the
+      // entry token to the exactly-own-bump era form. A remount
+      // hydrate entering inside the POST window bumps the token (the
+      // non-clearing bumper) and used to stale the token guard — a
+      // server-SUCCESSFUL logout then returned false with no clear,
+      // and the signOut helper skipped the login navigation. The era
+      // form: capture BEFORE the entry bump; at landing the era must
+      // equal exactly entry+1 (own bump, no wall intervening) — a
+      // hydrate never advances the era (the guard passes, the clear
+      // commits); a wall does (correctly false — the wall owns the
+      // face).
+      const entryClearSeq = sessionClearSeq;
+      // The token bump still stales every in-flight WRITE-path
+      // writer (hydrate's commits, updateSettings) — the F-217l
+      // contract's write half.
+      ++sessionWriteToken;
       // Session-241 (R-38, F-241a): the clear-intent era bump at ENTRY
       // — the moment the clear is declared, before the POST await. A
       // 401 landing inside the POST window is era-stale (every arm
@@ -417,11 +480,11 @@ function createStore() {
       // mid-window, staled this action's own token guard, and a
       // server-side-SUCCESSFUL logout returned false with no clear.
       // The failed-logout staleness (an in-flight fetch issued
-      // pre-entry finds the era moved) matches the token guard's own
+      // pre-entry finds the era moved) matches the write guards' own
       // pre-existing F-217l shape — a live session answers no 401s.
       sessionClearSeq += 1;
       const res = await call("/api/auth/logout", { method: "POST" });
-      if (token !== sessionWriteToken) return false;
+      if (sessionClearSeq !== entryClearSeq + 1) return false;
       if (!res.ok) {
         set({ hydrated: true, loading: false, error: res.error });
         return false;
@@ -444,13 +507,13 @@ function createStore() {
     },
 
     refresh: async () => {
-      // Session-217 (R-14, F-217l): capture the write token at ENTRY —
-      // the pre-217 form read the LIVE token after the fetch resolved,
-      // so a logout completing in between bumped the token first and the
-      // post-fetch guard passed, writing the previous user's payload
-      // into the cleared store.
-      const token = sessionWriteToken;
-      return refreshAll(token, set);
+      // Session-249 (R-46, F-249c): the entry era replaces the entry
+      // token at the same F-217l moment — captured before the first
+      // await so a logout completing in between advances the era and
+      // the landing commit is discarded (the era key: logout and the
+      // wall advance it in the same commit as the token).
+      const entryClearSeq = sessionClearSeq;
+      return refreshAll(entryClearSeq, set);
     },
 
     // Session-238 (R-35, F-238b): every refreshAll-family action rides

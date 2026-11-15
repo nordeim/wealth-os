@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1622) | `bun run test` |
+| Unit tests (1645) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 151) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -874,7 +874,13 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   before its own lockstep pass), not as a rider after it. The
   discipline's honest form: a session that ships a revision block
   leaves the trio already aged; the next session's FIRST docs act is
-  the advance.
+  the advance. Session-249 (R-46, F-249b — the STRUCTURAL cure, after
+  seven recurrences): the docs-counts battery now derives the PAD's
+  newest revision block at test time and asserts the guard's pinned
+  window covers it, so the EIGHTH edition fails `bun run test` inside
+  its own ship commit — the lockstep script's advance is a
+  gate-enforced leg, and the manual first-docs-act convention
+  retires.
 - **A PROSE-SATISFIABLE PIN PROVES PROSE, NOT THE FORM — pin the
   regex/code shape the cure actually shipped (session 244, F-244e)**:
   toContain("jsx") over a sliced walker matched the Session-243

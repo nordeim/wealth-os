@@ -82,12 +82,18 @@ describe("F-241a — every 401 arm keys on the clear era, not the live user", ()
     expect(start).toBeGreaterThan(-1);
     const end = src.indexOf("async function mutate", start);
     const body = src.slice(start, end);
-    // The entry capture rides the fetch, not the landing.
-    expect(body).toContain("const entryClearSeq = sessionClearSeq;");
+    // Session-249 (R-46, F-249c): the era rides the CALLER now — the
+    // threading vehicle. Pre-R-46 refreshAll captured its own entry
+    // era here (after its caller's fetch landed), which let a
+    // mutation landing post-logout re-capture the post-logout era
+    // and wall over the logout face; the parameter is the honest key
+    // and the local capture is gone.
+    expect(body).not.toContain("const entryClearSeq = sessionClearSeq;");
+    expect(body).toMatch(/async function refreshAll\(\s*entryClearSeq: number,/);
     const armIndex = body.indexOf('res.code === "UNAUTHORIZED"');
     expect(armIndex).toBeGreaterThan(-1);
     const guardIndex = body.indexOf(
-      "if (token !== sessionWriteToken || seq !== refreshSeq) return res;",
+      "if (sessionClearSeq !== entryClearSeq || seq !== refreshSeq) return res;",
     );
     expect(guardIndex).toBeGreaterThan(-1);
     expect(armIndex).toBeLessThan(guardIndex);
@@ -122,7 +128,12 @@ describe("F-241a — every 401 arm keys on the clear era, not the live user", ()
     expect(body).toContain("const entryClearSeq = sessionClearSeq;");
     const arm = body.indexOf('res.code === "UNAUTHORIZED"');
     expect(arm).toBeGreaterThan(-1);
-    const guard = body.indexOf("if (token !== sessionWriteToken) return;");
+    // Session-249 (R-46, F-249c): the landing guard became the
+    // superseded form (token + sequence — see the F-240a leg's
+    // recalibration for the shape).
+    const guard = body.indexOf(
+      "const superseded = token !== sessionWriteToken || seq !== refreshSeq;",
+    );
     expect(guard).toBeGreaterThan(-1);
     expect(arm).toBeLessThan(guard);
     const armBlock = body.slice(arm, guard);

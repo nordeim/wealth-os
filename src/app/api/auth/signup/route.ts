@@ -132,6 +132,14 @@ export async function POST(req: Request) {
           verificationAttempts: 0,
           verificationExpiresAt: new Date(Date.now() + VERIFICATION_TTL_MS),
         },
+        // Session-249 (R-46, F-249e): the consumed-fields select — the
+        // F-228h insurance doctrine's create arm (the read and update
+        // paths were narrowed in F-246d/F-247d/F-248e; without this
+        // select Prisma materializes the complete post-create row —
+        // passwordHash, verificationCodeHash, resetToken — in handler
+        // scope where only id and email are consumed; a future
+        // return-the-row edit would leak every secret in one step).
+        select: { id: true, email: true },
       });
     } catch (e) {
       logApiError("auth/signup POST", e);

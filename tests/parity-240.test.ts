@@ -52,8 +52,12 @@ describe("F-240a — every 401 arm keys on the clear era (the R-38 recalibration
     // happened and a new session owns it").
     const armIndex = body.indexOf('res.code === "UNAUTHORIZED"');
     expect(armIndex).toBeGreaterThan(-1);
+    // Session-249 (R-46, F-249c): the combined guard is the CALLER's
+    // era + the sequence (the entry token retired — a remount
+    // hydrate's non-clearing bump used to discard a mutation's
+    // fresher post-write payload, the F-248f registered defect).
     const guardIndex = body.indexOf(
-      "if (token !== sessionWriteToken || seq !== refreshSeq) return res;",
+      "if (sessionClearSeq !== entryClearSeq || seq !== refreshSeq) return res;",
     );
     expect(guardIndex).toBeGreaterThan(-1);
     expect(armIndex).toBeLessThan(guardIndex);
@@ -70,9 +74,10 @@ describe("F-240a — every 401 arm keys on the clear era (the R-38 recalibration
     const body = src.slice(start, end);
     // The sequence guard's own job (F-220l — two quick mutations
     // resolving out of order) is untouched: only the 401 arm moved
-    // above it.
+    // above it. Session-249 (R-46, F-249c): the guard's first
+    // disjunct is the caller's era (see the recalibrated pin above).
     expect(body).toContain(
-      "if (token !== sessionWriteToken || seq !== refreshSeq) return res;",
+      "if (sessionClearSeq !== entryClearSeq || seq !== refreshSeq) return res;",
     );
   });
 
@@ -81,8 +86,12 @@ describe("F-240a — every 401 arm keys on the clear era (the R-38 recalibration
     // Session-241 (R-38): the era key reads module state — the get
     // param R-37 added for the live-user read became dead weight and
     // retired with the same-commit call-site sweep.
+    // Session-249 (R-46, F-249c): refreshAll's first param became the
+    // CALLER's entry era (the threading vehicle — mutate passes its
+    // own entry era so a post-logout landing cannot re-capture the
+    // post-logout era).
     expect(src).toMatch(
-      /async function refreshAll\(\s*token: number,\s*set: \(partial: Partial<WealthOsState>\) => void,?\s*\)/,
+      /async function refreshAll\(\s*entryClearSeq: number,\s*set: \(partial: Partial<WealthOsState>\) => void,?\s*\)/,
     );
     expect(src).toMatch(
       /async function mutate<T>\(\s*path: string,\s*init: RequestInit,\s*set: \(partial: Partial<WealthOsState>\) => void,?\s*\)/,
@@ -139,7 +148,13 @@ describe("F-240a — every 401 arm keys on the clear era (the R-38 recalibration
     // era-stale and skips.
     const arm = body.indexOf('res.code === "UNAUTHORIZED"');
     expect(arm).toBeGreaterThan(-1);
-    const guard = body.indexOf("if (token !== sessionWriteToken) return;");
+    // Session-249 (R-46, F-249c): the landing guard became the
+    // superseded form — the token dimension (a deliberate clear or a
+    // newer entry) plus the sequence dimension (a later-issued
+    // dashboard read owns the slices).
+    const guard = body.indexOf(
+      "const superseded = token !== sessionWriteToken || seq !== refreshSeq;",
+    );
     expect(guard).toBeGreaterThan(-1);
     expect(arm).toBeLessThan(guard);
     const armBlock = body.slice(arm, guard);

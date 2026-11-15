@@ -95,7 +95,18 @@ export async function POST(req: Request) {
     // clear the cookie and answer the guest-logout no-op 200 form
     // (never the generic 500 — the F-222o doctrine).
     if (isRecordNotFound(error)) {
-      await clearSessionCookie();
+      // Session-249 (R-46, F-249f): the arm's clear rides its own
+      // minimal try — a throw from INSIDE a catch block is not caught
+      // by that catch, so an unprotected clear here would surface a
+      // raw non-JSON 500 for an already-completed eviction (the
+      // F-248g envelope doctrine, completed across the route's two
+      // clear sites). The arm still answers the completed sign-out
+      // either way — the session cannot outlive its vanished row.
+      try {
+        await clearSessionCookie();
+      } catch (clearError) {
+        logApiError("auth/logout POST (vanished-row cookie clear)", clearError);
+      }
       return ok({ signedOut: true });
     }
     // Session-237 (R-34, F-237b): the transient arm joins the auth

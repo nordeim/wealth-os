@@ -48,8 +48,13 @@ describe("F-238b — a mutation 401 commits the wall (the third window)", () => 
     const end = src.indexOf("function createStore");
     expect(end).toBeGreaterThan(start);
     const body = src.slice(start, end);
-    expect(body).toMatch(/const token = sessionWriteToken;/);
-    expect(body).toMatch(/await refreshAll\(token, set\)/);
+    // Session-249 (R-46, F-249c): the entry era replaces the entry
+    // token as the wrapper's capture (the F-217l moment, the era
+    // key) — the post-success refresh threads it into refreshAll so
+    // a mutation landing after a completed logout cannot re-capture
+    // the post-logout era and wall over the logout face.
+    expect(body).toContain("const entryClearSeq = sessionClearSeq;");
+    expect(body).toMatch(/await refreshAll\(entryClearSeq, set\)/);
     // Session-241 (R-38, F-241a): the arm's guard is the CLEAR-ERA
     // match (the entry token is staled by a concurrent hydrate's bump
     // without any clear — the era is not; the F-217l logout contract
@@ -58,15 +63,17 @@ describe("F-238b — a mutation 401 commits the wall (the third window)", () => 
     expect(body).toMatch(/commitRevocationWall\(set\)/);
   });
 
-  it("the wrapper captures the F-217l entry token BEFORE its fetch", () => {
+  it("the wrapper captures the F-217l entry era BEFORE its fetch", () => {
     const src = read("src/stores/wealthos-store.ts");
     const start = src.indexOf("async function mutate<");
     const end = src.indexOf("function createStore");
     const body = src.slice(start, end);
-    const tokenAt = body.indexOf("const token = sessionWriteToken;");
+    // Session-249 (R-46, F-249c): the era edition of the entry-capture
+    // ordering pin (the token capture retired with the guard re-key).
+    const eraAt = body.indexOf("const entryClearSeq = sessionClearSeq;");
     const fetchAt = body.indexOf("await call<");
-    expect(tokenAt).toBeGreaterThan(-1);
-    expect(fetchAt).toBeGreaterThan(tokenAt);
+    expect(eraAt).toBeGreaterThan(-1);
+    expect(fetchAt).toBeGreaterThan(eraAt);
   });
 
   it("every refreshAll-family action rides the wrapper (18 call sites)", () => {

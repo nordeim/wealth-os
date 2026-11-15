@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1622;
+const UNIT_TOTAL = 1645;
 const E2E_TOTAL = 151;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 99;
+const TEST_FILES = 101;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -90,7 +90,7 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // tests inside existing family files, no new rows): 4 + 68 +
     // 27 = 99.
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 68 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, db-transient) |",
+      "| — architecture pins | 69 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, db-transient) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99
@@ -209,18 +209,49 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   // that adds a new revision block — the recurrence walks otherwise.
   it("the historical revision blocks keep their OWN ship counts (F-242j — the over-replacement guard)", () => {
     const p = norm(doc("Project_Architecture_Document.md"));
-    // Session-248 (R-45, F-248a): the trio advances to
-    // v2.42.0/v2.43.0/v2.44.0 — the F-243b/F-244a recurrence's SIXTH
-    // edition cured (session 247 landed the v2.44.0 block while the
-    // guard still pinned v2.41.0/v2.42.0/v2.43.0 — the genus walked
-    // past the window again inside the round that advanced it; the
-    // advance lands green-by-design BEFORE this session's own
-    // lockstep pass, the F-244a lesson's own rule executed first). The
-    // next session that ships a revision block advances the trio
-    // again — first docs act, before its own lockstep.
-    expect(p).toMatch(/\[SR\] v2\.42\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1591 unit \(96 files, \+10\)/);
-    expect(p).toMatch(/\[SR\] v2\.43\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1601 unit \(97 files, \+10\)/);
+    // Session-249 (R-46, F-249a): the trio advances to
+    // v2.43.0/v2.44.0/v2.45.0 green-by-design FIRST (the SEVENTH
+    // edition cured before this session's own lockstep pass, the
+    // F-244a rule); the lockstep below then lands the v2.46.0 block
+    // and advances AGAIN to v2.44.0/v2.45.0/v2.46.0 in the same
+    // commit — the structural leg beneath now enforces the window at
+    // test time (F-249b: the PAD's newest block must sit inside the
+    // pinned window; the eighth edition fails `bun run test` inside
+    // its own ship commit — the manual first-docs-act convention
+    // retires).
     expect(p).toMatch(/\[SR\] v2\.44\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1610 unit \(98 files, \+9\)/);
+    expect(p).toMatch(/\[SR\] v2\.45\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1622 unit \(99 files, \+12\)/);
+    expect(p).toMatch(/\[SR\] v2\.46\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1645 unit \(101 files, \+23\)/);
+  });
+
+  // Session-249 (R-46, F-249b): the structural cure for the aging genus.
+  // Seven consecutive sessions each landed a revision block and left the
+  // trio one block behind — the "advance first, next session" convention
+  // lived in comments and session records, and nothing executable verified
+  // the window. This leg derives the PAD's NEWEST revision block at test
+  // time (the [SR] list is newest-first, and only the block form carries
+  // the dash-prefixed list-item shape) and asserts the guard's pinned
+  // window — read from THIS file's own pin lines, in their escaped regex
+  // form so prose mentions cannot satisfy it — covers it. The eighth
+  // edition now fails `bun run test` inside its own ship commit; the
+  // lockstep script's advance is a gate-enforced leg, not a convention.
+  it("the guard window covers the PAD's NEWEST revision block (F-249b — the structural cure)", () => {
+    const pad = doc("Project_Architecture_Document.md");
+    const newest = pad.match(/- \[SR\] v2\.(\d+)\.(\d+) \(/);
+    expect(newest).not.toBeNull();
+    const self = doc("tests/docs-counts.test.ts");
+    const guardStart = self.indexOf(
+      "the historical revision blocks keep their OWN ship counts",
+    );
+    expect(guardStart).toBeGreaterThan(-1);
+    const guardSlice = self.slice(guardStart, self.indexOf("});", guardStart));
+    // The pinned versions, extracted from the escaped pin forms only —
+    // the doc comments' prose mentions (unescaped) cannot satisfy it.
+    const pinned = [...guardSlice.matchAll(/\\\[SR\\\] v2\\\.(\d+)\\\.0/g)].map(
+      (m) => Number(m[1]),
+    );
+    expect(pinned.length).toBeGreaterThanOrEqual(3);
+    expect(pinned).toContain(Number(newest![1]));
   });
 
   it("the SKILL's stack table carries NO deleted-dependency rows (F-216f, the retired-forms negative ladder)", () => {

@@ -51,19 +51,26 @@ describe("R-14: the mutation actions capture the write token at entry (F-217l)",
     expect(STORE).not.toMatch(/refreshAll\(sessionWriteToken, set\)/);
   });
 
-  it("every action captures the token before its first await", () => {
+  it("the write-path actions capture the token before their first await", () => {
+    // Session-249 (R-46, F-249c): the F-217l entry-capture contract
+    // split along the guard re-key — refreshAll's commit re-keyed to
+    // the caller's entry era + the sequence (a remount hydrate's
+    // non-clearing token bump used to discard a mutation's fresher
+    // post-write payload), so the token capture now lives only on
+    // the WRITE paths (updateSettings' commit; hydrate's landing
+    // guards). The era arrives at refreshAll as a parameter — the
+    // threading vehicle.
     expect(STORE).toMatch(/const token = sessionWriteToken;/);
-    // Session-241 (R-38, F-241a): the get carrier R-37 added for the
-    // live-user 401 key retired with the clear-era re-key (the era
-    // reads module state) — the entry-token capture contract is
-    // unchanged.
-    expect(STORE).toMatch(/refreshAll\(token, set\)/);
-    expect(STORE).not.toMatch(/refreshAll\(token, set, get\)/);
+    expect(STORE).toMatch(/refreshAll\(entryClearSeq, set\)/);
+    expect(STORE).not.toMatch(/refreshAll\(token, set\)/);
   });
 
-  it("refresh captures the token at entry too", () => {
-    // The comment between the brace and the capture is fine — the pin
-    // allows the documentation line(s) the cure carries.
-    expect(STORE).toMatch(/refresh: async \(\) => \{\s*(?:\/\/[^\n]*\n\s*)*const token = sessionWriteToken;/);
+  it("refresh captures the era at entry too (the F-217l moment, the era key)", () => {
+    // Session-249 (R-46, F-249c): the capture at action entry — the
+    // same moment the token was captured pre-R-46, in the era key
+    // the commit guard now reads. The comment between the brace and
+    // the capture is fine — the pin allows the documentation line(s)
+    // the cure carries.
+    expect(STORE).toMatch(/refresh: async \(\) => \{\s*(?:\/\/[^\n]*\n\s*)*const entryClearSeq = sessionClearSeq;/);
   });
 });

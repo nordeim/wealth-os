@@ -14,7 +14,7 @@ function read(rel: string): string {
   return existsSync(p) ? readFileSync(p, "utf8") : "";
 }
 
-/** Walk src (ts/tsx/css), skipping the generated prisma client. */
+/** Walk src (ts/tsx/jsx/css), skipping the generated prisma client. */
 function walkSrc(dir: string, files: string[] = []): string[] {
   for (const name of readdirSync(dir)) {
     if (name === "generated") continue;
