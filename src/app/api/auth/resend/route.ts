@@ -60,7 +60,16 @@ export async function POST(req: Request) {
   // Session-37 (S37-P1): the auth family joins the envelope — the
   // findUnique/update failures stay inside { ok, error }.
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    // Session-246 (R-43, F-246d): the re-arm route reads only the
+    // hash-present check and identity (the F-228h form) — no
+    // credential, no reset secret in scope.
+    const user = await db.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        verificationCodeHash: true,
+      },
+    });
     // Session-217 (R-14, F-217d): the resend re-arms for ANY hash-present
     // account — the pre-217 `!isVerificationPending(...)` arm no-opped
     // for expired codes, locking a never-verified account out of its

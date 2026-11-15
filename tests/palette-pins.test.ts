@@ -221,3 +221,35 @@ describe("R-11: the v3 re-pin values (the F-214d cure literals)", () => {
     expect(missingDark).toEqual([]);
   });
 });
+
+// Session-246 (R-43, F-246c — the dead-pin reverse leg): the used→pinned
+// direction above cannot see its own mirror. Twenty-four (family, step)
+// pins shipped through 44 sessions with zero src/ consumers — the
+// re-pin block's own header contract says "every literal (family, step)
+// pair used in src/", and v4 tree-shook every one of them (the built
+// stylesheet proved nothing about the source's honesty). The reverse:
+// a pinned pair with no src/ class-string usage is dead design intent —
+// retire it per the F-228b precedent or register a reserved-reason.
+// (The semantic-token family is deliberately NOT covered here: the
+// reserved-register doctrine — line-strong's documented rationale —
+// rides the semantic list, not the family-step pairs.)
+describe("R-43: every pinned (family, step) token is USED in src/ (the F-246c reverse leg)", () => {
+  it("the reverse enumerator is alive (the pin census exceeds the used census's floor)", () => {
+    const pinnedPairs = [...PINNED].filter((name) =>
+      new RegExp(`^(${FAMILY_RE})-(\\d{2,3})$`).test(name),
+    );
+    expect(pinnedPairs.length).toBeGreaterThan(80);
+  });
+
+  it("the @theme pin block carries no dead (family, step) pairs", () => {
+    const pinnedPairs = [...PINNED].filter((name) =>
+      new RegExp(`^(${FAMILY_RE})-(\\d{2,3})$`).test(name),
+    );
+    const dead = pinnedPairs.filter((name) => !pairUsage.has(name));
+    if (dead.length > 0) {
+      throw new Error(
+        `dead palette pins — @theme carries (family, step) tokens no src/ class string uses (the re-pin block's own header contract says used-in-src; v4 tree-shook them, so the build never caught the genus): retire them per the F-228b precedent or register a reserved-reason comment: ${dead.join(", ")}`,
+      );
+    }
+  });
+});

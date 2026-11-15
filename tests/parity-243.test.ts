@@ -60,7 +60,9 @@ describe("F-243a — the logout writes-bucket burn sits AFTER the session read",
 
   it("the F-234g gate-first order survives the move (the regression guard)", () => {
     const src = read("src/app/api/auth/logout/route.ts");
-    const gateAt = src.indexOf('req.headers.get("content-type")');
+    // Session-246 (R-43, F-246b): the gate converged onto the shared
+    // seam — the pin follows the code form, the order unchanged.
+    const gateAt = src.indexOf("await requireJsonContentType(req)");
     const bucketAt = src.indexOf("rateLimit(`writes:");
     expect(gateAt).toBeGreaterThan(-1);
     expect(bucketAt).toBeGreaterThan(-1);
@@ -120,17 +122,18 @@ describe("F-243b — the v2.39.0 revision block records the true docs-counts leg
     // their OWN ship counts — the next over-broad count replacement
     // fails `bun run test`. Session-244 (R-41, F-244a — the F-243b
     // recurrence) advanced the trio; Session-245 (R-42, F-245b — the
-    // THIRD edition) advanced it again: after this round it is
-    // v2.39.0/v2.40.0/v2.41.0 (the v2.38.0 pin ages out; its counts
+    // THIRD edition) advanced it again; Session-246 (R-43, F-246a — the
+    // FOURTH edition) advances it once more: after this round it is
+    // v2.40.0/v2.41.0/v2.42.0 (the v2.39.0 pin ages out; its counts
     // no longer appear live anywhere a lockstep script would target).
     const guardIt = t.slice(
       t.indexOf("the historical revision blocks keep their OWN ship counts"),
     );
-    expect(guardIt).toContain("v2\\.39\\.0");
     expect(guardIt).toContain("v2\\.40\\.0");
     expect(guardIt).toContain("v2\\.41\\.0");
-    expect(guardIt).not.toContain("v2\\.38\\.0");
-    expect(guardIt).toContain("1581 unit \\(95 files");
+    expect(guardIt).toContain("v2\\.42\\.0");
+    expect(guardIt).not.toContain("v2\\.39\\.0");
+    expect(guardIt).toContain("1591 unit \\(96 files");
   });
 });
 

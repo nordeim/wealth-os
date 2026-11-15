@@ -115,7 +115,10 @@ describe("F-234f — the budget Add button carries the busy rider", () => {
 describe("F-234g — the logout content-type gate precedes the shared writes bucket", () => {
   it("the gate reads the header before the route burns a bucket slot", () => {
     const src = read("src/app/api/auth/logout/route.ts");
-    const gateAt = src.indexOf('req.headers.get("content-type")');
+    // Session-246 (R-43, F-246b): the inline predicate converged onto
+    // the shared seam — the pin follows the code form (the seam call is
+    // the gate; the order contract is unchanged).
+    const gateAt = src.indexOf("await requireJsonContentType(req)");
     const bucketAt = src.indexOf("rateLimit(`writes:");
     expect(gateAt).toBeGreaterThan(-1);
     expect(bucketAt).toBeGreaterThan(-1);

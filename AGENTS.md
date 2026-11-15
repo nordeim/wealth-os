@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1591) | `bun run test` |
+| Unit tests (1601) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 151) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -927,3 +927,27 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   lockstep script that drops a leg fails `bun run test` instead of
   silently rotting the doc. A correction that lives only in a
   one-shot script is a correction that already stopped happening.
+- **A SUBTRACTIVE SWEEP MUST RE-RUN THE FORWARD PIN BATTERY BETWEEN
+  THE EDIT AND THE BUILD (session 246, R-43, F-246c's authoring
+  lesson)**: the dead-palette retirement's edit accidentally swept a
+  USED pair (the settings role badge's purple tint) alongside the 24
+  dead pins — the driving session's dual-method sweep AND the audit
+  pass's census had both been correct; the EDIT widened beyond the
+  list. Only the palette-pins FORWARD leg caught it at GREEN-proof
+  time (a retired-but-used pin is exactly what that leg exists to
+  catch). The doctrine: a subtractive cure is verified against the
+  enumeration's own oracle — run the pin battery BETWEEN the edit and
+  the build, never trust the hand-derived dead list alone, and never
+  batch the removals into one edit wider than the list it claims.
+- **THE CURE'S OWN PROSE CAN RE-INTRODUCE A RETIRED WORD — the
+  bare-word net and the build probe bind cure comments (session 246,
+  R-43, the F-245e genus's own proof)**: the F-246b convergence
+  comments carried the retired single-word utility in plain prose
+  ("the inline predicate", "the family's last inline copy"), and the
+  dead rule RE-EMITTED in the production stylesheet one session after
+  the F-245e round retired it — caught by the parity-229 bare-word
+  leg (RED mid-round) and the before/after build probe (a new rule
+  appeared). The F-229d discipline binds every comment written DURING
+  a cure, not just the ones a round audits: describe with spaces,
+  never quote the retired token, and run the bare-word net + the
+  build probe between every cure and its ship.

@@ -237,8 +237,14 @@ describe("F-219m — the sessioned CRUD family carries buckets", () => {
 
 describe("F-219o — the logout gate lowercases (the family seam)", () => {
   it("the content-type check is case-insensitive", () => {
-    const src = read("src/app/api/auth/logout/route.ts");
-    expect(src).toMatch(/toLowerCase\(\)/);
+    // Session-246 (R-43, F-246b): the check converged onto the shared
+    // seam — the case-insensitivity the route carried now lives in
+    // the seam's own predicate (every family route inherits it
+    // through the one call).
+    const seam = read("src/lib/api.ts");
+    const logout = read("src/app/api/auth/logout/route.ts");
+    expect(seam).toMatch(/toLowerCase\(\)/);
+    expect(logout).toMatch(/requireJsonContentType/);
   });
 });
 

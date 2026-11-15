@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-1742%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-1752%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1591 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1601 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 151 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 96 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 97 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1591 checks / 96 files |
+| Unit (Vitest) | `bun run test` | 1601 checks / 97 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 151 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1591 unit · 151 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1601 unit · 151 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 245: **R-42 shipped — the gate-order, bare-carrier, and lockstep-truth round**: the fresh-eyes audit (three Mode-C passes — the R-41 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 0 Medium / 6 Low / 2 Informational NEW after dedup, every material claim re-verified at file:line; seven of eight R-41 cure surfaces holding — the guard advance aged out by its own ship, the F-243b/F-244a genus's third recurrence); the cold baseline GREEN at HEAD 30a261d (the v2.41.0 ship state reproduced exactly); the reference STABLE on every drift layer incl. the TRUE-390 mobile menu with 9 destinations); the flagship **public-family gate-order cure** (F-245a — the six public auth routes burned their per-IP bucket BEFORE the content-type CSRF gate, so a cross-site plain-text volley burned the victim's own IP budget at zero attacker cost and 429'd every real login for a renewable 15-minute window — the F-234g/F-243a doctrine's last open surface; the shared requireJsonContentType seam joins src/lib/api.ts, the six routes gate first and burn after, the uploads GET moves its name-regex 404 ahead of its 240/15 burn; **proven live by the volley canary**: 10 text/plain login posts 400 un-bucketed + the JSON login on the same client key still landing 401 — the e2e RED proof received exactly 429 pre-cure); the **F-243b guard-advance recurrence cure** (F-245b — the trio advances to v2.39.0/v2.40.0/v2.41.0, green-by-design before this session's own lockstep pass); the **PAD hierarchy + §7.1 family-row truths** (F-245c/F-245d — the hierarchy line 93-vs-95 corrected with its own new pin, the arch-pins rows completed 62→65 with parity-243/244/245 listed + upload-sniff homed + the arithmetic leg added); the **six bare-carrier retirements** (F-245e — antialiased, flow-root, lowercase, inline, invisible, grow: 49 comment sites across src/ AND the root config files reworded, the parity-229 BARE_UTILITY_WORDS leg so the bare-word genus can never ship silently, the build probe proving all six dead rules vanish); and the **health docblock truth** (F-245f — auth/me joins the exception enumeration). Registered, not cured: the scrypt cost params (F-245g) and the octet-stream fallback (F-245h), plus the standing families (F-244i-n, F-242h/i, F-240k-n, F-239l-s). Gate: lint 0/0 · tsc 0 · **1591 unit / 96 files** · build · smoke 15/15 · 151 e2e · all six parity drift gates CLEAN (0-event margin) · census MATCH · captures 182-184) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 246: **R-43 shipped — the guard-advance, seam-convergence, and palette-truth round**: the fresh-eyes audit (three Mode-C passes — the R-42 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 0 Medium / 6 Low / 4 Informational NEW after dedup, every material claim re-verified at file:line; all eight R-42 cure surfaces holding — the guard advance aged out by its own ship again, the F-243b/F-244a genus's FOURTH recurrence); the cold baseline GREEN at HEAD d4aaf5d (the v2.42.0 ship state reproduced exactly); the reference STABLE on every drift layer incl. the TRUE-390 mobile menu with 9 destinations); the flagship **logout seam convergence** (F-246b — the JSON content-type predicate lived at three hand-maintained sites (readBoundedJson's Layer 1, the requireJsonContentType seam, logout's inline copy) while the seam's own docblock cites the never-N-copies rule — logout joins the seam, byte-identical behavior, **proven live by the captures canary**: 10 text/plain logout posts answer the seam's 400 un-bucketed + the JSON logout on the same session lands the 200 revocation round-trip; the parity-234/243/218/219 gate pins recalibrated to the seam-call form same-commit); the **guard-trio advance** (F-246a — v2.40.0/v2.41.0/v2.42.0, green-by-design FIRST, the F-244a rule executed before its own lockstep); the **24 dead palette pin retirements** (F-246c — pinned-but-unused (family, step) tokens, dual-verified dead against src usage and the built stylesheet, retired per the F-228b precedent + the REVERSE palette leg so the dead-pin genus fails `bun run test` — the forward leg caught the accidental purple-100 sweep at GREEN-proof time); the **auth-family select narrowings** (F-246d — the four public-funnel findUnique reads narrowed to explicit selects, the F-228h form); and two hygiene retirements (F-246e the unused fail import; F-246f the grow zero-match symmetry leg). Registered, not cured: the signup first-admin TOCTOU (F-246g) and the budgets second-strike P2002 edge (F-246h), plus the standing families (F-245g/h, F-244i-n, F-242h/i, F-240k-n, F-239l-s). Gate: lint 0/0 · tsc 0 · **1601 unit / 97 files** · build · smoke 15/15 · 151 e2e · all six parity drift gates CLEAN (0-event margin) · census MATCH · the build probe: the stylesheet token-for-token identical through the retirements · captures 185-187) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

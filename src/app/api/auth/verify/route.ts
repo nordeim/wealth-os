@@ -76,7 +76,20 @@ export async function POST(req: Request) {
   // (returns are not throws); setSessionCookie is cookie-signing only
   // (no DB) and rides the try for simplicity.
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    // Session-246 (R-43, F-246d): the verification funnel's read
+    // narrows to its own fields (the F-228h form) — no credential, no
+    // reset secret in the handler's scope.
+    const user = await db.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        verificationCodeHash: true,
+        verificationExpiresAt: true,
+        verificationAttempts: true,
+        tokenVersion: true,
+      },
+    });
     if (!user || !user.verificationCodeHash || !isVerificationPending(user.verificationExpiresAt)) {
       // Session-228 (R-25, F-228e): the timing equalizer — the miss
       // branch burns the SAME scrypt shape the known branch burns

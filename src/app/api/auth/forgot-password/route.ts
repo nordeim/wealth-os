@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import { Prisma } from "@/generated/prisma/client";
 
 import { db, isTransientDbError } from "@/lib/db";
-import { ERR, fail, logApiError, ok, parseBody, requireJsonContentType } from "@/lib/api";
+import { ERR, logApiError, ok, parseBody, requireJsonContentType } from "@/lib/api";
 import { forgotPasswordSchema } from "@/lib/schemas";
 import { hashResetToken } from "@/lib/password";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -94,9 +94,15 @@ export async function POST(req: Request) {
   // DB outage when none was minted. A MISSING row is not an error
   // (findUnique returns null); a broken DB is a 503, never an account
   // state.
-  let user: Awaited<ReturnType<typeof db.user.findUnique>> = null;
+  // Session-246 (R-43, F-246d): the funnel consumes existence alone —
+  // the read narrows to the id (the F-228h form, the strongest of the
+  // four): every secret column stays out of the handler's scope.
+  let user: { id: string } | null = null;
   try {
-    user = await db.user.findUnique({ where: { email } });
+    user = await db.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
   } catch (error) {
     logApiError("auth/forgot-password POST", error);
     // Session-238 (R-35, F-238k): the seam arm replaces the hand-rolled

@@ -30,9 +30,10 @@ describe("F-245a — the public auth family gates before it burns", () => {
   it("the shared seam exports from src/lib/api.ts (one seam, never N copies)", () => {
     const src = read("src/lib/api.ts");
     // The F-238b rule: a family converges through ONE shared wrapper.
-    // The seam mirrors logout's cured inline form (the same 400 copy
-    // parseBody's own gate answers) + the stream cancel (a kept-open
-    // stream would hold the connection — the readBoundedJson contract).
+    // Session-246 (R-43, F-246b): logout joined the seam — the family's
+    // last inline copy retired; the seam + the bounded reader's Layer 1
+    // (structurally distinct — the null-value contract) are the only
+    // two forms left.
     expect(src).toContain("export async function requireJsonContentType(");
     expect(src).toContain('ERR.BAD_REQUEST("Invalid request body")');
     expect(src).toMatch(/requireJsonContentType[\s\S]*?req\.body\?\.cancel\(\)/);

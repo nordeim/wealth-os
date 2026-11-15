@@ -1,4 +1,4 @@
-import { ERR, logApiError, ok } from "@/lib/api";
+import { ERR, logApiError, ok, requireJsonContentType } from "@/lib/api";
 import { clearSessionCookie, getSessionUser } from "@/lib/auth";
 import { db, isRecordNotFound, isTransientDbError } from "@/lib/db";
 import { clientKey, rateLimit, sweepRateLimits } from "@/lib/rate-limit";
@@ -48,10 +48,15 @@ export async function POST(req: Request) {
   // anti-brute-force bound — gate-first: the cross-site burn dies at
   // 400 un-bucketed, and the first-party JSON path rides the bucket
   // exactly as before.
-  const contentType = req.headers.get("content-type") ?? "";
-  if (!contentType.toLowerCase().includes("application/json")) {
-    return ERR.BAD_REQUEST("Invalid request body");
-  }
+  // Session-246 (R-43, F-246b): the duplicated predicate converges onto
+  // the shared seam — the family's one wrapper (the F-238b
+  // never-N-copies rule, executed on its own seventh surface). The
+  // behavior is byte-identical: the seam's check, 400 copy, and stream
+  // cancel carry the same contract the route's former local gate did
+  // (the cancel is a no-op for a bodyless route; the copy is the
+  // seam's own).
+  const gate = await requireJsonContentType(req);
+  if (gate) return gate;
   try {
     // Session-223 (R-20, F-223k): "sign out" means REVOKE — the same
     // tokenVersion eviction the reset flow rides. An exfiltrated cookie

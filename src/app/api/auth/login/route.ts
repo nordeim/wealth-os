@@ -60,7 +60,26 @@ export async function POST(req: Request) {
   // inside the try are the handler's own responses — the catch only
   // fires on a thrown DB failure.
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    // Session-246 (R-43, F-246d): the read narrows to an explicit
+    // select (the F-228h getSessionUser form) — a full-row read hauled
+    // passwordHash/resetToken/verificationCodeHash into scope where a
+    // subset is consumed; the select is the insurance a future
+    // "return the fetched row" edit cannot silently leak the rest.
+    // The response fields (id/email/name/avatarColor/role) ride the
+    // same select.
+    const user = await db.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarColor: true,
+        role: true,
+        passwordHash: true,
+        verificationCodeHash: true,
+        tokenVersion: true,
+      },
+    });
     // Session-235 (R-32, F-235b): the unverified-account gate moved
     // ABOVE the credential check. The old order (verify, then gate)
     // made the 403 a password-correctness oracle: a wrong password

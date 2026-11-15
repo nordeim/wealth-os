@@ -288,7 +288,11 @@ export async function readBoundedJson(
  *  and the stream cancel (a kept-open stream would hold the
  *  connection — the readBoundedJson contract). The per-IP burn moves
  *  AFTER this call at every public route; the per-account secondary
- *  buckets (already post-parse) are unchanged. */
+ *  buckets (already post-parse) are unchanged. Session-246 (R-43,
+ *  F-246b): logout joins the seam — the family's last duplicated copy
+ *  in a route retired (byte-identical behavior; the route reads no
+ *  body, so the seam's stream cancel is a no-op there and the 400
+ *  copy is the seam's own). */
 export async function requireJsonContentType(req: Request): Promise<NextResponse | null> {
   const contentType = req.headers.get("content-type") ?? "";
   if (!contentType.toLowerCase().includes("application/json")) {

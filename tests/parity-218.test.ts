@@ -108,8 +108,10 @@ describe("R-15: the raw-parse date sites route through toDate (F-218d)", () => {
 
 describe("R-15: the logout content-type gate (F-218p)", () => {
   it("the cookie clears only for a JSON content-type request", () => {
-    expect(LOGOUT).toMatch(/content-type/i);
-    expect(LOGOUT).toMatch(/application\/json/);
+    // Session-246 (R-43, F-246b): the gate converged onto the shared
+    // seam — the route's call is the contract carrier now (the seam
+    // answers the 400 for every non-JSON content-type).
+    expect(LOGOUT).toMatch(/requireJsonContentType/);
     expect(LOGOUT).toMatch(/clearSessionCookie/);
   });
   it("a non-JSON request answers the envelope, never the teardown", () => {
