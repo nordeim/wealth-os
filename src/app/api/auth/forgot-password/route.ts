@@ -132,6 +132,11 @@ export async function POST(req: Request) {
           resetToken: hashResetToken(token),
           resetTokenExpiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MS),
         },
+        // Session-248 (R-45, F-248e): the write-path narrowing (the
+        // users-PATCH form) — the stored-token write returns only its
+        // key; a future return-the-row edit cannot haul the credential
+        // columns into scope.
+        select: { id: true },
       });
       stored = true;
     } catch (error) {

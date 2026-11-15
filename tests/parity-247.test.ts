@@ -50,11 +50,16 @@ describe("F-247c — the toast auto-dismiss pauses on keyboard focus too", () =>
     // 4s with the focused button inside it. React's synthetic
     // onFocus/onBlur bubble from the button to the card, so the pair
     // completes the design's keyboard arm.
-    expect(src).toContain("onFocus={() => setPaused(true)}");
-    expect(src).toContain("onBlur={() => setPaused(false)}");
+    // Session-248 (R-45, F-248b — the same-commit recalibration): the
+    // four writers now target their OWN flags (hover and focus pause
+    // independently, OR-composed — a pointer exit can no longer
+    // un-pause a focus-held card; the parity-248 battery pins the
+    // composition and this pin keeps the pair's presence).
+    expect(src).toContain("onFocus={() => setFocusPaused(true)}");
+    expect(src).toContain("onBlur={() => setFocusPaused(false)}");
     // The hover pair stays — the design's mouse arm, live-proven.
-    expect(src).toContain("onMouseEnter={() => setPaused(true)}");
-    expect(src).toContain("onMouseLeave={() => setPaused(false)}");
+    expect(src).toContain("onMouseEnter={() => setHoverPaused(true)}");
+    expect(src).toContain("onMouseLeave={() => setHoverPaused(false)}");
   });
 });
 

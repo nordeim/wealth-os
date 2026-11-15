@@ -271,6 +271,14 @@ export default function ImportPage() {
               <Button
                 variant="ghost"
                 className="text-xs text-stone-500 dark:text-stone-400"
+                // Session-248 (R-45, F-248c): the commit-window rider
+                // joins the file input's (F-247e) — a mid-flight
+                // Discard reads as a cancellation but the import still
+                // lands (and a failed import would destroy the review
+                // the user meant to keep). The commit closure captured
+                // its rows, so no data corruption — the rider closes
+                // the misleading window.
+                disabled={busy}
                 onClick={() => {
                   setRows(null);
                   setFile(null);

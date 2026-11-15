@@ -20,7 +20,7 @@ function walkSrc(dir: string, files: string[] = []): string[] {
     const p = path.join(dir, name);
     const st = statSync(p);
     if (st.isDirectory()) walkSrc(p, files);
-    else if (/\.(ts|tsx|css)$/.test(name)) files.push(p);
+    else if (/\.(ts|tsx|jsx|css)$/.test(name)) files.push(p);
   }
   return files;
 }

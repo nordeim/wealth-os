@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1610) | `bun run test` |
+| Unit tests (1622) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 151) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -970,3 +970,17 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   the table. The doctrine: in generated markdown tables, escape every
   literal pipe inside cell content, and silence the writer's warning
   with the doubled-backslash form instead of removing the escape.
+- **A REGEX PIN'S WINDOW MUST EXPLICITLY ADMIT COMMENT LINES BETWEEN
+  ITS ANCHORS — the slice-window lesson's regex edition (session 248,
+  R-45, the F-248e/F-248g authoring lesson)**: the F-247e doctrine
+  ("size the window past the comment the same commit writes") binds
+  REGEX matchers too, twice over in one round — the five
+  update-select pins and the logout-arm pin each anchored on the
+  call's data form and expected the `select`/`try` on the very next
+  line, while the cure's own explanatory comment sat between them;
+  every pin went RED against its own cure at GREEN-proof time. The
+  honest regex form carries a comment arm between the anchors —
+  match `\s*\n\s*(?:\/\/[^\n]*\n\s*)*` where the comment block may
+  sit — or slice-and-contain with a window sized past the docblock.
+  A regex that cannot admit the comment the same commit writes was
+  never a pin on the cure.

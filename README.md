@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-1761%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-1773%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1610 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1622 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 151 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 98 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 99 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1610 checks / 98 files |
+| Unit (Vitest) | `bun run test` | 1622 checks / 99 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 151 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1610 unit · 151 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1622 unit · 151 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 247: **R-44 shipped — the guard-advance, iat-bound, and focus-pause round**: the fresh-eyes audit (three Mode-C passes — the R-43 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 0 Medium / 6 Low / 6 Informational NEW after dedup, every material claim re-verified at file:line; all seven R-43 cure surfaces holding — the guard advance aged out by its own ship again, the F-243b/F-244a genus's FIFTH recurrence); the cold baseline GREEN at HEAD c19c242 (the v2.43.0 ship state reproduced exactly); the reference STABLE on every drift layer incl. the TRUE-390 mobile menu with 9 destinations); the flagship **iat shape-and-present bound** (F-247b — the F-244f TTL guard closed only the exp half of the signer-bug class its own docblock names: a future iat kept a valid exp−iat span and was honored iat+TTL, and a non-numeric iat NaN'd the span comparison into a silent pass while flowing the raw value into SessionPayload — the iat now carries the exp/v family's own shape guard plus a present bound at the 60s clock-skew slack, **proven live by the captures canary**: the minted cookie 200 on the gated family, the future-iat and non-numeric-iat forged cookies (same secret, same uid) both 401, the forged session landing the login wall); the **guard-trio advance** (F-247a — v2.41.0/v2.42.0/v2.43.0, green-by-design FIRST, the F-244a rule executed before its own lockstep); the **toast focus-pause riders** (F-247c — onFocus/onBlur join the hover pair so a tabbed-to Dismiss button no longer dies at 4s with the focus inside it, asserted live at 4.6s); the **auth-family select residuals** (F-247d — signup's existence check and reset-password's token read, the two F-246d misses, narrowed to explicit selects); the **import commit-window guard** (F-247e — the file input rides disabled through the import POST, closing the re-pick window the F-234b parse token never covered); and the **palette enumerator jsx completion** (F-247f — the walker admits the nine .jsx bridges per the F-243d doctrine). Registered, not cured: F-247g-l, plus the standing families. Gate: lint 0/0 · tsc 0 · **1610 unit / 98 files** · build · smoke 15/15 · 151 e2e · all six parity drift gates CLEAN (0-event margin) · census MATCH · captures 188-190) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 248: **R-45 shipped — the guard-advance, pause-composition, and write-path-select round**: the fresh-eyes audit (three Mode-C passes — the R-44 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 0 Medium / 6 Low / 8 Informational NEW after dedup, every material claim re-verified at file:line; all six R-44 cure surfaces holding — the guard advance aged out by its own ship again, the F-243b/F-244a genus's SIXTH recurrence); the cold baseline GREEN at HEAD 02a4ae7 (the v2.44.0 ship state reproduced exactly); the reference STABLE on every drift layer incl. the TRUE-390 mobile menu with 9 destinations); the flagship **toast pause composition** (F-248b — the F-247c cure shared one paused boolean between the hover and focus pairs, so a pointer leaving the card un-paused the timer while keyboard focus still sat on the Dismiss button; hover and focus are now independent flags OR-composed, **proven live by the captures face**: the focused toast survived a pointer enter-and-exit at 4.6s past the exit, then dismissed ~4s after the blur); the **guard-trio advance** (F-248a — v2.42.0/v2.43.0/v2.44.0, green-by-design FIRST, the F-244a rule executed before its own lockstep); the **import Discard commit-window guard** (F-248c — the Step 2 Discard button rides disabled through the import POST, closing the implied-cancellation window the F-247e input rider never covered — asserted live mid-commit under a held POST); the **seven sibling walker jsx completions** (F-248d — parity-230/231/232/233/240/241 and gate-script's src walkers admit the nine .jsx bridges per the F-243d doctrine); the **auth-family write-path selects** (F-248e — the five updates that returned full rows — logout, forgot-password, verify ×2, resend — select only their consumed fields, the F-228h insurance doctrine completed on the write path); and the **logout clear envelope rider** (F-248g — the final cookie clear joins the envelope with its own minimal arm). Registered, not cured: F-248f (the remount-hydrate stale-read leg) + F-248h-n, plus the standing families. Gate: lint 0/0 · tsc 0 · **1622 unit / 99 files** · build · smoke 15/15 · 151 e2e · all six parity drift gates CLEAN (0-event margin) · census MATCH · captures 191-193) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

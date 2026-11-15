@@ -79,6 +79,11 @@ export async function POST(req: Request) {
       await db.user.update({
         where: { id: user.id },
         data: { tokenVersion: { increment: 1 } },
+        // Session-248 (R-45, F-248e): the write-path narrowing — the
+        // F-228h insurance doctrine's read-path completion
+        // (F-246d/F-247d) left the returned row full, materializing
+        // every secret column in scope for a result no consumer reads.
+        select: { id: true },
       });
     }
   } catch (error) {
@@ -101,6 +106,17 @@ export async function POST(req: Request) {
     if (isTransientDbError(error)) return ERR.UNAVAILABLE();
     return ERR.INTERNAL();
   }
-  await clearSessionCookie();
+  // Session-248 (R-45, F-248g): the final clear joins the envelope —
+  // it sat AFTER the catch, the auth family's one unprotected cookie
+  // operation (a framework-level failure would surface a raw non-JSON
+  // 500 for an already-completed eviction). The minimal arm still
+  // answers the completed sign-out: the eviction committed above, and
+  // the cookie dies at the next session read by the version bump
+  // regardless — a failed clear must not mask it.
+  try {
+    await clearSessionCookie();
+  } catch (error) {
+    logApiError("auth/logout POST (cookie clear)", error);
+  }
   return ok({ signedOut: true });
 }

@@ -18,7 +18,7 @@ function listSrcFiles(dir: string): string[] {
   for (const name of readdirSync(dir)) {
     const p = path.join(dir, name);
     if (statSync(p).isDirectory()) out.push(...listSrcFiles(p));
-    else if (/\.(tsx?|css)$/.test(name)) out.push(p);
+    else if (/\.(tsx?|jsx|css)$/.test(name)) out.push(p);
   }
   return out;
 }

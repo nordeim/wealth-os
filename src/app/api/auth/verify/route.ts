@@ -147,6 +147,10 @@ export async function POST(req: Request) {
       const { verificationAttempts: attempts } = await db.user.update({
         where: { id: user.id },
         data: { verificationAttempts: { increment: 1 } },
+        // Session-248 (R-45, F-248e): the write-path narrowing — the
+        // destructure consumes ONE field; the select keeps every other
+        // column (the credential family included) out of scope.
+        select: { verificationAttempts: true },
       });
       if (isVerificationLockedOut(attempts)) {
         return fail("VERIFICATION_LOCKED", verificationLockoutMessage(), 429);
@@ -164,6 +168,11 @@ export async function POST(req: Request) {
         verificationAttempts: 0,
         verificationExpiresAt: null,
       },
+      // Session-248 (R-45, F-248e): the write-path narrowing — the
+      // success-path clear returns only its key; the result has no
+      // consumer (the session mint below reads the row selected at
+      // entry).
+      select: { id: true },
     });
     // Session-163 (the digma S67-A port): the mint carries the live
     // row's tokenVersion.

@@ -101,7 +101,16 @@ function Toaster() {
 function ToastCard({ item }: { item: ToastItem }) {
   // Auto-dismiss (hover-pause via timer reset).
   const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [paused, setPaused] = React.useState(false);
+  // Session-248 (R-45, F-248b): hover and focus pause INDEPENDENTLY.
+  // The F-247c cure shared one boolean between the two pairs, so a
+  // pointer leaving the card un-paused the timer while keyboard
+  // focus still sat on the Dismiss button — the card died at 4s with
+  // the focus inside it, the mixed-modality arm of the very failure
+  // the cure targeted. Two flags, composed: the timer resumes only
+  // when the pointer is gone AND the focus has left.
+  const [hoverPaused, setHoverPaused] = React.useState(false);
+  const [focusPaused, setFocusPaused] = React.useState(false);
+  const paused = hoverPaused || focusPaused;
 
   React.useEffect(() => {
     if (paused) return;
@@ -132,14 +141,16 @@ function ToastCard({ item }: { item: ToastItem }) {
         item.variant === "error" && "border-rose-200 bg-surface dark:border-rose-800",
         item.variant === "info" && "border-line bg-surface",
       )}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => setHoverPaused(true)}
+      onMouseLeave={() => setHoverPaused(false)}
       // Session-247 (R-44, F-247c): the keyboard arm of the pause —
       // React's synthetic onFocus/onBlur bubble from the Dismiss button
       // to the card, so a tabbed-to control no longer dies at 4s with
       // the focus inside it (the hover pair's mouse arm, completed).
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      // Session-248 (R-45, F-248b): the pair writes its own flag — see
+      // the composition note at the declarations.
+      onFocus={() => setFocusPaused(true)}
+      onBlur={() => setFocusPaused(false)}
     >
       <span className="mt-0.5 shrink-0">{ICONS[item.variant]}</span>
       <div className="min-w-0 flex-1">

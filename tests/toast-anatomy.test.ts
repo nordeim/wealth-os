@@ -130,7 +130,11 @@ describe("session-131 parity pins (the toast family walk — F-131c1: the refere
   });
 
   it("the hover-pause seam (the onMouseEnter/Leave pair — live-proven: holds at 6.5s, dismisses ~4.1s after the unpause)", () => {
-    expect(src).toContain("onMouseEnter={() => setPaused(true)}");
-    expect(src).toContain("onMouseLeave={() => setPaused(false)}");
+    // Session-248 (R-45, F-248b): the pair writes its OWN flag now —
+    // hover and focus pause independently, OR-composed into the
+    // paused the timer reads (a pointer exit can no longer un-pause a
+    // focus-held card; the parity-248 battery pins the composition).
+    expect(src).toContain("onMouseEnter={() => setHoverPaused(true)}");
+    expect(src).toContain("onMouseLeave={() => setHoverPaused(false)}");
   });
 });

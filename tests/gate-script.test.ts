@@ -188,7 +188,7 @@ describe("session-201 (D-201c): no scaffold-era brand strings in the rendered tr
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const p = path.join(dir, entry.name);
       if (entry.isDirectory()) files.push(...walkSources(p));
-      else if (/\.(ts|tsx)$/.test(entry.name)) files.push(p);
+      else if (/\.(ts|tsx|jsx)$/.test(entry.name)) files.push(p);
     }
     return files;
   };

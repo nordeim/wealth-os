@@ -99,6 +99,10 @@ export async function POST(req: Request) {
         verificationAttempts: 0,
         verificationExpiresAt: new Date(Date.now() + VERIFICATION_TTL_MS),
       },
+      // Session-248 (R-45, F-248e): the write-path narrowing — the
+      // rotation write returns only its key; the fresh code rides the
+      // response and the audit line, never the returned row.
+      select: { id: true },
     });
 
     // Session-216 (R-13, F-216g): the OTP log rides the in-app branch —
