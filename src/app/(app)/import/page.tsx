@@ -318,9 +318,11 @@ export default function ImportPage() {
                           "p-2.5 text-right font-semibold",
                           // Session-222 (R-19, F-222e): the income arm gains
                           // its dark mirror — emerald-700 on the dark
-                          // stone-900 tbody computed 3.15:1 (the F-220b
+                          // stone-900 tbody computed 3.19:1 (the F-220b
                           // class's last content-surface miss; every
-                          // sibling income site already paired the 400).
+                          // sibling income site already paired the 400;
+                          // session 258, F-258h: the figure trued to
+                          // the computed value on the pinned palette).
                           row.type === "income"
                             ? "text-emerald-700 dark:text-emerald-400"
                             : "text-stone-900 dark:text-stone-100",
@@ -341,7 +343,12 @@ export default function ImportPage() {
             ) : null}
             <div className="mt-4 flex items-center justify-between">
               <p className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                {/* Session-258 (R-55, F-258d): the glyph rides the
+                    F-221m pair — the toast's identical success icon
+                    (emerald-600 light at 3.77:1 / emerald-400 dark);
+                    the pre-cure emerald-500 computed 2.54:1 on the
+                    white card. */}
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                 Importing adds to your existing records — nothing is overwritten.
               </p>
               <Button onClick={() => void commit()} disabled={busy}>

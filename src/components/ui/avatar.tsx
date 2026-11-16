@@ -8,8 +8,12 @@
  *
  * Pick a readable ink color for a given avatar background. Light greys
  * (like the reference app's default avatar) get dark text; saturated
- * colors keep white. Uses relative luminance with the WCAG-ish 0.55
- * threshold.
+ * colors keep white. Uses perceptual luma — the WCAG-weighted
+ * coefficients (0.2126/0.7152/0.0722) applied to the gamma-encoded
+ * sRGB values (luma Y′, without per-channel linearization) — with the
+ * 0.55 threshold (session 258, F-258g: the old note mislabeled the
+ * formula; the threshold decisions are unchanged either way for the
+ * palette in use).
  */
 export function avatarTextColor(bg: string): string {
   const hex = bg.replace("#", "");

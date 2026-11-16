@@ -63,9 +63,11 @@ export const EXPENSE_CATEGORIES: Array<{
 ];
 
 // Session-229 (R-26, F-229f): the income-category chip map retired —
-// zero consumers
-// (the income dialog's chips ride QUICK_PICK's income arm and the type
-// select rides the source-type map). Reintroduce WITH a consumer.
+// zero consumers (the income dialog renders no chips; its type and
+// frequency selects ride INCOME_SOURCE_TYPES / INCOME_FREQUENCIES
+// below). Session-258 (R-55, F-258c): the note once justified the
+// retirement with a quick-pick income arm that never existed in this
+// tree. Reintroduce WITH a consumer.
 
 export const INCOME_SOURCE_TYPES = [
   { value: "salary", label: "Salary" },

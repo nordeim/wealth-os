@@ -3,7 +3,7 @@
 **Classification:** Internal Engineering Reference
 **Status:** DEFINITIVE, PRODUCTION-LOCKED BLUEPRINT
 **Companion Document:** `docs/implementation-plan-session-199-wealthos.md` (the transformation plan)
-**Last Updated:** 2026-11-14
+**Last Updated:** 2026-11-16
 **Audience:** Senior Engineers, Tech Leads, DevOps, and Onboarding Engineers
 **Rule:** Every architectural decision in this document traces to a specific rationale.
 Nothing is here "because it's popular."
@@ -16,6 +16,63 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.55.0 (session 258, R-55 — the citation-math, input-flip,
+  and render-cap round): the fresh-eyes audit (three Mode-C passes —
+  the R-54 cure surfaces driven by the session (all five verified
+  holding, the parity-257 battery re-run green 7/7 at HEAD), the
+  API/auth/security layer (the ELEVENTH consecutive clean bill — all
+  ten house contracts, all 45 exported handlers across 30 route
+  files, the counts confirmed exactly; one informational caution
+  folded into the R-5 register: when the LLM provider lands, the
+  ai-coach history field is client-supplied untrusted input), and
+  the UI/a11y/shell layer (clean on every named contract, six NEW
+  findings)); 0 Critical / 0 High / 0 Medium / 6 Low / 3
+  Informational NEW after dedup, every material claim re-verified
+  at file:line by the driving session — every contrast figure
+  recomputed by code against the pinned palette, the driving
+  session's own whole-tree census of all ~50 ratio citations
+  extending the audit's family with four more carriers, and its own
+  §5 structure check catching the shipped v2.54.0 execution-history
+  row mis-sorted one slot low (plus a pre-existing v2.24/v2.23 tail
+  swap — F-258i, the ordering blind spot in the parity-254
+  no-duplicate battery). THE ROUND'S GENUS: MEASUREMENT-TRUTH DRIFT
+  — comments citing contrast figures that do not compute on the
+  pinned palette: F-258a the impossible 4.95:1 stone-500 citations
+  at two carriers (WCAG math caps stone-500 at 4.80:1 on pure
+  white); F-258h the ratio-citation drift family (six more sites,
+  all direction-safe, every PASS/FAIL verdict the comments draw
+  staying true at the computed values); F-258b the .dark
+  .input-base dead arms (the F-252g genus — the ink and placeholder
+  literals byte-equal to the flipped tokens, the border-color arm
+  live); F-258c the stale QUICK_PICK citation (a constant that
+  never existed in the tree, against a dialog that renders no
+  chips); F-258d the import reassurance glyph on the pre-F-221m
+  step; F-258e the expenses history renders unbounded while every
+  sibling caps (the import path admits 5,000 rows; the seeded
+  72-expense corpus never trips the cap); F-258f the mobile-header
+  transition notation; F-258g the avatar luma prose; F-258i the §5
+  ordering contract. The cures: the trued citations, the dead-arm
+  retirement, the QUICK_PICK reword, the import glyph step, the
+  expenses render cap with its rider, the mobile-header and avatar
+  rewords, and the §5 re-sort; the parity-258 battery born honest
+  RED 17/18 (the F-258i leg born GREEN by design — the F-215b
+  precedent, its RED proven against the shipped tree; the RED
+  re-proven via stash) with three companion recalibrations
+  same-commit (parity-219's import emerald arm — scoped to the
+  income-amount construction; toast-anatomy's trued figures; the
+  palette-pins precedent framing). The verification: lint 0/0 ·
+  tsc 0 · 1762 unit (110 files, +18) · build · smoke 15/15 ·
+  152 e2e · census MATCH · bun audit unchanged · the captures
+  228-230 (the mobile drawer at 390 with the census and the close
+  flip; THE DARK INPUT FACE — the computed-style read proving the
+  token flips alone carry the dark ink rgb(245,245,244) and the
+  placeholder rgb(168,162,158) with the border override live; THE
+  RENDER-CAP FACE — 45 bulk creates past the cap, exactly 100 rows
+  rendered, the rider naming the count and the escape hatch) + the
+  two comparison captures at TRUE 390×844; the six parity drift
+  gates per the session-253 precedent (the comment cures touch no
+  baseline-carried surface; the DOM riders visible only at volumes
+  the zero-data baselines never carry).
 - [SR] v2.54.0 (session 257, R-54 — the stale-consumer, dead-arm,
   and glyph-citation round): the fresh-eyes audit (three Mode-C
   passes — the R-53 cure surfaces driven by the session (all six
@@ -2440,7 +2497,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1744) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1762) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (152) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -2572,7 +2629,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 109 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 110 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -2861,9 +2918,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 109 | 1744 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 110 | 1762 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
-| — architecture pins | 77 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, db-transient) | `tests/` | source-scanning contracts |
+| — architecture pins | 78 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 28 | auth, rate-limit, csv, uploads, upload-sniff, headers, boot-env, search-query, store-logout, store-hydrate, store-staleness, … | `tests/` | behavior |
 | E2E | 7 | 152 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -2896,7 +2953,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1744/1744 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1762/1762 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 152/152
@@ -2966,7 +3023,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1744 unit / 152 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1762 unit / 152 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -3001,7 +3058,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1744 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1762 unit · build · smoke 15/15 ·
 152 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

@@ -3,11 +3,12 @@
 // The WealthOS mobile header — session-199, re-pinned session-207
 // (F-207a/b): the sticky lg:hidden bar (z-50, above the z-40 drawer)
 // carrying the brand, the theme (moon) toggle and the hamburger — with
-// the ✓→wifi Synced pill in the RIGHT cluster beside them (the
-// reference's own placement, always visible at 390 — the pill's old
-// form rode a phantom sub-sm breakpoint Tailwind v4 never defines,
-// which hid it below the small viewport; the F-207a cure retired the
-// construction). When the drawer is open the
+// the wifi Synced pill in the RIGHT cluster beside them (the
+// reference's own placement, always visible at 390 — F-207h swapped
+// the pill's original check-mark glyph for the wifi glyph, and the
+// pill's old form rode a phantom sub-sm breakpoint Tailwind v4 never
+// defines, which hid it below the small viewport; the F-207a cure
+// retired the construction). When the drawer is open the
 // hamburger renders as the ✕ close face (the reference's own behavior
 // — the header stays visible above the full-screen drawer).
 

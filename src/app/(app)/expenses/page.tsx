@@ -45,6 +45,17 @@ import type { Transaction } from "@/types";
 
 const QUICK_ADDS = [1, 5, 10, 50, 100, 500];
 
+// Session-258 (R-55, F-258e): the history render bound — the one
+// high-volume surface that rendered uncapped while every sibling
+// bounded (dashboard 6/5/5/6, the import preview 50). The import path
+// admits up to 5,000 rows per file and the search box re-keys the
+// visible memo per keystroke, so an uncapped ledger re-rendered the
+// full list on every keystroke. The seeded corpus (72 expenses of 80
+// transactions) never trips the cap — the demo view renders complete;
+// the rider below names the truncation and the escape hatch (the
+// import preview's own pattern).
+const HISTORY_RENDER_CAP = 100;
+
 export default function ExpensesPage() {
   const store = useWealthOs();
   // Session-223 (R-20, F-223i): the icon-tile tint needs the theme —
@@ -199,8 +210,9 @@ export default function ExpensesPage() {
       }
     />
   ) : (
-    <ul className="divide-y divide-stone-200/70 dark:divide-stone-800">
-      {visible.map((tx) => {
+    <>
+      <ul className="divide-y divide-stone-200/70 dark:divide-stone-800">
+        {visible.slice(0, HISTORY_RENDER_CAP).map((tx) => {
         const meta = BUDGET_CATEGORY_META[tx.budgetCategory as "needs" | "wants" | "savings"] ?? BUDGET_CATEGORY_META.wants;
         return (
           <li key={tx.id} className="flex items-center justify-between gap-3 py-3">
@@ -258,7 +270,14 @@ export default function ExpensesPage() {
           </li>
         );
       })}
-    </ul>
+      </ul>
+      {visible.length > HISTORY_RENDER_CAP ? (
+        <p className="py-2 text-xs text-stone-500 dark:text-stone-400">
+          Showing the first {HISTORY_RENDER_CAP} of {visible.length} expenses —
+          refine the search or filters to narrow the list.
+        </p>
+      ) : null}
+    </>
   );
 
   const deleteExpense = async (tx: Transaction) => {

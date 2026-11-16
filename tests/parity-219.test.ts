@@ -160,7 +160,15 @@ describe("F-219i/k — the AA constants", () => {
 
   it("the import preview income amounts ride emerald-700 (the F-218j step)", () => {
     const src = read("src/app/(app)/import/page.tsx");
-    expect(src).not.toMatch(/text-emerald-600\b/);
+    // Session-258 (R-55, F-258d) recalibration: the pin once banned
+    // text-emerald-600 file-wide, but the F-258d cure brought the
+    // F-221m pair (emerald-600 light / emerald-400 dark) to the
+    // reassurance CheckCircle2 glyph — a different element. The
+    // income-amount construction itself is positively pinned: the
+    // preview's income cells ride emerald-700 with the emerald-400
+    // dark mirror, never the light-mode emerald-600 step.
+    expect(src).toContain('"text-emerald-700 dark:text-emerald-400"');
+    expect(src).not.toMatch(/text-emerald-600(?! dark:text-emerald-400)/);
   });
 });
 

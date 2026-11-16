@@ -19,9 +19,10 @@ import { TABS_SEGMENTED } from "@/lib/page-layout";
 //
 // Session-12 (S12-P4, trued session 256): the segmented track's
 // inactive ink is the stone-600 pair (the session-199 AA re-pin —
-// stone-500 computed 4.0:1 on the stone-100 track and failed the
+// stone-500 computed 4.40:1 on the stone-100 track and failed the
 // two-gate; the CRM-era muted-ink track claim retired with the
-// rebrand) and the triggers are the reference's STOCK Radix class
+// rebrand; session 258, F-258h: the figure trued to the computed
+// value) and the triggers are the reference's STOCK Radix class
 // family: natural height (no 28px lock), transition-all,
 // ring-offset-background, data-[state=active]:* variants riding a
 // data-state attribute. OUR active pill rides the shadow-sm step
@@ -168,7 +169,9 @@ function Tabs({ tabs, value, onValueChange, className, variant = "underline", ar
                   // light (the F-220p stale-genus class: zero
                   // consumers render this variant today, but a latent
                   // sub-3:1 arm invites regression). amber-600 border
-                  // 3.21:1, amber-700 ink 4.83:1.
+                  // 3.19:1, amber-700 ink 5.02:1 (session 258,
+                  // F-258h: the figures trued to the computed values
+                  // on white).
                   // Session-232 (R-29, F-232b): the old citation named
                   // the retired pair's border/ink utilities verbatim
                   // in prose — a dead carrier re-emitted by the

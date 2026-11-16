@@ -322,7 +322,9 @@ export const DIALOG_CLOSE =
   // Session-221 (R-18, F-221l): stone-500 at full opacity, no dimming —
   // the old stone-400 at 70% blended to ≈1.85:1 on white (below the 3:1
   // non-text bar; full-opacity stone-400 was 2.52:1). The F-220f toast ✕
-  // cure's mirror: stone-500 computes 4.95:1.
+  // cure's mirror: stone-500 computes 4.80:1 on the white dialog card
+  // (session 258, F-258a: the figure trued to the computed value —
+  // the old citation exceeded stone-500's ceiling on even pure white).
   // Session-222 (R-19, F-222h): the dark arms — the hover pair stepped
   // DOWN to 2.47:1 in dark (stone-600 on the flipped surface); the 400
   // resting / 300 hover mirror keeps the affordance rising in both modes.
@@ -403,8 +405,10 @@ export const MENU_ITEM =
   "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-2 text-sm outline-none transition-colors focus:bg-stone-100 focus:text-stone-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-stone-800 dark:focus:text-stone-100 focus-visible:ring-2 focus-visible:ring-ring" as const;
 
 export const TABS_SEGMENTED = {
-  // Session-199: the inactive arm rides stone-600 (5.4:1 on the stone-100
-  // track — AA; stone-500 computed 4.0:1 and failed the two-gate).
+  // Session-199: the inactive arm rides stone-600 (6.99:1 on the stone-100
+  // track — AA; stone-500 computed 4.40:1 and failed the two-gate).
+  // Session-258 (R-55, F-258h): the figures trued to the computed
+  // values on the pinned palette (the pre-truing pair did not compute).
   // Session-226 (R-23, F-226i): the trigger GAINS ring-offset-background —
   // the reference's own class (live-probed on its Analytics tabs,
   // probe-226-ring: its triggers carry the class and compute the offset
