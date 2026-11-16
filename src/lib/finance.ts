@@ -752,9 +752,20 @@ export function formatAxisMoney(n: number): string {
   return `${n < 0 ? "-" : ""}$${abs.toFixed(0)}`;
 }
 
-/** "3 days ago" / "in 5 days" — the activity feed's relative stamps. */
+/** "3 days ago" / "in 5 days" — the activity feed's relative stamps.
+ *
+ * Session-260 (R-57, F-260a): the day count once divided a
+ * millisecond span by a fixed 24h and rounded — stored dates
+ * re-anchor to local midnight while the ref is a render-time clock
+ * carrying a time of day, so the round threshold sat at a half day
+ * and every ref after local noon mislabeled the whole one-day band
+ * (a today row read Yesterday; a tomorrow row read Today; the
+ * morning-run gates the blindness). The calendar-day difference
+ * below is time-of-day-free AND DST-free by construction (the
+ * R-56 helper this round migrated the last consumer onto).
+ */
 export function relativeDays(date: Date, ref: Date): string {
-  const days = Math.round((date.getTime() - ref.getTime()) / 86_400_000);
+  const days = calendarDaysBetween(ref, date);
   if (days === 0) return "Today";
   if (days === 1) return "Tomorrow";
   if (days === -1) return "Yesterday";

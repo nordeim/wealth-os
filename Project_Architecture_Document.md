@@ -16,6 +16,59 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.57.0 (session 260, R-57 — the afternoon-label and
+  register-truing round): the fresh-eyes audit (three Mode-C passes —
+  the R-56 cure surfaces driven by the session (the parity-259 battery
+  re-run green 17/17 at HEAD), the API/auth/security layer (the
+  THIRTEENTH consecutive clean bill — all ten house contracts, all 45
+  exported handlers across 30 route files, the counts confirmed
+  exactly), and the UI/a11y/shell layer (clean on every named
+  contract — the shell family, the theme system, the Tailwind v4
+  token discipline, the store, the route twins, the metadata family
+  all holding; the date doctrine's residual is the round's finding));
+  0 Critical / 0 High / 1 Medium / 0 Low / 0 Informational NEW after
+  dedup, every material claim re-verified at file:line by the driving
+  session — the whole-tree fixed-24h sweep bounded the genus at
+  exactly ONE uncured site (the SESSION_TTL absolute span and the
+  calendarDaysBetween ordinal division are correct by construction)
+  and the two-zone arithmetic reproduction confirmed the defect live
+  on ordinary, non-DST days in both the UTC sandbox and
+  America/New_York (the morning-run gates the blindness: every
+  pre-noon ref computes correctly). The finding: F-260a the
+  relativeDays afternoon mislabel — the visible day-label seam still
+  divided a millisecond span by a fixed 24h and rounded, so any ref
+  after local noon crossed the half-day threshold and mislabeled the
+  whole one-day band on ORDINARY days (a today row read Yesterday; a
+  tomorrow row read Today; three user-visible consumers — the
+  dashboard's Upcoming label, the Recent Activity label, the income
+  page's next-payment label; the R-56 cure's unmigrated sibling —
+  the analytics end-pad and the Upcoming day count were retired that
+  round, the visible label was not; the calendar-correct sort key
+  and the rendered label could disagree after noon; zero test
+  coverage, no e2e leg asserts the labels). Plus the register
+  truing: the F-259c exoneration clause (assessing the label's
+  rounding only for its plus-minus one hour DST behavior) was stale
+  as written — ordinary afternoon time-of-day crosses the threshold
+  daily; the clause trues in the same commit. The cure: the day
+  count derives through the R-56 calendarDaysBetween helper (the
+  UTC-parts calendar-day difference — DST-free AND time-of-day-free
+  by construction); the Today/Tomorrow/Yesterday/in-N-days/N-days-ago
+  formatting arms unchanged. The parity-260 battery born honest RED
+  10/10 with one regression-contract catch (the register-truing note
+  initially quoted the retired clause verbatim — the pin caught its
+  own cure's prose, reworded per the describe-with-spaces
+  discipline). The verification: lint 0/0 · tsc 0 · 1789 unit (112
+  files, +10) · build · smoke 15/15 · 152 e2e · census MATCH · bun
+  audit unchanged · the captures 234-235 (THE AFTERNOON-LABEL LIVE
+  PROOF — the Recent Activity labels asserted in-flight against the
+  domain seam's own output under the live afternoon clock, the
+  yesterday row rendering its calendar truth where the pre-cure span
+  rounding read one day late; the Upcoming census; the standing
+  mobile drawer at 390 with the census and the close flip) + the two
+  comparison captures at TRUE 390×844; the six parity drift gates per
+  the session-253 precedent (no baseline-carried surface touched —
+  the sweeps compare computed classes, the label text is content
+  not class).
 - [SR] v2.56.0 (session 259, R-56 — the bound-message, DST-day, and
   census-prose round): the fresh-eyes audit (three Mode-C passes —
   the R-55 cure surfaces driven by the session (the parity-258
@@ -2547,7 +2600,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1779) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1789) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (152) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -2679,7 +2732,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 111 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 112 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -2968,9 +3021,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 111 | 1779 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 112 | 1789 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
-| — architecture pins | 79 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, db-transient) | `tests/` | source-scanning contracts |
+| — architecture pins | 80 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 28 | auth, rate-limit, csv, uploads, upload-sniff, headers, boot-env, search-query, store-logout, store-hydrate, store-staleness, … | `tests/` | behavior |
 | E2E | 7 | 152 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -3003,7 +3056,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1779/1779 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1789/1789 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 152/152
@@ -3073,7 +3126,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1779 unit / 152 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1789 unit / 152 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -3108,7 +3161,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1779 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1789 unit · build · smoke 15/15 ·
 152 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain
