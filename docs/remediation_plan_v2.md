@@ -1521,7 +1521,81 @@
 > drift gates CLEAN · census MATCH · captures.)
 
 
-> **Current version: v2.52.0** (session 255 — the
+> **Current version: v2.53.0** (session 256 — the
+token-citation, header-block, and prose-truth round R-53: the
+owner's standing directive re-sent after the R-52 ship pair
+(4a420fa + the owner's 1e1f6be session-log update carrying
+docs/session_94.md, the session-255 transcript capture). Per the
+recorded rhythm, this session defaulted to findings-led iteration:
+refresh, re-audit, remediate, verify, capture, document, commit,
+push — with the operator's named asks (the mobile navigation
+comparison, the Tailwind v4 state, the .env/db contract, the
+vitest/playwright configs, the sitemap/SEO surface, the
+.env.example, the screenshots, the SSH-wrapper push) re-verified
+along the way. The intake: the workspace pulled to HEAD 1e1f6be;
+the environment standing (bun 1.3.14, the prisma client generated,
+.env with the DATABASE_URL="file:../db/custom.db" contract + the
+AUTH_SECRET, db/ at the repo root); the census MATCH
+(80/4/3/6/5/7, users=1). The cold-baseline gate GREEN — the
+v2.52.0 ship state reproduced exactly, no discovery: lint 0/0 ·
+tsc 0 · 1731/1731 unit (107 files) · build · smoke 15/15 ·
+152/152 e2e · census MATCH. The standing layers: probe:ref STABLE
+on every layer (the bundle md5 6d3779af… unchanged, the F-250q
+stylesheet fingerprint 96f24d45… unchanged, the demo data zero,
+the desktop nav 256/9, the TRUE-390 menu census standing); THE
+MOBILE-NAVIGATION COMPARISON through agent-browser at TRUE
+390×844 on BOTH sides (the reference's drawer and OUR drawer —
+the production artifact, the session-253 toolchain note — each
+open with the 9 destinations + Sign Out and close on the toggle;
+ours adds the labeled superset; both comparison captures re-saved,
+PNG-valid at the true viewport); `bun audit` unchanged (1 moderate
+dev-chain minimatch, the documented deferral); neo-crm unchanged
+(b3d0fbe) — nothing to port; the SEO surface verified (smoke leg
+12: sitemap + robots + manifest 200); the .env contract + the db/
+at the repo root + the vitest/playwright configs + the
+.env.example six-knob set all standing. The session-256
+fresh-eyes audit (three Mode-C passes: the R-52 cure surfaces
+driven by the session · the API/auth/security layer · the
+UI/a11y/shell layer): all six R-52 cure surfaces verified HOLDING
+at file:line (the parity-255 battery re-run green at HEAD); the
+API layer's NINTH consecutive clean bill (all ten house
+contracts, all 45 exported handlers across 30 route files — one
+charter correction recorded: the budgets family is category-keyed,
+no [id] route exists, the stated file/handler counts exactly
+right); the UI source layer's clean bill on every named contract
+with three NEW findings. After dedup: **0 Critical / 0 High /
+0 Medium / 2 Low / 1 Informational NEW** — every material claim
+re-verified at file:line by the driving session (the live token
+values re-read from globals.css; the contrast arithmetic
+re-computed). THE ROUND'S GENUS: THE PRIMITIVES' STALE
+POST-REBRAND TOKEN CITATIONS — the session-199 stone rebrand
+moved the palette one step off the CRM-era neutral pins, and the
+older construction-claim header blocks (the Session-12/13/82
+lineage the R-52 sweep's consumer-rhythm focus never reached)
+still cite the pre-rebrand geometry and values as present-tense
+truth: the Button header's focus-ring claims (F-256a — "1px
+near-black" with the neutral ring token cited, while the live arm
+is the shared two-pixel token-keyed ring at 1c1917 light / f5f5f4
+dark); the Tabs Session-12 block's three falsifiable claims
+(F-256b — the muted-ink track that no track carries, the bare
+default shadow the live pill never rode, the no-hover claim the
+underline variant's inactive arm breaks); the Dialog title and
+description citations (F-256c — the "inherited" neutral
+foreground against the explicit stone pair, the reference's
+muted-foreground hex equated with our one-step-off muted-ink);
+and the driving session's own whole-tree sweep caught FOUR MORE
+the audit missed (F-256d — the F-228b lesson recurring: the
+Select header's computed-equal trio, the Select wash arm's
+line-soft value, the Dropdown header's line value — all riding
+neutral-era hex on our token names). The structural rider
+(F-256e): the token-citation truth leg — every --color-NAME
+hex-value citation in src comments must match the live palette
+DERIVED from globals.css at test time, so the next rebrand fails
+the unit gate instead of silently re-staling the prose (the
+F-255b doctrine: pin the tree, not the wording). §5 carries the
+execution history.)
+
+> **Previous version: v2.52.0** (session 255 — the
 strict-parse, derived-truth, and docblock-precision round R-52: the
 owner's standing directive — refresh → review → validate → audit →
 parity iteration → remediation plan → TDD execution → captures →
@@ -5252,7 +5326,115 @@ sitemap/robots/manifest family, the mobile-nav comparison —
 the drawer battery + probe:ref's TRUE-390, the .env.example,
 the captures, the docs lockstep).
 
-### R-52 — The strict-parse, derived-truth, and docblock-precision round (session 255)
+### R-53 — The token-citation, header-block, and prose-truth round (session 256)
+
+The owner re-sent the standing directive after the R-52 ship pair
+(4a420fa + the owner's 1e1f6be session-log update carrying
+docs/session_94.md). Per the recorded rhythm, findings-led
+iteration. The intake and the standing layers are recorded in the
+version header above; this section carries the findings, the
+cures, and the verification contract.
+
+**The findings (all one genus — the primitives' stale
+post-rebrand token citations; every claim re-verified at
+file:line by the driving session, the live values re-read from
+globals.css):**
+
+- **F-256a (Low) — the Button header's focus-ring claims.** The
+  header block (button.tsx:20-21) claims the focus rings are
+  "1px near-black" citing the ring token at the CRM-era neutral
+  value. Both halves false at HEAD: the live arm is the shared
+  two-pixel token-keyed focus ring (BUTTON_BASE.focusRing,
+  page-layout.ts:375) and the token is the stone pair — #1c1917
+  light (globals.css:117) / #f5f5f4 dark (globals.css:385). A
+  future focus-appearance (WCAG 2.4.13) or contrast audit reading
+  this header would mis-assess the app's most-used control seam.
+- **F-256b (Low) — the Tabs Session-12 header block's three
+  falsifiable present-tense claims.** The block (tabs.tsx:20-26)
+  claims (a) the tracks carry the muted-ink token — no track
+  carries it; the segmented track's ink is the stone-600 pair
+  since the session-199 AA re-pin (page-layout.ts:416, its own
+  comment documenting the deliberate stone-600 choice at 5.4:1
+  over stone-500's failing 4.0:1); (b) the bare default shadow on
+  the active state — the live pill rides the small-shadow step
+  (page-layout.ts:418); (c) NO hover classes — the underline
+  variant's inactive arm carries the border and ink hover pair
+  (tabs.tsx:170). A reader implementing a new tab variant from
+  this block would build the wrong ink, shadow, and hover. (The
+  F-255e genus's missed tail: the R-52 sweep cured the
+  consumer-rhythm sites; this older construction-claim block
+  survived it.)
+- **F-256c (Informational) — the Dialog title and description
+  citations.** The title comment (dialog.tsx:101-103) claims the
+  stock string renders "inheriting the #0a0a0a default
+  foreground" — the live constant carries the EXPLICIT stone
+  title pair (DIALOG_TITLE, page-layout.ts:311-312), neither
+  inherited nor neutral. The description comment
+  (dialog.tsx:116-118) equates the reference's muted-foreground
+  hex with our muted-ink token — ours is the stone value
+  (#78716c light, globals.css:120 / #a8a29e dark), one step off
+  the cited neutral pin the CRM era actually rode.
+- **F-256d (Informational) — the computed-equal citations on our
+  token names (the driving session's whole-tree sweep; the
+  F-228b lesson recurring — the carriers are never only where the
+  audit found them).** The Select header's "all verified" line
+  (select.tsx:96-100) claims computed-equality with the
+  reference's neutral popover trio "on both apps" — two of three
+  false since the rebrand (our line is #e7e5e4 not #e5e5e5; our
+  foreground #1c1917 not #0a0a0a; only the white surface still
+  holds). The Select wash arm's citation (select.tsx:136) rides
+  the reference's neutral line-soft hex on our token's name
+  (ours is #f5f5f4). The Dropdown header (dropdown.tsx:119) cites
+  our line token at the reference's neutral value.
+- **F-256e (the structural rider) — the token-citation truth
+  leg.** The genus has no gate: the parity-229 nets watch
+  class-shaped CARRIERS (dead utilities), never VALUE truth — a
+  comment citing a live token at a dead hex passes every standing
+  net. The rider derives the palette from globals.css at test
+  time and asserts every --color-NAME hex-value citation in src
+  comments matches a live value of that token — born RED on
+  exactly the two --color-class stale sites (the F-215b
+  precedent inverted: this one cures with the round), and the
+  NEXT rebrand fails the unit gate instead of silently re-staling
+  the prose.
+
+Registered, not cured: the audit-charter correction (the budgets
+family is category-keyed — no [id] route; the API surface's
+file/handler counts exactly right) and the in-band OTP/reset
+posture note (correctly knob-gated, the documented ADR-014
+family — recorded so the next pass does not re-litigate it).
+
+**R-53.1 — the pins born RED**: the parity-256 source battery —
+the four cure legs (F-256a/b/c/d: the stale claims absent, the
+live forms named) plus the structural rider (F-256e, born RED on
+the two --color-class sites). Every RED verified failing for
+exactly the expected defect before any cure lands.
+
+**R-53.2 — the cures**: the seven comment rewords (button.tsx
+header; tabs.tsx Session-12 block; dialog.tsx title + description
+comments; select.tsx header trio + wash arm; dropdown.tsx header)
+— every reword follows the F-229d discipline (describe with
+spaces and numbers, never coin a hyphenated form, cite only live
+utilities), keeps the true reference decodes as dated history
+with correct attribution (the reference's neutral values are ITS
+tokens; ours are the stone pair), and the parity-229 nets re-run
+green through the edits.
+
+**R-53.3 — the verification**: parity-256 GREEN · lint 0/0 · tsc
+0 · the full unit suite at the new counts · build · smoke 15/15 ·
+the FULL e2e battery · census MATCH · `bun audit` unchanged ·
+the captures (the own-database convention + the census tripwire +
+PNG validation) + the two comparison captures at TRUE 390×844.
+The six parity drift gates not re-run (the session-253 precedent:
+the round's cures are comment-only — no DOM, no class strings, no
+rendered output; probe:ref verified the reference side STABLE;
+the standing sweep baselines ride). The docs lockstep: the count
+ladder across the doc set, the PAD v2.53.0 revision block + the
+trio's gate-enforced advance (the structural leg's seventh ride),
+the README program row, the plan's §5 execution-history row, the
+worklog entry, and docs/session_95.md.
+
+### R-52 — The strict-parse, derived-truth, and docblock-precision round (session 255) — Status: Done(v2.52.0) — SHIPPED (lint 0/0 · tsc 0 · 1731 unit (107 files, +11) · build · smoke 15/15 · 152 e2e · census MATCH · the captures 219-221 + the two comparison captures at TRUE 390×844 · the docs lockstep complete)
 
 The owner re-sent the standing directive after the R-51 ship pair
 (47a0688 + the owner's ca884b2 session-log update carrying
@@ -6944,6 +7126,7 @@ six parity drift legs.
 
 | Version | Session | R-items executed | Gate at ship | Commit |
 |---|---|---|---|---|
+| v2.53.0 | 256 | **R-53** (the token-citation, header-block, and prose-truth round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser (the comparison riding the production artifact per the session-253 toolchain note); the cold baseline GREEN at HEAD 1e1f6be — the v2.52.0 ship state reproduced exactly, no discovery). The audit round: the standing layers re-verified (probe:ref STABLE — the bundle md5, the F-250q stylesheet fingerprint, the demo data zero, the desktop nav 256/9, the TRUE-390 menu census; `bun audit` unchanged (1 moderate dev-chain minimatch, the documented deferral); neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-256 fresh-eyes audit (three Mode-C passes: the R-52 cure surfaces — all six verified holding (the parity-255 battery re-run green) · the API/auth/security layer — the NINTH consecutive clean bill (all ten house contracts, all 45 exported handlers across 30 route files read; one charter correction recorded: the budgets family is category-keyed, no id route — the stated counts exactly right) · the UI/a11y/shell layer — clean on every named contract, three NEW findings): 0 Critical / 0 High / 0 Medium / 2 Low / 1 Informational NEW after dedup, every material claim re-verified at file:line by the driving session (the live token values re-read from globals.css; the whole-tree sweep then caught FOUR more carriers beyond the audit's three — the F-228b lesson recurring). THE ROUND'S GENUS: THE PRIMITIVES' STALE POST-REBRAND TOKEN CITATIONS (F-256a the Button header's focus-ring claims — a one-pixel near-black ring on the neutral token vs the live two-pixel token-keyed stone pair; F-256b the Tabs Session-12 header block's three falsifiable present-tense claims — the muted-ink track, the bare default shadow, the no-hover claim; F-256c the Dialog title's inherited-neutral foreground and the description's cross-app token equality; F-256d the sweep's four additional computed-equal citations — the Select header trio, the Select wash arm, the Dropdown header line value). The structural rider: F-256e THE TOKEN-CITATION TRUTH LEG (every color-token hex citation in src comments must match the palette derived from globals.css at test time — the next rebrand fails the unit gate instead of silently re-staling the prose). The plan v2.53.0 written and validated against the tree. **R-53.1** the pins born RED (honest RED: 6 — the parity-256 source battery; the structural leg's first run hit a harness EISDIR bug caught at GREEN-proof time and the RED was re-proven against the pre-cure tree via stash — the honest-RED discipline) → **R-53.2** the cures (the seven comment rewords — button, tabs, dialog ×2, select ×2, dropdown — every reword following the F-229d discipline with the true reference decodes kept as dated history) → **R-53.3** the verification (parity-256 GREEN 6/6 · lint 0/0 · tsc 0 · 1737 unit (108 files, +6) · build · smoke 15/15 · 152 e2e · census MATCH · bun audit unchanged · the captures 222-224 (the mobile drawer at 390 — the standing ask; the dashboard desktop dark default; THE PRIMITIVES FACE — the reworded citations proven live on the cured components: the Expenses segmented inactive ink, the coach title and description inks, each computing the exact cited pair) + the two comparison captures at TRUE 390×844; the six parity drift gates not re-run — the session-253 precedent, the comment-only cures touch no parity surface) | lint 0/0 · tsc 0 · **1737 unit (108 files, +6)** · build · smoke 15/15 · **152 e2e** · census MATCH | (this session's execution commit) |
 | v2.52.0 | 255 | **R-52** (the strict-parse, derived-truth, and docblock-precision round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser; the cold baseline GREEN at HEAD ca884b2 — the v2.51.0 ship state reproduced exactly, no discovery). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-255 fresh-eyes audit (three Mode-C passes: the R-51 cure surfaces — all nine verified holding · the API/auth/security layer — the eighth consecutive clean bill · the UI/a11y/shell layer — the clean bill): 0 Critical / 0 High / 0 Medium / 2 Low / 4 Informational NEW after dedup, every material claim re-verified at file:line by the driving session (one alarm dismissed by od — the F-215 display-pipeline lesson recurring on the driving session itself). THE ROUND'S FLAGSHIP: the NEO_PROXY_HOPS trailing-garbage parse drift (F-255a — the first source-code cure since R-49: the depth parse accepted "2x" as 2 and "0x" as 0 while both the seam's docblock and the boot warning promised fail-closed; the digits-only gate cures it, behavioral pins born RED). Plus the prose-satisfiable census pins (F-255b — the derived-truth legs: the ordinal by enumeration, the spatial comparison, the bare-count census), the settings recovery's vanished-row window (F-255c — findUnique + one bounded create retry), and the docblock precision trio (F-255d/e/f). The plan v2.52.0 written and validated against the tree. **R-52.1** the pins born RED (honest RED: 7 — the parity-255 source battery's five RED legs + the rate-limit battery's two behavioral legs; the four derived-truth legs born GREEN by design, the F-215b precedent) → **R-52.2** the cures (the digits-only gate; the total recovery; the three docblock rewords) → **R-52.3** the verification (parity-255 GREEN 9/9 · lint 0/0 · tsc 0 · 1731 unit (107 files, +11) · build · smoke 15/15 · 152 e2e · census MATCH · bun audit unchanged · the captures 219-221 (the strict-parse face: the artifact booted with a trailing-garbage NEO_PROXY_HOPS, the boot warning asserted, the discriminating volley proving the last-hop keying) + the two comparison captures at TRUE 390×844; the six parity drift gates not re-run — the session-253 precedent, no parity surface touched) | lint 0/0 · tsc 0 · **1731 unit (107 files, +11)** · build · smoke 15/15 · **152 e2e** · census MATCH | (this session's execution commit) |
 | v2.51.0 | 254 | **R-51** (the ordinal, spatial-reference, and lockstep-duplication round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser (the comparison riding the production artifact per the session-253 toolchain note); the cold baseline GREEN at HEAD 0d236d3 — the v2.50.0 ship state reproduced exactly, no discovery (one Playwright browser-install infrastructure gap on the first e2e run — the install heals it, the source unaffected)). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-254 fresh-eyes audit (three Mode-C passes: the R-50 cure surfaces — all six verified holding · the API/auth/security layer — the seventh consecutive clean bill · the UI/a11y/shell layer — source-clean): 0 Critical / 0 High / 0 Medium / 6 Low / 2 Informational NEW after dedup, every material claim re-verified at file:line by the driving session (the ordinal enumerated from the specs' own signup POSTs; the three duplication carriers verified by occurrence counts AND byte-identity with the prior commit's correct forms read from git). THE ROUND'S HEADLINE — A GENUS: the session-253 docs-lockstep script duplicated insertions at THREE sites (F-254f the guard trio's v2.50.0 pin line four-fold; F-254g the README program row's R-50 summary three-fold; F-254h the PAD revision list's v2.50.0 block three-fold, byte-identical) — every gate green through all three because no pin watched occurrence multiplicity; the round's structural rider is the parity-254 no-duplicate invariant battery. Plus the e2e battery's own comment truths (F-254a the census ordinal — the recovery leg's signup is the SEVENTH no-XFF burn, the revoke leg's the eighth; F-254b the stale spatial word), the pin authoring (F-254c the whole-route pin's exact-count form; F-254d the premise anchor), and F-254e the store docblock's bare-idiom blessing. The plan v2.51.0 written and validated against the tree. **R-51.1** the pins born RED (honest RED: 8 — the parity-254 source battery) → **R-51.2** the cures (the ordinal trued with the eighth named; the spatial word trued; the exact-count form; the premise anchor; the docblock blessing; the trio advance + dedup to v2.49.0/v2.50.0/v2.51.0 green-by-design with the v2.51.0 block in the same commit; the program-row collapse; the revision-list dedup) → **R-51.3** the verification (parity-254 GREEN 8/8 · lint 0/0 · tsc 0 · 1720 unit (106 files, +8) · build · smoke 15/15 · 152 e2e · census MATCH · bun audit unchanged · the six parity drift gates CLEAN · the captures 216-218 + the two comparison captures at TRUE 390×844) | lint 0/0 · tsc 0 · **1720 unit (106 files, +8)** · build · smoke 15/15 · **152 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.50.0 | 253 | **R-50** (the order-dependence, burn-ledger, and fixed-email round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser (the comparison riding the production artifact after the toolchain note below); the cold baseline GREEN at HEAD 198ac00 — the v2.49.0 ship state reproduced (one transient timing-leg e2e failure on the first battery run, the known flake family; green on the re-run)). THE DISCOVERY at the baseline: the AGENTS-documented single-spec invocation FAILS on wealthos.spec.ts — the F-225c verify-bucket leg is order-dependent (in the battery its setup signup 429s on the exhausted shared bucket so no account exists and the miss arm answers every probe; in isolation the signup succeeds, the pending-code ladder fires, and the leg fails — live-probed). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-253 fresh-eyes audit (three Mode-C passes: the R-49 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 3 Medium / 3 Low NEW after dedup, every material claim re-verified at file:line by the driving session; all ten R-49 cure surfaces holding; the API layer's sixth consecutive clean bill; the UI source layer clean — the findings cluster in the e2e battery's own legs). The plan v2.50.0 written and validated against the tree. **R-50.1** the pins born RED (honest RED: 8 — the parity-253 source battery) → **R-50.2** the cures (THE ORDER-DEPENDENT VERIFY-BUCKET LEG — the flagship: the setup signup retires, the probes ride an unknown timestamped email, the miss-arm contract the leg always claimed; THE STALE SIGNUP-BUDGET LEDGER — the census trued at both spec carriers + AGENTS.md, the data-import/multi-user scratch signups on dedicated XFF keys; THE FIXED-EMAIL LOGIN-BUCKET LEG — the timestamp mint; THE RESEND VANISHED-ROW ARM — the third key joins the P2025 catch; THE PARITY-252 PIN'S MISS-ARM-ONLY SLICE — closed by the whole-route pin; THE STALE CSRF-PROBE COMMENT — the gate-first truth) → **R-50.3** the verification (lint 0/0 · tsc 0 · 1712 unit (105 files, +8) · build · smoke 15/15 · 152 e2e · the wealthos spec IN ISOLATION green — the order-independence proof · census MATCH · the captures 212-215 + the two comparison captures · `bun audit` unchanged). Toolchain note: agent-browser's HeadlessChrome-157 does not hydrate the Turbopack dev build (production hydrates cleanly; Playwright works on both) — recorded for the comparison workflow, not a product defect. The docs lockstep complete (the PAD v2.50.0 block + the trio's gate-enforced advance to v2.48.0/v2.49.0/v2.50.0 + the README program row + AGENTS/CLAUDE counts + the plan closure + the worklog + docs/session_89.md). | lint 0/0 · tsc 0 · **1712 unit (105 files, +8)** · build · smoke 15/15 · **152 e2e** (+ the isolated-spec proof) · census MATCH | (this session's execution commit) |

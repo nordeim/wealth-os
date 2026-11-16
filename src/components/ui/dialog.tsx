@@ -99,8 +99,10 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
 
 function DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
   // Session-13 (S13-P9): the stock string — `text-lg font-semibold
-  // leading-none tracking-tight` (reference class dump), inheriting the
-  // #0a0a0a default foreground.
+  // leading-none tracking-tight` (reference class dump), with the
+  // explicit stone-900 / stone-100 title ink pair (the session-199
+  // rebrand's pin — the CRM-era comment claimed an inherited neutral
+  // foreground that no longer rides this constant).
   return <DialogPrimitive.Title className={cn(DIALOG_TITLE, className)} {...props} />;
 }
 
@@ -114,7 +116,9 @@ function DialogDescription({
   // citation retired with the family round — the live WealthOS consumer
   // is the AI-coach dialog's sr-only description.
   // Session-26 (S26-P6): the color realigned to the reference's live
-  // import dialog (its muted-foreground token #737373 = our muted-ink token).
+  // import dialog's muted-foreground family — its token is the neutral
+  // #737373; ours is the stone-era muted-ink pair, #78716c light /
+  // #a8a29e dark (one step off the neutral pin since the rebrand).
   return <DialogPrimitive.Description className={cn("text-sm text-muted-ink", className)} {...props} />;
 }
 

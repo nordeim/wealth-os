@@ -17,8 +17,10 @@ import { cn } from "@/lib/utils";
 // nullified every per-surface svg margin on svg+bare-text buttons
 // (the only-child override at (0,2,1) beat the svg's own (0,1,0)
 // classes — LIVE-measured 0px where the reference computes 4/8px).
-// Focus rings are 1px near-black (the ring token,
-// --color-ring = #0a0a0a).
+// Focus rings: the shared two-pixel token-keyed arm (the ring
+// token --color-ring = #1c1917 light / #f5f5f4 dark — the
+// session-199 stone rebrand; the CRM-era citation named a
+// one-pixel ring on the neutral ink).
 const buttonVariants = cva(
   cn(
     // Session-13 (S13-P3): rounded-md — the reference renders 6px radius

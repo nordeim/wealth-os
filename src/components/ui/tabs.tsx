@@ -17,13 +17,19 @@ import { TABS_SEGMENTED } from "@/lib/page-layout";
 // N-66b note's claim that page-layout carried the responsive grid was
 // factually wrong — no column utility rides that constant).
 //
-// Session-12 (S12-P4): the tracks carry text-muted-ink (the reference's
-// tablist muted-ink token — inactive tabs INHERIT the token rather than
-// a neutral-gray utility step) and the triggers are the reference's STOCK Radix
-// classes: natural height (no 28px lock), transition-all, ring-offset-background,
-// the bare `shadow` on the active state (the s6 shadow-sm pin was one step
-// light), data-[state=active]:* variants riding a data-state attribute,
-// and NO hover classes (the reference ships none on any tab variant).
+// Session-12 (S12-P4, trued session 256): the segmented track's
+// inactive ink is the stone-600 pair (the session-199 AA re-pin —
+// stone-500 computed 4.0:1 on the stone-100 track and failed the
+// two-gate; the CRM-era muted-ink track claim retired with the
+// rebrand) and the triggers are the reference's STOCK Radix class
+// family: natural height (no 28px lock), transition-all,
+// ring-offset-background, data-[state=active]:* variants riding a
+// data-state attribute. OUR active pill rides the shadow-sm step
+// (the s6 pin — the reference's own pill carries the bare default
+// shadow, one step heavier), and the hover story splits by
+// variant: the segmented triggers ship none (matching the
+// reference), the underline variant's inactive arm carries the
+// border and ink hover pair (our superset on that variant).
 // The reference's own tabs are all tabIndex=-1 (keyboard-unreachable
 // platform defect) — our roving tabindex stays the accessible fix.
 //

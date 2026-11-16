@@ -116,8 +116,8 @@ export { Dropdown, DropdownTrigger, DropdownContent, DropdownItem, DropdownLabel
 // --color-danger-soft now flips in .dark so the destructive hover
 // cannot paint a light chip on a dark surface). Token VALUES are preserved via our
 // own variables where the reference uses popover tokens (its popover bg = our
-// --color-surface white, border = --color-line #e5e5e5, text =
-// --color-foreground).
+// --color-surface white, border = --color-line #e7e5e4 — the stone rebrand's
+// one-step shift off its neutral #e5e5e5, text = --color-foreground).
 // ---------------------------------------------------------------------------
 
 const Menu = DropdownMenuPrimitive.Root;
