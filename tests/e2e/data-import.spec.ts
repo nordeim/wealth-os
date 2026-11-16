@@ -19,10 +19,15 @@ const BASE = `http://localhost:${e2ePort()}`;
 test("a 500-row (>16KB) import lands through the real route", async ({
   playwright,
 }) => {
-  // -- the scratch user comes to be (in-app OTP by default in e2e)
+  // -- the scratch user comes to be (in-app OTP by default in e2e).
+  // Session-253 (R-50, F-253b): the signup rides its own dedicated
+  // single-value XFF key (the reset-password doctrine) — the shared
+  // no-XFF signup bucket stays auth.spec's alone, and this leg can
+  // never be flipped by an alphabetically-earlier signup burn.
   const email = `e2e-import-${Date.now()}@example.com`;
   const anon = await playwright.request.newContext({ baseURL: BASE });
   const signup = await anon.post("/api/auth/signup", {
+    headers: { "x-forwarded-for": "198.51.100.47" },
     data: { email, password: "TestPass123" },
   });
   expect(signup.ok()).toBeTruthy();

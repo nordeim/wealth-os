@@ -94,7 +94,10 @@ export async function POST(req: Request) {
       // from "unknown or already-verified" to any unauthenticated
       // caller, surviving the delivery knob the in-band posture
       // rides. The forgot-password route's always-present resetUrl
-      // key is the sibling form; both arms are three-key now.
+      // key is the sibling form. Session-253 (R-50, F-253d) completed
+      // the family: EVERY arm of this route is three-key now, the
+      // vanished-row catch included (the one arm the F-252b pin's
+      // miss-arm-only slice could not see).
       return ok({
         resent: true,
         message: verificationResentMessage(),
@@ -142,11 +145,19 @@ export async function POST(req: Request) {
     // Session-241 (R-38, F-241d): the vanished-row arm — a user row
     // that disappears between the findUnique and the re-arm update is
     // a "nothing to resend" miss, answered by the same non-leaking
-    // info banner the miss arm answers (never the generic 500 — the
-    // F-222o doctrine; the known branch already burned its scrypt
-    // shape before the update threw, so the timing matches too).
+    // info banner the miss arm answers, in the same three-key
+    // envelope (session-253, R-50, F-253d: a two-key 200 here — an
+    // arm only a hash-present row can reach — re-opened the exact
+    // key-presence channel F-252b closed, surviving the production
+    // delivery knob; never the generic 500 either way — the F-222o
+    // doctrine; the known branch already burned its scrypt shape
+    // before the update threw, so the timing matches too).
     if (isRecordNotFound(error)) {
-      return ok({ resent: true, message: verificationResentMessage() });
+      return ok({
+        resent: true,
+        message: verificationResentMessage(),
+        verificationCode: null,
+      });
     }
     // Session-237 (R-34, F-237b): the transient arm joins the auth
     // family — the sibling forgot-password/reset-password/reset routes

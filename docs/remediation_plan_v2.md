@@ -1521,7 +1521,91 @@
 > drift gates CLEAN · census MATCH · captures.)
 
 
-> **Current version: v2.49.0** (session 252 — the
+> **Current version: v2.50.0** (session 253 — the
+order-dependence, burn-ledger, and fixed-email round R-50: the owner's
+standing directive — refresh → review → validate → audit → parity
+iteration → remediation plan → TDD execution → captures → docs
+lockstep → commit → push, with the reference STABLE on every standing
+drift layer (probe:ref — the bundle md5 6d3779af… unchanged, the
+F-250q stylesheet fingerprint 96f24d45… unchanged, the demo data
+zero, the desktop nav 256/9, the TRUE-390 menu census standing) and
+the mobile-navigation ask verified on BOTH sides through agent-browser
+at TRUE 390×844 (the reference's drawer and OUR drawer each open with
+the same 9 destinations + Sign Out and close on the toggle; ours adds
+the labeled superset — the skip link, the navigation landmark, the
+aria-label hamburger; comparison captures saved beside the round's
+captures); no Tailwind v4 regression (the drawer battery at TRUE 390
+renders every destination; the token discipline clean on the audited
+axes — zero phantom breakpoints, zero unpinned tokens, no config
+file, the .dark flips complete)). The cold-baseline gate GREEN at
+HEAD 198ac00 — the v2.49.0 ship state reproduced (plus the owner's
+prompt-update commit): lint 0/0 · tsc 0 · 1704/1704 unit (104 files) ·
+build · smoke 15/15 · 152/152 e2e (one transient timing-leg failure on
+the first battery run — the known flake family documented at R-47;
+green on the re-run, the isolated-spec run below re-verified the
+family); census MATCH; the six parity drift gates not re-run this
+round (the parity surfaces unchanged — the round's cures touch only
+the e2e battery's own legs and one response-arm's key set; the
+standing sweep baselines ride); `bun audit` unchanged (1 moderate
+dev-chain minimatch, the documented deferral); neo-crm unchanged
+(b3d0fbe) — nothing to port; the SEO surface verified (smoke leg 12:
+sitemap + robots + manifest 200); the .env
+DATABASE_URL="file:../db/custom.db" contract + the db/ at the repo
+root + the vitest/playwright configs + the .env.example six-knob set
+all standing. THE ROUND'S DISCOVERY (found at the cold baseline
+itself): the AGENTS-documented single-spec invocation
+(`CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts`)
+FAILS on wealthos.spec.ts — the F-225c verify-bucket leg is
+ORDER-DEPENDENT: its setup signup rides the shared no-XFF signup
+bucket, which the battery's earlier specs exhaust (the leg's signup
+429s, no account exists, and every probe answers the miss arm), while
+in isolation the signup SUCCEEDS, the pending-code ladder fires
+(4×400 then VERIFICATION_LOCKED 429s — live-probed:
+[400,400,400,400,429,429]), and the leg fails. The session-253
+fresh-eyes audit (three Mode-C passes: the R-49 cure surfaces driven
+by the session, every surface verified holding · the API/auth/security
+layer, the SIXTH consecutive clean bill with one Low + one
+Informational NEW · the UI/a11y/shell layer, source-clean, the
+findings clustered in the e2e battery's own legs) — 0 Critical /
+0 High / 3 Medium / 3 Low NEW after dedup, every material claim
+re-verified at file:line by the driving session (the ladder
+live-probed against the standalone artifact; the burn ledger
+reconstructed from the specs' own signup POSTs; the fixed-email
+bucket arithmetic read off the route seams). The round's cures:
+THE ORDER-DEPENDENT VERIFY-BUCKET LEG (F-253a — the flagship: the
+leg's setup signup RETIRES; the probes ride an unknown timestamped
+email — the pure miss-arm contract the leg always claimed to test,
+order-independent by construction, the battery's shared signup burn
+count drops with it); THE STALE SIGNUP-BUDGET LEDGER (F-253b — the
+F-229a census arithmetic was wrong (auth.spec burns EIGHT no-XFF
+signups — three UI form submits + five API posts — not five; the
+battery burned TWELVE against the ten cap, the last two denials
+landing silently on the bucket legs' own ignored signups); the census
+sites corrected, and data-import's + multi-user's scratch signups
+move to dedicated single-value XFF keys (the reset-password doctrine)
+— the shared burn drops to auth.spec's eight, headroom restored);
+THE FIXED-EMAIL LOGIN-BUCKET LEG (F-253c — the F-222n leg's
+probe email was a compile-time constant, so the per-account
+30/15min bucket survives a reused-server re-run inside the window
+(the N-69a class, per-account edition) — the email joins the
+sibling legs' timestamp mint); THE RESEND VANISHED-ROW ARM (F-253d —
+the P2025 catch still shipped the two-key envelope, the F-252b
+shape oracle's one surviving arm; the third key joins it); THE
+PARITY-252 PIN'S MISS-ARM-ONLY SLICE (F-253e — the F-252b pin
+sliced only the miss arm, the coverage gap that let F-253d through;
+the whole-route three-key pin closes the genus); and THE STALE
+CSRF-PROBE COMMENT (F-253f — describes the pre-F-245a
+bucket-before-parse order; reworded to the gate-first truth). The
+toolchain note: agent-browser's HeadlessChrome-157 tab does not
+hydrate the TURBOPACK DEV build (the login form's native GET
+submission fires — no preventDefault; all chunk requests 200; the
+PRODUCTION standalone build hydrates and logs in cleanly under the
+same browser; Playwright's chromium works on both builds — the e2e
+battery and the captures family prove it) — an environment note for
+the agent-browser comparison workflow, not a product defect; the
+round's clone-side comparison rode the production artifact.
+
+> **Previous version: v2.49.0** (session 252 — the
 list-focus-ring, resend-shape, and type-lag round R-49: the owner's
 standing directive — refresh → review → validate → audit → parity
 iteration → remediation plan → TDD execution → captures → docs
@@ -2685,6 +2769,48 @@ cured-as-riders + 1 Informational registered.
 | F-252i | Informational | **THE E2E-PIN PROSE TRUTHS — two docblocks cite the e2e db pin in its relative form while the actual pin is absolute.** Both `prisma.config.ts:21` and `db-path.ts:37` describe "the e2e suite's `file:../db/e2e.db` pin" — the pin global-setup actually sets is the absolute `file:<root>/db/e2e.db` (since R-9). Behavior is unaffected (both forms land on `<repo>/db/e2e.db`); the citations are on the parity-229 prose allowlist as URL fragments, so no scanner risk — pure comment truth, the F-251f genus. | `prisma.config.ts:16-23`; `src/lib/db-path.ts:33-40` | **cured in R-49** (both docblocks describe the absolute pin form) |
 | F-252j | Informational | **THE UN-MESSAGED ZOD FIELDS — three bare fields surface raw library copy through the BAD_REQUEST envelope.** `budgetDeleteSchema.category` (`z.string().trim().min(1).max(80)`, zero custom messages — the sibling `budgetUpsertSchema` messages every field), the csv row `category`'s 80-cap, and `aiCoachSchema.history[].content`'s 4000-cap: a caller posting an empty/oversized value gets Zod v4 default copy ("Too small: expected…") instead of the family's human messages. Cosmetic envelope-copy drift; no security or correctness impact. | `src/lib/schemas.ts:546-548,589,610` | **cured in R-49** (the house copy reaches the three fields) |
 | F-252k | Informational | **THE useTheme NO-PROVIDER FALLBACK — the defensive branch diverges from the provider's semantics.** The fallback `toggle()` flips the html class with no localStorage write and no label sync; `setTheme("system")` forcibly removes dark instead of resolving prefers-color-scheme. Zero live consumers (the ThemeProvider is root-wired); latent-only — a future consumer rendered outside the provider would silently desync the stored label. | `src/components/layout/theme.tsx:154-170` | recorded (Reasoned; either mirror the provider's applyTheme + storage writes in the fallback, or throw in dev — a product decision, not a rider) |
+
+### 2.13 Session-253 audit ledger (the fresh-eyes round over the v2.49.0 ship state)
+
+Three Mode-C passes (the R-49 cure surfaces driven by the session · the
+API/auth/security layer · the UI/a11y/shell layer); every material claim
+re-verified at file:line by the driving session before planning (the
+verify ladder live-probed against the standalone artifact; the burn
+ledger reconstructed from the specs' own signup POSTs and the route's
+bucket order; the fixed-email bucket arithmetic read off the route
+seams). NEW after dedup: 0 Critical / 0 High / 3 Medium / 3 Low. All
+ten R-49 cure surfaces verified holding (the F-252a rings on all three
+list families, the F-252b miss-arm three-key envelope, the F-252c wire
+type + the retired casts, the F-252d trailing-comment strip, the
+F-252e scrollbar dark arm, the F-252f latent offset arms, the F-252g
+retired literal, the F-252h register note, the F-252i prose truths,
+the F-252j Zod messages). The API layer's SIXTH consecutive clean
+bill. The UI source layer clean (the layout/ui/shared/pages/globals
+dimensions all verified; the Tailwind v4 health check clean on every
+axis). The findings cluster in the e2e battery's own legs — the test
+layer is where this round lives.
+
+| ID | Severity | Finding (verified at file:line) | Location | Disposition |
+|---|---|---|---|---|
+| F-253a | Medium | **THE ORDER-DEPENDENT VERIFY-BUCKET LEG — the F-225c leg's premise rides the battery's accidental signup denial, and the documented single-spec invocation fails.** The leg's setup signup POSTs `/api/auth/signup` with NO XFF header and ignores the response; the shared no-XFF per-IP signup bucket (10/15min) is exhausted by the earlier specs in battery order (auth.spec's eight burns: three UI form submits + five API posts; data-import's ninth; multi-user's tenth), so in the battery the leg's signup 429s, NO account exists, and every verify probe answers the timing-equalized miss arm — 60×400 + the 61st 429, the assertions pass. In isolation (the AGENTS.md-documented single-spec command) the signup SUCCEEDS (third burn), the account carries a PENDING code, and the wrong-code ladder fires: probes 1-4 answer 400 (remaining 4..1), probe 5 trips VERIFICATION_LOCKED 429, probes 6+ repeat the locked 429 — `codes.filter("400")` counts 4, not 60, and the leg FAILS (live-reproduced at the cold baseline; the ladder live-probed against the standalone artifact: [400,400,400,400,429,429]). The leg's own comment ("A no-pending account (signed up, never verified): every probe answers the F-224b first-rung reply — no ladder progression, no lockout interference") is false for a live signup — signup MINTS a pending code (signup/route.ts mints verificationCodeHash + a 15-minute TTL); the premise only held because the signup was silently denied. | `tests/e2e/wealthos.spec.ts:586-615` (the signup at :591; the false premise comment at :587-589); the ladder at `src/app/api/auth/verify/route.ts:129-159`; the pending-code mint at `src/app/api/auth/signup/route.ts:100-133` | **cured in R-50** (the setup signup RETIRES — the probes ride an unknown timestamped email, the pure miss-arm contract: no account, no ladder, no order dependence; the comment states the true premise; the per-account bucket's 60-cap and the 61st-trip assertions unchanged) |
+| F-253b | Medium | **THE STALE SIGNUP-BUDGET LEDGER — the F-229a census arithmetic is wrong, the battery EXCEEDS the cap, and the two legs that assert signup success sit at zero headroom.** The census text (three carriers: auth.spec.ts:398-400 "this leg is the battery's 10th and FINAL signup-IP POST"; wealthos.spec.ts:751-756 "the two ORIGIN-template signups in this file + auth.spec's five + multi-user's + data-import's = 10"; AGENTS.md's F-229a gotcha "the battery already spends all ten (the two ORIGIN-template signups in wealthos.spec + auth.spec's five + multi-user's + data-import's + the verify-bucket leg's)") undercounts auth.spec (FIVE API posts listed; the file also carries THREE UI form submissions that POST — the route burns the bucket BEFORE the Zod parse, so every submit counts) and double-counts the wealthos legs (the "two ORIGIN-template signups" ARE the bucket legs' own signups, cited again as "the verify-bucket leg's"). The TRUE ledger: auth.spec EIGHT + data-import NINTH + multi-user TENTH (at cap) + the verify/resend legs' signups ELEVENTH and TWELFTH — DENIED silently (their legs ignore the response, which is exactly what made F-253a possible). data-import.spec:25 and multi-user.spec:29 assert `signup.ok()` at burns nine and ten: any future no-XFF signup added alphabetically before multi-user flips both legs to 429 failures with no accurate census to consult. | the census carriers: `tests/e2e/auth.spec.ts:398-400`; `tests/e2e/wealthos.spec.ts:751-756`; `AGENTS.md` (the F-229a gotcha); the zero-headroom legs: `tests/e2e/data-import.spec.ts:25-28`, `tests/e2e/multi-user.spec.ts:29-32` | **cured in R-50** (the census sites state the TRUE arithmetic; data-import's and multi-user's scratch signups move to dedicated single-value XFF keys — the reset-password doctrine — dropping the shared no-XFF burn count to auth.spec's EIGHT and restoring headroom; the wealthos bucket legs lose their signups entirely under F-253a) |
+| F-253c | Medium | **THE FIXED-EMAIL LOGIN-BUCKET LEG — the F-222n leg probes a compile-time-constant email, so the per-account bucket survives a reused-server re-run.** The leg's 31 rotating-XFF login attempts ride `acct-bucket-probe@example.com` — a FIXED email — against the `login-acct:` per-account bucket (30/15min, in-memory). Under `reuseExistingServer: !CI` (the documented local re-run shape) the second run inside the window inherits count≈32 from the first: every probe 429s and the leg's 30×401 assertion fails — the N-69a "the dev server lies" class, per-account edition; the config's own hazard comment (playwright.config.ts:66-73) documents only the per-IP members. The sibling verify/resend legs timestamp their emails and are immune. | `tests/e2e/wealthos.spec.ts:551` (the fixed email); the bucket at `src/app/api/auth/login/route.ts:49-53`; the hazard-comment gap at `playwright.config.ts:66-73` | **cured in R-50** (the email joins the sibling legs' timestamp mint) |
+| F-253d | Low | **THE RESEND VANISHED-ROW ARM — the P2025 catch still ships the two-key envelope; the F-252b shape oracle survives R-49 on its third arm.** R-49's F-252b cure made the miss arm and the known arm three-key (`verificationCode: null` rides both), and the cure's own comment claims "both arms are three-key now" — but the route's `isRecordNotFound` catch (a user row that vanishes between the findUnique and the re-arm update) still returns `ok({ resent: true, message })` — TWO keys. Under the production OTP knob the two-key 200 signals a never-verified account existed at read time (the arm is only reachable for a hash-present row), the exact enumeration F-252b closed; latent today (no user-delete endpoint — the documented load-bearing assumption, now cited by THREE P2025 shape arms) but the family's one divergent arm. | `src/app/api/auth/resend/route.ts:148-149` (the two-key arm) vs the cured arms at :98-102 and :135-139; the overclaiming comment at :97 | **cured in R-50** (the third key joins the arm — every arm of the route three-key; the two citing comments trued) |
+| F-253e | Low | **THE PARITY-252 PIN'S MISS-ARM-ONLY SLICE — the F-252b pin cannot see the arms it does not slice.** The pin slices the route source between the miss arm's condition and the code generation, asserting `verificationCode: null` only inside that window — the P2025 arm's `ok(` return is unpinned, which is exactly the coverage gap that let F-253d ship (the round's own RED→GREEN discipline was structurally blind to the third arm). | `tests/parity-252.test.ts:76-83` | **cured in R-50** (the parity-253 battery carries the whole-route form: every `ok(` return in the resend route carries the third key — the genus closed, not the symptom) |
+| F-253f | Low | **THE STALE CSRF-PROBE COMMENT — describes the pre-F-245a bucket-before-parse order.** The probe's comment claims "the login route buckets before it parses, so a rejected probe still spends the shared localhost budget otherwise" — F-245a moved the content-type gate ABOVE the burn, so the text/plain volley now dies at the gate UN-BUCKETED (which the F-245a e2e leg itself asserts); the probe's dedicated XFF hop is belt-and-suspenders, not the stated necessity. | `tests/e2e/auth.spec.ts:374-380` vs the gate-first order at `src/app/api/auth/login/route.ts:16-19` | **cured in R-50** (the comment cites the gate-first ordering) |
+
+Recorded, not cured: none NEW this round (the standing families ride:
+F-252k plus F-251i-k, F-250h-p, F-249j-n, F-248h-n, F-247g-l,
+F-246g/h, F-245g/h, F-244i-n, F-242h/i, F-240k-n, F-239l-s — plan
+§2.12's register). Toolchain note (not a finding): agent-browser's
+HeadlessChrome-157 tab does not hydrate the Turbopack DEV build (the
+login form's native GET submission fires — no preventDefault; all
+chunk requests 200; zero console errors; the PRODUCTION standalone
+build hydrates and logs in cleanly under the same browser, and
+Playwright's chromium works on both builds) — the clone-side
+mobile-nav comparison rode the production artifact; the dev-build
+comparison path is a future toolchain round if the operator wants it.
+
 
 ## 3. The remediation program (R-items)
 
@@ -4975,6 +5101,58 @@ sitemap/robots/manifest family, the mobile-nav comparison —
 the drawer battery + probe:ref's TRUE-390, the .env.example,
 the captures, the docs lockstep).
 
+### R-50 — The order-dependence, burn-ledger, and fixed-email round (session 253) — Status: Done(v2.50.0) — SHIPPED (lint 0/0 · tsc 0 · 1712 unit (105 files, +8) · build · smoke 15/15 · 152 e2e (the wealthos spec verified in ISOLATION too — the order-independence proof) · census MATCH · the captures 212-215 + the two comparison captures · the docs lockstep complete)
+
+The session-253 findings-led round over the v2.49.0 ship state. Six
+cures (F-253a-f), all in the e2e battery's own legs plus one route
+arm; the discovery found at the cold baseline itself (the documented
+single-spec invocation failing).
+
+1. **R-50.1 — the pins born RED**: tests/parity-253.test.ts (the
+   source battery: the verify-bucket leg's signup-free form + the
+   unknown-email premise; the resend-bucket leg's signup-free form;
+   the login-bucket leg's timestamp mint; the whole-route three-key
+   resend envelope (every `ok(` return carries the third key — the
+   F-253e genus pin); the corrected census arithmetic at both spec
+   carriers (the true count, the dedicated-key doctrine); and the two
+   scratch signups' dedicated XFF keys). Honest RED: 8/8 — every one
+   verified failing for exactly the expected defect.
+2. **R-50.2 — the cures**: THE ORDER-DEPENDENT VERIFY-BUCKET LEG
+   (F-253a — the flagship: the setup signup retires; the 61 probes
+   ride an unknown timestamped email — no account, no ladder, no
+   order dependence; the assertions unchanged: 60 miss-arm 400s + the
+   61st per-account 429 + the RATE_LIMITED body probe); THE STALE
+   SIGNUP-BUDGET LEDGER (F-253b — the census corrected at both spec
+   carriers + AGENTS.md's gotcha; data-import's and multi-user's
+   scratch signups move to dedicated single-value XFF keys; the
+   resend-bucket leg's signup retires with its premise comment trued
+   — both arms of the route answer the non-leaking 200, the miss-arm
+   form the leg now rides); THE FIXED-EMAIL LOGIN-BUCKET LEG (F-253c
+   — the timestamp mint); THE RESEND VANISHED-ROW ARM (F-253d — the
+   third key joins the P2025 catch; the arm's comment and the
+   route-level "both arms" claim trued); THE PARITY-252 PIN'S
+   MISS-ARM-ONLY SLICE (F-253e — closed by the whole-route pin in
+   the parity-253 battery); and THE STALE CSRF-PROBE COMMENT (F-253f
+   — the gate-first truth).
+3. **R-50.3 — the verification**: lint 0/0 · tsc 0 · 1712 unit (105
+   files, +8) · build · smoke 15/15 · 152 e2e · the wealthos spec
+   re-run IN ISOLATION (the F-253a proof — green where it was RED at
+   the baseline) · census MATCH · the captures 212-215 (the
+   own-database convention + the census tripwire: the mobile drawer
+   at 390 — the standing ask; the dashboard desktop; the login face;
+   the drawer's aria-expanded flip) + the two agent-browser
+   comparison captures (mobile-nav-clone-390.png +
+   mobile-nav-reference-390.png, both PNG-validated at TRUE 390×844)
+   · `bun audit` unchanged. The docs lockstep complete (the PAD
+   v2.50.0 block + the trio's gate-enforced advance to
+   v2.48.0/v2.49.0/v2.50.0 + the README program row + AGENTS/CLAUDE
+   counts + the plan closure + the worklog + docs/session_89.md).
+
+The standing operator asks re-verified along the way (the .env
+contract, the vitest/playwright configs, the sitemap/robots/manifest
+family — smoke leg 12, the mobile-nav comparison on BOTH sides at
+TRUE 390×844, the .env.example, the captures, the docs lockstep).
+
 ## 4. Plan validation (the re-check, session 203)
 
 After this plan text was drafted, every §2 claim was re-verified against the
@@ -6390,6 +6568,7 @@ six parity drift legs.
 
 | Version | Session | R-items executed | Gate at ship | Commit |
 |---|---|---|---|---|
+| v2.50.0 | 253 | **R-50** (the order-dependence, burn-ledger, and fixed-email round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser (the comparison riding the production artifact after the toolchain note below); the cold baseline GREEN at HEAD 198ac00 — the v2.49.0 ship state reproduced (one transient timing-leg e2e failure on the first battery run, the known flake family; green on the re-run)). THE DISCOVERY at the baseline: the AGENTS-documented single-spec invocation FAILS on wealthos.spec.ts — the F-225c verify-bucket leg is order-dependent (in the battery its setup signup 429s on the exhausted shared bucket so no account exists and the miss arm answers every probe; in isolation the signup succeeds, the pending-code ladder fires, and the leg fails — live-probed). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-253 fresh-eyes audit (three Mode-C passes: the R-49 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 3 Medium / 3 Low NEW after dedup, every material claim re-verified at file:line by the driving session; all ten R-49 cure surfaces holding; the API layer's sixth consecutive clean bill; the UI source layer clean — the findings cluster in the e2e battery's own legs). The plan v2.50.0 written and validated against the tree. **R-50.1** the pins born RED (honest RED: 8 — the parity-253 source battery) → **R-50.2** the cures (THE ORDER-DEPENDENT VERIFY-BUCKET LEG — the flagship: the setup signup retires, the probes ride an unknown timestamped email, the miss-arm contract the leg always claimed; THE STALE SIGNUP-BUDGET LEDGER — the census trued at both spec carriers + AGENTS.md, the data-import/multi-user scratch signups on dedicated XFF keys; THE FIXED-EMAIL LOGIN-BUCKET LEG — the timestamp mint; THE RESEND VANISHED-ROW ARM — the third key joins the P2025 catch; THE PARITY-252 PIN'S MISS-ARM-ONLY SLICE — closed by the whole-route pin; THE STALE CSRF-PROBE COMMENT — the gate-first truth) → **R-50.3** the verification (lint 0/0 · tsc 0 · 1712 unit (105 files, +8) · build · smoke 15/15 · 152 e2e · the wealthos spec IN ISOLATION green — the order-independence proof · census MATCH · the captures 212-215 + the two comparison captures · `bun audit` unchanged). Toolchain note: agent-browser's HeadlessChrome-157 does not hydrate the Turbopack dev build (production hydrates cleanly; Playwright works on both) — recorded for the comparison workflow, not a product defect. The docs lockstep complete (the PAD v2.50.0 block + the trio's gate-enforced advance to v2.48.0/v2.49.0/v2.50.0 + the README program row + AGENTS/CLAUDE counts + the plan closure + the worklog + docs/session_89.md). | lint 0/0 · tsc 0 · **1712 unit (105 files, +8)** · build · smoke 15/15 · **152 e2e** (+ the isolated-spec proof) · census MATCH | (this session's execution commit) |
 | v2.49.0 | 252 | **R-49** (the list-focus-ring, resend-shape, and type-lag round — findings-led, the standing directive with the reference STABLE on every standing drift layer (the bundle md5, the F-250q stylesheet fingerprint, the demo data zero, the desktop nav 256/9, the TRUE-390 menu census) and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser (the reference's drawer and ours each open with the same 9 destinations + Sign Out and close on the toggle; ours adds the labeled superset); the cold baseline GREEN at HEAD 04fd4f6 — the v2.48.0 ship state reproduced (one transient timing-leg e2e failure on the first run, the known flake family; two consecutive green runs after); the chromium-1254 install the one toolchain step). The audit round first: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged (1 moderate dev-chain minimatch, the documented deferral); neo-crm unchanged (b3d0fbe) — nothing to port; the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-252 fresh-eyes audit (three Mode-C passes: the R-48 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 1 Medium / 5 Low cured + 4 Informational cured-as-riders + 1 Informational registered after dedup, every material claim re-verified at file:line by the driving session, the contrast math re-computed by code; all eight R-48 cure surfaces verified holding; the API layer's fifth consecutive clean bill; the Tailwind v4 hunt clean on every audited axis). The plan v2.49.0 written and validated against the tree. **R-49.1** the pins born RED (honest RED: 18 — the parity-252 source battery) → **R-49.2** the cures (THE LIST-ITEM KEYBOARD-FOCUS RING — the flagship; THE RESEND SHAPE ORACLE; THE DASHBOARD USER TYPE LAG; THE PALETTE CENSUS TRAILING-COMMENT ARM; THE THEME-BLIND SCROLLBAR DARK ARM; THE LATENT RING-OFFSET ARMS; riders: THE VESTIGIAL DARK-WASH LITERAL RETIREMENT, THE RED METER REGISTER NOTE, THE E2E-PIN PROSE TRUTHS, THE UN-MESSAGED ZOD FIELDS) + five comment rewords the nets caught mid-cure (the F-229d discipline: four hyphenated coins + the pinned-phrase wrap; the parity-243 phrase-split catch) → **R-49.3** the verification (lint 0/0 · tsc 0 · 1704 unit (104 files, +18) · build · smoke 15/15 · 152 e2e (+1, the F-252a ring leg — the stale-artifact lesson re-learned: the e2e boots the standalone build, rebuild before the leg) · the six parity drift gates CLEAN at 0.5pct margin · census MATCH · the captures 207-211: the mobile drawer at 390 (the standing ask), the keyboard-ring face (computed rgb(245,245,244) over the stone-800 wash — the flagship proven live), the resend three-key face (verificationCode present and null), the scrollbar dark arm (rgb(120,113,108)), the shell wash face (rgb(14,19,16) on the token flip alone)). The docs lockstep complete (the PAD v2.49.0 block + the trio's gate-enforced advance to v2.47.0/v2.48.0/v2.49.0 + the §7.1 family rows 71→72 with parity-252 listed + the arithmetic 4+72+28=104 + the README badge 1837→1856 + the program row + AGENTS/CLAUDE/SKILL counts + the plan closure + the worklog + docs/session_87.md). | lint 0/0 · tsc 0 · **1704 unit (104 files, +18)** · build · smoke 15/15 · **152 e2e** · six drift gates CLEAN (0.5pct) · census MATCH | (this session's execution commit) |
 | v2.48.0 | 251 | **R-48** (the focus-ring, cli-anchor, and settings-flag round — findings-led, the standing directive with the reference STABLE on every standing drift layer incl. the F-250q stylesheet fingerprint and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser; the cold baseline GREEN at HEAD c903958 — the v2.47.0 ship state reproduced exactly, the chromium-1254 install the one toolchain step). The audit round first: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged (1 moderate dev-chain minimatch, the documented deferral); neo-crm unchanged (b3d0fbe) — nothing to port; the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-251 fresh-eyes audit (three Mode-C passes: the R-47 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 1 Medium / 6 Low cured + 2 Informational cured-as-riders + 3 Informational registered after dedup, every material claim re-verified at file:line by the driving session, the prisma-config divergence LIVE-PROBED; all seven R-47 cure surfaces verified holding; the Tailwind v4 hunt clean on every axis). The plan v2.48.0 written and validated against the tree. **R-48.1** the pins born RED (honest RED: 18 — the parity-251 source battery's seventeen + the store-staleness settingsSettled strand leg) → **R-48.2** the cures (THE AUTH-FACE FOCUS-RING CURE — the flagship; THE PRISMA.CONFIG CLI-ANCHOR CURE; THE SETTINGS-SETTLED RIDER + the F-250p comment-truth rider; THE DASHBOARD USER PROJECTION; THE DRIFT-PROBE CSS POSITIVE SELECTION + EXIT HYGIENE; THE DEAD gray-500 PIN RETIREMENT + THE PALETTE CENSUS COMMENT-STRIP; THE WHITE RING-OFFSET HALO CURE; THE AMBER METER-FILL REGISTER ENTRY) plus the same-commit recalibrations (parity-218/222/223/249/250, login-reset, login-views, prisma-7-contract — the F-247d precedent) and two comment rewords the parity-229 nets caught mid-cure (the F-229d discipline — the light-mode/invisible carriers in the tabs docblock) → **R-48.3** the verification (lint 0/0 · tsc 0 · 1686 unit (103 files, +18) · build · smoke 15/15 · 151 e2e · the six parity drift gates CLEAN at 0.5pct margin · census MATCH · the captures 202-206: the mobile drawer at 390 (the standing ask, open + close asserted), the auth-focus ring face (computed rgb(28,25,23) — the flagship proven live), the settings-settled rider face (EUR kept, settled=true — the rider proven live), the user-projection face (role="user", photoUrl present), the tabs-panel halo face (computed rgb(14,19,16) — the F-251g cure proven live)). The docs lockstep complete (the PAD v2.48.0 block + the trio's gate-enforced advance to v2.46.0/v2.47.0/v2.48.0 + the §7.1 family rows 70→71 with parity-251 listed + the arithmetic 4+71+28=103 + the README badge 1819→1837 + the program row + AGENTS/CLAUDE/SKILL counts + the plan closure + the worklog + docs/session_85.md). | lint 0/0 · tsc 0 · **1686 unit (103 files, +18)** · build · smoke 15/15 · **151 e2e** · six drift gates CLEAN (0.5pct) · census MATCH | (this session's execution commit) |
 | v2.47.0 | 250 | **R-47** (the settings-sequence, superseded-error, and select-completion round — findings-led, the standing directive with the reference STABLE on every probed drift layer and the TRUE-390 mobile menu re-verified twice — once through agent-browser with the open/close toggle census; the cold baseline GREEN at HEAD 043b998 — the v2.46.0 ship state reproduced, the chromium-1254 toolchain gap the round's one discovery). The audit round first: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface verified; the .env contract + the vitest/playwright configs + the .env.example standing). The session-250 fresh-eyes audit (three Mode-C passes — 0 Critical / 0 High / 3 Medium / 3 Low cured + 10 Informational registered after dedup, every material claim re-verified at file:line). The plan v2.47.0 written and validated against the tree. **R-47.1** the pins born RED (honest RED: 19 — the store-staleness battery's three new interleaving legs + the bounded-reader stream-rejection leg + the parity-250 source battery's fifteen; one negative control born green scoping the blast radius) → **R-47.2** the cures (THE SETTINGS SEQUENCE — the flagship; THE SUPERSEDED ERROR COMMIT; THE READ-BOUNDED-JSON STREAM GUARD; THE THREE SELECT COMPLETIONS; THE SIGN-OUT BUSY RIDERS; THE EXPENSES BUCKET A11Y CURE) plus the same-commit recalibrations (parity-217/218/224/239/249 — the F-247d precedent) and two comment rewords the parity-229 nets caught mid-cure (the F-229d discipline) → **R-47.3** the verification (lint 0/0 · tsc 0 · 1668 unit (102 files, +23) · build · smoke 15/15 · 151 e2e) — mid-verification the six-gate run tripped the desktop sweep on two pages and the round gained its seventh cure: **THE REFERENCE STYLING-EVENT RESPONSE** (F-250q — the platform redeployed the reference's stylesheets with the JS bundle byte-identical; the stash-test bisect cleared our tree, the interior census stood at 0-event margin; the probe's standing set gained the POST-LOGIN app stylesheet's content hash and the eight affected per-class baselines re-derived: desktop 8.5→12.3/8.1→10.5 · phone 14.5→23.0/26.4→28.7 · tablet 7.2→12.7/20.3→24.9 · landscape 10.5→14.3/23.2→26.3); the six parity drift gates then CLEAN end-to-end · census MATCH · the captures 197-201 (the own-database convention + the census tripwire: the mobile drawer at 390 (the standing ask), the settings-sequence face, the superseded-error face, the sign-out sequencing face, the expenses bucket labels). The docs lockstep complete (the PAD v2.47.0 block + the trio's gate-enforced advance to v2.45.0/v2.46.0/v2.47.0 + the §7.1 family rows 69→70 with parity-250 listed + the arithmetic 4+70+28=102 + the README badge 1796→1819 + the program row + AGENTS/CLAUDE/SKILL counts + the plan closure + the worklog + docs/session_83.md). |

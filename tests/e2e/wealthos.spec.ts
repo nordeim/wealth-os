@@ -543,12 +543,18 @@ test.describe("the per-account login bucket (F-222n — the rotating-header boun
   const ORIGIN = `http://localhost:${e2ePort()}`;
 
   test("31 rotating-XFF attempts on one email: the IP buckets never fire, the account bucket caps the 31st", async ({ request }) => {
+    // Session-253 (R-50, F-253c): the probe email mints per run — a
+    // compile-time constant keyed a per-account bucket that survived
+    // a reused-server re-run inside the window (count already past
+    // 30, every probe 429s; the N-69a class, per-account edition —
+    // the sibling verify/resend legs below minted all along).
+    const probeEmail = `acct-bucket-probe-${Date.now()}@example.com`;
     const statuses: number[] = [];
     for (let i = 0; i < 31; i++) {
       const res = await request.post(`${ORIGIN}/api/auth/login`, {
         headers: { "x-forwarded-for": `198.51.100.${i}` },
         data: {
-          email: "acct-bucket-probe@example.com",
+          email: probeEmail,
           password: "wrong-password-probe",
         },
       });
@@ -563,7 +569,7 @@ test.describe("the per-account login bucket (F-222n — the rotating-header boun
       .post(`${ORIGIN}/api/auth/login`, {
         headers: { "x-forwarded-for": "198.51.100.250" },
         data: {
-          email: "acct-bucket-probe@example.com",
+          email: probeEmail,
           password: "wrong-password-probe",
         },
       })
@@ -584,13 +590,18 @@ test.describe("the per-account verify/resend buckets (F-225c — the F-222n mirr
   const ORIGIN = `http://localhost:${e2ePort()}`;
 
   test("61 rotating-XFF verify probes on one email: the IP buckets never fire, the account bucket caps the 61st", async ({ request }) => {
-    // A no-pending account (signed up, never verified): every probe
-    // answers the F-224b first-rung reply — no ladder progression,
-    // no lockout interference with the bucket's assertions.
+    // Session-253 (R-50, F-253a): an email with NO account at all —
+    // every probe answers the timing-equalized miss arm's first-rung
+    // 400 (the F-224b form), and the per-account bucket keys on the
+    // caller-supplied email exactly as it would for a live one (the
+    // F-226h exhaustion demo). The pre-round form signed a scratch
+    // account up here and ignored the response — in battery order the
+    // shared signup bucket denied it (no account; the miss arm) but
+    // in isolation it succeeded, the minted code's wrong-code ladder
+    // answered locked 429s from the fifth probe, and the leg failed:
+    // the premise was order-dependent. No signup, no ladder, no
+    // dependence on which specs ran first.
     const email = `verify-acct-${Date.now()}@example.com`;
-    await request.post(`${ORIGIN}/api/auth/signup`, {
-      data: { email, password: "TestPass123" },
-    });
     const codes: string[] = [];
     for (let i = 0; i < 61; i++) {
       const res = await request.post(`${ORIGIN}/api/auth/verify`, {
@@ -615,10 +626,13 @@ test.describe("the per-account verify/resend buckets (F-225c — the F-222n mirr
   });
 
   test("11 rotating-XFF resends on one email: the IP buckets never fire, the account bucket caps the 11th", async ({ request }) => {
+    // Session-253 (R-50, F-253a): an email with NO account — the
+    // resend miss arm answers the identical non-leaking 200 (the
+    // null third key riding the F-252b always-present form) that the
+    // known arm answers, so the bucket contract holds on either
+    // premise; the signup the leg used to fire here was a silent
+    // shared-bucket burn whose denial the assertions never noticed.
     const email = `resend-acct-${Date.now()}@example.com`;
-    await request.post(`${ORIGIN}/api/auth/signup`, {
-      data: { email, password: "TestPass123" },
-    });
     const statuses: number[] = [];
     for (let i = 0; i < 11; i++) {
       const res = await request.post(`${ORIGIN}/api/auth/resend`, {
@@ -627,8 +641,8 @@ test.describe("the per-account verify/resend buckets (F-225c — the F-222n mirr
       });
       statuses.push(res.status());
     }
-    // Attempts 1..10 pass the per-IP caps (200 + a fresh in-app code);
-    // the 11th trips the per-account 429.
+    // Attempts 1..10 pass the per-IP caps (the miss arm's
+    // non-leaking 200); the 11th trips the per-account 429.
     expect(statuses.filter((s) => s === 200)).toHaveLength(10);
     expect(statuses[10]).toBe(429);
   });
@@ -750,10 +764,12 @@ test.describe("the per-casing route metadata (F-226b)", () => {
 // chart. This leg drives the REAL zero-income state on the demo session:
 // a from/to range BEFORE the seeded corpus's first row (the seed never
 // writes the past beyond six months) empties the range domain the gate
-// reads. No scratch signup — the battery's signup budget sits exactly at
-// its documented 10/15min cap (the F-223k login-budget lesson applies to
-// signups; the two ORIGIN-template signups in this file + auth.spec's
-// five + multi-user's + data-import's = 10).
+// reads. No scratch signup — the shared signup budget sits exactly at
+// auth.spec's EIGHT no-XFF burns (three UI form submits + five API
+// posts; session-253, R-50, F-253b — the corrected census): the
+// data-import and multi-user scratch signups ride dedicated XFF keys
+// and the bucket legs below ride unknown emails with no signup of
+// their own (the F-223k login-budget lesson applies to signups).
 test.describe("the Analytics Income tab empty state (F-229a)", () => {
   test("a zero-income range shows the empty state, not a flat chart", async ({ page }) => {
     await page.goto("/Analytics");

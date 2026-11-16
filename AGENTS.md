@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1704) | `bun run test` |
+| Unit tests (1712) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 152) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -448,15 +448,24 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   distribution description that parsed as a from-scale utility;
   the same discipline binds cure comments (describe the behavior
   in words, never coin a hyphenated form while explaining it).
-- **The e2e battery's SIGNUP budget sits exactly at its cap — count
-  the suite's signups before adding a leg** (session 229, F-229a's
-  leg design): the signup bucket is 10/IP/15min and the battery
-  already spends all ten (the two ORIGIN-template signups in
-  wealthos.spec + auth.spec's five + multi-user's + data-import's +
-  the verify-bucket leg's). An eleventh signup 429s — the F-223k
-  login-budget lesson's signup edition. When a leg needs an
-  empty-data state, prefer a from/to range outside the corpus on the
-  DEMO session over a fresh scratch account.
+- **The e2e battery's SIGNUP budget — count the suite's signups
+  before adding a leg** (session 229, F-229a's leg design; the
+  census corrected session 253, R-50, F-253b): the signup bucket is
+  10/IP/15min and the battery's shared no-XFF burns are auth.spec's
+  EIGHT alone (three UI form submits + five API posts — the route
+  burns BEFORE the parse, so invalid probes count too);
+  data-import's and multi-user's scratch signups ride dedicated
+  single-value XFF keys (the reset-password doctrine), and the
+  wealthos bucket legs ride unknown timestamped emails with no
+  signup of their own (F-253a — a leg whose setup signup's denial it
+  ignores is order-dependent: it passes when the battery's earlier
+  specs exhaust the bucket and fails in isolation when the signup
+  succeeds). A leg that needs a REAL account rides its own dedicated
+  XFF key; a leg that needs no account rides an unknown email —
+  never an ignored signup. When a leg needs an empty-data state,
+  prefer a from/to range outside the corpus on the DEMO session over
+  a fresh scratch account. The F-223k login-budget lesson's signup
+  edition.
 - **A render-time id mint cannot read a ref — react-hooks/refs
   rejects ref access during render** (session 230, F-230e): the
   ai-coach greeting seeds state during render (the sanctioned

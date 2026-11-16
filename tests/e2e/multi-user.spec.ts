@@ -23,10 +23,15 @@ test("a second user's data is invisible to the demo user and survives their rese
   request,
   playwright,
 }) => {
-  // -- B comes to be: signup (in-app OTP by default) → verify → session
+  // -- B comes to be: signup (in-app OTP by default) → verify → session.
+  // Session-253 (R-50, F-253b): the signup rides its own dedicated
+  // single-value XFF key (the reset-password doctrine) — the shared
+  // no-XFF signup bucket stays auth.spec's alone, and this leg can
+  // never be flipped by an alphabetically-earlier signup burn.
   const bEmail = `e2e-multiuser-${Date.now()}@example.com`;
   const anon = await playwright.request.newContext({ baseURL: BASE });
   const bSignup = await anon.post("/api/auth/signup", {
+    headers: { "x-forwarded-for": "198.51.100.48" },
     data: { email: bEmail, password: "TestPass123" },
   });
   expect(bSignup.ok()).toBeTruthy();

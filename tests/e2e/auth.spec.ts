@@ -376,10 +376,11 @@ test("the signup 4xx negatives: the duplicate surfaces in the card + the API qua
   // cross-site form family) — the bounded reader rejects it
   // by-policy BEFORE the schema ever runs, answering the parse seam's
   // own invalid-body 400. The probe rides its OWN rate-limit bucket
-  // (the dedicated XFF hop, the s163 reset-round-trip doctrine — the
-  // login route buckets before it parses, so a rejected probe still
-  // spends the shared localhost budget otherwise); no session cookie
-  // is minted either way.
+  // (the dedicated XFF hop, the s163 reset-round-trip doctrine —
+  // belt-and-suspenders since the F-245a cure: the content-type gate
+  // now sits ABOVE the rate-limit burn, so a text/plain volley dies
+  // at the gate un-bucketed and never touches the shared localhost
+  // budget); no session cookie is minted either way.
   const csrfShape = await page.request.post("/api/auth/login", {
     headers: { "content-type": "text/plain", "x-forwarded-for": "198.51.100.165" },
     data: JSON.stringify({ email: "sepnetflix2023@outlook.com", password: "$Abcd1234" }),
@@ -395,9 +396,15 @@ test("the signup 4xx negatives: the duplicate surfaces in the card + the API qua
 // identical), and the resend re-arms server-side. Pre-cure the client
 // rendered the 403 as a banner dead-end: the verify view (the ONLY
 // surface with the Resend link) was reachable solely via signup
-// success. NOTE the signup budget: this leg is the battery's 10th and
-// FINAL signup-IP POST (the route's own cap) — any future signup-adding
-// leg must consolidate.
+// success. NOTE the signup budget (session-253, R-50, F-253b — the
+// corrected census): this leg's signup is this file's EIGHTH no-XFF
+// signup burn (three UI form submits + five API posts — the route
+// burns the bucket BEFORE the parse, so the invalid probes count
+// too). data-import's and multi-user's scratch signups ride
+// dedicated XFF keys and the wealthos bucket legs ride unknown
+// emails, so this file's eight are the battery's only shared-bucket
+// burns — two spare under the ten cap. Any future signup-adding leg
+// must consolidate or ride its own key.
 test("the signin 403 lands the verify view and the Resend re-arms (F-218a)", async ({ page }) => {
   const email = `e2e-recovery-${Date.now()}@example.com`;
   // A hash-present account (an unverified signup) via the API. The
