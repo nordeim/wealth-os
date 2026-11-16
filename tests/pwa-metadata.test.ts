@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 // the create dialogs. Every pin below is DOM/HTTP-verified against the
 // live reference (2026-10-01 audit):
 //   - the reference serves /manifest.json + <link rel=manifest>: name +
-//     short_name "WealthOS", the same 405-char description, TWO icon
+//     short_name "WealthOS", the same 314-char description, TWO icon
 //     entries (192x192 + 512x512, the SAME src — their platform
 //     screenshot; self-hosted expression: our /icon.png), start_url +
 //     scope at the origin, display "standalone", theme_color "#000000",
@@ -24,7 +24,7 @@ import { describe, expect, it } from "vitest";
 //     apple-touch-icon link (sizes 180x180);
 //   - PER-ROUTE OG/Twitter on every reference inner page: og:title =
 //     "<Page> | WealthOS", og:url = origin+route, og:description =
-//     "<Page> on WealthOS. " + the 405-char paragraph; twitter:title/url/
+//     "<Page> on WealthOS. " + the 314-char paragraph; twitter:title/url/
 //     description likewise (verified on all 8 inner routes + root +
 //     login); the canonical link is per-route too;
 //   - the reference's New Contact Phone input is type=tel (its Lead

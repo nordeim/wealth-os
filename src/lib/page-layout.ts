@@ -43,7 +43,9 @@ export const NAV_LAYOUT = {
   // (R-20, F-223f): the DESKTOP pairing is unconditional — the sidebar
   // gradient is near-black in BOTH themes, so the mobile twin's light
   // arm (green-700, correct on the topbar's light wash) computed
-  // 3.49:1 here in light mode; green-400/green-600 compute 10.04:1.
+  // 3.49:1 here in light mode; green-400 computes 10.04:1 on the
+  // gradient; the green-600 border computes 5.31:1 (session 262 trued
+  // the pairing — one figure never served both tokens).
   // The mobile pill keeps its light/dark arms (MOBILE_HEADER below).
   syncedPill:
     "inline-flex items-center gap-1 rounded-md border px-2.5 py-0.5 text-xs font-semibold text-green-400 border-green-600",
@@ -326,7 +328,9 @@ export const DIALOG_CLOSE =
   // (session 258, F-258a: the figure trued to the computed value —
   // the old citation exceeded stone-500's ceiling on even pure white).
   // Session-222 (R-19, F-222h): the dark arms — the hover pair stepped
-  // DOWN to 2.47:1 in dark (stone-600 on the flipped surface); the 400
+  // DOWN to 2.59:1 in dark (stone-600 on the flipped surface; session
+  // 262 trued the figure — the retired citation paired the glyph with
+  // the page wash); the 400
   // resting / 300 hover mirror keeps the affordance rising in both modes.
   // Session-235 (R-32, F-235f): the hit area — the button's box was the
   // bare 16px glyph; the padding lifts the touch target toward the 24px

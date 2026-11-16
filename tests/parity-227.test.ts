@@ -150,9 +150,14 @@ describe("F-227f — the latent destructive variants cite their measured contras
   });
 
   it("Badge's destructive variant carries the citation", () => {
+    // Session-262 (R-59, F-262d): the figure trued to this pair's own
+    // computed value — the retired citation carried the white pair's
+    // figure (3.76:1) against the neutral-50 ink this variant renders
+    // (neutral-50 on danger computes 3.61:1; the white family's figure
+    // stays cited at its own carriers).
     const src = read("src/components/ui/badge.tsx");
     expect(src).toMatch(/destructive: "border-transparent bg-danger text-neutral-50/);
-    expect(src).toMatch(/3\.7[0-9]:1|3\.76:1/);
+    expect(src).toMatch(/3\.61:1/);
   });
 });
 

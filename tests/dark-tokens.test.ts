@@ -103,7 +103,9 @@ describe("R-14: the explicit-light tails ride the flips (F-217c)", () => {
 // box-shadow is near-black (#1c1917) on dark inputs, an invisible focus
 // indicator, the exact F-217c token class on the ring token — and
 // (l) --color-muted unflipped (the disabled-input text rides muted; a
-// future consumer would compute 2.9:1 on dark surfaces). Session-228
+// future consumer would compute under the 4.5:1 text bar on dark
+// surfaces — 4.13:1 on the flipped surface token; session 262 trued
+// the figure). Session-228
 // (R-25, F-228b): --color-subtle RETIRED with the token (zero consumers
 // repo-wide) — its flip assertion went with it.
 describe("R-15: the ring + muted flips complete the set (F-218i/l)", () => {

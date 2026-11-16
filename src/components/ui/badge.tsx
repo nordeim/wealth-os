@@ -36,10 +36,11 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
     secondary: "border-transparent bg-neutral-100 text-neutral-900 hover:bg-neutral-100/80 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-800/80",
     // Session-227 (R-24, F-227f — the F-225l/F-226m register): LATENT
     // sub-AA arm — zero consumers today. Measured: text-neutral-50 on
-    // --color-danger #ef4444 = 3.76:1 at badge text sizes (the F-218j
-    // measurement family) — below the 4.5:1 AA bar. A live consumer
-    // should pin an ink pair or darken the fill, never inherit this
-    // silently.
+    // --color-danger #ef4444 = 3.61:1 at badge text sizes (the F-218j
+    // measurement family's darker pairing; session 262 trued the
+    // figure to this pair's own value) — below the 4.5:1 AA bar. A
+    // live consumer should pin an ink pair or darken the fill, never
+    // inherit this silently.
     destructive: "border-transparent bg-danger text-neutral-50 shadow hover:bg-danger/80",
     // Session-236 (R-33, F-236j — the F-229f register): the outline arm is
     // vendored shadcn stock — zero consumers today.

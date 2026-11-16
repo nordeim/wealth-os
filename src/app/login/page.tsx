@@ -12,7 +12,7 @@ import { pageMetadata } from "@/lib/site";
 // rides the root layout's "%s | <app>" template and SSRs the DOUBLED
 // "<app> | <app>" (curl-verified; same bug class as the s12 404).
 // Session-19 (S19-P4/P5): the reference ships the UNPREFIXED metadata
-// family on /login too — the plain 405-char description,
+// family on /login too — the plain 314-char description,
 // og:url/twitter:url + canonical at origin/login — built through the
 // pageMetadata() factory (page: null = the unprefixed family; the
 // factory keeps the ABSOLUTE title).

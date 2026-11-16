@@ -4,9 +4,9 @@
 // NEXT_PUBLIC_SITE_URL has been documented in .env.example / README / CLAUDE
 // as "used for metadata, sitemap.xml, and robots.txt" since the scaffold —
 // but before session-18 it was consumed NOWHERE. Every metadata surface
-// (the root layout's metadataBase + OG/Twitter cards, app/sitemap.ts,
-// app/robots.ts) derives from siteUrl() so the documented contract is
-// finally true.
+// (the root layout's metadataBase + OG/Twitter cards, the sitemap.xml /
+// robots.txt / manifest.json route handlers) derives from siteUrl() so the
+// documented contract is finally true.
 //
 // Session-19 extended the seam with the per-route metadata factory: the
 // reference ships PER-ROUTE canonical/OG/Twitter on every inner page
@@ -22,7 +22,7 @@ import type { Metadata } from "next";
 
 export const DEFAULT_SITE_URL = "http://localhost:3000";
 
-/** The reference's meta description, mirrored verbatim (405 chars). */
+/** The reference's meta description, mirrored verbatim (314 chars). */
 export const SITE_DESCRIPTION =
   "WealthOS is a premium finance suite that brings your whole financial life into one polished dashboard. Track income and expenses, manage bank accounts, follow your investments, and set savings goals — with budgeting insights, AI-powered coaching, and rich analytics that turn raw transactions into clear decisions.";
 
@@ -42,7 +42,7 @@ export function siteUrl(
 /**
  * Session-19: the per-route OG description prefix — every
  * inner page's og/twitter description is
- * `"<Page> on WealthOS. " + <the 405-char root paragraph>`
+ * `"<Page> on WealthOS. " + <the 314-char root paragraph>`
  * (live-verified on the reference's inner pages; consumed here by the
  * eight section pages + login/signup/reset-password through
  * pageMetadata(); the root and /Dashboard inherit the layout's

@@ -15,7 +15,7 @@ import "./globals.css";
 // default is the v4.0 -apple-system list and NOT byte-identical).
 
 export const metadata: Metadata = {
-  // Session-18: the document metadata layer — the reference's 405-char
+  // Session-18: the document metadata layer — the reference's 314-char
   // description paragraph + the full OG/Twitter card family + the
   // build-time-inlined canonical origin (NEXT_PUBLIC_SITE_URL, consumed
   // through src/lib/site.ts since that session).

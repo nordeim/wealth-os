@@ -106,8 +106,10 @@ export const ACCOUNT_TYPES = [
 
 export const INVESTMENT_TYPES = [
   // Session-218 (R-15, F-218k): `text` is the readable ink for the type
-  // chip — the 500-level `color` renders 2.1–3.7:1 as text-xs on its own
-  // 10% tint; the 600/700-level steps carry 4.5:1+ while the tint keeps
+  // chip — the 500-level `color` renders 1.99–3.50:1 as text-xs on its
+  // own 10% tint (the neutral fallback computes 4.25:1; session 262
+  // trued the span to the per-type computation); the 600/700-level
+  // steps carry 4.5:1+ while the tint keeps
   // the type's hue.
   // Session-223 (R-20, F-223g): `textDark` is the dark-surface ink —
   // the 10% tint over a dark card is near-black, where the 600/700

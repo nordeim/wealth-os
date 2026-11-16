@@ -133,7 +133,8 @@ export function KpiCard({
  * Session-226 (R-23, F-226m) — the WCAG exemption register (the F-224y
  * pattern): the white-alpha labels on these gradients compute below AA
  * — measured: text-white/70 on emerald-500 ≈ 1.9:1, text-white/60 ≈
- * 1.6:1, the emerald-100 stat-card label ≈ 2.24:1. The genus is the
+ * 1.7:1, the emerald-100 stat-card label ≈ 2.24:1 (session 262 trued
+ * the white/60 figure to its computed value). The genus is the
  * reference's own (F-208a, live-extracted); the a11y two-gate
  * sanctions the arms; the register entry keeps a future contrast
  * sweep from "discovering" them. The large font-black values ride the

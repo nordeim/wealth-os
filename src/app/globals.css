@@ -10,8 +10,10 @@
    production stylesheet. The negative @source directives remove the
    prose carriers; every used utility lives under src/ (or public/)
    and is untouched by construction. (The F-220 lesson holds here
-   too: this comment names no class-shaped strings — the extractor
-   scans stylesheets as well.) */
+   too: this comment names no class-shaped strings — a convention,
+   not a necessity: automatic detection does not scan stylesheets in
+   the current toolchain, but the discipline costs nothing and guards
+   the next toolchain.) */
 @source not "../../skills";
 @source not "../../tests";
 @source not "../../docs";
@@ -388,8 +390,11 @@
   /* Session-218 (R-15, F-218l): the last unflipped app-native token —
      muted rides the disabled-input text (SC 1.4.3 exempts disabled
      controls, but the flip closes the latent F-217c class: any future
-     text-muted consumer on a dark surface would compute 2.9:1). Its
-     sibling subtle retired session 228 (F-228b — zero consumers). */
+     text-muted consumer on a dark surface would compute under the
+     4.5:1 text bar — 4.13:1 on the dark surface token, 3.91:1 on the
+     dark page wash; session 262 trued the span — the retired figure
+     reproduced on no dark surface). Its sibling subtle retired
+     session 228 (F-228b — zero consumers). */
   --color-muted: #a8a29e;
   /* Session-224 (R-21, F-224q): the reserved danger-soft flips too —
      the DropdownItem destructive hover paints the danger-soft token
