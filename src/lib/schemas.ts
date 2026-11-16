@@ -58,10 +58,14 @@ export const loginSchema = z
   });
 
 export const signupSchema = z.object({
+  // Session-259 (R-56, F-259a): the cap joins the F-252j messaged
+  // family — a bare bound surfaces Zod's default English through the
+  // first issue's message in the BAD_REQUEST envelope, not the house
+  // vocabulary.
   name: z
     .string({ message: "Invalid name" })
     .trim()
-    .max(80)
+    .max(80, "Name must be reasonably sized")
     .transform((v) => (v === "" ? undefined : v))
     .optional(),
   email: emailFormat,
@@ -218,10 +222,12 @@ export const transactionCreateSchema = z.object({
     .optional(),
   recurring: z.boolean().default(false),
   nextDate: clearableDateField("Enter a valid next date"),
+  // Session-259 (R-56, F-259a): the account-link cap joins the
+  // messaged family (the F-252j genus's uncured tail).
   accountId: z
     .string()
     .trim()
-    .max(64)
+    .max(64, "Account reference must be reasonably sized")
     .transform((v) => (v === "" ? undefined : v))
     .optional(),
 });
@@ -264,10 +270,12 @@ export const transactionUpdateSchema = updateSchema({
   // `!== undefined` clear arm could never fire and a transaction's
   // account link was permanent once set. Null now SURVIVES the parse;
   // only the empty string normalizes to it.
+  // Session-259 (R-56, F-259a): the update twin's account-link cap
+  // joins the messaged family.
   accountId: z
     .string()
     .trim()
-    .max(64)
+    .max(64, "Account reference must be reasonably sized")
     .nullable()
     .transform((v) => (v === "" ? null : v))
     .optional(),
@@ -504,9 +512,10 @@ export const goalCreateSchema = z.object({
   status: enumField(["active", "completed", "paused"], "Invalid status").default("active"),
   // Session-236 (R-33, F-236c): icon joins the uniform clear contract
   // (null and "" both mean THE CLEAR, on both twins).
+  // Session-259 (R-56, F-259a): the icon cap joins the messaged family.
   icon: z.preprocess(
     (v) => (typeof v === "string" && v.trim() === "" ? null : v),
-    z.string().trim().max(40).nullable().optional(),
+    z.string().trim().max(40, "Icon must be reasonably sized").nullable().optional(),
   ),
 });
 
@@ -525,9 +534,11 @@ export const goalUpdateSchema = updateSchema({
     "Invalid goal category",
   ).optional(),
   status: enumField(["active", "completed", "paused"], "Invalid status").optional(),
+  // Session-259 (R-56, F-259a): the update twin's icon cap joins the
+  // messaged family.
   icon: z.preprocess(
     (v) => (typeof v === "string" && v.trim() === "" ? null : v),
-    z.string().trim().max(40).nullable().optional(),
+    z.string().trim().max(40, "Icon must be reasonably sized").nullable().optional(),
   ),
 });
 
@@ -622,7 +633,11 @@ export const aiCoachSchema = z.object({
         content: z.string().max(4000, "Message must be reasonably sized"),
       }),
     )
-    .max(30)
+    // Session-259 (R-56, F-259a): the ARRAY cap joins the messaged
+    // family — the per-entry content cap already carried the house
+    // copy (the F-252j trio); the array-level bound was the genus's
+    // uncured sibling.
+    .max(30, "History must be reasonably sized")
     .default([]),
 });
 

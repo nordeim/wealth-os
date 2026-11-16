@@ -169,7 +169,11 @@ function ToastCard({ item }: { item: ToastItem }) {
         // stock interactive-hover ink #171717). The reference's toast
         // surface is DOM-DEAD (F-131c1 — no live face to parity), so the
         // fix rides OUR superset by the trio precedent + internal
-        // consistency: the LAST live hover:text-foreground ride in src/.
+        // consistency: the last rendered consumer of the hover foreground
+        // ink. Session-259 (R-56, F-259d): the tabs underline variant
+        // carries the same utility in source — uncalled, zero call sites
+        // — so the claim is rendered liveness, never source-wide
+        // lastness.
         // Session-217 (R-14, F-217c): the panel rides bg-surface (the
         // token flips dark — bg-white would strand light text on white)
         // and the hover pair gains its dark arm (neutral-900 on the

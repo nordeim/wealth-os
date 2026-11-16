@@ -92,6 +92,48 @@ export function toDate(value: Date | string): Date {
   return new Date(value);
 }
 
+/**
+ * The EXCLUSIVE end (epoch ms) of `date`'s local calendar day: the
+ * next local midnight.
+ *
+ * Session-259 (R-56, F-259b): the fixed millisecond pad the analytics
+ * range seam once used (23h 59m 59s) assumes 24-hour days — on a 23h
+ * DST spring-forward day the next calendar midnight sits INSIDE the
+ * pad, so a row dated the day after the user's chosen end passed the
+ * filter (verified by code on America/New_York, Europe/Berlin, and
+ * Australia/Sydney 2026 spring-forward days; the UTC sandbox is why
+ * every gate was blind — the F-218d family's millisecond edition).
+ * The Date constructor's calendar arithmetic is the honest form:
+ * new Date(y, m, day + 1) lands on the true next midnight in every
+ * zone, including month and year rollovers.
+ */
+export function endOfDayExclusive(date: Date): number {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() + 1,
+  ).getTime();
+}
+
+/**
+ * The calendar-day difference from `from`'s local calendar date to
+ * `to`'s (negative when `to` is earlier).
+ *
+ * Session-259 (R-56, F-259c): the Upcoming list's day count once
+ * divided a millisecond span by a fixed 24h — across a 25h fall-back
+ * day with the reference instant in the first hour after midnight,
+ * the ceil read one day late (verified by code; the UTC-parts
+ * difference below is DST-free by construction, and behavior-
+ * identical to the old form wherever no boundary rides).
+ */
+export function calendarDaysBetween(from: Date, to: Date): number {
+  return Math.round(
+    (Date.UTC(to.getFullYear(), to.getMonth(), to.getDate()) -
+      Date.UTC(from.getFullYear(), from.getMonth(), from.getDate())) /
+      86_400_000,
+  );
+}
+
 export function startOfMonth(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
@@ -423,7 +465,11 @@ export function upcomingAlerts(
     )
     .map((t) => {
       const next = toDate(t.nextDate as Date | string);
-      const days = Math.ceil((next.getTime() - ref.getTime()) / 86_400_000);
+      // Session-259 (R-56, F-259c): the calendar-day difference — the
+      // fixed-24h millisecond division it replaced read one day late
+      // through the fall-back window (ref in the first hour after
+      // midnight); the UTC-parts form is DST-free by construction.
+      const days = calendarDaysBetween(ref, next);
       return {
         // Session-228 (R-25, F-228d): the id rides the seam (the
         // recentActivity pattern) — the dashboard's Upcoming list keys

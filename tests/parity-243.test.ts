@@ -159,15 +159,18 @@ describe("F-243b — the v2.39.0 revision block records the true docs-counts leg
     // Session-258 (R-55) advances it with the v2.55.0 block:
     // v2.53.0/v2.54.0/v2.55.0 (the v2.52.0 pin ages out) — the
     // F-247d same-commit recalibration, the structural leg's ninth
-    // gate-enforced ride.
+    // gate-enforced ride. Session-259 (R-56) advances it with the
+    // v2.56.0 block: v2.54.0/v2.55.0/v2.56.0 (the v2.53.0 pin ages
+    // out) — the F-247d same-commit recalibration, the structural
+    // leg's tenth gate-enforced ride.
     const guardIt = t.slice(
       t.indexOf("the historical revision blocks keep their OWN ship counts"),
     );
-    expect(guardIt).toContain("v2\\.53\\.0");
     expect(guardIt).toContain("v2\\.54\\.0");
     expect(guardIt).toContain("v2\\.55\\.0");
-    expect(guardIt).not.toContain("v2\\.52\\.0");
-    expect(guardIt).toContain("1762 unit \\(110 files");
+    expect(guardIt).toContain("v2\\.56\\.0");
+    expect(guardIt).not.toContain("v2\\.53\\.0");
+    expect(guardIt).toContain("1779 unit \\(111 files");
   });
 });
 

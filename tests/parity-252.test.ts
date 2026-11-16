@@ -187,7 +187,12 @@ describe("F-252i — the docblocks describe the absolute e2e pin", () => {
 
 // ---- F-252j: the un-messaged Zod fields ---------------------------------------------
 
-describe("F-252j — the three bare fields carry the house copy", () => {
+// Session-259 (R-56, F-259a): the F-252j family is now NINE messaged
+// bounds — the trio below (this round's original cure) plus the six
+// uncured siblings the session-259 whole-file census found and
+// messaged (pinned in parity-259, which also carries the file-wide
+// no-bare-bound genus leg). The trio pins keep their ship-time truth.
+describe("F-252j — the round's trio carries the house copy (the genus tail rides parity-259)", () => {
   it("budgetDeleteSchema's category messages both bounds", () => {
     const src = read("src/lib/schemas.ts");
     const start = src.indexOf("export const budgetDeleteSchema");

@@ -38,6 +38,7 @@ import {
   budgetCategorySplit,
   cashFlowSeries,
   categoryTrend,
+  endOfDayExclusive,
   expenseBreakdown,
   formatAxisMoney,
   formatMoney,
@@ -110,7 +111,14 @@ export default function AnalyticsPage() {
     () =>
       txs.filter((t) => {
         const d = toDate(t.date).getTime();
-        return d >= toDate(from).getTime() && d <= toDate(to).getTime() + 86_399_000;
+        // Session-259 (R-56, F-259b): the end bound is the next LOCAL
+        // midnight (the finance.ts helper) — the fixed 23h59m59s pad it
+        // replaced assumed 24-hour days, so on a 23h DST spring-forward
+        // end day the day-after rows leaked into the range (verified by
+        // code on three zones; the UTC sandbox is why every gate was
+        // blind — the F-218d family's millisecond edition). The same-day
+        // rows stay included; the bound is exclusive at the midnight.
+        return d >= toDate(from).getTime() && d < endOfDayExclusive(toDate(to));
       }),
     [txs, from, to],
   );
