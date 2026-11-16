@@ -42,7 +42,11 @@ import { existsSync, mkdirSync, readFileSync } from "fs";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 
-export const DEFAULT_DATABASE_URL = "file:../db/custom.db";
+// Session-261 (R-58, F-261d): module-local — the export keyword
+// retired (the vestigial-export genus; the only consumer is this
+// file's own fallback arm below; the db-path tests import the four
+// seam functions, not the constant).
+const DEFAULT_DATABASE_URL = "file:../db/custom.db";
 
 function repoRootFromModule(): string | null {
   try {

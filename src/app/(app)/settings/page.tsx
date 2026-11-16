@@ -454,7 +454,9 @@ function NotificationRow({
           // Session-221 (R-18, F-221n): the unchecked track darkens one
           // step AND gains a visible border — the old stone-300 track on
           // the white/80 card measured 1.49:1 (the white thumb vs it
-          // 1.63:1); the stone-500 border computes 4.75:1 for the state
+          // 1.49:1 — the figure trued in R-58, F-261c: the white thumb
+          // against the stone-300 track computes 1.49:1 by code); the
+          // stone-500 border computes 4.75:1 for the state
           // boundary (session 258, F-258a: the figure trued to the
           // computed value on this card's white/80-over-wash surface)
           // while the checked emerald arm is untouched.

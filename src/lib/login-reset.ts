@@ -95,7 +95,9 @@ export const LOGIN_RESET_LAYOUT = {
   inputIcon: "absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400",
   /** The back button's ArrowLeft icon size. */
   backIcon: "h-4 w-4",
-  /** Both views' h2 — one step below the login h1 (text-xl vs text-2xl). */
+  /** Both views' h1 — the heading-focus title (the shared titleRef,
+   *  one h1 per view, the R-28/F-231b construction); the size one
+   *  step below the login view's own h1 (text-xl vs text-2xl). */
   title: "text-xl sm:text-2xl font-bold text-slate-900",
   /** Both views' description / email line. */
   description: "text-slate-600 text-sm sm:text-base",
@@ -166,7 +168,7 @@ export const LOGIN_SIGNUP_LAYOUT = {
   back: "flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md",
   /** The back button's ArrowLeft icon size (the s11 pin). */
   backIcon: "h-4 w-4",
-  /** The view's h2 — the s11 title family. */
+  /** The view's h1 — the s11 title family (the heading-focus title). */
   title: "text-xl sm:text-2xl font-bold text-slate-900",
   /** The form — one step tighter than the signin form. */
   form: "space-y-3 sm:space-y-4",
@@ -231,7 +233,7 @@ export const LOGIN_VERIFY_LAYOUT = {
   icon: "h-7 w-7 sm:h-8 sm:w-8 text-slate-700",
   /** The title + email line stack inside the heading. */
   titleStack: "space-y-2",
-  /** The view's h2. */
+  /** The view's h1 (the heading-focus construction, same as every view). */
   title: "text-xl sm:text-2xl font-bold text-slate-900",
   /** The "We've sent a 6-digit code to" paragraph. */
   emailLine: "text-slate-600 text-sm sm:text-base",

@@ -73,9 +73,10 @@ describe("login reset flow — reference class vocabulary", () => {
   });
 
   it("the reset title + description match the reference (smaller than the login h1)", () => {
-    // DOM: <h2 class="text-xl sm:text-2xl font-bold text-slate-900">
-    //   Reset your password</h2> — one step below the login card's
-    // text-2xl sm:text-3xl title.
+    // DOM: <h1 class="text-xl sm:text-2xl font-bold text-slate-900">
+    //   Reset your password</h1> — one size step below the login card's
+    // text-2xl sm:text-3xl title (both are h1, the heading-focus
+    // construction — one h1 per view).
     expect(LOGIN_RESET_LAYOUT.title).toBe("text-xl sm:text-2xl font-bold text-slate-900");
     expect(LOGIN_RESET_LAYOUT.description).toBe("text-slate-600 text-sm sm:text-base");
   });

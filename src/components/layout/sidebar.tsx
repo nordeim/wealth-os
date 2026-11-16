@@ -44,7 +44,10 @@ export function Sidebar({ user }: { user: User }) {
 // Session-232 (R-29, F-232h): the never-passed collapse arm retired
 // — the single call site always rendered the wordmark (the F-229f
 // genus, prop edition); the wordmark is unconditional.
-export function BrandMark() {
+// Session-261 (R-58, F-261d): the export keyword retired — the only
+// call site is this file's aside (the vestigial-export genus, the
+// resolveTheme / readStoredTheme / ExpenseDialog family).
+function BrandMark() {
   return (
     <div className={NAV_LAYOUT.brand}>
       <div className="flex items-center gap-3">

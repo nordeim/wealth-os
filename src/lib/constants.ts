@@ -199,5 +199,9 @@ export const AI_SUGGESTED_QUESTIONS = [
 // the documented decorative parity control, F-228m). Reintroduce WITH a
 // consumer (e.g. the F-228m default-currency wiring).
 
-export const APP_NAME = "WealthOS";
-export const APP_TAGLINE = "Premium Finance Suite";
+// Session-261 (R-58, F-261b): the brand pair retired — the same
+// never-consumed genus (the whole-file census found exactly these two
+// members without an external consumer). The literals live on at their
+// three render sites (the sidebar BrandMark wordmark + tagline,
+// the mobile header wordmark, the footer copyright). Reintroduce WITH a
+// consumer if the brand strings ever need single-sourcing.

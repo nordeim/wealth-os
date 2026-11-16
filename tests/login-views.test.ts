@@ -32,7 +32,7 @@ const verification = async () => import("@/lib/verification");
 //   - the reference's "Need an account? Sign up" is an onclick BUTTON that
 //     swaps the login card IN PLACE (URL stays /login) — the s10 pin's
 //     "dead login button" claim is disproven. The view: "Back to sign in"
-//     (ArrowLeft + slate-500, -mb-2 under a space-y-4 stack) → h2 "Create
+//     (ArrowLeft + slate-500, -mb-2 under a space-y-4 stack) → h1 "Create
 //     your account" → a MINIMAL form (Email / Password / Confirm Password
 //     — NO Name field, NO Google button, NO divider, NO logo) → the
 //     one-size-down stock submit "Create account". Mismatch → "Passwords
@@ -197,7 +197,7 @@ describe("session-21: the signup view vocabulary (S21-P4)", () => {
     expect(L.viewStack).toBe("space-y-4");
   });
 
-  it("the h2 reuses the s11 title vocabulary", async () => {
+  it("the h1 reuses the s11 title vocabulary", async () => {
     const L = await signupLayout();
     expect(L.title).toBe("text-xl sm:text-2xl font-bold text-slate-900");
   });
