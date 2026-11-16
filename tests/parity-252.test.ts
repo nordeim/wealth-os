@@ -135,7 +135,11 @@ describe("F-252f — the uncalled focus surfaces gain the offset token", () => {
 
   it("the badge's focus frame pairs the offset with its token", () => {
     const src = read("src/components/ui/badge.tsx");
-    expect(src).toContain("focus:ring-offset-2 focus:ring-offset-background");
+    // Session-257 (R-54, F-257q): the five focus arms carry the house
+    // focus visible form — the offset token pair rides it unchanged.
+    expect(src).toContain(
+      "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+    );
   });
 });
 

@@ -74,8 +74,14 @@ describe("R-14: the explicit-light tails ride the flips (F-217c)", () => {
     expect(TOAST).toMatch(/bg-surface/);
   });
 
-  it("the toast description gains a dark arm (stone-500 on #0a0a0a is 2.4:1)", () => {
-    expect(TOAST).toMatch(/dark:text-stone-400/);
+  it("the toast description's dark contrast rides the muted token flip (the F-257o dead arm retired)", () => {
+    // F-217c added the stone-400 dark arm when the unflipped muted
+    // token computed stone-500-on-#0a0a0a 2.4:1; F-218l flipped
+    // --color-muted itself to the value the arm carried — the arm went
+    // byte-equal dead and retired at session-257 (F-257o). The flip is
+    // the seam: the description rides text-muted alone.
+    expect(CSS).toMatch(/--color-muted: #a8a29e/);
+    expect(TOAST).not.toMatch(/dark:text-stone-400/);
   });
 
   it("the toast dismiss hover gains a dark arm (neutral-900 on #262626 hover is dark-on-dark)", () => {

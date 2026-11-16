@@ -22,7 +22,7 @@ import type { User } from "@/types";
  * The desktop sidebar — the reference's construction (live-extracted
  * class strings ride NAV_LAYOUT): the amber-bordered brand block, the
  * gradient nav with the amber→emerald active chip, and the footer's
- * ✓ Synced pill + user row. The user row opens the dropdown whose two
+ * wifi Synced pill + user row. The user row opens the dropdown whose two
  * items are the reference's own: Dark Mode and Sign Out.
  */
 export function Sidebar({ user }: { user: User }) {

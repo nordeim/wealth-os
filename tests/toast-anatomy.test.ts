@@ -115,8 +115,10 @@ describe("session-131 parity pins (the toast family walk — F-131c1: the refere
   it("the title/description classes (the walk-censused 14px/500 title + the 12px muted description)", () => {
     // Session-217 (R-14, F-217c): the description gained its dark arm
     // (stone-500 on the #0a0a0a dark panel computed 2.4:1).
+    // Session-257 (R-54, F-257o): the arm retired — F-218l's muted
+    // token flip carries the same value in dark; text-muted alone.
     expect(src).toContain('"text-sm font-medium text-foreground"');
-    expect(src).toContain('"mt-0.5 text-xs text-muted dark:text-stone-400"');
+    expect(src).toContain('"mt-0.5 text-xs text-muted"');
   });
 
   it("the icon family (h-4.5 w-4.5 + the three token rides — live-censused 18px rgb(16,185,129) success)", () => {

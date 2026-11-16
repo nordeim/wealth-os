@@ -374,7 +374,10 @@ export const SELECT_TRIGGER = {
 export const BUTTON_BASE = {
   focusRing: "focus-visible:ring-2 focus-visible:ring-ring",
   svgSize: "[&_svg]:size-4",
-  rounded: "rounded-md",
+  // Session-257 (R-54, F-257p): the radius member retired — zero
+  // consumers since birth (the Button cva base hardcodes the six-pixel
+  // radius with its own Session-13 provenance); the F-229f re-entry
+  // rule retires an unwired constant instead of leaving it to diverge.
 } as const;
 
 // Session-226 (R-23, F-226l): the token family — border-line bg-surface.

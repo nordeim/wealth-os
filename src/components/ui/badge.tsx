@@ -50,9 +50,15 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
       className={cn(
         // Session-252 (R-49, F-252f): the offset token joins the focus
         // frame — the stock form painted the white default halo on any
-        // consumer that renders in the dark theme (the F-251g genus;
-        // zero consumers today, cured before the first one ships it).
-        "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
+        // consumer that renders in the dark theme (the F-251g genus).
+        // Session-257 (R-54, F-257q): the settings page's trust badges
+        // are LIVE consumers (rendered since the settings glass round,
+        // well before the F-252f note — its zero consumers line was
+        // false at birth); the focus arms stay latent only because the
+        // rendered badges are plain divs without a tabindex, and they
+        // now carry the house focus visible form (the F-222g family)
+        // so the first focusable consumer inherits the right ring.
+        "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         variants[variant],
         className,
       )}
