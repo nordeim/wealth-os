@@ -36,8 +36,9 @@ import { TABS_SEGMENTED } from "@/lib/page-layout";
 // (selection follows focus). This component now wires the same contract:
 // `useId()` generates the trigger/panel id pair, the component renders
 // the reference's wrapper anatomy (`<div class=…>[tablist, panels…]` —
-// the wrapper className is page-specific: space-y-6 on settings/reports,
-// bare on activities where it nests inside the toolbar), and `TabsPanel`
+// the wrapper className is page-specific: both live consumers ride
+// bare — the Expenses filter and the Analytics section tabs — with
+// the per-page spacing riding the panels), and `TabsPanel`
 // renders the wired shells as the wrapper's children. Our roving tabindex
 // (selected tab = 0) remains the documented superset over the reference's
 // all-=-1 platform defect.
@@ -46,8 +47,9 @@ interface TabsProps {
   tabs: ReadonlyArray<{ id: string; label: string; count?: number }>;
   value: string;
   onValueChange: (value: string) => void;
-  /** The wrapper div's classes — the reference's per-page Tabs region
-   * (space-y-6 on settings/reports; bare on activities). */
+  /** The wrapper div's classes — both live consumers ride bare (the
+   * Expenses filter, the Analytics section tabs); the per-page spacing
+   * rides the panels. */
   className?: string;
   variant?: "underline" | "segmented";
   /** Session-235 (R-32, F-235h): the tablist's accessible name — with
@@ -67,9 +69,9 @@ const TabsContext = React.createContext<{ uid: string; value: string } | null>(n
 
 // The reference's stock Radix TabsContent classes (byte-extracted from the
 // live reference on 2026-10-01): the focus-visible ring family rides every
-// panel shell; the per-page mt-*/space-y-* classes are appended by the
-// pages (mt-4 space-y-2 on activities, mt-2 space-y-4 on settings, mt-2 on
-// reports — the mt-* collapses against the wrapper's space-y margin).
+// panel shell; the per-page classes are appended by the consumers (mt-4
+// space-y-4 on the Analytics panels; the Expenses filter's panels ride
+// bare — the card's own spacing carries the rhythm there).
 // Session-129 (F-129c1) retired the extracted string's ring-offset-background
 // as a byte-parity adjudication in the light theme (the reference's ride
 // computed #ffffff against OUR then-unflipped token). Session-251 (R-48,
@@ -171,11 +173,14 @@ function Tabs({ tabs, value, onValueChange, className, variant = "underline", ar
                 {tab.label}
                 {typeof tab.count === "number" && (
                   // Session-66 (N-66d): the reference's literal count span —
-                  // the activities Overdue tab's red badge
+                  // the reference's own Overdue tab's red badge
                   // (P.overdue.length>0 && <span className="ml-2 px-2 py-0.5
                   // text-xs bg-red-100 text-red-800 rounded-full">). Always the
                   // red tint, active or not; the >0 guard lives at the call
-                  // site exactly like the reference's `>0 &&`.
+                  // site exactly like the reference's `>0 &&`. No live
+                  // consumer passes counts today (session 255 — the F-255e
+                  // reword trued the fourth CRM-era carrier the pin's
+                  // whole-file sweep caught).
                   <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-800 rounded-full dark:bg-red-950 dark:text-red-300">
                     {tab.count}
                   </span>

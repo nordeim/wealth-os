@@ -128,13 +128,15 @@ export function clientKey(req: Request): string {
 
 /** Session-163 (the digma S69-A port): the declared proxy-topology trust
  *  depth. NEO_PROXY_HOPS: unset/empty = 1; unparsable or negative fails
- *  CLOSED onto 1; 0 = direct exposure; N >= 2 = N appending proxies. */
+ *  CLOSED onto 1; 0 = direct exposure; N >= 2 = N appending proxies.
+ *  Session-255 (R-52, F-255a): "unparsable" means anything but a bare
+ *  digit run — a trailing-garbage value ("2x") must ride the default,
+ *  never parse to a deeper attacker-keyable hop. */
 export function proxyHopDepth(): number {
   const raw = process.env.NEO_PROXY_HOPS;
   if (raw === undefined || raw === "") return 1;
-  const parsed = Number.parseInt(raw, 10);
-  if (!Number.isFinite(parsed) || parsed < 0) return 1;
-  return parsed;
+  if (!/^\d+$/.test(raw)) return 1;
+  return Number.parseInt(raw, 10);
 }
 
 // Opportunistic cleanup so the map never grows unbounded. Session-164

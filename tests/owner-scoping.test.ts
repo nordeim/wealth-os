@@ -149,7 +149,13 @@ describe("R-10: the settings family resolves the row BY OWNER", () => {
   // source shape: the unique-constraint catch + the re-read.
   it("readSettings survives the concurrent first-touch race (F-215i)", () => {
     expect(src).toMatch(/P2002|unique constraint/i);
-    expect(src).toMatch(/findUniqueOrThrow/);
+    // Session-255 (R-52, F-255c): the re-read went TOTAL — the soft
+    // finder plus the vanished-row create retry replace the throwing
+    // finder (the lazy-create contract's own form answers the window).
+    expect(src).not.toContain("findUniqueOrThrow");
+    expect(src).toMatch(
+      /findUnique\(\{ where: \{ ownerId \}, select: SETTINGS_SELECT \}\)/,
+    );
   });
 });
 

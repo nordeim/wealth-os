@@ -732,6 +732,7 @@ const globalScope = globalThis as unknown as WealthOsGlobal;
  *  exactly like a zustand hook: `useWealthOs((s) => s.transactions)`.
  *  Pages and dialogs subscribe BARE (`useWealthOs()`) by house idiom —
  *  they read many slices and the app renders one page at a time; the
- *  selector form is for narrow subscribers (the shell's slice reads). */
+ *  selector form is for narrow subscribers (the shell's slice reads,
+ *  the coach dialog's single ask). */
 export const useWealthOs: ReturnType<typeof createStore> =
   (globalScope.__wealthosStore ??= createStore());

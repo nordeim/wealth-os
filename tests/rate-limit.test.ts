@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { rateLimit, sweepRateLimits, clientKey } from "@/lib/rate-limit";
+import { rateLimit, sweepRateLimits, clientKey, proxyHopDepth } from "@/lib/rate-limit";
 
 describe("rateLimit", () => {
   it("allows up to the limit then blocks", () => {
@@ -96,6 +96,43 @@ describe("clientKey (session-163: last-hop trust + declared depth)", () => {
         headers: { "x-forwarded-for": "203.0.113.7, 10.0.0.1" },
       });
       expect(clientKey(req)).toBe("10.0.0.1");
+    }
+  });
+
+  // Session-255 (R-52, F-255a): parseInt accepts trailing garbage —
+  // "2x" parsed as depth 2 (the bucket keyed the ATTACKER-PADDED
+  // first hop of a padded list) and "0x" as depth 0 (direct
+  // exposure, every caller in one bucket) — while the seam's own
+  // docblock and the boot warning both promise that unparsable
+  // values fail CLOSED onto 1. The digit-run gate keeps the
+  // promise; these legs hold the observable.
+  it("trailing-garbage depths fail CLOSED onto the default too (F-255a)", () => {
+    for (const bad of ["2x", "0x", " 2", "2 ", "+2", "3abc", "007x"]) {
+      process.env.NEO_PROXY_HOPS = bad;
+      const req = new Request("http://x", {
+        headers: { "x-forwarded-for": "203.0.113.7, 10.0.0.1" },
+      });
+      expect(clientKey(req), `NEO_PROXY_HOPS="${bad}"`).toBe("10.0.0.1");
+    }
+  });
+
+  it("proxyHopDepth: bare digit runs parse; every other form rides the fail-closed default (F-255a)", () => {
+    const forms: Array<[string, number]> = [
+      ["0", 0],
+      ["2", 2],
+      ["10", 10],
+      ["2x", 1],
+      ["0x", 1],
+      [" 2", 1],
+      ["2 ", 1],
+      ["+2", 1],
+      ["3abc", 1],
+      ["abc", 1],
+      ["-1", 1],
+    ];
+    for (const [raw, want] of forms) {
+      process.env.NEO_PROXY_HOPS = raw;
+      expect(proxyHopDepth(), `NEO_PROXY_HOPS="${raw}"`).toBe(want);
     }
   });
 

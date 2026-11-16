@@ -47,11 +47,20 @@ async function readSettings(ownerId: string) {
           e instanceof Prisma.PrismaClientKnownRequestError &&
           e.code === "P2002"
         ) {
-          // The unique-constraint race: the other first-touch request won.
-          return db.setting.findUniqueOrThrow({
-            where: { ownerId },
-            select: SETTINGS_SELECT,
-          });
+          // The unique-constraint race: the other first-touch request
+          // won. Session-255 (R-52, F-255c): the re-read must stay
+          // TOTAL — a throwing finder here would itself die on the
+          // out-of-band vanished-row window, and the lazy-create
+          // contract already answers a missing row with a fresh
+          // create, so the recovery re-reads softly and retries the
+          // create once when the winner's row is gone (a second
+          // P2002 — the row reappeared — takes the honest 500).
+          return db.setting
+            .findUnique({ where: { ownerId }, select: SETTINGS_SELECT })
+            .then((winner) =>
+              winner ??
+              db.setting.create({ data: { ownerId }, select: SETTINGS_SELECT }),
+            );
         }
         throw e;
       }));

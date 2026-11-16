@@ -149,13 +149,14 @@ describe("F-250d — the settings family carries the consumed-fields select", ()
     }
   });
 
-  it("every query site on the route consumes the select (five sites)", () => {
+  it("every query site on the route consumes the select (six sites)", () => {
     const src = read("src/app/api/settings/route.ts");
     const uses = src.match(/select: SETTINGS_SELECT/g) ?? [];
     // readSettings' findUnique + its P2002 race create + the
-    // findUniqueOrThrow re-read, plus the PUT's upsert and its P2002
-    // retry upsert.
-    expect(uses.length).toBe(5);
+    // recovery's soft re-read and its vanished-row create retry
+    // (session 255, F-255c — the total-recovery upgrade), plus the
+    // PUT's upsert and its P2002 retry upsert.
+    expect(uses.length).toBe(6);
   });
 });
 

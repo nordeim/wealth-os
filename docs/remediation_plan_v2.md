@@ -1521,7 +1521,68 @@
 > drift gates CLEAN · census MATCH · captures.)
 
 
-> **Current version: v2.51.0** (session 254 — the
+> **Current version: v2.52.0** (session 255 — the
+strict-parse, derived-truth, and docblock-precision round R-52: the
+owner's standing directive — refresh → review → validate → audit →
+parity iteration → remediation plan → TDD execution → captures →
+docs lockstep → commit → push, with the reference STABLE on every
+standing drift layer (probe:ref — the bundle md5 6d3779af… unchanged,
+the F-250q stylesheet fingerprint 96f24d45… unchanged, the demo data
+zero, the desktop nav 256/9, the TRUE-390 menu census standing) and
+the mobile-navigation ask verified on BOTH sides through agent-browser
+at TRUE 390×844 (the reference's drawer and OUR drawer — the
+production artifact per the session-253 toolchain note — each open
+with the same 9 destinations + Sign Out and close on the toggle; ours
+adds the labeled superset — the skip link, the navigation landmark,
+the aria-label hamburger; comparison captures re-saved); no Tailwind
+v4 regression (the audit pass's token-discipline verdict clean — the
+palette census 110/110 pairs pinned, zero dead selectors in the built
+stylesheet, no phantom breakpoints, no config file). The cold-baseline
+gate GREEN at HEAD ca884b2 — the v2.51.0 ship state reproduced
+exactly, no discovery: lint 0/0 · tsc 0 · 1720/1720 unit (106 files)
+· build · smoke 15/15 · 152/152 e2e · census MATCH. The session-255
+fresh-eyes audit (three Mode-C passes: the R-51 cure surfaces — all
+NINE verified holding (the parity-253 8/8, parity-254 8/8, and
+docs-counts 17/17 re-runs) · the API/auth/security layer — the EIGHTH
+consecutive clean bill (all ten house contracts, all 45 exported
+handlers across 30 route files read) · the UI/a11y/shell layer — the
+clean bill (34 files read, four Informational, two of them deduped to
+the standing register and the documented trade-off)): **0 Critical /
+0 High / 0 Medium / 2 Low / 4 Informational NEW** after dedup, every
+material claim re-verified at file:line by the driving session (the
+parse behavior node-verified; a false corruption alarm on the coach
+dialog's state line caught by the F-215 od doctrine — the display
+pipeline eats bracket sequences; the file was never broken). THE
+ROUND'S FLAGSHIP: THE NEO_PROXY_HOPS TRAILING-GARBAGE PARSE DRIFT
+(F-255a — the depth parse accepts "2x" as 2 and "0x" as 0 while BOTH
+the seam's docblock and the boot warning promise that unparsable
+values fail CLOSED onto 1 — a bad value never widens trust; the code
+widened trust for exactly the forms the warning called inert; the
+digits-only gate is the cure, its behavioral pins born RED in the
+seam's own battery). Plus THE PROSE-SATISFIABLE CENSUS PINS (F-255b —
+the parity-254 battery pins the census comments' wording, never the
+code order; the derived-truth legs — the ordinal by enumeration, the
+spatial comparison, the bare-count census — are the structural
+rider), THE SETTINGS RECOVERY'S VANISHED-ROW WINDOW (F-255c — the
+P2002 recovery's re-read could itself P2025 on an out-of-band vanish;
+findUnique plus one bounded create retry keeps the path total), and
+the docblock precision trio (F-255d the store's selector
+parenthetical names the coach dialog's single-slice read; F-255e the
+Tabs component's CRM-era consumer prose reworded to the WealthOS
+pair; F-255f the login card's zero-toast claim scoped to the
+submits). The plan v2.52.0 written and validated against the tree.
+R-52.1 the pins born RED (honest RED: 7 — the parity-255 source
+battery's five RED legs plus the rate-limit battery's two behavioral
+legs; the four derived-truth legs born GREEN by design, the F-215b
+precedent — they pin truths that already hold) → R-52.2 the cures
+(the digits-only gate; the total recovery; the three docblock
+rewords) → R-52.3 the verification (parity-255 GREEN 9/9 · lint 0/0 ·
+tsc 0 · 1731 unit (107 files, +11) · build · smoke 15/15 · 152 e2e ·
+census MATCH · bun audit unchanged · the captures 219-221 (the
+own-database convention + the census tripwire + PNG validation) +
+the two comparison captures at TRUE 390×844).
+
+> **Previous version: v2.51.0** (session 254 — the
 ordinal, spatial-reference, and lockstep-duplication round R-51: the
 owner's standing directive — refresh → review → validate → audit →
 parity iteration → remediation plan → TDD execution → captures →
@@ -2871,6 +2932,41 @@ comparison path is a future toolchain round if the operator wants it.
 
 Status legend: `Done(v2.N.M)` · `In progress` · `Programmed(session ≥ 204)` ·
 `On demand`.
+
+### 2.14 Session-255 audit ledger (the fresh-eyes round over the v2.51.0 ship state)
+
+Three Mode-C passes over HEAD ca884b2 (the R-51 cure surfaces · the
+API/auth/security layer · the UI/a11y/shell layer): all NINE R-51
+cure surfaces verified holding at file:line (the parity-253 battery
+8/8, the parity-254 battery 8/8, the docs-counts 17/17 — all re-run
+green at HEAD); the API layer's EIGHTH consecutive clean bill (all
+ten house contracts, all 45 exported handlers across 30 route files
+read, every named doctrine re-verified — the F-243a burn order, the
+F-241b signup ceiling, the F-235b oracle gate, the F-253d three-key
+arms, the F-236a empty-update guards, the F-244b upload sniffing);
+the UI/a11y/shell layer's clean bill (34 files read; the palette
+census 110/110 pairs pinned; the built stylesheet's 810 selectors
+all live — zero dead CSS; the theme bootstrap branch-for-branch
+equal to the seam; the store's clear-era counter advanced at exactly
+its two sanctioned sites). Raw 0 Critical / 0 High / 0 Medium /
+2 Low / 4 Informational; after dedup (the useTheme fallback
+divergence is the registered F-252k; the drawer's Tab-cycle scope is
+the documented F-217e trade-off): **0 Critical / 0 High / 0 Medium /
+2 Low / 4 Informational NEW**, every material claim re-verified at
+file:line by the driving session — including one alarm DISMISSED by
+byte-level verification (the F-215 od doctrine recurring on the
+driving session itself: the display pipeline ate a bracket sequence
+off the coach dialog's state line and it READ as a syntax error; od
+proved the bytes intact, no finding entered the ledger).
+
+| ID | Severity | Finding (verified at file:line) | Location | Disposition |
+|---|---|---|---|---|
+| F-255a | Low | **THE NEO_PROXY_HOPS TRAILING-GARBAGE PARSE DRIFT — the code widened trust for exactly the values both its docblocks promise to reject.** `proxyHopDepth()` parsed with `Number.parseInt(raw, 10)`, which silently accepts trailing garbage: "2x" parses 2 and "0x" parses 0 (both node-verified) — depth 2 keys the rate-limit bucket on an attacker-padded XFF hop (the F-218t/F-222n rotation class) and depth 0 drops to direct exposure, while BOTH the seam's docblock ("unparsable or negative fails CLOSED onto 1") and the boot warning ("fails CLOSED onto hop 1 — a bad value never widens trust") promise the strict behavior. The boot warning FIRES for these values but falsely reassured the operator that the bad value was inert. | `src/lib/rate-limit.ts:132-139` (the parse) vs `:129-131` (the docblock) and `src/lib/boot-env.ts:113-117` (the warning); the parse behavior node-verified | **cured in R-52** (the digits-only gate — a bare digit run before any parse; the behavioral pins born RED in the seam's own battery, the source pin holds the form) |
+| F-255b | Low | **THE PARITY-254 CENSUS PINS ARE PROSE-SATISFIABLE — they pin the cure comments' wording, never the code order the wording describes.** The F-254a leg asserts the "SEVENTH"/"EIGHTH" strings and the F-254b leg asserts "the bucket legs above", but no pin derives the actual signup-POST sequence, the describes' file positions, or the bare call-site count — a future REORDER of either spec file re-stales the census while every pin stays green (the F-244e prose-not-form authoring class, future-facing edition); the F-254e leg's "fourteen call sites" claim was likewise unenforced. | `tests/parity-254.test.ts:53-55` (the ordinal strings), `:72-73` (the spatial string), `:122-128` (the unenforced fourteen) | **cured in R-52** (the derived-truth legs — the ordinal by enumeration (five API posts, the recovery leg's the fourth, the revoke leg's the fifth, three burning UI submits), the spatial comparison (both describes precede the census), and the bare-count census pinned at fourteen) |
+| F-255c | Informational | **THE SETTINGS RECOVERY'S VANISHED-ROW WINDOW — the family's one non-total path.** The lazy-create race cure's P2002 catch re-read with `findUniqueOrThrow`, which can itself throw P2025 when the winner's row vanishes out-of-band in the microsecond window (no API path deletes settings — the same unreachable-in-practice class the users-PATCH arm documents); the PUT's upsert path cannot P2025 at all (create-or-update on a unique where). | `src/app/api/settings/route.ts:51-57` (the recovery's re-read) | **cured in R-52** (findUnique plus one bounded create retry — the lazy-create contract answers a missing row with a fresh create, keeping the path total without duplicating the schema defaults) |
+| F-255d | Informational | **THE STORE DOCBLOCK'S SELECTOR PARENTHETICAL UNDERCOUNTS ITS OWN FAMILY.** The F-254e blessing names "the shell's slice reads" as the selector form's example while the live selector family is EIGHT sites (the shell's five, the sidebar, the mobile nav, and the coach dialog's single ask) — the coach dialog is a DIALOG subscribing narrow, the visible counterexample to "pages and dialogs subscribe BARE" read as a universal. | `src/stores/wealthos-store.ts:733-735` vs `src/components/shared/ai-coach.tsx:47` | **cured in R-52** (the parenthetical names the coach dialog's single-slice read alongside the shell's) |
+| F-255e | Informational | **THE TABS COMPONENT'S DOCBLOCK STILL DESCRIBED THE CRM-ERA CONSUMERS.** Three comment sites cited "activities"/"reports"/"settings" page rhythms ("space-y-6 on settings/reports, bare on activities"; "mt-4 space-y-2 on activities, mt-2 space-y-4 on settings, mt-2 on reports") — neo-crm surfaces that do not exist here; the live consumers are the Expenses filter (bare wrapper, bare panels) and the Analytics section tabs (bare wrapper, panels at mt-4 space-y-4). No dead CSS shipped (every cited token has live consumers elsewhere — build-probe verified); pure prose-accuracy debt on a load-bearing component. | `src/components/ui/tabs.tsx:39-40, :49-50, :71-72` vs the consumers at `src/app/(app)/expenses/page.tsx:404` and `src/app/(app)/analytics/page.tsx:267` | **cured in R-52** (the three audited sites reworded to the WealthOS pair — plus a FOURTH carrier the pin's whole-file sweep caught mid-cure (:176, the count badge's own comment — the F-228b whole-tree lesson recurring); describe the live consumers, never the retired CRM names) |
+| F-255f | Informational | **THE LOGIN CARD'S ZERO-TOAST CLAIM OVERSTATES.** The docblock's "ZERO toasts fire on the auth flows" is true of the submits (login failure = the banner; success = the silent redirect) but the card's four social buttons fire the deliberate not-configured disclosure toast — the claim read as card-wide invites a wrong "fix" of a sanctioned toast. | `src/components/layout/login-card.tsx:66-67` vs `:747-752` (the social toast) | **cured in R-52** (the claim scoped to the submits with the social disclosure named as the exception) |
 
 ### R-1 — The security ledger (session 203) — Status: Done(v2.0.0)
 
@@ -5156,7 +5252,105 @@ sitemap/robots/manifest family, the mobile-nav comparison —
 the drawer battery + probe:ref's TRUE-390, the .env.example,
 the captures, the docs lockstep).
 
-### R-51 — The ordinal, spatial-reference, and lockstep-duplication round (session 254)
+### R-52 — The strict-parse, derived-truth, and docblock-precision round (session 255)
+
+The owner re-sent the standing directive after the R-51 ship pair
+(47a0688 + the owner's ca884b2 session-log update carrying
+docs/session_92.md, the session-254 transcript capture). Per the
+recorded rhythm, this session defaulted to findings-led iteration:
+refresh, re-audit, remediate, verify, capture, document, commit, push
+— with the operator's named asks (the mobile navigation comparison,
+the Tailwind v4 state, the .env/db contract, the vitest/playwright
+configs, the sitemap/SEO surface, the .env.example, the screenshots,
+the SSH-wrapper push) re-verified along the way.
+
+The intake: the workspace pulled to HEAD ca884b2 (the v2.51.0 ship
+state + the owner's session-log update); the environment stood
+unclean-reset (bun 1.3.14, the prisma client generated, .env with
+the DATABASE_URL="file:../db/custom.db" contract + the AUTH_SECRET,
+db/ at the repo root); the census MATCH (80/4/3/6/5/7, users=1).
+The cold-baseline gate GREEN at HEAD ca884b2 — the v2.51.0 ship
+state reproduced exactly, no discovery: lint 0/0 · tsc 0 · 1720/1720
+unit (106 files) · build · smoke 15/15 · 152/152 e2e · census MATCH.
+The standing layers: probe:ref STABLE on every layer (the bundle md5
+6d3779af… unchanged, the F-250q stylesheet fingerprint 96f24d45…
+unchanged, the demo data zero, the desktop nav 256/9, the TRUE-390
+menu census standing); THE MOBILE-NAVIGATION COMPARISON through
+agent-browser at TRUE 390×844 on BOTH sides (the reference's drawer
+and OUR drawer — the production artifact, the session-253 toolchain
+note — each open with the 9 destinations + Sign Out and close on the
+toggle; ours adds the labeled superset; both comparison captures
+re-saved, PNG-valid at the true viewport); `bun audit` unchanged (1
+moderate dev-chain minimatch, the documented deferral); neo-crm
+unchanged (b3d0fbe) — nothing to port; the SEO surface verified
+(smoke leg 12: sitemap + robots + manifest 200 — the 9-URL
+reference-parity sitemap re-read at the source); the .env contract +
+the db/ at the repo root + the vitest/playwright configs + the
+.env.example six-knob set all standing.
+
+The session-255 fresh-eyes audit (three Mode-C passes: the R-51 cure
+surfaces driven by the session · the API/auth/security layer · the
+UI/a11y/shell layer): all NINE R-51 cure surfaces verified HOLDING
+at file:line; the API layer's EIGHTH consecutive clean bill; the UI
+source layer's clean bill. After dedup: **0 Critical / 0 High /
+0 Medium / 2 Low / 4 Informational NEW** — every material claim
+re-verified at file:line by the driving session (the parseInt
+acceptance set node-verified; one alarm dismissed by od — the F-215
+display-pipeline lesson recurring on the driving session, the coach
+dialog's state line was never broken). The findings: THE ROUND'S
+FLAGSHIP — THE NEO_PROXY_HOPS TRAILING-GARBAGE PARSE DRIFT (F-255a:
+the depth parse accepted "2x" as 2 and "0x" as 0 while both the
+seam's docblock and the boot warning promised fail-closed — the first
+source-code cure since R-49, the two rounds between being
+comment/pin/doc-level); THE PROSE-SATISFIABLE CENSUS PINS (F-255b —
+the parity-254 battery's own authoring gap, the pins proved wording
+not order); THE SETTINGS RECOVERY'S VANISHED-ROW WINDOW (F-255c);
+and the docblock precision trio (F-255d/e/f — the store's selector
+parenthetical, the Tabs component's CRM-era consumer prose, the
+login card's zero-toast overstatement).
+
+**R-52.1 — the pins born RED (honest RED: 7)**: the parity-255
+source battery's five RED legs (the digit-run gate's form; the
+settings recovery's total form; the three docblock rewordings) plus
+the rate-limit battery's two behavioral legs (the clientKey
+observable over the trailing-garbage forms — "2x" keyed the
+attacker-pad hop at baseline — and the proxyHopDepth direct form
+table). The four derived-truth legs (the ordinal by enumeration,
+the burning-click census, the spatial comparison, the bare-count
+census) born GREEN by design — the F-215b precedent: they pin
+truths that already hold, and a future reorder breaks them loudly.
+
+**R-52.2 — the cures**: THE DIGITS-ONLY GATE (F-255a — a bare digit
+run gates the parse; anything else rides the fail-closed default;
+the docblock's promise becomes the code's behavior; "0" still
+honored as direct exposure); THE TOTAL RECOVERY (F-255c — the
+settings P2002 catch re-reads with findUnique and retries the create
+once on the vanished-row window; no findUniqueOrThrow remains in the
+family); THE SELECTOR PARENTHETICAL (F-255d — the coach dialog's
+single-slice read named); THE TABS DOCBLOCK (F-255e — the three
+audited CRM-era sites plus a fourth the pin's own whole-file sweep
+caught mid-cure, all reworded to the Expenses/Analytics pair); and
+THE ZERO-TOAST SCOPING (F-255f — the claim rides the submits, the social
+disclosure named as the exception).
+
+**R-52.3 — the verification**: parity-255 GREEN 9/9 · lint 0/0 ·
+tsc 0 · **1731 unit (107 files, +11)** · build · smoke 15/15 · the
+FULL e2e battery 152/152 · census MATCH · `bun audit` unchanged ·
+THE CAPTURES 219-221 (the own-database convention + the census
+tripwire + PNG validation + blank detection: the mobile drawer at
+390 with the 9-destination + Sign Out census and the aria-expanded
+close flip asserted; the dashboard desktop in the dark default with
+the shell wash asserted; THE STRICT-PARSE FACE — the artifact booted
+with a trailing-garbage NEO_PROXY_HOPS, the boot warning asserted in
+the server log, and the discriminating volley proving the bucket
+keys the LAST XFF hop despite the garbage depth) + the two
+comparison captures at TRUE 390×844. The six parity drift gates not
+re-run this round (the session-253 precedent: the round's cures
+touch no parity surface — no DOM, no class strings, no rendered
+output; probe:ref verified the reference side STABLE; the standing
+sweep baselines ride).
+
+### R-51 — The ordinal, spatial-reference, and lockstep-duplication round (session 254) — Status: Done(v2.51.0) — SHIPPED (lint 0/0 · tsc 0 · 1720 unit (106 files, +8) · build · smoke 15/15 · 152 e2e · census MATCH · the six parity drift gates CLEAN · the captures 216-218 + the two comparison captures at TRUE 390×844 · the docs lockstep complete)
 
 The owner re-sent the standing directive after the R-50 ship pair
 (305da31 + the owner's 0d236d3 session-log update carrying
@@ -6750,6 +6944,7 @@ six parity drift legs.
 
 | Version | Session | R-items executed | Gate at ship | Commit |
 |---|---|---|---|---|
+| v2.52.0 | 255 | **R-52** (the strict-parse, derived-truth, and docblock-precision round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser; the cold baseline GREEN at HEAD ca884b2 — the v2.51.0 ship state reproduced exactly, no discovery). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-255 fresh-eyes audit (three Mode-C passes: the R-51 cure surfaces — all nine verified holding · the API/auth/security layer — the eighth consecutive clean bill · the UI/a11y/shell layer — the clean bill): 0 Critical / 0 High / 0 Medium / 2 Low / 4 Informational NEW after dedup, every material claim re-verified at file:line by the driving session (one alarm dismissed by od — the F-215 display-pipeline lesson recurring on the driving session itself). THE ROUND'S FLAGSHIP: the NEO_PROXY_HOPS trailing-garbage parse drift (F-255a — the first source-code cure since R-49: the depth parse accepted "2x" as 2 and "0x" as 0 while both the seam's docblock and the boot warning promised fail-closed; the digits-only gate cures it, behavioral pins born RED). Plus the prose-satisfiable census pins (F-255b — the derived-truth legs: the ordinal by enumeration, the spatial comparison, the bare-count census), the settings recovery's vanished-row window (F-255c — findUnique + one bounded create retry), and the docblock precision trio (F-255d/e/f). The plan v2.52.0 written and validated against the tree. **R-52.1** the pins born RED (honest RED: 7 — the parity-255 source battery's five RED legs + the rate-limit battery's two behavioral legs; the four derived-truth legs born GREEN by design, the F-215b precedent) → **R-52.2** the cures (the digits-only gate; the total recovery; the three docblock rewords) → **R-52.3** the verification (parity-255 GREEN 9/9 · lint 0/0 · tsc 0 · 1731 unit (107 files, +11) · build · smoke 15/15 · 152 e2e · census MATCH · bun audit unchanged · the captures 219-221 (the strict-parse face: the artifact booted with a trailing-garbage NEO_PROXY_HOPS, the boot warning asserted, the discriminating volley proving the last-hop keying) + the two comparison captures at TRUE 390×844; the six parity drift gates not re-run — the session-253 precedent, no parity surface touched) | lint 0/0 · tsc 0 · **1731 unit (107 files, +11)** · build · smoke 15/15 · **152 e2e** · census MATCH | (this session's execution commit) |
 | v2.51.0 | 254 | **R-51** (the ordinal, spatial-reference, and lockstep-duplication round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser (the comparison riding the production artifact per the session-253 toolchain note); the cold baseline GREEN at HEAD 0d236d3 — the v2.50.0 ship state reproduced exactly, no discovery (one Playwright browser-install infrastructure gap on the first e2e run — the install heals it, the source unaffected)). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-254 fresh-eyes audit (three Mode-C passes: the R-50 cure surfaces — all six verified holding · the API/auth/security layer — the seventh consecutive clean bill · the UI/a11y/shell layer — source-clean): 0 Critical / 0 High / 0 Medium / 6 Low / 2 Informational NEW after dedup, every material claim re-verified at file:line by the driving session (the ordinal enumerated from the specs' own signup POSTs; the three duplication carriers verified by occurrence counts AND byte-identity with the prior commit's correct forms read from git). THE ROUND'S HEADLINE — A GENUS: the session-253 docs-lockstep script duplicated insertions at THREE sites (F-254f the guard trio's v2.50.0 pin line four-fold; F-254g the README program row's R-50 summary three-fold; F-254h the PAD revision list's v2.50.0 block three-fold, byte-identical) — every gate green through all three because no pin watched occurrence multiplicity; the round's structural rider is the parity-254 no-duplicate invariant battery. Plus the e2e battery's own comment truths (F-254a the census ordinal — the recovery leg's signup is the SEVENTH no-XFF burn, the revoke leg's the eighth; F-254b the stale spatial word), the pin authoring (F-254c the whole-route pin's exact-count form; F-254d the premise anchor), and F-254e the store docblock's bare-idiom blessing. The plan v2.51.0 written and validated against the tree. **R-51.1** the pins born RED (honest RED: 8 — the parity-254 source battery) → **R-51.2** the cures (the ordinal trued with the eighth named; the spatial word trued; the exact-count form; the premise anchor; the docblock blessing; the trio advance + dedup to v2.49.0/v2.50.0/v2.51.0 green-by-design with the v2.51.0 block in the same commit; the program-row collapse; the revision-list dedup) → **R-51.3** the verification (parity-254 GREEN 8/8 · lint 0/0 · tsc 0 · 1720 unit (106 files, +8) · build · smoke 15/15 · 152 e2e · census MATCH · bun audit unchanged · the six parity drift gates CLEAN · the captures 216-218 + the two comparison captures at TRUE 390×844) | lint 0/0 · tsc 0 · **1720 unit (106 files, +8)** · build · smoke 15/15 · **152 e2e** · six drift gates CLEAN · census MATCH | (this session's execution commit) |
 | v2.50.0 | 253 | **R-50** (the order-dependence, burn-ledger, and fixed-email round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser (the comparison riding the production artifact after the toolchain note below); the cold baseline GREEN at HEAD 198ac00 — the v2.49.0 ship state reproduced (one transient timing-leg e2e failure on the first battery run, the known flake family; green on the re-run)). THE DISCOVERY at the baseline: the AGENTS-documented single-spec invocation FAILS on wealthos.spec.ts — the F-225c verify-bucket leg is order-dependent (in the battery its setup signup 429s on the exhausted shared bucket so no account exists and the miss arm answers every probe; in isolation the signup succeeds, the pending-code ladder fires, and the leg fails — live-probed). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-253 fresh-eyes audit (three Mode-C passes: the R-49 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 3 Medium / 3 Low NEW after dedup, every material claim re-verified at file:line by the driving session; all ten R-49 cure surfaces holding; the API layer's sixth consecutive clean bill; the UI source layer clean — the findings cluster in the e2e battery's own legs). The plan v2.50.0 written and validated against the tree. **R-50.1** the pins born RED (honest RED: 8 — the parity-253 source battery) → **R-50.2** the cures (THE ORDER-DEPENDENT VERIFY-BUCKET LEG — the flagship: the setup signup retires, the probes ride an unknown timestamped email, the miss-arm contract the leg always claimed; THE STALE SIGNUP-BUDGET LEDGER — the census trued at both spec carriers + AGENTS.md, the data-import/multi-user scratch signups on dedicated XFF keys; THE FIXED-EMAIL LOGIN-BUCKET LEG — the timestamp mint; THE RESEND VANISHED-ROW ARM — the third key joins the P2025 catch; THE PARITY-252 PIN'S MISS-ARM-ONLY SLICE — closed by the whole-route pin; THE STALE CSRF-PROBE COMMENT — the gate-first truth) → **R-50.3** the verification (lint 0/0 · tsc 0 · 1712 unit (105 files, +8) · build · smoke 15/15 · 152 e2e · the wealthos spec IN ISOLATION green — the order-independence proof · census MATCH · the captures 212-215 + the two comparison captures · `bun audit` unchanged). Toolchain note: agent-browser's HeadlessChrome-157 does not hydrate the Turbopack dev build (production hydrates cleanly; Playwright works on both) — recorded for the comparison workflow, not a product defect. The docs lockstep complete (the PAD v2.50.0 block + the trio's gate-enforced advance to v2.48.0/v2.49.0/v2.50.0 + the README program row + AGENTS/CLAUDE counts + the plan closure + the worklog + docs/session_89.md). | lint 0/0 · tsc 0 · **1712 unit (105 files, +8)** · build · smoke 15/15 · **152 e2e** (+ the isolated-spec proof) · census MATCH | (this session's execution commit) |
 | v2.49.0 | 252 | **R-49** (the list-focus-ring, resend-shape, and type-lag round — findings-led, the standing directive with the reference STABLE on every standing drift layer (the bundle md5, the F-250q stylesheet fingerprint, the demo data zero, the desktop nav 256/9, the TRUE-390 menu census) and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 through agent-browser (the reference's drawer and ours each open with the same 9 destinations + Sign Out and close on the toggle; ours adds the labeled superset); the cold baseline GREEN at HEAD 04fd4f6 — the v2.48.0 ship state reproduced (one transient timing-leg e2e failure on the first run, the known flake family; two consecutive green runs after); the chromium-1254 install the one toolchain step). The audit round first: the standing layers re-verified (probe:ref STABLE; `bun audit` unchanged (1 moderate dev-chain minimatch, the documented deferral); neo-crm unchanged (b3d0fbe) — nothing to port; the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the vitest/playwright configs + the .env.example six-knob set all standing). The session-252 fresh-eyes audit (three Mode-C passes: the R-48 cure surfaces · the API/auth/security layer · the UI/a11y/shell layer — 0 Critical / 0 High / 1 Medium / 5 Low cured + 4 Informational cured-as-riders + 1 Informational registered after dedup, every material claim re-verified at file:line by the driving session, the contrast math re-computed by code; all eight R-48 cure surfaces verified holding; the API layer's fifth consecutive clean bill; the Tailwind v4 hunt clean on every audited axis). The plan v2.49.0 written and validated against the tree. **R-49.1** the pins born RED (honest RED: 18 — the parity-252 source battery) → **R-49.2** the cures (THE LIST-ITEM KEYBOARD-FOCUS RING — the flagship; THE RESEND SHAPE ORACLE; THE DASHBOARD USER TYPE LAG; THE PALETTE CENSUS TRAILING-COMMENT ARM; THE THEME-BLIND SCROLLBAR DARK ARM; THE LATENT RING-OFFSET ARMS; riders: THE VESTIGIAL DARK-WASH LITERAL RETIREMENT, THE RED METER REGISTER NOTE, THE E2E-PIN PROSE TRUTHS, THE UN-MESSAGED ZOD FIELDS) + five comment rewords the nets caught mid-cure (the F-229d discipline: four hyphenated coins + the pinned-phrase wrap; the parity-243 phrase-split catch) → **R-49.3** the verification (lint 0/0 · tsc 0 · 1704 unit (104 files, +18) · build · smoke 15/15 · 152 e2e (+1, the F-252a ring leg — the stale-artifact lesson re-learned: the e2e boots the standalone build, rebuild before the leg) · the six parity drift gates CLEAN at 0.5pct margin · census MATCH · the captures 207-211: the mobile drawer at 390 (the standing ask), the keyboard-ring face (computed rgb(245,245,244) over the stone-800 wash — the flagship proven live), the resend three-key face (verificationCode present and null), the scrollbar dark arm (rgb(120,113,108)), the shell wash face (rgb(14,19,16) on the token flip alone)). The docs lockstep complete (the PAD v2.49.0 block + the trio's gate-enforced advance to v2.47.0/v2.48.0/v2.49.0 + the §7.1 family rows 71→72 with parity-252 listed + the arithmetic 4+72+28=104 + the README badge 1837→1856 + the program row + AGENTS/CLAUDE/SKILL counts + the plan closure + the worklog + docs/session_87.md). | lint 0/0 · tsc 0 · **1704 unit (104 files, +18)** · build · smoke 15/15 · **152 e2e** · six drift gates CLEAN (0.5pct) · census MATCH | (this session's execution commit) |

@@ -63,8 +63,10 @@ const INFO_BANNER_MS = 3000;
  * Password / Confirm Password — NO name field, NO Google button, NO
  * divider), whose success swaps again to the verify-email view (six
  * single-digit inputs + the attempts ladder). Every error renders the
- * reference's Callout banner; ZERO toasts fire on the auth flows (login
- * failure = the banner only, login/signup success = a silent redirect).
+ * reference's Callout banner; ZERO toasts fire on the auth submits
+ * (login failure = the banner only, login/signup success = a silent
+ * redirect — the social buttons' unconfigured disclosure is the
+ * card's one deliberate toast).
  * The `/signup` page (the reference 404s it) stays as our documented
  * working superset — it renders this card starting at the signup view.
  */
