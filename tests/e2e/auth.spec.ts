@@ -397,14 +397,15 @@ test("the signup 4xx negatives: the duplicate surfaces in the card + the API qua
 // rendered the 403 as a banner dead-end: the verify view (the ONLY
 // surface with the Resend link) was reachable solely via signup
 // success. NOTE the signup budget (session-253, R-50, F-253b — the
-// corrected census): this leg's signup is this file's EIGHTH no-XFF
-// signup burn (three UI form submits + five API posts — the route
-// burns the bucket BEFORE the parse, so the invalid probes count
-// too). data-import's and multi-user's scratch signups ride
-// dedicated XFF keys and the wealthos bucket legs ride unknown
-// emails, so this file's eight are the battery's only shared-bucket
-// burns — two spare under the ten cap. Any future signup-adding leg
-// must consolidate or ride its own key.
+// corrected census; session-254, R-51, F-254a — the ordinal trued):
+// this leg's signup is this file's SEVENTH no-XFF signup burn — the
+// revoke leg's signup below is the EIGHTH (three UI form submits +
+// five API posts — the route burns the bucket BEFORE the parse, so
+// the invalid probes count too). data-import's and multi-user's
+// scratch signups ride dedicated XFF keys and the wealthos bucket
+// legs ride unknown emails, so this file's eight are the battery's
+// only shared-bucket burns — two spare under the ten cap. Any future
+// signup-adding leg must consolidate or ride its own key.
 test("the signin 403 lands the verify view and the Resend re-arms (F-218a)", async ({ page }) => {
   const email = `e2e-recovery-${Date.now()}@example.com`;
   // A hash-present account (an unverified signup) via the API. The

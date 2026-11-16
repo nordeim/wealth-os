@@ -768,7 +768,7 @@ test.describe("the per-casing route metadata (F-226b)", () => {
 // auth.spec's EIGHT no-XFF burns (three UI form submits + five API
 // posts; session-253, R-50, F-253b — the corrected census): the
 // data-import and multi-user scratch signups ride dedicated XFF keys
-// and the bucket legs below ride unknown emails with no signup of
+// and the bucket legs above ride unknown emails with no signup of
 // their own (the F-223k login-budget lesson applies to signups).
 test.describe("the Analytics Income tab empty state (F-229a)", () => {
   test("a zero-income range shows the empty state, not a flat chart", async ({ page }) => {

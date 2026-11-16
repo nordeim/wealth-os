@@ -16,118 +16,55 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
-- [SR] v2.50.0 (session 253, R-50 — the order-dependence,
-  burn-ledger, and fixed-email round): the fresh-eyes audit (three
-  Mode-C passes — the R-49 cure surfaces driven by the session, the
-  API/auth/security layer, and the UI/a11y/shell layer; 0 Critical /
-  0 High / 3 Medium / 3 Low NEW after dedup, every material claim
-  re-verified at file:line by the driving session — the verify ladder
-  live-probed against the standalone artifact, the burn ledger
-  reconstructed from the specs' own signup POSTs; all ten R-49 cure
-  surfaces verified holding; the API layer's sixth consecutive clean
-  bill; the UI source layer clean, the findings clustered in the e2e
-  battery's own legs). The round's discovery, found at the cold
-  baseline itself: THE ORDER-DEPENDENT VERIFY-BUCKET LEG (F-253a —
-  the F-225c e2e leg's setup signup rode the shared no-XFF signup
-  bucket with its response ignored: in battery order the bucket's
-  earlier burns denied it (no account exists — the miss arm answers
-  every probe, the assertions pass) while the AGENTS-documented
-  single-spec invocation lets the signup SUCCEED, the pending code's
-  wrong-code ladder answers locked 429s from the fifth probe
-  (live-probed: 400,400,400,400,429,429), and the leg fails; the
-  setup signup retires — the probes ride an unknown timestamped
-  email, the pure miss-arm contract the leg always claimed, order-
-  independent by construction, proven by the isolated-spec run that
-  was RED at the baseline and GREEN after the cure). Plus: THE STALE
-  SIGNUP-BUDGET LEDGER (F-253b — the F-229a census arithmetic was
-  wrong at all three carriers: auth.spec burns EIGHT no-XFF signups
-  (three UI form submits + five API posts — the route burns before
-  the parse), not five, and the battery burned TWELVE against the
-  ten cap with the last two denials landing silently on the bucket
-  legs' own ignored signups; the census trued everywhere and the
-  data-import/multi-user scratch signups move to dedicated
-  single-value XFF keys (the reset-password doctrine) — the shared
-  burn drops to auth.spec's eight, headroom restored); THE FIXED-
-  EMAIL LOGIN-BUCKET LEG (F-253c — the F-222n leg's compile-time-
-  constant probe email keyed a per-account 30-per-15-minute bucket
-  that survives a reused-server re-run inside the window, the N-69a
-  class per-account edition; the email joins the sibling legs'
-  timestamp mint); THE RESEND VANISHED-ROW ARM (F-253d — the P2025
-  catch still shipped the two-key envelope, the F-252b shape
-  oracle's one surviving arm, reachable only for a hash-present row
-  vanishing mid-request: under the production delivery knob a
-  two-key 200 signaled a never-verified account existed at read
-  time; the third key joins the arm, every arm of the route
-  three-key); THE PARITY-252 PIN'S MISS-ARM-ONLY SLICE (F-253e — the
-  coverage gap that let F-253d through; the parity-253 whole-route
-  form closes the genus: every success envelope of the route carries
-  the third key); and THE STALE CSRF-PROBE COMMENT (F-253f — it
-  described the pre-F-245a bucket-before-parse order; reworded to
-  the gate-first truth). The verification: lint 0/0 · tsc 0 · 1712
-  unit (105 files, +8) · build · smoke 15/15 · 152 e2e (plus the
-  isolated-spec order-independence proof) · census MATCH · the
-  captures 212-215 (the own-database convention + the census
-  tripwire) + the two agent-browser comparison captures at TRUE
-  390×844. Toolchain note: agent-browser's HeadlessChrome-157 does
-  not hydrate the Turbopack dev build (the production artifact
-  hydrates cleanly; Playwright's chromium works on both) — the
-  clone-side mobile-nav comparison rode the production artifact.
-- [SR] v2.50.0 (session 253, R-50 — the order-dependence,
-  burn-ledger, and fixed-email round): the fresh-eyes audit (three
-  Mode-C passes — the R-49 cure surfaces driven by the session, the
-  API/auth/security layer, and the UI/a11y/shell layer; 0 Critical /
-  0 High / 3 Medium / 3 Low NEW after dedup, every material claim
-  re-verified at file:line by the driving session — the verify ladder
-  live-probed against the standalone artifact, the burn ledger
-  reconstructed from the specs' own signup POSTs; all ten R-49 cure
-  surfaces verified holding; the API layer's sixth consecutive clean
-  bill; the UI source layer clean, the findings clustered in the e2e
-  battery's own legs). The round's discovery, found at the cold
-  baseline itself: THE ORDER-DEPENDENT VERIFY-BUCKET LEG (F-253a —
-  the F-225c e2e leg's setup signup rode the shared no-XFF signup
-  bucket with its response ignored: in battery order the bucket's
-  earlier burns denied it (no account exists — the miss arm answers
-  every probe, the assertions pass) while the AGENTS-documented
-  single-spec invocation lets the signup SUCCEED, the pending code's
-  wrong-code ladder answers locked 429s from the fifth probe
-  (live-probed: 400,400,400,400,429,429), and the leg fails; the
-  setup signup retires — the probes ride an unknown timestamped
-  email, the pure miss-arm contract the leg always claimed, order-
-  independent by construction, proven by the isolated-spec run that
-  was RED at the baseline and GREEN after the cure). Plus: THE STALE
-  SIGNUP-BUDGET LEDGER (F-253b — the F-229a census arithmetic was
-  wrong at all three carriers: auth.spec burns EIGHT no-XFF signups
-  (three UI form submits + five API posts — the route burns before
-  the parse), not five, and the battery burned TWELVE against the
-  ten cap with the last two denials landing silently on the bucket
-  legs' own ignored signups; the census trued everywhere and the
-  data-import/multi-user scratch signups move to dedicated
-  single-value XFF keys (the reset-password doctrine) — the shared
-  burn drops to auth.spec's eight, headroom restored); THE FIXED-
-  EMAIL LOGIN-BUCKET LEG (F-253c — the F-222n leg's compile-time-
-  constant probe email keyed a per-account 30-per-15-minute bucket
-  that survives a reused-server re-run inside the window, the N-69a
-  class per-account edition; the email joins the sibling legs'
-  timestamp mint); THE RESEND VANISHED-ROW ARM (F-253d — the P2025
-  catch still shipped the two-key envelope, the F-252b shape
-  oracle's one surviving arm, reachable only for a hash-present row
-  vanishing mid-request: under the production delivery knob a
-  two-key 200 signaled a never-verified account existed at read
-  time; the third key joins the arm, every arm of the route
-  three-key); THE PARITY-252 PIN'S MISS-ARM-ONLY SLICE (F-253e — the
-  coverage gap that let F-253d through; the parity-253 whole-route
-  form closes the genus: every success envelope of the route carries
-  the third key); and THE STALE CSRF-PROBE COMMENT (F-253f — it
-  described the pre-F-245a bucket-before-parse order; reworded to
-  the gate-first truth). The verification: lint 0/0 · tsc 0 · 1712
-  unit (105 files, +8) · build · smoke 15/15 · 152 e2e (plus the
-  isolated-spec order-independence proof) · census MATCH · the
-  captures 212-215 (the own-database convention + the census
-  tripwire) + the two agent-browser comparison captures at TRUE
-  390×844. Toolchain note: agent-browser's HeadlessChrome-157 does
-  not hydrate the Turbopack dev build (the production artifact
-  hydrates cleanly; Playwright's chromium works on both) — the
-  clone-side mobile-nav comparison rode the production artifact.
+- [SR] v2.51.0 (session 254, R-51 — the ordinal, spatial-reference,
+  and lockstep-duplication round): the fresh-eyes audit (three
+  Mode-C passes — the R-50 cure surfaces driven by the session (all
+  six verified holding, the parity-253 battery re-run green), the
+  API/auth/security layer (the seventh consecutive clean bill), and
+  the UI/a11y/shell layer (source-clean, one Informational);
+  0 Critical / 0 High / 0 Medium / 6 Low / 2 Informational NEW
+  after dedup, every material claim re-verified at file:line by the
+  driving session — the ordinal enumerated from the specs' own
+  signup POSTs, the three duplication carriers verified by
+  occurrence counts AND byte-identity with the prior commit's
+  correct forms read from git). THE ROUND'S HEADLINE — A GENUS: the
+  session-253 docs-lockstep script duplicated insertions at THREE
+  sites, every gate green through all three because no pin watched
+  occurrence multiplicity: THE GUARD TRIO'S FOUR-FOLD PIN (F-254f —
+  the docs-counts over-replacement guard's v2.50.0 pin line pasted
+  four times, reading v2.48.0, v2.49.0, then v2.50.0 three more
+  times, against the prior session's three distinct lines); THE
+  README PROGRAM ROW'S THREE-FOLD SUMMARY (F-254g — the Project
+  Status row's R-50 round summary pasted three times, kilobytes of
+  duplicated content); and THE PAD REVISION LIST'S THREE-FOLD BLOCK
+  (F-254h — three byte-identical v2.50.0 blocks against every prior
+  version's single block). The structural rider: the parity-254
+  no-duplicate invariant battery (the trio's pin census, the program
+  row's each summary once, the revision list's each version once) —
+  a future lockstep script that duplicates an insertion fails the
+  unit gate. Plus the e2e battery's own comment truths: THE F-253B
+  CENSUS'S ORDINAL (F-254a — the recovery leg's signup is the
+  file's SEVENTH no-XFF burn, not the eighth; the revoke leg's
+  signup, later in the same file, is the EIGHTH — the total EIGHT
+  and the two-spare headroom were already true, the parity-253
+  total pin kept whole by the named leg's uppercase form); THE
+  STALE SPATIAL REFERENCE (F-254b — the wealthos-side census pointed
+  down the file at bucket legs that sit above it); the pin
+  authoring: THE WHOLE-ROUTE PIN'S AT-LEAST FORM (F-254c — the
+  match window cannot cross a nested closing brace, so a future arm
+  with a nested body would silently drop from the match set while
+  the at-least floor kept passing on the stale matches; the
+  exact-count form turns any arm change into a conscious pin
+  update); THE PREMISE PIN'S NARRATIVE ANCHOR (F-254d — the F-253a
+  pin anchored the pre-round narrative's lowercase parenthetical
+  instead of the premise sentence; the anchor moves to the
+  uppercase premise phrase); and THE STORE DOCBLOCK'S
+  SELECTOR-ONLY EXAMPLE (F-254e — fourteen page and dialog call
+  sites subscribe bare by house idiom; the docblock blesses the
+  bare form alongside the selector form). The verification: lint
+  0/0 · tsc 0 · 1720 unit (106 files, +8) · build · smoke 15/15 ·
+  152 e2e · census MATCH · the six parity drift gates CLEAN · the
+  captures 216-218 + the two comparison captures at TRUE 390×844.
 - [SR] v2.50.0 (session 253, R-50 — the order-dependence,
   burn-ledger, and fixed-email round): the fresh-eyes audit (three
   Mode-C passes — the R-49 cure surfaces driven by the session, the
@@ -2347,7 +2284,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1712) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1720) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (152) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -2479,7 +2416,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 105 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 106 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -2768,9 +2705,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 105 | 1712 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 106 | 1720 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
-| — architecture pins | 73 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, db-transient) | `tests/` | source-scanning contracts |
+| — architecture pins | 74 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 28 | auth, rate-limit, csv, uploads, upload-sniff, headers, boot-env, search-query, store-logout, store-hydrate, store-staleness, … | `tests/` | behavior |
 | E2E | 7 | 152 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -2803,7 +2740,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1712/1712 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1720/1720 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 152/152
@@ -2873,7 +2810,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1712 unit / 152 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1720 unit / 152 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -2908,7 +2845,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1712 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1720 unit · build · smoke 15/15 ·
 152 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

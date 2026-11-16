@@ -55,8 +55,13 @@ describe("F-253a — the verify-bucket leg rides the miss arm, not a signup", ()
     // the 60-by-400 assertion dies). An email with no account at all
     // is the only premise that holds in every invocation shape.
     expect(stripComments(leg)).not.toContain("/api/auth/signup");
-    // The premise is stated, not implied.
-    expect(leg).toContain("no account");
+    // The premise is stated, not implied — and the anchor rides the
+    // premise sentence itself ("an email with NO account at all"),
+    // never the pre-round narrative's lowercase parenthetical (the
+    // case-sensitive form would not match the premise; a reworded
+    // history would false-fail the pin while a reworded premise
+    // passed unnoticed).
+    expect(leg).toContain("NO account at all");
   });
 
   it("the resend-bucket leg posts NO signup either (both arms answer the non-leaking 200)", () => {
@@ -149,7 +154,13 @@ describe("F-253d — the resend route's every success envelope is three-key", ()
     // form closes the genus: no arm of this route may ship an
     // envelope any other arm does not.
     const returns = [...src.matchAll(/ok\(\{[^}]*\}\)/g)].map((m) => m[0]);
-    expect(returns.length).toBeGreaterThanOrEqual(3);
+    // Session-254 (R-51, F-254c): the EXACT count — the match window
+    // cannot cross a nested closing brace, so a future arm with a
+    // nested body would silently drop out of this match set; an
+    // at-least floor would keep passing on the stale matches while
+    // the new arm went uninspected. The exact count turns any arm
+    // change into a conscious pin update.
+    expect(returns.length).toBe(3);
     for (const body of returns) {
       expect(body).toContain("verificationCode");
     }

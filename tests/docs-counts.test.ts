@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1712;
+const UNIT_TOTAL = 1720;
 const E2E_TOTAL = 152;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 105;
+const TEST_FILES = 106;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -83,6 +83,8 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // (72 -> 73, session 253): 4 + 73 + 28 = 105.
     // Session-253 (R-50): parity-253 joins the architecture family
     // (72 -> 73): 4 + 73 + 28 = 105.
+    // Session-254 (R-51): parity-254 joins the architecture family
+    // (73 -> 74): 4 + 74 + 28 = 106.
     // Session-251 (R-48): parity-251 joins the architecture family
     // (70 -> 71): 4 + 71 + 28 = 103.
     // Session-246 (R-43): parity-246 joins the architecture family
@@ -96,7 +98,7 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // tests inside existing family files, no new rows): 4 + 68 +
     // 27 = 99.
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 73 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, db-transient) |",
+      "| — architecture pins | 74 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, db-transient) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99
@@ -215,17 +217,17 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
   // that adds a new revision block — the recurrence walks otherwise.
   it("the historical revision blocks keep their OWN ship counts (F-242j — the over-replacement guard)", () => {
     const p = norm(doc("Project_Architecture_Document.md"));
-    // Session-253 (R-50): the structural leg's fourth gate-enforced
-    // ride — the v2.50.0 block lands below together with the trio's
-    // advance to v2.48.0/v2.49.0/v2.50.0 in the SAME commit (the leg
-    // derives the PAD's newest block at test time and fails the unit
-    // gate if the window lags).
-    expect(p).toMatch(/\[SR\] v2\.48\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1686 unit \(103 files, \+18\)/);
+    // Session-254 (R-51, F-254f): the structural leg's fifth
+    // gate-enforced ride — the v2.51.0 block lands above together
+    // with the trio's advance to v2.49.0/v2.50.0/v2.51.0 in the
+    // SAME commit (the leg derives the PAD's newest block at test
+    // time and fails the unit gate if the window lags). The
+    // session-253 advance pasted its new pin FOUR times; the
+    // duplicates retire with this advance (the parity-254 battery
+    // now pins the three-distinct-lines invariant itself).
     expect(p).toMatch(/\[SR\] v2\.49\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1704 unit \(104 files, \+18\)/);
     expect(p).toMatch(/\[SR\] v2\.50\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1712 unit \(105 files, \+8\)/);
-    expect(p).toMatch(/\[SR\] v2\.50\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1712 unit \(105 files, \+8\)/);
-    expect(p).toMatch(/\[SR\] v2\.50\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1712 unit \(105 files, \+8\)/);
-    expect(p).toMatch(/\[SR\] v2\.50\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1712 unit \(105 files, \+8\)/);
+    expect(p).toMatch(/\[SR\] v2\.51\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1720 unit \(106 files, \+8\)/);
   });
 
   // Session-249 (R-46, F-249b): the structural cure for the aging genus.
