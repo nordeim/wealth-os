@@ -341,7 +341,7 @@ function GoalDialog({
                 type="date"
                 value={targetDate}
                 onChange={(e) => setTargetDate(e.target.value)}
-                className="input-base"
+                className={FORM_INPUT}
               />
             </div>
           </div>

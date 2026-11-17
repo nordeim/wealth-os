@@ -562,7 +562,7 @@ function InvestmentDialog({
               type="date"
               value={purchaseDate}
               onChange={(e) => setPurchaseDate(e.target.value)}
-              className="input-base"
+              className={FORM_INPUT}
             />
           </div>
           <DialogFooter>

@@ -214,9 +214,9 @@ export interface ExpenseListFilters {
   search: string;
   /** The panel's date-window select ("" = no window). */
   range: "" | "today" | "7d" | "30d" | "this-month" | "last-month" | "custom";
-  /** The Custom window's inclusive start (bare yyyy-mm-dd, "" = open). */
+  /** The Custom window's inclusive start (bare yyyy-mm-dd or its stored UTC-midnight twin, "" = open). */
   customStart: string;
-  /** The Custom window's inclusive end (bare yyyy-mm-dd, "" = open). */
+  /** The Custom window's inclusive end (bare yyyy-mm-dd or its stored UTC-midnight twin, "" = open). */
   customEnd: string;
   /** The inclusive lower amount bound (numeric string, "" = open). */
   minAmount: string;
@@ -263,17 +263,42 @@ function inRangeWindow(row: ExpenseRowLike, f: ExpenseListFilters, now: Date): b
       // first of the month — an invented day (the F-222a doctrine: a
       // skip beats an invented day). Unreachable through the type date
       // UI; the guard binds the seam for any future free-text caller.
-      const start = UTC_MIDNIGHT_ISO.test(f.customStart)
-        ? toDate(f.customStart).getTime()
-        : null;
-      const end = UTC_MIDNIGHT_ISO.test(f.customEnd)
-        ? endOfDayExclusive(toDate(f.customEnd))
-        : null;
+      // Session-267 (R-64, F-267c): the CALENDAR ROUND-TRIP joins the
+      // guard — the shape test alone admits "2026-02-31", and toDate's
+      // normalizing constructor would invent Mar 3 (an overflow day,
+      // the same F-222a doctrine the guard exists to enforce). A bound
+      // must LAND on the calendar its digits wrote or be dropped as
+      // open: the csv.ts stageWrittenLiteral doctrine in its
+      // local-midnight form (toDate constructs LOCAL midnight, so the
+      // round-trip reads the local accessors).
+      const start = customBoundMs(f.customStart, false);
+      const end = customBoundMs(f.customEnd, true);
       if (start !== null && d.getTime() < start) return false;
       if (end !== null && d.getTime() >= end) return false;
       return true;
     }
   }
+}
+
+/** F-267c: a custom window bound — the shape-tested, calendar-round-
+ * tripped local-midnight instant, or null (open) when the form is
+ * outside the seam's contract or its digits do not name a real
+ * calendar day. Pure: regex + construction + comparison. */
+function customBoundMs(value: string, endOfDay: boolean): number | null {
+  const m = UTC_MIDNIGHT_ISO.exec(value);
+  if (!m) return null;
+  const d = toDate(value);
+  // The round-trip: the constructed calendar must be the one the
+  // digits wrote (V8's local constructor silently rolls Feb 31 to
+  // Mar 3 and month 13 to the next Jan — invented days).
+  if (
+    d.getFullYear() !== Number(m[1]) ||
+    d.getMonth() !== Number(m[2]) - 1 ||
+    d.getDate() !== Number(m[3])
+  ) {
+    return null;
+  }
+  return endOfDay ? endOfDayExclusive(d) : d.getTime();
 }
 
 function parseBound(value: string): number | null {

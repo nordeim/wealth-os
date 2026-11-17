@@ -113,7 +113,6 @@ export default function ExpensesPage() {
   // ref, not state — the snapshot never renders).
   const openSnapshotRef = React.useRef<ExpenseListFilters | null>(null);
 
-  const now = new Date();
   // Session-231 (R-28, F-231j): memoized on the store's stable array —
   // a bare filter mints a fresh identity every render and defeats the
   // `visible` memo below (it recomputed every render for nothing).
@@ -121,7 +120,14 @@ export default function ExpensesPage() {
     () => store.transactions.filter((t) => t.type === "expense"),
     [store.transactions],
   );
-  const split = budgetCategorySplit(store.transactions, now);
+  // Session-267 (R-64, F-267e): the fold joins its two siblings on the
+  // F-231j memo contract — keyed on the store's stable array, the
+  // clock derived inside the memo (the visible memo's own convention:
+  // a render-time clock never defeats it).
+  const split = React.useMemo(
+    () => budgetCategorySplit(store.transactions, new Date()),
+    [store.transactions],
+  );
 
   // Session-265 (R-62, F-265e): the badge counts the panel's OWN
   // controls — the pre-cure form also counted the budget tab, a
@@ -137,6 +143,24 @@ export default function ExpensesPage() {
     maxAmount !== "",
     sortField !== "date" || sortDir !== "desc",
   ].filter(Boolean).length;
+  // Session-267 (R-64, F-267a/F-267b): the over-constraint predicate —
+  // the LIST-NARROWING constraints the page owns, separate from the
+  // badge count. The badge honestly counts the panel's five controls
+  // (sort included, the F-265e posture), but sort can only REORDER a
+  // list, never empty it — so the empty-state discriminator may not
+  // reuse the badge (an empty ledger with a touched sort rendered the
+  // no-matches face, the F-266c mirror edge). The budget TAB joins
+  // here: it is a live narrowing constraint the badge never counted,
+  // and the corpus's own savings bucket is empty — the Savings tab
+  // alone rendered the onboarding face for a full ledger.
+  const listConstrained = [
+    rangeFilter !== "",
+    categoryFilter !== "all",
+    minAmount !== "",
+    maxAmount !== "",
+    tab !== "all",
+    search.trim() !== "",
+  ].some(Boolean);
   // Session-265 (R-62, F-265b): the close family RE-SCOPED with the
   // genus — the surface is now the reference's IN-FLOW EXPANSION CARD
   // (live-probed: position static, a full-width sibling below the
@@ -166,7 +190,13 @@ export default function ExpensesPage() {
       // Both dialog genera unmount when closed (the Radix content, the
       // mobile drawer's conditional return), so DOM presence is the
       // exact test for an open surface — and this card is role group,
-      // never a match for the dialog selector.
+      // never a match for the dialog selector. The exactness holds
+      // WHILE both dialog genera unmount on close: a future
+      // force-mounted or hidden-but-mounted dialog genus would leave a
+      // stale dialog element in the DOM and silently swallow the
+      // card's Escape (the standing battery gap — the mobile-drawer
+      // stacking order rides unpinned; the desktop leg pins the
+      // mechanism).
       if (document.querySelector('[role="dialog"]')) return;
       setFiltersOpen(false);
     };
@@ -244,7 +274,12 @@ export default function ExpensesPage() {
   // semantics — the search box lives outside the card); the empty
   // state's action must lift EVERY constraint the page owns, or a
   // search-only over-constraint would survive its own Clear button.
+  // Session-267 (R-64, F-267a): the tab joins the lift — the corpus's
+  // empty savings bucket made the Savings tab the one constraint that
+  // could outlive the F-266c Clear (the still-empty list flipped from
+  // the no-matches face to the onboarding face after its own button).
   const clearFiltersAndSearch = () => {
+    setTab("all");
     clearAllFilters();
     setSearch("");
   };
@@ -292,8 +327,12 @@ export default function ExpensesPage() {
   // Add Your First Expense CTA is a non-sequitur for a full ledger;
   // the genus predates the card, but the five live controls multiply
   // its reach). The genuinely-empty ledger keeps the onboarding truth.
+  // Session-267 (R-64, F-267a/F-267b): the discriminator keys on the
+  // DEDICATED over-constraint predicate (listConstrained) — the badge
+  // count retired from this arm: it included the sort pair (which can
+  // only reorder, never empty) and missed the budget tab (which can).
   const historyBody = visible.length === 0 ? (
-    activeFilters > 0 || search.trim() !== "" ? (
+    listConstrained ? (
       <EmptyState
         icon={Filter}
         title="No expenses match your filters"
@@ -975,7 +1014,7 @@ function ExpenseDialog({
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="input-base"
+                className={FORM_INPUT}
               />
             </div>
 

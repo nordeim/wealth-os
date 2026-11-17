@@ -176,7 +176,16 @@ describe("F-265e — the Filters badge re-scopes to the panel's controls", () =>
   it("the count enumerates the panel controls and drops the tab term", () => {
     const src = read("src/app/(app)/expenses/page.tsx");
     expect(src).toMatch(/const activeFilters = \[\s*rangeFilter !== "",/);
-    expect(src).not.toMatch(/tab !== "all"/);
+    // Session-267 (R-64, the contract-change update): the tab-term
+    // negative pin re-scopes from the whole file to the BADGE's own
+    // construction site — the R-64 over-constraint predicate
+    // (listConstrained, a separate declaration the empty-state
+    // discriminator keys on) legitimately carries the tab term: the
+    // tab IS a live list-narrowing constraint. The badge's own block
+    // must keep counting only the panel's five controls.
+    const badge = src.match(/const activeFilters = \[[\s\S]*?\]\.filter\(Boolean\)\.length;/);
+    expect(badge).toBeTruthy();
+    expect(badge![0]).not.toMatch(/tab !== "all"/);
   });
 });
 

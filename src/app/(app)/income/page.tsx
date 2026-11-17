@@ -353,7 +353,7 @@ function IncomeSourceDialog({
                 type="date"
                 value={nextPaymentDate}
                 onChange={(e) => setNextPaymentDate(e.target.value)}
-                className="input-base"
+                className={FORM_INPUT}
               />
             </div>
           </div>

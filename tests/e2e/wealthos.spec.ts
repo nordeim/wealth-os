@@ -513,6 +513,46 @@ test.describe("the Expenses tabs + search", () => {
     await expect(panel).toHaveCount(0);
   });
 
+  test("the Savings tab's empty list wears the no-matches face, and Clear Filters restores the tab (F-267a)", async ({ page }) => {
+    // Session-267 (R-64): the budget tab is the one live constraint the
+    // F-266c discriminator missed — and the corpus's own savings bucket
+    // is EMPTY (needs 46 · wants 26 · savings 0), so the Savings tab
+    // alone emptied the expense list and rendered the ONBOARDING face
+    // ("No expenses yet" + the Add Your First Expense CTA) for a full
+    // ledger. The dedicated over-constraint predicate counts the tab;
+    // the Clear Filters action lifts it with every other constraint.
+    await page.goto("/Expenses");
+    // Sanity: the corpus has expenses and no savings-bucket rows.
+    await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
+    await page.getByRole("tab", { name: "Savings" }).click();
+    // The tab-emptied list is OVER-CONSTRAINED, not empty: the
+    // no-matches face, never the onboarding non-sequitur.
+    await expect(page.getByText("No expenses match your filters")).toBeVisible();
+    await expect(page.getByText("Add Your First Expense")).toHaveCount(0);
+    // The Clear Filters action lifts EVERY constraint including the
+    // tab: the All tab returns and the history repopulates.
+    await page.getByRole("button", { name: "Clear Filters" }).click();
+    await expect(page.getByText("No expenses match your filters")).toHaveCount(0);
+    await expect(page.getByRole("tab", { name: "All" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
+  });
+
+  test("the Savings tab rides the same no-matches face under a search constraint too (F-267a's compound)", async ({ page }) => {
+    // The compound arm: a search constraint plus the tab empties the
+    // list, and the Clear Filters action must lift BOTH (the search
+    // box AND the tab) — pre-cure the tab survived its own Clear and
+    // the still-empty list flipped to the onboarding face.
+    await page.goto("/Expenses");
+    await page.getByRole("tab", { name: "Savings" }).click();
+    await page.getByPlaceholder("Search expenses...").fill("zzz-no-match");
+    await expect(page.getByText("No expenses match your filters")).toBeVisible();
+    await page.getByRole("button", { name: "Clear Filters" }).click();
+    await expect(page.getByText("No expenses match your filters")).toHaveCount(0);
+    await expect(page.getByRole("tab", { name: "All" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByPlaceholder("Search expenses...")).toHaveValue("");
+    await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
+  });
+
   test("the DARK-mode Select highlight stays readable (F-221b — the 1.18:1 wash)", async ({ page }) => {
     // Session-221 (R-18): the SelectItem's focus wash carried no dark
     // arms — the highlighted option computed neutral-900 rgb(23,23,23)

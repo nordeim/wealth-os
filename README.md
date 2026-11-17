@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2032%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2052%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,8 +59,8 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1877 checks incl. property tests |
-| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 155 checks; chromium; seeded `db/e2e.db` |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1895 checks incl. property tests |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 157 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
 ```mermaid
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 118 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 119 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,8 +166,8 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1877 checks / 118 files |
-| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 155 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
+| Unit (Vitest) | `bun run test` | 1895 checks / 119 files |
+| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 157 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
 | Parity sweeps | `bun run gate:full` | **active** (re-activated v2.8.0 / R-4.5): the standing gate + six WealthOS-native drift gates — the four sweep classes (1440×900 · 390×844 · 768×1024 · 1024×768, theme-matched zero-data baselines), the fullpage sweep (the 11-page below-the-fold axis with the zero-data sentinel), and the interior census (four-axis standing allowances at margin 0) — green end-to-end from cold at v2.8.0; run it when parity surfaces changed or per the standing cadence (the pre-push bar stays `bun run gate`; the sweep legs need the live reference, so `gate` remains the offline gate) |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1877 unit · 155 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1895 unit · 157 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 266: **R-63 shipped — the range-return, empty-truth, and escape-stack round**: the fresh-eyes audit (three Mode-C passes — the R-62 cure surfaces (the parity-265 battery re-run green 27/27 at HEAD) · the API/auth/security layer's nineteenth consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; every candidate dismissed into a documented posture) · the UI/a11y/shell layer — eight new findings plus the driving session's own docs discovery, every material claim re-verified at file:line): 0 Critical / 0 High / 2 Medium / 4 Low / 3 Informational NEW after dedup. THE ROUND'S FLAGSHIP PAIR LIVES ON THE R-62 CARD ITSELF: **F-266b the Date Range select's no return path** (six window options, no All-dates arm — once a window was picked the live-apply list could not be widened back from the select; the cure adds the All-dates first option on the all sentinel — a Radix SelectItem may not carry the empty string, its placeholder predicate reads an empty value as nothing selected, live-caught by the captures face) · **F-266c the filtered-to-empty list rendered the onboarding face** ("No expenses yet" + the Add First CTA for a full ledger; the cure splits the empty arm on the honest discriminator — panel filters or search — with a Clear Filters action that lifts every constraint). Plus: F-266d one Escape dismissed two surfaces over a stacked dialog (the guard now defers to any open dialog layer) · F-266e the card's two input genera unified on the form genus · F-266f the dead Minus import retired · F-266a the README status row itself was stale at R-61 (the R-62 lockstep's own miss — now structurally pinned: the docs-counts battery derives the PAD's newest revision round and asserts this row cites it) · F-266g the coach region's comment trued · F-266h the snapshot capture left the state updater · F-266i the seam's custom-bound form guard (V8's partial-ISO day invention refused). The mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 267: **R-64 shipped — the savings-tab, sort-count, and calendar-roundtrip round**: the fresh-eyes audit (three Mode-C passes — the R-63 cure surfaces (the parity-266 battery re-run green 16/16 at HEAD) · the API/auth/security layer's twentieth consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; every candidate dismissed into a documented posture) · the UI/a11y/shell layer — all eight standing contracts verified, five new findings after dedup, every material claim re-verified at file:line (the savings-bucket emptiness census-verified, the calendar-overflow invention runtime-proven, the reference's one-genus dialog live-measured)): 0 Critical / 0 High / 1 Medium / 4 Low / 4 Informational NEW after dedup. THE ROUND'S MEDIUM LIVES INSIDE F-266c'S OWN CHARTER: **F-267a the no-matches discriminator misses the budget tab** — the corpus's savings bucket is empty, so the Savings tab alone rendered the onboarding face for a 72-expense ledger, and the Clear Filters action did not reset the tab (the cure: a dedicated over-constraint predicate counting the tab, with the sort pair excluded — **F-267b** — and the Clear lifting every constraint the page owns). Plus: **F-267c** the seam's custom-bound guard admitted calendar-invalid forms (toDate's normalizing constructor invented Mar 3 for a Feb-31 bound — the cure: the calendar round-trip, the csv.ts stageWrittenLiteral doctrine) · **F-267d** the four dialogs' Date inputs joined the FORM_INPUT genus · **F-267e** the split derivation memoized · F-267f the bound-field docs' twin clause · F-267g the Escape guard's invariant comment. The mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

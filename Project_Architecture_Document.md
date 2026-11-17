@@ -16,6 +16,72 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.64.0 (session 267, R-64 — the savings-tab, sort-count, and
+  calendar-roundtrip round): the fresh-eyes audit (three Mode-C passes —
+  the R-63 cure surfaces driven by the session (the parity-266 battery
+  re-run green 16/16 at HEAD), the API/auth/security layer (the
+  TWENTIETH consecutive clean bill — all twelve house contracts,
+  45 handlers / 30 route files, the census re-derived independently,
+  every candidate examined and dismissed into a documented posture),
+  and the UI/a11y/shell layer (all eight standing contracts verified,
+  five new findings after dedup)) — 0 Critical / 0 High / 1 Medium /
+  4 Low / 4 Informational NEW after dedup, every material claim
+  re-verified at file:line by the driving session (the savings-bucket
+  emptiness census-verified on the live db, the calendar-overflow
+  invention runtime-proven, the reference's one-genus dialog
+  live-measured through agent-browser). THE SAVINGS-TAB TRUTH GAP
+  (F-267a, Medium — the F-266c no-matches discriminator keyed on the
+  badge count (the panel's controls) plus the search box, missing the
+  budget TAB — the page's third constraint dimension, a control that
+  can empty a list without being counted; the corpus's own savings
+  bucket is empty (needs 46 · wants 26 · savings 0), so the Savings
+  tab ALONE rendered the onboarding face ("No expenses yet" + the Add
+  Your First Expense CTA) for a 72-expense ledger, and the Clear
+  Filters action the F-266c cure built did not reset the tab — the
+  still-empty list flipped from the no-matches face to the onboarding
+  face after its own Clear button; the cure: a DEDICATED
+  over-constraint predicate counting the list-narrowing constraints
+  the page owns — range, category, min, max, the tab, and the search —
+  with the Clear Filters action lifting every constraint including
+  the tab) · the sort pair leaves the predicate (F-267b — the badge
+  count included the sort pair, a control that can only reorder never
+  empty, so an empty ledger with a touched sort rendered the
+  no-matches face; the predicate is separate from the badge, which
+  keeps its honest F-265e panel count) · the seam's calendar
+  round-trip (F-267c — the F-266i form guard tested shape not
+  calendar validity: "2026-02-31" passed and toDate's normalizing
+  constructor invented Mar 3 (runtime-proven), the exact F-222a
+  invented-day doctrine the guard was built to enforce; the cure: a
+  bound must LAND on the calendar its digits wrote or be dropped as
+  open — the csv.ts stageWrittenLiteral doctrine in its local-midnight
+  form — with the twin-form admission and calendar-drop legs closing
+  the battery gaps) · the four dialogs' Date inputs join the form
+  genus (F-267d — the expenses/income/goals/investments dialogs' date
+  inputs rode the other genus beside their FORM_INPUT siblings; the
+  reference's own dialog carries one genus across every field,
+  live-measured) · the split derivation memoized (F-267e — the F-231j
+  contract its two siblings honor) · the bound-field docs' twin
+  clause (F-267f) · the Escape guard's invariant comment (F-267g).
+  Registered: F-267h the theme fallback's storage divergence,
+  F-267i the dashboard clock's midnight staleness. The verification:
+  lint 0/0 · tsc 0 · 1895 unit (119 files, +18) · build · smoke
+  15/15 · 157 e2e (+2 — the Savings-tab no-matches face with the
+  onboarding CTA absent, and the Clear Filters restore returning the
+  tab to All with the list repopulated; zero new signups, the
+  corpus's own empty savings bucket the deterministic fixture) ·
+  census MATCH · THE SIX PARITY DRIFT GATES RE-RUN (required again —
+  the Expenses parity surface changed): the four sweep classes CLEAN,
+  the fullpage sweep CLEAN, the interior census CLEAN (the
+  closed-state DOM unchanged by construction — the discriminator is
+  render-logic, the no-matches variant only renders under the tab
+  constraint, the dialog inputs live inside closed dialogs) · the
+  captures 250 (THE SAVINGS-TAB NO-MATCHES FACE AT DESKTOP
+  1440×900 — the tab-emptied list wearing the over-constrained truth,
+  Clear Filters standing, the onboarding CTA absent, the dialog Date
+  input on the form genus) and 251 (THE COMPOUND OVER-CONSTRAINT AT
+  MOBILE 390×844 — the tab plus the search box, the Clear lifting
+  both) + the two comparison captures at TRUE 390×844.
+
 - [SR] v2.63.0 (session 266, R-63 — the range-return, empty-truth, and
   escape-stack round): the fresh-eyes audit (three Mode-C passes — the
   R-62 cure surfaces driven by the session (the parity-265 battery
@@ -2948,8 +3014,8 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1877) → `next build` → the 15-assertion smoke ladder on the
-  standalone artifact → Playwright e2e (155) against a pinned `db/e2e.db`.
+  → vitest (1895) → `next build` → the 15-assertion smoke ladder on the
+  standalone artifact → Playwright e2e (157) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
   R-4.5, session 211 — green end-to-end from cold): the sweep,
@@ -3080,7 +3146,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 118 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 119 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -3369,11 +3435,11 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 118 | 1877 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 119 | 1895 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
-| — architecture pins | 86 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, db-transient) | `tests/` | source-scanning contracts |
+| — architecture pins | 87 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 28 | auth, rate-limit, csv, uploads, upload-sniff, headers, boot-env, search-query, store-logout, store-hydrate, store-staleness, … | `tests/` | behavior |
-| E2E | 7 | 155 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
+| E2E | 7 | 157 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
 *docs-counts pins are re-anchored when doc/test counts change — keep them
@@ -3404,10 +3470,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1877/1877 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1895/1895 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 155/155
+- [ ] `CI=1 bun run test:e2e` → 157/157
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -3474,7 +3540,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1877 unit / 155 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1895 unit / 157 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -3509,7 +3575,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1877 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1895 unit · build · smoke 15/15 ·
 152 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

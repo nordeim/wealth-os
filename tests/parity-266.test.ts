@@ -85,10 +85,15 @@ describe("F-266b — the range select's All-dates arm (the range return)", () =>
 describe("F-266c — the filtered-to-empty truth (the empty-state split)", () => {
   it("the empty arm splits on the honest discriminator", () => {
     const src = read("src/app/(app)/expenses/page.tsx");
-    // The no-matches face renders when the panel filters are active
-    // OR the search box is non-empty — the two constraint dimensions
-    // the page owns.
-    expect(src).toMatch(/activeFilters > 0 \|\| search\.trim\(\) !== ""/);
+    // Session-267 (R-64, the contract-change update): the
+    // discriminator's form advanced from the badge-count reuse
+    // (activeFilters > 0 || search) to the DEDICATED over-constraint
+    // predicate — listConstrained, the list-narrowing constraints the
+    // page owns (the badge kept its sort pair, which cannot empty a
+    // list, and never carried the tab, which can). The parity-267
+    // battery pins the predicate's own composition; this leg pins the
+    // discriminator keys on it.
+    expect(src).toMatch(/visible\.length === 0 \? \(\s*listConstrained \? \(/);
     expect(src).toContain("No expenses match your filters");
     // The onboarding face keeps the genuinely-empty ledger.
     expect(src).toContain("No expenses yet");
