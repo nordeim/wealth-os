@@ -148,8 +148,13 @@ export const STANDING_FULLPAGE_BASELINES: Record<string, BaselineTable> = {
     analytics: 36.1,
     goals: 7.0,
     settings: 50.6,
-    login: 7.9,
-    "reset-password": 3.9,
+    // Session-263 (R-60, F-263g) re-derivation: login 7.9→7.6 (the
+    // login family's small-breakpoint height step — the reference's own
+    // ladder, live-probed; the taller card moved toward the reference)
+    // · reset-password 3.9→4.0 (the back button rides the family
+    // constant — the stock-form genus note rides the sweep's table).
+    login: 7.6,
+    "reset-password": 4.0,
   },
   // 390×844 — the phone class (the sweep's own) — session-210 maiden,
   // re-derived session-217 (R-14) and session-219 (R-16).

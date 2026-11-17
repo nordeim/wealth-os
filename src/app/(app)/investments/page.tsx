@@ -298,10 +298,12 @@ export default function InvestmentsPage() {
                         <td className="py-3 pr-4">
                           <span
                             className="rounded-full px-2 py-0.5 text-xs font-medium"
-                            /* F-218k: the readable step, the tint keeps the hue.
-                               Session-223 (R-20, F-223g): textDark — the 10%
-                               tint over a dark card is near-black, where the
-                               600/700 steps compute ≈2:1. */
+                            /* F-218k: the readable step, the tint keeps
+                               the hue. Session-223 (R-20, F-223g; span
+                               trued session 263, R-60, F-263l): textDark
+                               — the 10% tint over the dark card gradient
+                               is near-black, where the 600/700 steps
+                               compute 2.10–3.42:1 across the gradient. */
                             style={{ backgroundColor: `${meta?.color ?? "#78716c"}1a`, color: isDark ? meta?.textDark ?? "#d6d3d1" : meta?.text ?? "#57534e" }}
                           >
                             {meta?.label ?? row.type}

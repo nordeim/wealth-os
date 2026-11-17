@@ -8,9 +8,11 @@ import { TABS_SEGMENTED } from "@/lib/page-layout";
 // plain text tabs (the component's default genus — currently uncalled,
 // kept as the documented identity); `variant="segmented"` renders the
 // segmented control used by the Analytics section tabs and the Expenses
-// type tabs — the
-// reference track is the equal-width grid on a rounded-lg muted-surface
-// wash with a raised white active pill. Session-229 (R-26, F-229f):
+// type tabs — the reference track is the natural-width row on a
+// rounded muted-surface wash with a raised white active pill (the
+// equal-width-grid claim was the CRM-era mechanism; the WealthOS-era
+// constant was re-derived as the natural-width form at the rebase —
+// trued session 263, R-60, F-263j). Session-229 (R-26, F-229f):
 // the third variant (the pill bar) retired with its track constant, the
 // cols machinery, and the static column map — zero consumers across
 // the tree (both live call sites ride segmented, neither passes cols; the

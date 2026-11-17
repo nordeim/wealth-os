@@ -299,8 +299,14 @@ export const APP_FOOTER = {
 // UI primitive contracts (the shadcn-style components' class seams)
 // ---------------------------------------------------------------------------
 
+// Session-263 (R-60, F-263i): the overlay alpha trued to the measured
+// form — live-probed on the reference's open Add Expense dialog, the
+// overlay is a full-viewport fixed layer computing the half-strength
+// black wash (the 60% form this cured shipped from the rebase; no test
+// pinned the value and the sweeps capture settled pages with dialogs
+// closed — the surface every gate was blind to).
 export const DIALOG_OVERLAY =
-  "fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" as const;
+  "fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" as const;
 
 // Session-231 (R-28, F-231h): the wide geometry arm retired — zero
 // consumers (the F-229f re-entry rule; WealthOS's one wide dialog, the
@@ -473,9 +479,18 @@ export const LOGIN_LAYOUT = {
   inputWrap: "relative",
   inputIcon: "absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6b7688]",
   input:
-    "h-11 w-full rounded-xl border border-[#e3e7ee] bg-white pl-10 pr-3 placeholder:text-[#a3adc2] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40 text-base md:text-sm",
+    // Session-263 (R-60, F-263g): the height steps to 48px at the small
+    // breakpoint (live-probed on the reference at 390/639/640/1280 — the
+    // ladder the four prose carriers always described; the step dropped
+    // at the WealthOS rebase). The font pair below steps at the middle
+    // breakpoint and always matched the reference.
+    "h-11 sm:h-12 w-full rounded-xl border border-[#e3e7ee] bg-white pl-10 pr-3 placeholder:text-[#a3adc2] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40 text-base md:text-sm",
   submit:
-    "flex h-11 w-full items-center justify-center gap-1 rounded-xl bg-[#131b33] font-medium text-white shadow-sm transition-all duration-200 hover:bg-[#0f1630] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-sm",
+    // Session-263 (R-60, F-263g): the submit steps with the inputs —
+    // the reference's Sign in computes 44px at 390 and 48px at 1280
+    // (live-probed; the session-79 DOM record always carried the
+    // ladder form).
+    "flex h-11 sm:h-12 w-full items-center justify-center gap-1 rounded-xl bg-[#131b33] font-medium text-white shadow-sm transition-all duration-200 hover:bg-[#0f1630] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-sm",
   footer: "flex flex-col items-center justify-between gap-2 sm:flex-row sm:gap-0",
   footerLink:
     // Session-222 (R-19, F-222g): the house focus ring (the auth-face

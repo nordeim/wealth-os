@@ -19,8 +19,12 @@ const DialogPortal = DialogPrimitive.Portal;
 const DialogClose = DialogPrimitive.Close;
 
 function DialogOverlay({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
-  // Session-15 (S15-P2): the reference ships the STOCK black/80 fade —
-  // NO backdrop blur (our scaffold's gray-900/45 + blur(2px) wash retired).
+  // Session-15 (S15-P2), trued session 263 (R-60, F-263i): the
+  // reference's overlay is the MEASURED half-strength black wash —
+  // live-probed on its open Add Expense dialog (a full-viewport fixed
+  // layer at the 50% form; the stock 80% claim and our 60% form were
+  // both wrong) — NO backdrop blur (the scaffold's grayer wash with
+  // its blur retired with the rebase).
   return (
     <DialogPrimitive.Overlay
       className={cn(

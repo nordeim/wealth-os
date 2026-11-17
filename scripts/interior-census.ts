@@ -1555,8 +1555,15 @@ export const STANDING_CENSUS: Readonly<
     analytics: { unexplained: 85, mainH: 49 },
     goals: { unexplained: 26, mainH: 49 },
     settings: { unexplained: 53, mainH: 103 },
-    login: { unexplained: 52, mainH: -40 },
-    "reset-password": { unexplained: 19, mainH: 0 },
+    // Session-263 (R-60, F-263g) re-derivation: the login family's
+    // height step at the small breakpoint — login 52→53 (the taller
+    // inputs and submit shift the card's wrappers); reset-password
+    // 19→17 (the screen's back button rides the family constant — two
+    // MORE element boxes match the reference's geometry at this
+    // width; the flat stock-form genus on that button is registered in
+    // the plan's R-60 section). mainH unchanged on both pages.
+    login: { unexplained: 53, mainH: -40 },
+    "reset-password": { unexplained: 17, mainH: 0 },
   },
   phone: {
     dashboard: { unexplained: 271, mainH: 217 },
@@ -1587,8 +1594,13 @@ export const STANDING_CENSUS: Readonly<
     analytics: { unexplained: 88, mainH: 149 },
     goals: { unexplained: 24, mainH: -15 },
     settings: { unexplained: 53, mainH: 19 },
-    login: { unexplained: 55, mainH: 0 },
-    "reset-password": { unexplained: 19, mainH: 0 },
+    // Session-263 (R-60, F-263g) re-derivation: login 55→57, mainH 0
+    // unchanged (the height-step shift — the desktop table's decode);
+    // reset-password 19→17 (the desktop table's decode). The phone
+    // axis is UNTOUCHED by the cure (below the small breakpoint, the
+    // ladder emits nothing).
+    login: { unexplained: 57, mainH: 0 },
+    "reset-password": { unexplained: 17, mainH: 0 },
   },
   landscape: {
     dashboard: { unexplained: 255, mainH: 35 },
@@ -1603,8 +1615,12 @@ export const STANDING_CENSUS: Readonly<
     analytics: { unexplained: 95, mainH: 161 },
     goals: { unexplained: 26, mainH: 49 },
     settings: { unexplained: 55, mainH: 83 },
-    login: { unexplained: 53, mainH: -58 },
-    "reset-password": { unexplained: 19, mainH: 0 },
+    // Session-263 (R-60, F-263g) re-derivation: login mainH -58→-46
+    // (our main grew 12px — the three stepped elements at 4px each);
+    // unexplained 53 unchanged. reset-password 19→17 (the desktop
+    // table's decode).
+    login: { unexplained: 53, mainH: -46 },
+    "reset-password": { unexplained: 17, mainH: 0 },
   },
 };
 

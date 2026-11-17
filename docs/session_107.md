@@ -55,7 +55,7 @@ Three Mode-C passes (the R-58 cure surfaces driven by the session ·
 the API/auth/security layer · the UI/a11y/shell layer): the
 parity-261 battery re-run green 11/11 at HEAD (all R-58 cure surfaces
 holding); the API layer's FIFTEENTH consecutive clean bill (all ten
-house contracts, 40 handlers / 24 route files read line-by-line,
+house contracts, 45 handlers / 30 route files read line-by-line,
 every candidate examined and dismissed into a documented posture);
 the UI source layer clean on every named contract with EIGHT new
 findings after dedup — all in the two genera the recent rounds

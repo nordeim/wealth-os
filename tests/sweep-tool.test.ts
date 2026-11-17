@@ -83,7 +83,12 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     expect({ ...STANDING_BASELINES.desktop }).toEqual({
       dashboard: 12.3, income: 29.6, expenses: 13.3, accounts: 10.6,
       investments: 10.5, import: 9.3, analytics: 36.1, goals: 7.0,
-      settings: 19.9, login: 6.0, "reset-password": 3.9,
+      settings: 19.9,
+      // Session-263 (R-60, F-263g) re-derivation: login 6.0→5.8 (the
+      // height-step convergence) · reset-password 3.9→4.0 (the back
+      // button rides the family constant — decode in the script's
+      // table).
+      login: 5.8, "reset-password": 4.0,
     });
     expect({ ...STANDING_BASELINES.phone }).toEqual({
       dashboard: 23.0, income: 40.0, expenses: 40.5, accounts: 16.6,
@@ -98,14 +103,20 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
       // 20.3→24.9 (the reference styling event).
       dashboard: 12.7, income: 31.0, expenses: 30.5, accounts: 10.2,
       investments: 24.9, import: 8.8, analytics: 48.9, goals: 6.5,
-      settings: 32.3, login: 11.5, "reset-password": 6.5,
+      settings: 32.3,
+      // Session-263 (R-60, F-263g) re-derivation: login 11.5→10.6 ·
+      // reset-password 6.5→6.6.
+      login: 10.6, "reset-password": 6.6,
     });
     expect({ ...STANDING_BASELINES.landscape }).toEqual({
       // Session-250 (R-47, F-250q): dashboard 10.5→14.3 · investments
       // 23.2→26.3 (the reference styling event).
       dashboard: 14.3, income: 33.0, expenses: 26.1, accounts: 13.9,
       investments: 26.3, import: 11.7, analytics: 30.9, goals: 9.6,
-      settings: 19.5, login: 4.6, "reset-password": 6.4,
+      settings: 19.5,
+      // Session-263 (R-60, F-263g) re-derivation: login 4.6→4.2 ·
+      // reset-password 6.4→6.7.
+      login: 4.2, "reset-password": 6.7,
     });
   });
 
@@ -159,7 +170,9 @@ describe("session-204 (R-4.1): the sweep re-anchored to the WealthOS reference",
     );
     expect(drift.ok).toBe(false);
     expect(drift.failures).toEqual([
-      { page: "login", pct: 7.3, baseline: 6, allowed: 6.5 },
+      // Session-263 (R-60, F-263g): the re-derived desktop login
+      // baseline 5.8 (was 6.0) — the leg's simulated drift still fails.
+      { page: "login", pct: 7.3, baseline: 5.8, allowed: 6.3 },
     ]);
   });
 

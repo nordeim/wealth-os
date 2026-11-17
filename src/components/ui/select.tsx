@@ -24,9 +24,10 @@ function SelectTrigger({
       // Session-77 (N-77c11, bundle-falsified S10-2 model): the focus ring
       // is PLAIN focus: — it FIRES on mouse click, like the reference's
       // stock Tr (the Input/Button bases stay focus-visible on BOTH
-      // apps). No base w-full — surfaces add it (270px rails yes /
-      // w-full sm:w-32 toolbars; the reference's bundle base carries
-      // w-full but our per-surface additions compute equal everywhere).
+      // apps). Session-263 (R-60, F-263h): the base carries the
+      // full-width form (the reference's bundle base carries the same
+      // form); the tree's one custom-width select surface overrides it
+      // through its cn appendage, and the merge resolves the pair.
       // Session-81 (M-81c3, bundle re-decoded + live-DOM-confirmed on the
       // settings x2 + dashboard x3 selects): the span arm is the
       // reference's [&>span]:line-clamp-1 — its trigger span computes

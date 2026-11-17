@@ -7,11 +7,12 @@ export type BudgetCategory = "needs" | "wants" | "savings";
 
 export const BUDGET_CATEGORIES: BudgetCategory[] = ["needs", "wants", "savings"];
 
-// Session-250 (R-47, F-250f): iconLight is the LIGHT-mode icon ink —
-// the one arm whose base color sat under the 3:1 non-text bar against
-// its soft tile (savings at 2.42:1; the step to #059669 measures
-// 3.58:1; needs and wants already pass, so they carry no override).
-// The budgets-legend dots and the dark-mode arms keep the base color.
+// Session-250 (R-47, F-250f; figure trued session 263, R-60, F-263m):
+// iconLight is the LIGHT-mode icon ink — the one arm whose base color
+// sat under the 3:1 non-text bar against its soft tile (savings at
+// 2.41:1; the step to #059669 measures 3.58:1; needs and wants
+// already pass, so they carry no override). The budgets-legend dots
+// and the dark-mode arms keep the base color.
 export const BUDGET_CATEGORY_META: Record<
   BudgetCategory,
   { label: string; color: string; soft: string; iconLight?: string }
@@ -111,9 +112,11 @@ export const INVESTMENT_TYPES = [
   // trued the span to the per-type computation); the 600/700-level
   // steps carry 4.5:1+ while the tint keeps
   // the type's hue.
-  // Session-223 (R-20, F-223g): `textDark` is the dark-surface ink —
-  // the 10% tint over a dark card is near-black, where the 600/700
-  // steps compute ≈2:1; the 400-level steps pass on the same tint
+  // Session-223 (R-20, F-223g; span trued session 263, R-60, F-263l):
+  // `textDark` is the dark-surface ink — the 10% tint over the dark
+  // card gradient is near-black, where the 600/700 steps compute
+  // 2.10–3.42:1 across the card gradient (both ends measured; every
+  // member sub-4.5:1); the 400-level steps pass on the same tint
   // (the page selects via isDark).
   { value: "stock", label: "Stock", color: "#3b82f6", text: "#1d4ed8", textDark: "#93c5fd" },
   { value: "etf", label: "ETF", color: "#10b981", text: "#047857", textDark: "#6ee7b7" },

@@ -311,8 +311,16 @@ export const STANDING_BASELINES = {
     analytics: 36.1,
     goals: 7.0,
     settings: 19.9,
-    login: 6.0,
-    "reset-password": 3.9,
+    // Session-263 (R-60, F-263g) re-derivation: login 6.0→5.8 (the
+    // login family regained the 48px height step at the small
+    // breakpoint — live-probed on the reference; the taller inputs and
+    // submit moved our card TOWARD the reference's own geometry) ·
+    // reset-password 3.9→4.0 (the screen's back button rides the same
+    // family constant — 4px away from the reference's flat stock form,
+    // the pre-existing button-genus delta registered in the plan's
+    // R-60 section).
+    login: 5.8,
+    "reset-password": 4.0,
   },
   // 390x844 — the phone class (< 768) — session-209 re-derivation.
   // Session-250 (R-47, F-250q): the reference-side STYLING EVENT
@@ -358,8 +366,12 @@ export const STANDING_BASELINES = {
     analytics: 48.9,
     goals: 6.5,
     settings: 32.3,
-    login: 11.5,
-    "reset-password": 6.5,
+    // Session-263 (R-60, F-263g) re-derivation: login 11.5→10.6 (the
+    // 48px height step at the small breakpoint — the reference's own
+    // ladder, live-probed) · reset-password 6.5→6.6 (the back-button
+    // genus note rides the desktop table's decode).
+    login: 10.6,
+    "reset-password": 6.6,
   },
   // 1024x768 — the landscape class (< 1280) — session-209 re-derivation
   // Session-250 (R-47, F-250q): the reference styling event (the
@@ -375,8 +387,12 @@ export const STANDING_BASELINES = {
     analytics: 30.9,
     goals: 9.6,
     settings: 19.5,
-    login: 4.6,
-    "reset-password": 6.4,
+    // Session-263 (R-60, F-263g) re-derivation: login 4.6→4.2 (the
+    // height-step convergence, the tablet table's decode) ·
+    // reset-password 6.4→6.7 (the back-button genus note rides the
+    // desktop table's decode).
+    login: 4.2,
+    "reset-password": 6.7,
   },
 } as const;
 

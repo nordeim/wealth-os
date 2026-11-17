@@ -215,7 +215,10 @@ describe("session-210 (R-4.4): the fullpage sweep re-anchored to the WealthOS re
     expect(baselines.desktop).toEqual({
       dashboard: 59.8, income: 29.6, expenses: 13.3, accounts: 10.6,
       investments: 49.3, import: 26.6, analytics: 36.1, goals: 7.0,
-      settings: 50.6, login: 7.9, "reset-password": 3.9,
+      // Session-263 (R-60, F-263g) re-derivation: login 7.9→7.6 ·
+      // reset-password 3.9→4.0 (the login family's height step —
+      // decode in scripts/fullpage-sweep.ts's table).
+      settings: 50.6, login: 7.6, "reset-password": 4.0,
     });
     expect(baselines.phone).toEqual({
       dashboard: 78.0, income: 44.2, expenses: 60.2, accounts: 22.5,

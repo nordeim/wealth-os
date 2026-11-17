@@ -140,8 +140,8 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
       },
     ]);
     expect(red.ok).toBe(false);
-    expect(red.failures[0]).toContain("[desktop] login: 55 unexplained");
-    expect(red.failures[0]).toContain("standing 52 + margin 0");
+    expect(red.failures[0]).toContain("[desktop] login: 56 unexplained");
+    expect(red.failures[0]).toContain("standing 53 + margin 0");
     // a mainH drift off the standing value → RED
     const hRed = censusVerdict([
       { page: "login", axis: "desktop", mainHDelta: 0, oursEls: 57, refEls: 56, matches: 2, explained: [], unexplained: [] },
@@ -177,8 +177,11 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
       analytics: { unexplained: 85, mainH: 49 },
       goals: { unexplained: 26, mainH: 49 },
       settings: { unexplained: 53, mainH: 103 },
-      login: { unexplained: 52, mainH: -40 },
-      "reset-password": { unexplained: 19, mainH: 0 },
+      // Session-263 (R-60, F-263g) re-derivation: login 52→53 ·
+      // reset-password 19→17 (the login family's small-breakpoint
+      // height step — decode in scripts/interior-census.ts's table).
+      login: { unexplained: 53, mainH: -40 },
+      "reset-password": { unexplained: 17, mainH: 0 },
     });
     expect({ ...STANDING_CENSUS.phone }).toEqual({
       dashboard: { unexplained: 271, mainH: 217 },
@@ -206,8 +209,9 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
       analytics: { unexplained: 88, mainH: 149 },
       goals: { unexplained: 24, mainH: -15 },
       settings: { unexplained: 53, mainH: 19 },
-      login: { unexplained: 55, mainH: 0 },
-      "reset-password": { unexplained: 19, mainH: 0 },
+      // Session-263 (R-60, F-263g): login 55→57 · reset-password 19→17.
+      login: { unexplained: 57, mainH: 0 },
+      "reset-password": { unexplained: 17, mainH: 0 },
     });
     expect({ ...STANDING_CENSUS.landscape }).toEqual({
       dashboard: { unexplained: 255, mainH: 35 },
@@ -220,8 +224,10 @@ describe("session-206 (R-4.3): the interior census re-anchored to the WealthOS r
       analytics: { unexplained: 95, mainH: 161 },
       goals: { unexplained: 26, mainH: 49 },
       settings: { unexplained: 55, mainH: 83 },
-      login: { unexplained: 53, mainH: -58 },
-      "reset-password": { unexplained: 19, mainH: 0 },
+      // Session-263 (R-60, F-263g): login mainH -58→-46 (the three
+      // stepped elements at 4px each) · reset-password 19→17.
+      login: { unexplained: 53, mainH: -46 },
+      "reset-password": { unexplained: 17, mainH: 0 },
     });
   });
 
