@@ -255,8 +255,22 @@ function inRangeWindow(row: ExpenseRowLike, f: ExpenseListFilters, now: Date): b
     case "last-month":
       return sameMonth(d, addMonths(now, -1));
     case "custom": {
-      if (f.customStart && d.getTime() < toDate(f.customStart).getTime()) return false;
-      if (f.customEnd && d.getTime() >= endOfDayExclusive(toDate(f.customEnd))) return false;
+      // Session-266 (R-63, F-266i): the bounds' contract is the seam's
+      // own documented form (the bare yyyy-mm-dd the date inputs yield;
+      // the stored UTC-midnight twin re-anchors identically through
+      // toDate). A bound OUTSIDE that form is DROPPED (treated as open)
+      // rather than parsed: V8 would stage a "2026-11" partial as the
+      // first of the month — an invented day (the F-222a doctrine: a
+      // skip beats an invented day). Unreachable through the type date
+      // UI; the guard binds the seam for any future free-text caller.
+      const start = UTC_MIDNIGHT_ISO.test(f.customStart)
+        ? toDate(f.customStart).getTime()
+        : null;
+      const end = UTC_MIDNIGHT_ISO.test(f.customEnd)
+        ? endOfDayExclusive(toDate(f.customEnd))
+        : null;
+      if (start !== null && d.getTime() < start) return false;
+      if (end !== null && d.getTime() >= end) return false;
       return true;
     }
   }

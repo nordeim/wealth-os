@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1860;
-const E2E_TOTAL = 152;
+const UNIT_TOTAL = 1877;
+const E2E_TOTAL = 155;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 117;
+const TEST_FILES = 118;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -118,7 +118,7 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // tests inside existing family files, no new rows): 4 + 68 +
     // 27 = 99.
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 85 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, db-transient) |",
+      "| — architecture pins | 86 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, db-transient) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99
@@ -268,7 +268,10 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // Session-265 (R-62): the SIXTEENTH gate-enforced ride — the
     // v2.62.0 block lands together with the trio's advance to
     // v2.60.0/v2.61.0/v2.62.0 (the v2.59.0 pin ages out).
-    expect(p).toMatch(/\[SR\] v2\.60\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1830 unit \(115 files, \+16\)/);
+    // Session-266 (R-63): the SEVENTEENTH gate-enforced ride — the
+    // v2.63.0 block lands together with the trio's advance to
+    // v2.61.0/v2.62.0/v2.63.0 (the v2.60.0 pin ages out).
+    expect(p).toMatch(/\[SR\] v2\.63\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1877 unit \(118 files, \+17\)/);
     expect(p).toMatch(/\[SR\] v2\.61\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1838 unit \(116 files, \+8\)/);
     expect(p).toMatch(/\[SR\] v2\.62\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1860 unit \(117 files, \+22\)/);
   });
@@ -301,6 +304,24 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     );
     expect(pinned.length).toBeGreaterThanOrEqual(3);
     expect(pinned).toContain(Number(newest![1]));
+  });
+
+  // Session-266 (R-63, F-266a): the README status row's structural
+  // pin — the R-62 lockstep advanced the count ladder but missed the
+  // row (the README's remediation-program status cell still described
+  // R-61 while the repo shipped R-62; every prior R-commit had
+  // advanced it, and nothing executable guarded the site — the F-245c
+  // genus: a leg that rides only in the lockstep script rots the
+  // site). This leg derives the PAD's newest revision round at test
+  // time (the same derivation the F-249b leg carries) and asserts the
+  // README row cites that round's R-item: the next stale row fails
+  // `bun run test` inside its own ship commit.
+  it("the README's remediation row cites the PAD's NEWEST revision round (F-266a — the structural cure)", () => {
+    const pad = doc("Project_Architecture_Document.md");
+    const newest = pad.match(/- \[SR\] v2\.(\d+)\.(\d+) \(/);
+    expect(newest).not.toBeNull();
+    const r = norm(doc("README.md"));
+    expect(r).toContain(`R-${newest![1]} shipped`);
   });
 
   it("the SKILL's stack table carries NO deleted-dependency rows (F-216f, the retired-forms negative ladder)", () => {

@@ -89,7 +89,14 @@ describe("F-265b — the Expenses filter surface is the in-flow expansion card",
     // date-input pattern).
     expect(src).toMatch(/aria-label="Start date"/);
     expect(src).toMatch(/aria-label="End date"/);
-    expect(src).toContain('placeholder="Select range"');
+    // Session-266 (R-63, F-266b): the placeholder RETIRED with the
+    // All-dates first option — the contract this leg pinned moved with
+    // the cure (a Radix Select renders the item matching the value
+    // once such an item exists, so the placeholder was only reachable
+    // before the first pick, and the named no-window state is the
+    // honest construction). The parity-266 battery pins the new form;
+    // this leg keeps the reference's six options and the reveal.
+    expect(src).not.toContain('placeholder="Select range"');
   });
 
   it("the sort select carries the reference's four fields and the direction pair", () => {

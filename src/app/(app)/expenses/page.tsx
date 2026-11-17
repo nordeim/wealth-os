@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   ArrowLeft,
   Filter,
-  Minus,
   PlusCircle,
   Receipt,
   Search,
@@ -160,6 +159,15 @@ export default function ExpensesPage() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (document.querySelector("[data-radix-popper-content-wrapper]")) return;
+      // Session-266 (R-63, F-266d): a stacked dialog owns this Escape.
+      // Radix's dismissable layer closes the dialog on the keydown
+      // WITHOUT stopping propagation, so an unguarded window listener
+      // closed the card underneath as well — one press, two surfaces.
+      // Both dialog genera unmount when closed (the Radix content, the
+      // mobile drawer's conditional return), so DOM presence is the
+      // exact test for an open surface — and this card is role group,
+      // never a match for the dialog selector.
+      if (document.querySelector('[role="dialog"]')) return;
       setFiltersOpen(false);
     };
     window.addEventListener("keydown", onKey);
@@ -182,10 +190,13 @@ export default function ExpensesPage() {
   // the card and never revert). Captured in the trigger's click — the
   // one place the closed-to-open transition is observable — so the
   // effect stays state-free (no mid-edit re-captures: Cancel reverts
-  // to the OPEN posture, not the last keystroke).
+  // to the OPEN posture, not the last keystroke). Session-266 (R-63,
+  // F-266h): the capture rides the HANDLER BODY, never the state
+  // updater — React may double-invoke updater callbacks (StrictMode
+  // dev), and a ref write inside one is an impure updater; guarded on
+  // the closed state, the capture fires exactly once per open.
   const toggleFilters = () => {
-    setFiltersOpen((open) => {
-      if (open) return false;
+    if (!filtersOpen) {
       openSnapshotRef.current = {
         budgetTab: "all",
         category: categoryFilter,
@@ -198,8 +209,8 @@ export default function ExpensesPage() {
         sortField,
         sortDir,
       };
-      return true;
-    });
+    }
+    setFiltersOpen(!filtersOpen);
   };
 
   const cancelFilters = () => {
@@ -226,6 +237,16 @@ export default function ExpensesPage() {
     setMaxAmount("");
     setSortField("date");
     setSortDir("desc");
+  };
+
+  // Session-266 (R-63, F-266c): the no-matches face's own action. The
+  // footer's Clear All resets the PANEL only (the reference's own
+  // semantics — the search box lives outside the card); the empty
+  // state's action must lift EVERY constraint the page owns, or a
+  // search-only over-constraint would survive its own Clear button.
+  const clearFiltersAndSearch = () => {
+    clearAllFilters();
+    setSearch("");
   };
 
   // Session-265 (R-62, F-265b): the whole list pipeline rides the pure
@@ -264,18 +285,38 @@ export default function ExpensesPage() {
   // F-218o: the shared history body — rendered inside every tab panel
   // (the active one shows; the rest stay hidden but their
   // aria-controls now resolve).
+  // Session-266 (R-63, F-266c): the empty arm SPLITS on the honest
+  // discriminator — a list emptied by the panel's own live controls or
+  // the search box is an over-constrained state, not an empty ledger,
+  // and must never wear the onboarding face ("No expenses yet" + the
+  // Add Your First Expense CTA is a non-sequitur for a full ledger;
+  // the genus predates the card, but the five live controls multiply
+  // its reach). The genuinely-empty ledger keeps the onboarding truth.
   const historyBody = visible.length === 0 ? (
-    <EmptyState
-      icon={TrendingDown}
-      title="No expenses yet"
-      subtitle="Start tracking your spending to better manage your budget"
-      action={
-        <Button onClick={openCreate} className={CTA.rose}>
-          <PlusCircle className="h-4 w-4" />
-          Add Your First Expense
-        </Button>
-      }
-    />
+    activeFilters > 0 || search.trim() !== "" ? (
+      <EmptyState
+        icon={Filter}
+        title="No expenses match your filters"
+        subtitle="Try widening the date range, clearing the amount bounds, or resetting the filters"
+        action={
+          <Button variant="outline" onClick={clearFiltersAndSearch}>
+            Clear Filters
+          </Button>
+        }
+      />
+    ) : (
+      <EmptyState
+        icon={TrendingDown}
+        title="No expenses yet"
+        subtitle="Start tracking your spending to better manage your budget"
+        action={
+          <Button onClick={openCreate} className={CTA.rose}>
+            <PlusCircle className="h-4 w-4" />
+            Add Your First Expense
+          </Button>
+        }
+      />
+    )
   ) : (
     <>
       <ul className="divide-y divide-stone-200/70 dark:divide-stone-800">
@@ -449,11 +490,30 @@ export default function ExpensesPage() {
                 <label className="mb-1 block text-xs font-medium text-stone-500 dark:text-stone-400" htmlFor="expense-range-filter">
                   Date Range
                 </label>
-                <Select value={rangeFilter} onValueChange={(v) => setRangeFilter(v as ExpenseListFilters["range"])}>
+                {/* Session-266 (R-63, F-266b): the All-dates first
+                    option — the seam's own no-window value, named and
+                    selectable at last. The six reference options
+                    carried no path back to the un-filtered state (the
+                    reference hides the same trap behind its commit
+                    step; our live apply surfaces it on every pick).
+                    The placeholder retired with the named state. THE
+                    RADIX SENTINEL: a SelectItem may not carry the
+                    empty string — Radix's own placeholder predicate
+                    reads an empty value as "nothing selected" (the
+                    trigger would render blank, live-caught by the
+                    captures face) — so the option rides the "all"
+                    sentinel (the category select's own idiom) and the
+                    two boundary expressions below map it onto the
+                    seam's "" no-window contract. */}
+                <Select
+                  value={rangeFilter === "" ? "all" : rangeFilter}
+                  onValueChange={(v) => setRangeFilter(v === "all" ? "" : (v as ExpenseListFilters["range"]))}
+                >
                   <SelectTrigger id="expense-range-filter" aria-label="Filter by date range">
-                    <SelectValue placeholder="Select range" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="max-h-64">
+                    <SelectItem value="all">All dates</SelectItem>
                     <SelectItem value="today">Today</SelectItem>
                     <SelectItem value="7d">Last 7 days</SelectItem>
                     <SelectItem value="30d">Last 30 days</SelectItem>
@@ -464,19 +524,30 @@ export default function ExpensesPage() {
                 </Select>
                 {rangeFilter === "custom" ? (
                   <div className="mt-2 flex items-center gap-2">
+                    {/* Session-266 (R-63, F-266e): the date pair joins
+                        the house form genus — the panel's Min/Max
+                        controls already ride it, and two visibly
+                        different input families in one card (the
+                        analytics search-box genus vs the form genus:
+                        different fills, borders, and focus ring
+                        weights, dark mode diverging most) is a
+                        cosmetic inconsistency on the flagship
+                        surface. The width appendage frees the form's
+                        full-width default for the flex row (the
+                        settings page's own convention). */}
                     <input
                       type="date"
                       aria-label="Start date"
                       value={customStart}
                       onChange={(e) => setCustomStart(e.target.value)}
-                      className="input-base h-10 flex-1"
+                      className={cn(FORM_INPUT, "w-auto flex-1")}
                     />
                     <input
                       type="date"
                       aria-label="End date"
                       value={customEnd}
                       onChange={(e) => setCustomEnd(e.target.value)}
-                      className="input-base h-10 flex-1"
+                      className={cn(FORM_INPUT, "w-auto flex-1")}
                     />
                   </div>
                 ) : null}

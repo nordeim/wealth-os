@@ -438,6 +438,81 @@ test.describe("the Expenses tabs + search", () => {
     await expect(panel).toHaveCount(0);
   });
 
+  test("the Date Range select returns to All dates (F-266b — the range-return arm)", async ({ page }) => {
+    // Session-266 (R-63): the six window options carried no path back
+    // to the un-filtered state — once a window was picked, the select
+    // alone could not widen the list (recovery required Clear All or
+    // Cancel). The All-dates first option names the no-window state
+    // and makes it selectable. The observable rides a DETERMINISTIC
+    // empty window (an inverted Custom range — start after end), so
+    // the leg never depends on the corpus's dates relative to today.
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    const panel = page.getByRole("group", { name: "Expense filters" });
+    await expect(panel).toBeVisible();
+    await page.locator("#expense-range-filter").click();
+    await page.getByRole("option", { name: "Custom range" }).click();
+    await page.getByLabel("Start date").fill("2020-01-01");
+    await page.getByLabel("End date").fill("2019-01-01");
+    // The inverted window empties the list — the no-matches face (F-266c).
+    await expect(page.getByText("No expenses match your filters")).toBeVisible();
+    // The return arm: All dates restores the full list.
+    await page.locator("#expense-range-filter").click();
+    await page.getByRole("option", { name: "All dates" }).click();
+    await expect(page.getByText("No expenses match your filters")).toHaveCount(0);
+    await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
+  });
+
+  test("a filtered-to-empty list renders the no-matches face, and Clear Filters restores it (F-266c)", async ({ page }) => {
+    // Session-266 (R-63): the empty arm's honest discriminator — a list
+    // emptied by the panel's live controls or the search box is an
+    // over-constrained state, never an empty ledger: the onboarding
+    // face ("No expenses yet" + the Add Your First Expense CTA) is a
+    // non-sequitur for a full ledger. The Clear Filters action lifts
+    // EVERY constraint the page owns (the panel controls AND the
+    // search box), so a search-only over-constraint cannot survive
+    // its own Clear button.
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    const panel = page.getByRole("group", { name: "Expense filters" });
+    await expect(panel).toBeVisible();
+    // An amount bound no seeded expense satisfies.
+    await page.locator("#expense-min-amount").fill("99999");
+    await expect(page.getByText("No expenses match your filters")).toBeVisible();
+    await expect(page.getByText("Add Your First Expense")).toHaveCount(0);
+    // A search-only constraint rides the same face (the card can be
+    // closed — the empty state's action lives in the tab panel).
+    await page.keyboard.press("Escape");
+    await expect(panel).toHaveCount(0);
+    await page.getByPlaceholder("Search expenses...").fill("zzz-no-match");
+    await expect(page.getByText("No expenses match your filters")).toBeVisible();
+    await page.getByRole("button", { name: "Clear Filters" }).click();
+    await expect(page.getByText("No expenses match your filters")).toHaveCount(0);
+    await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
+  });
+
+  test("one Escape per surface over the stacked dialog (F-266d)", async ({ page }) => {
+    // Session-266 (R-63): Radix's dismissable layer closes the dialog
+    // on Escape WITHOUT stopping propagation — an unguarded window
+    // listener closed the filter card underneath as well (one press,
+    // two surfaces). The guard defers to any open dialog layer; the
+    // second press closes the card.
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    const panel = page.getByRole("group", { name: "Expense filters" });
+    await expect(panel).toBeVisible();
+    await page.getByRole("button", { name: "Add Expense" }).first().click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("Escape");
+    // The dialog closes; the card SURVIVES.
+    await expect(dialog).toHaveCount(0);
+    await expect(panel).toBeVisible();
+    // The second press closes the card.
+    await page.keyboard.press("Escape");
+    await expect(panel).toHaveCount(0);
+  });
+
   test("the DARK-mode Select highlight stays readable (F-221b — the 1.18:1 wash)", async ({ page }) => {
     // Session-221 (R-18): the SelectItem's focus wash carried no dark
     // arms — the highlighted option computed neutral-900 rgb(23,23,23)

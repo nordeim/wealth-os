@@ -176,12 +176,17 @@ export function AiCoachDialog({
         </div>
 
         {/* Session-265 (R-62, F-265d): the dedicated announcement region
-            — always present (mounted with the dialog, empty when idle:
-            an aria-live region must pre-exist its first announcement,
-            the F-218h doctrine), polite, and carrying ONLY the assistant
-            column: the thinking status while busy, the latest reply
-            once it lands. Two announcements per turn; the user's own
-            bubble never enters. */}
+            — always present (mounted with the dialog; it must
+            pre-exist its first announcement, the F-218h doctrine),
+            polite, and carrying ONLY the assistant column: the
+            thinking status while busy, the latest reply once it lands.
+            Two announcements per turn; the user's own bubble never
+            enters. Session-266 (R-63, F-266g): between turns the
+            region carries the latest reply (and mounts with it on
+            reopen) — a live region arriving WITH content is not
+            announced (the F-235a doctrine), so the carry is benign;
+            the earlier claim that the region sits empty between
+            turns was false and is trued here. */}
         <div aria-live="polite" className="sr-only">
           {busy
             ? "Coach is thinking…"
