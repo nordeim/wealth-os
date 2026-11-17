@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1838;
+const UNIT_TOTAL = 1860;
 const E2E_TOTAL = 152;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 116;
+const TEST_FILES = 117;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -99,6 +99,8 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // (81 -> 82): 4 + 82 + 28 = 114.
     // Session-263 (R-60): parity-263 joins the architecture family
     // (82 -> 83): 4 + 83 + 28 = 115.
+    // Session-265 (R-62): parity-265 joins the architecture family
+    // (84 -> 85): 4 + 85 + 28 = 117.
     // Session-255 (R-52): parity-255 joins the architecture family
     // (74 -> 75): 4 + 75 + 28 = 107.
     // Session-254 (R-51): parity-254 joins the architecture family
@@ -116,7 +118,7 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // tests inside existing family files, no new rows): 4 + 68 +
     // 27 = 99.
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 84 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, db-transient) |",
+      "| — architecture pins | 85 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, db-transient) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99
@@ -263,9 +265,12 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // Session-264 (R-61): the FIFTEENTH gate-enforced ride — the
     // v2.61.0 block lands together with the trio's advance to
     // v2.59.0/v2.60.0/v2.61.0 (the v2.58.0 pin ages out).
-    expect(p).toMatch(/\[SR\] v2\.59\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1814 unit \(114 files, \+14\)/);
+    // Session-265 (R-62): the SIXTEENTH gate-enforced ride — the
+    // v2.62.0 block lands together with the trio's advance to
+    // v2.60.0/v2.61.0/v2.62.0 (the v2.59.0 pin ages out).
     expect(p).toMatch(/\[SR\] v2\.60\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1830 unit \(115 files, \+16\)/);
     expect(p).toMatch(/\[SR\] v2\.61\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1838 unit \(116 files, \+8\)/);
+    expect(p).toMatch(/\[SR\] v2\.62\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1860 unit \(117 files, \+22\)/);
   });
 
   // Session-249 (R-46, F-249b): the structural cure for the aging genus.

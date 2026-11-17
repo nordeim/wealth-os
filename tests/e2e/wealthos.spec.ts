@@ -135,8 +135,13 @@ test.describe("the dashboard's card genus (seeded data)", () => {
     await page.getByRole("button", { name: "AI Coach" }).click();
     const dialog = page.getByRole("dialog");
     await dialog.getByRole("button", { name: "What are my top spending categories?" }).click();
+    // Session-265 (R-62, F-265d): the answer now rides TWO elements —
+    // the transcript bubble AND the dedicated announcement region (the
+    // sr-only mirror that replaced the whole-list live region). The
+    // transcript bubble is FIRST in DOM order (the list precedes the
+    // region), so .first() scopes the visible face deterministically.
     await expect(
-      dialog.getByText(/Your top spending categories this month:/),
+      dialog.getByText(/Your top spending categories this month:/).first(),
     ).toBeVisible({ timeout: 15_000 });
   });
 });
@@ -392,32 +397,45 @@ test.describe("the Expenses tabs + search", () => {
     // outside the popover group) — the popover unmounted mid-pick and
     // the filter never applied for mouse users (live-reproduced).
     // The cure: the guard spares the Radix portal surfaces.
+    // Session-265 (R-62, F-265b): the surface is now the IN-FLOW
+    // EXPANSION CARD (no outside-close guard at all — the anchored-
+    // popover genus retired), so the pick cannot die mid-interaction
+    // by construction; the live-apply contract the leg pins survives.
     await page.goto("/Expenses");
     await page.getByRole("button", { name: /Filters/ }).click();
-    const popover = page.getByRole("group", { name: "Expense filters" });
-    await expect(popover).toBeVisible();
+    const panel = page.getByRole("group", { name: "Expense filters" });
+    await expect(panel).toBeVisible();
     await page.locator("#expense-category-filter").click();
     await page.getByRole("option", { name: /Groceries/ }).click();
-    // The popover SURVIVES the pick and the filter APPLIES — the
+    // The panel SURVIVES the pick and the filter APPLIES (live) — the
     // history count collapses to the seeded Groceries rows.
-    await expect(popover).toBeVisible();
+    await expect(panel).toBeVisible();
     await expect(page.locator("#expense-category-filter")).toContainText(/Groceries/);
-    // Close cleanly and assert the list is filtered.
-    await page.getByRole("button", { name: "Close filters" }).click();
-    await expect(popover).toHaveCount(0);
+    // Close cleanly (Escape — the card's keyboard close) and assert
+    // the list is filtered.
+    await page.keyboard.press("Escape");
+    await expect(panel).toHaveCount(0);
     await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
     await expect(page.getByText("Apartment Rent")).toHaveCount(0);
   });
 
-  test("outside pointerdown still closes the popover (the F-216i contract kept)", async ({ page }) => {
+  test("an outside pointerdown leaves the expansion card standing (the F-265b genus)", async ({ page }) => {
+    // Session-265 (R-62, F-265b): the reference's filter surface is an
+    // IN-FLOW EXPANSION CARD (live-probed: position static, a sibling
+    // below the search row) — it owns no overlay semantics and the
+    // reference's own card stays open through page clicks. The
+    // anchored-popover's outside-close contract (the F-216i leg this
+    // replaces) retired with the genus: a click on the page heading
+    // must leave the card standing; the trigger toggle and Escape
+    // close it.
     await page.goto("/Expenses");
     await page.getByRole("button", { name: /Filters/ }).click();
-    const popover = page.getByRole("group", { name: "Expense filters" });
-    await expect(popover).toBeVisible();
-    // A pointerdown on the page HEADING (outside the popover, not a
-    // portal surface, not an expanded trigger) closes it.
+    const panel = page.getByRole("group", { name: "Expense filters" });
+    await expect(panel).toBeVisible();
     await page.getByRole("heading", { name: /Expenses/ }).first().click();
-    await expect(popover).toHaveCount(0);
+    await expect(panel).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(panel).toHaveCount(0);
   });
 
   test("the DARK-mode Select highlight stays readable (F-221b — the 1.18:1 wash)", async ({ page }) => {

@@ -154,6 +154,10 @@ describe("F-242c — the F-240b leg's title names the live contract", () => {
 });
 
 // ---- F-242d: the popover docblock tells the truth about the outside path -------
+// (re-scoped session 265, R-62/F-265b: the outside-pointerdown guard retired
+// with the anchored-popover genus — the in-flow expansion card owns no
+// outside-close path at all, so the mousedown-landing truth sentence rode
+// the retirement with the mechanism it described.)
 
 describe("F-242d — the popover focus-return comments tell the truth about the outside path", () => {
   const carriers = [
@@ -168,9 +172,14 @@ describe("F-242d — the popover focus-return comments tell the truth about the 
     }
   });
 
-  it("the page's comment describes the mousedown focus landing", () => {
+  it("the page's comment describes no retired outside-pointerdown path", () => {
+    // The honest form of the truth after the genus change: the guard
+    // family retired, and no comment may describe a mechanism the page
+    // no longer wires (the pre-cure pin demanded the mousedown-landing
+    // sentence — the mechanism it described retired with the genus).
     const src = read("src/app/(app)/expenses/page.tsx");
-    expect(src).toContain("keep whatever focus the mousedown");
+    expect(src).not.toContain("keep whatever focus the mousedown");
+    expect(src).not.toMatch(/addEventListener\("pointerdown"/);
   });
 });
 

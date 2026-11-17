@@ -38,14 +38,20 @@ describe("parity-216: the QuickAction nested-interactive cure (F-216e)", () => {
   });
 });
 
-describe("parity-216: the Expenses filters popover closes (F-216i)", () => {
-  it("the popover wires an Escape handler", () => {
+describe("parity-216: the Expenses filters surface closes on Escape (F-216i, re-scoped F-265b)", () => {
+  it("the surface wires an Escape handler", () => {
     expect(EXPENSES).toMatch(/Escape/);
     expect(EXPENSES).toMatch(/addEventListener|onKeyDown/);
   });
 
-  it("the popover closes on an outside pointerdown", () => {
-    expect(EXPENSES).toMatch(/pointerdown/);
+  it("the outside-pointerdown listener is retired with the anchored genus", () => {
+    // Session-265 (R-62, F-265b): the surface is the reference's IN-FLOW
+    // EXPANSION CARD (live-probed: position static, a sibling below the
+    // search row) — it owns no overlay semantics, so the F-216i
+    // outside-pointerdown arm retired with the anchoring (the pre-cure
+    // pin matched the word in prose alone — the F-244e prose-satisfiable
+    // genus; the honest form pins the listener's absence).
+    expect(EXPENSES).not.toMatch(/addEventListener\("pointerdown"/);
   });
 });
 

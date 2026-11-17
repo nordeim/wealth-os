@@ -121,10 +121,16 @@ export function AiCoachDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Session-219 (R-16, F-219j): the message LIST is the polite live
-             region — assistant replies are announced when they land (the
-             old aria-live wrapped only the textless dots row). */}
-        <div ref={listRef} aria-live="polite" className="flex-1 space-y-4 overflow-y-auto px-5 py-4 scrollbar-thin">
+        {/* Session-265 (R-62, F-265d): the message LIST is the visual
+             transcript only — the F-219j cure made it the polite live
+             region, but `send()` commits the USER bubble into the same
+             list, so a screen-reader user heard their own just-typed
+             question re-announced every turn. The announcements moved
+             to the dedicated always-present region below (the toast
+             viewport's own construction): it carries the thinking
+             status and each assistant reply as they land, and the
+             user's bubbles never enter it. */}
+        <div ref={listRef} className="flex-1 space-y-4 overflow-y-auto px-5 py-4 scrollbar-thin">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -155,9 +161,8 @@ export function AiCoachDialog({
           ))}
           {busy ? (
             <div className="flex gap-2.5">
-              {/* F-219j: the thinking state is announced (sr-only text —
-                  the dots alone say nothing). */}
-              <span className="sr-only">Coach is thinking…</span>
+              {/* The thinking status rides the announcement region
+                  below (the visible face is the dots row alone). */}
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300">
                 <Bot className="h-4 w-4" />
               </span>
@@ -168,6 +173,19 @@ export function AiCoachDialog({
               </div>
             </div>
           ) : null}
+        </div>
+
+        {/* Session-265 (R-62, F-265d): the dedicated announcement region
+            — always present (mounted with the dialog, empty when idle:
+            an aria-live region must pre-exist its first announcement,
+            the F-218h doctrine), polite, and carrying ONLY the assistant
+            column: the thinking status while busy, the latest reply
+            once it lands. Two announcements per turn; the user's own
+            bubble never enters. */}
+        <div aria-live="polite" className="sr-only">
+          {busy
+            ? "Coach is thinking…"
+            : [...messages].reverse().find((m) => m.role === "assistant")?.content ?? ""}
         </div>
 
         <div className="border-t border-stone-200 px-5 py-3 dark:border-stone-800">

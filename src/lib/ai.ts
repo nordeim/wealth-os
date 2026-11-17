@@ -261,10 +261,18 @@ const localProvider: AiProvider = {
       const suggestions = wants.map(
         (c) => `• Trim ${c.category} (${formatMoney(c.value, cur)}/mo) by 15% — saves ${formatMoney(Math.round(c.value * 0.15), cur)}/mo`,
       );
+      // Session-265 (R-62, F-265c): the lever count derives from the
+      // bullet count — a one-nonzero-category month renders two levers
+      // (one trim + the automation move) and the header must say so.
+      // The word form keeps the two-category month's answer
+      // byte-identical to the historic "Three levers:" text.
+      const LEVER_COUNT_WORDS: Record<number, string> = { 2: "Two", 3: "Three" };
+      const leverCount = suggestions.length + 1;
+      const leverWord = LEVER_COUNT_WORDS[leverCount] ?? String(leverCount);
       return {
         answer:
           suggestions.length > 0
-            ? `Three levers:\n${suggestions.join("\n")}\n• Move the difference into your Emergency Fund automatically on payday.`
+            ? `${leverWord} levers:\n${suggestions.join("\n")}\n• Move the difference into your Emergency Fund automatically on payday.`
             : "Start by recording your expenses — I can only optimize what I can see.",
       };
     }

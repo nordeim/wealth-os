@@ -188,6 +188,147 @@ export function transactionsInMonth(
   });
 }
 
+// ---- the Expenses list seam (session 265, R-62, F-265b) -------------------------
+
+/**
+ * An expense row as the Expenses page's list seam consumes it: the
+ * shared transaction shape plus the two fields the filter and sort
+ * arms read (the search text's notes term and the date-order tiebreak).
+ */
+export interface ExpenseRowLike extends TxLike {
+  notes?: string | null;
+  createdAt?: Date | string;
+}
+
+/**
+ * The Expenses page's filter panel state — every control of the
+ * expansion card (session 265, R-62). The defaults are the settled
+ * posture: no window, any category, no bounds, the API's own order.
+ */
+export interface ExpenseListFilters {
+  /** The segmented budget tab ("all" matches every bucket). */
+  budgetTab: "all" | "needs" | "wants" | "savings";
+  /** The panel's category select ("all" matches every category). */
+  category: string;
+  /** The page-level search box (matches description, category, notes). */
+  search: string;
+  /** The panel's date-window select ("" = no window). */
+  range: "" | "today" | "7d" | "30d" | "this-month" | "last-month" | "custom";
+  /** The Custom window's inclusive start (bare yyyy-mm-dd, "" = open). */
+  customStart: string;
+  /** The Custom window's inclusive end (bare yyyy-mm-dd, "" = open). */
+  customEnd: string;
+  /** The inclusive lower amount bound (numeric string, "" = open). */
+  minAmount: string;
+  /** The inclusive upper amount bound (numeric string, "" = open). */
+  maxAmount: string;
+  sortField: "date" | "amount" | "name" | "category";
+  sortDir: "desc" | "asc";
+}
+
+const RANGE_DAYS: Partial<Record<ExpenseListFilters["range"], number>> = {
+  "7d": 7,
+  "30d": 30,
+};
+
+function inRangeWindow(row: ExpenseRowLike, f: ExpenseListFilters, now: Date): boolean {
+  if (f.range === "") return true;
+  // Every stored date routes through toDate (the F-218d doctrine): the
+  // UTC-midnight form re-anchors to the local calendar it names, and
+  // the bare yyyy-mm-dd custom bounds are the seam's own date-input
+  // form — both sides of every comparison ride the same anchor.
+  const d = toDate(row.date);
+  switch (f.range) {
+    case "today":
+      return calendarDaysBetween(d, now) === 0;
+    case "7d":
+    case "30d": {
+      // calendarDaysBetween(from, to) reads to minus from: called with the
+      // row first it reads as days-ago (0 = the reference day, positive
+      // = past) — the window spans the reference day and the N-1
+      // before it.
+      const daysAgo = calendarDaysBetween(d, now);
+      return daysAgo >= 0 && daysAgo < RANGE_DAYS[f.range]!;
+    }
+    case "this-month":
+      return sameMonth(d, now);
+    case "last-month":
+      return sameMonth(d, addMonths(now, -1));
+    case "custom": {
+      if (f.customStart && d.getTime() < toDate(f.customStart).getTime()) return false;
+      if (f.customEnd && d.getTime() >= endOfDayExclusive(toDate(f.customEnd))) return false;
+      return true;
+    }
+  }
+}
+
+function parseBound(value: string): number | null {
+  if (!value) return null;
+  const n = Number.parseFloat(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * The Expenses page's whole list pipeline: the budget tab, the category
+ * select, the search box, the date window, and the amount bounds
+ * compose as filters; the sort field and direction then order the
+ * result. The default state (date + desc) reproduces the API's own
+ * order — date desc with the createdAt desc tiebreak — so the settled
+ * list is byte-identical to the pre-panel form.
+ */
+export function filterAndSortExpenses<T extends ExpenseRowLike>(
+  rows: readonly T[],
+  filters: ExpenseListFilters,
+  now: Date,
+): T[] {
+  const q = filters.search.trim().toLowerCase();
+  const min = parseBound(filters.minAmount);
+  const max = parseBound(filters.maxAmount);
+  const out = rows.filter((row) => {
+    if (filters.budgetTab !== "all" && row.budgetCategory !== filters.budgetTab) return false;
+    if (filters.category !== "all" && row.category !== filters.category) return false;
+    if (q && !`${row.description} ${row.category} ${row.notes ?? ""}`.toLowerCase().includes(q)) {
+      return false;
+    }
+    if (min !== null && row.amount < min) return false;
+    if (max !== null && row.amount > max) return false;
+    return inRangeWindow(row, filters, now);
+  });
+  const dir = filters.sortDir === "asc" ? 1 : -1;
+  return out.sort((a, b) => {
+    switch (filters.sortField) {
+      case "amount": {
+        const byAmount = a.amount - b.amount;
+        if (byAmount !== 0) return byAmount * dir;
+        break;
+      }
+      case "name": {
+        const byName = a.description.localeCompare(b.description);
+        if (byName !== 0) return byName * dir;
+        break;
+      }
+      case "category": {
+        const byCategory = a.category.localeCompare(b.category);
+        if (byCategory !== 0) return byCategory * dir;
+        break;
+      }
+      case "date": {
+        const byDate = toDate(a.date).getTime() - toDate(b.date).getTime();
+        if (byDate !== 0) return byDate * dir;
+        break;
+      }
+    }
+    // The stable tiebreak chain: createdAt desc (the API's own), then
+    // the description — deterministic across equal-key rows whatever
+    // the field and direction.
+    const byCreated =
+      (a.createdAt ? new Date(a.createdAt).getTime() : 0) -
+      (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+    if (byCreated !== 0) return -byCreated;
+    return a.description.localeCompare(b.description);
+  });
+}
+
 export function sumAmount(txs: TxLike[]): number {
   return round2(txs.reduce((sum, t) => sum + t.amount, 0));
 }

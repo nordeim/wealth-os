@@ -178,15 +178,20 @@ describe("F-238e — the manifest carries no dead security overrides", () => {
 
 // ---- F-238f: the popover scroll-close ----------------------------------------------
 
-describe("F-238f — the Expenses filters popover closes on scroller movement", () => {
-  it("the outside-close effect carries the scroll listener pair", () => {
+describe("F-238f — the filters surface owns no scroller-close (retired with the anchored genus)", () => {
+  it("the in-flow expansion card wires no scroll listener", () => {
     const src = read("src/app/(app)/expenses/page.tsx");
-    // The genus: a non-portal popover anchored to the trigger slides
-    // under the sticky z-50 header when the main scroller moves while
-    // open — closing on scroll is the one-line cure (the z-map stays).
-    expect(src).toMatch(/const onScroll = \(\) => setFiltersOpen\(false\);/);
-    expect(src).toMatch(/addEventListener\("scroll", onScroll/);
-    expect(src).toMatch(/removeEventListener\("scroll", onScroll/);
+    // Session-265 (R-62, F-265b): the pre-cure surface was a non-portal
+    // popover ANCHORED to the trigger — it slid under the sticky
+    // z-50 header when the main scroller moved while open, and closing
+    // on scroll was the one-line cure. The surface is now the
+    // reference's IN-FLOW EXPANSION CARD (live-probed: position
+    // static, a sibling below the search row) — nothing anchors,
+    // nothing slides, and the scroll listener retired with the genus
+    // (re-adding it would close a card the user is reading because
+    // the PAGE scrolled).
+    expect(src).not.toMatch(/addEventListener\("scroll"/);
+    expect(src).not.toMatch(/removeEventListener\("scroll"/);
   });
 });
 
