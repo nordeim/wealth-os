@@ -155,14 +155,17 @@ export function useTheme(): ThemeContextValue {
   const ctx = React.useContext(ThemeContext);
   if (!ctx) {
     // Defensive: the provider is wired in the root layout; a consumer
-    // outside it still gets a working no-op-free instance.
+    // outside it still gets a working instance — setTheme routes through
+    // the same applyTheme seam the provider's own arm carries (session
+    // 264, F-264d: the system arm resolves prefers-color-scheme, never
+    // forces light).
     return {
       theme: "system",
       toggle: () => {
         document.documentElement.classList.toggle("dark");
       },
       setTheme: (t) => {
-        document.documentElement.classList.toggle("dark", t === "dark");
+        applyTheme(t);
       },
     };
   }

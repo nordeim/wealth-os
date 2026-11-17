@@ -87,10 +87,14 @@ describe("F-262b — the muted-flip figures true to the computed span", () => {
 // ---- F-262c: the dialog-close figure ------------------------------------------
 
 describe("F-262c — the dialog-close figure trues to the surface pairing", () => {
-  it("page-layout cites 2.59:1 for the dark hover pair (the retired page-wash figure gone)", () => {
+  it("page-layout cites 2.60:1 for the dark hover pair (the retired page-wash figure gone)", () => {
     const src = read("src/lib/page-layout.ts");
     expect(src).not.toContain("2.47:1");
-    expect(norm(src)).toContain("DOWN to 2.59:1 in dark (stone-600 on the flipped surface");
+    // Session 264 (R-61, F-264c): the figure re-trued to the rounded
+    // form — stone-600 on the flipped surface computes 2.5950, and the
+    // prior citation truncated instead of rounding.
+    expect(src).not.toContain("2.59:1");
+    expect(norm(src)).toContain("DOWN to 2.60:1 in dark (stone-600 on the flipped surface");
   });
 });
 

@@ -25,8 +25,9 @@ export const NAV_LAYOUT = {
     "text-xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent",
   brandTagline: "text-xs text-amber-400/80",
   // Session-239 (R-36, F-239j): the nav scrolls internally on short lg
-  // viewports — the F-219h drawer cure's desktop twin. Content ≈620px
-  // (brand + 9 links + footer) inside the h-screen overflow-hidden
+  // viewports — the F-219h drawer cure's desktop twin. Content ≈730px
+  // (brand 64 + nav 546 + footer 119, live-measured on the artifact at
+  // session 264) inside the h-screen overflow-hidden
   // root: without the overflow pair the footer (user row, Synced pill)
   // is unreachable at e.g. 1024×600. Pixel-unseen when content fits
   // (no scrollbar renders); the container's min-h-0 groundwork above
@@ -334,7 +335,7 @@ export const DIALOG_CLOSE =
   // (session 258, F-258a: the figure trued to the computed value —
   // the old citation exceeded stone-500's ceiling on even pure white).
   // Session-222 (R-19, F-222h): the dark arms — the hover pair stepped
-  // DOWN to 2.59:1 in dark (stone-600 on the flipped surface; session
+  // DOWN to 2.60:1 in dark (stone-600 on the flipped surface; session
   // 262 trued the figure — the retired citation paired the glyph with
   // the page wash); the 400
   // resting / 300 hover mirror keeps the affordance rising in both modes.

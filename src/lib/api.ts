@@ -13,8 +13,12 @@ export function ok<T>(data: T, init?: number): NextResponse {
   // Session-217 (R-14, F-217g): every envelope response carries
   // `Cache-Control: no-store` — the financial-data GETs (transactions,
   // dashboard, export — the GDPR dump) must never sit in a browser or
-  // intermediary cache. The uploads GET is NOT an envelope response
-  // (its own immutable caching on capability URLs stands).
+  // intermediary cache. The exception family has TWO members: the
+  // uploads GET is NOT an envelope response (its own immutable caching
+  // on capability URLs stands), and the export GET answers a raw JSON
+  // download face (its own no-store attachment — consumed by a direct
+  // anchor click at settings, never an envelope consumer; wrapping it
+  // would break the download).
   return NextResponse.json({ ok: true, data } satisfies ApiResult<T>, {
     status: init ?? 200,
     headers: { "Cache-Control": "no-store" },

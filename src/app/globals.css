@@ -389,11 +389,14 @@
   --color-ring: #f5f5f4;
   /* Session-218 (R-15, F-218l): the last unflipped app-native token —
      muted rides the disabled-input text (SC 1.4.3 exempts disabled
-     controls, but the flip closes the latent F-217c class: any future
-     text-muted consumer on a dark surface would compute under the
-     4.5:1 text bar — 4.13:1 on the dark surface token, 3.91:1 on the
-     dark page wash; session 262 trued the span — the retired figure
-     reproduced on no dark surface). Its sibling subtle retired
+     controls, but the flip closes the latent F-217c class: the
+     UNFLIPPED stone-500 pin — the light palette's own muted —
+     computes under the 4.5:1 text bar on the dark surfaces, 4.13:1 on
+     the dark surface
+     token and 3.91:1 on the dark page wash, while the flipped token
+     reads 7.85:1 / 7.44:1 on the same pair; session 262 trued the
+     unflipped span — the retired figure reproduced on no dark
+     surface). Its sibling subtle retired
      session 228 (F-228b — zero consumers). */
   --color-muted: #a8a29e;
   /* Session-224 (R-21, F-224q): the reserved danger-soft flips too —

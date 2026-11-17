@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1830) | `bun run test` |
+| Unit tests (1838) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 152) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -51,7 +51,10 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   edits), the constructor takes the PrismaLibSql driver adapter, and the
   CLI reads its config from `prisma.config.ts`. Never introduce a raw
   `new PrismaClient()` outside `src/lib/db` — the CWD/bun-absolutization
-  trap opens a mirror db elsewhere.
+  trap opens a mirror db elsewhere. (The one standing exception:
+  `prisma/seed.ts`, the script seam — auth.ts is un-importable from the
+  bare script — and it always routes through `runtimeDatabaseUrl()`,
+  which closes the mirror-db risk the rule exists for.)
 - **E2E has its own database**: `playwright.config.ts` pins
   `DATABASE_URL=file:../db/e2e.db` and global-setup reseeds it. The e2e
   port literal ("3100") lives ONLY in `tests/e2e/e2e-port.ts`.
