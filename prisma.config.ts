@@ -11,8 +11,8 @@
 //     direct resolveDatabaseUrl(process.env…) form passed bun's
 //     ABSOLUTIZED DATABASE_URL through untouched — under bun a relative
 //     `file:../db/custom.db` from the .env is rewritten against the
-//     .env file's own directory to file:/<parent-of-repo>/db/custom.db,
-//     so a direct `bun x prisma db push` (or migrate/studio) operated on
+//     .env file's own directory to an absolute file URL under the
+//     repo's parent, so a direct `bun x prisma db push` (or migrate/studio) operated on
 //     a MIRROR db one directory outside the repo while the app served
 //     the repo db (live-probed). runtimeDatabaseUrl detects exactly that
 //     signature and re-anchors on the schema rule, while honoring every

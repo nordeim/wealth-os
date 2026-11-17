@@ -16,6 +16,80 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.65.0 (session 268, R-65 — the year-remap, switch-target, and
+  cleared-bound round): the fresh-eyes audit (three Mode-C passes —
+  the R-64 cure surfaces driven by the session (the parity-267 battery
+  re-run green 18/18 at HEAD), the API/auth/security layer (the
+  TWENTY-FIRST consecutive clean bill — all twelve house contracts,
+  45 handlers / 30 route files read line-by-line, 15 candidates
+  examined and dismissed into documented postures), and the
+  UI/a11y/shell layer (all eight standing contracts verified, four new
+  findings after dedup)) — 0 Critical / 0 High / 0 Medium / 4 Low /
+  3 Informational NEW after dedup, every material claim re-verified
+  at file:line by the driving session (the year-remap divergence
+  runtime-proven on both sides of the seam, the reference's own 36×20
+  switch live-measured through agent-browser, the cleared-bound NaN
+  zeroing runtime-proven through the seam's verbatim semantics). THE
+  YEAR-REMAP ADMISSION (F-268a, Low — the round's flagship: the API
+  date validator's round-trip passed sub-100 years the string parser
+  does not remap, while toDate's numeric constructor shifted them
+  +1900 — a stored "0050-06-15" row rendered 1950 on every read and
+  the edit prefill silently REWROTE the stored year on save; the cure
+  closes BOTH halves — dateField rejects sub-100 years at the boundary
+  (the csv.ts two-digit-year remap doctrine, a skip beats an invented
+  century) AND toDate's branch 2 gains the setFullYear arm (the
+  remap-safe setter, still anchoring local midnight of the written
+  calendar)) · the settings switch's touch target (F-268b — the
+  36×20 painted track sat under the WCAG 2.5.8 24px floor, the
+  F-235f/F-236d precedent class never swept the row; live-adjudicated:
+  the reference's own switch measures 36×20, so the cure is
+  paint-invisible — the empty-content pseudo at negative vertical
+  insets extends the clickable box to 36×32 (the 8px insets offset
+  from the padding box, the 2px border spending 2px each side), with
+  F-248j's aria-describedby completion folded into the same edit (the
+  description paragraph joins the switch's a11y chain — the
+  reference's own switch carries no a11y attributes, the sanctioned
+  superset)) · the cleared analytics bound (F-268c — a cleared native
+  date input yields "" and toDate("") is an Invalid Date, so both
+  range predicates went false for EVERY row: the $0.00 stat row, the
+  no-data faces, the headers-only export off one cleared keystroke;
+  the cure is the empty-bound-is-open doctrine, the Expenses seam's
+  own parseBound semantics, with the refDate falling back to a stable
+  now when the upper bound is open) · the security census re-triage
+  (F-268d — `bun audit` moved 1 → 2: a NEW dev-chain picomatch HIGH
+  (GHSA-fc5q-39xc-vjpf / CVE-2026-112366, ReDoS via single-branch
+  repeated extglob, CVSS 8.7) with NO FIX RELEASE (4.0.7 IS the latest
+  npm dist); every dependency path is dev-toolchain (typescript-
+  estree→tinyglobby, vite), zero runtime chains — the PAD §10 row +
+  the security-ledger pin carry the census with the picomatch decode,
+  same-commit) · the battery-gap riders (F-268e the clearAllFilters
+  body pin, F-268f the no-millis twin leg) · the carrier net's
+  root-config extension (F-268g — the walk gains the nine tracked
+  root config files so the net's live universe matches Tailwind's scan
+  set; the extension's maiden run caught three prose carriers —
+  self contained, heals itself, and the file-URL literal — reworded
+  same-commit). Registered: F-268h the dashboard KPI memo tail,
+  F-268i the junk-bound posture, F-268j the custom-empty posture. The
+  verification: lint 0/0 · tsc 0 · 1911 unit (120 files, +16) ·
+  build · smoke 15/15 · 159 e2e (+2 — the cleared From date keeps the
+  ledger's stat row non-zero with no no-data face, and the switch
+  hit-area click 4px above the track's top edge toggles the control;
+  zero new signups, the shared storageState rides) · census MATCH ·
+  THE SIX PARITY DRIFT GATES RE-RUN (required again — the analytics
+  and settings parity surfaces changed): the four sweep classes CLEAN
+  (1440/390/768/1024, 0.5pct margin), the fullpage sweep CLEAN, the
+  interior census CLEAN (0-event margin — the closed-state DOM
+  unchanged by construction: the bound guard is render-logic inside
+  the memo, the hit-area extension paints nothing, the describedby is
+  an attribute) · the captures 252 (THE CLEARED-BOUND ANALYTICS FACE
+  AT DESKTOP 1440×900 — From empty, the stat row reading the real
+  averages $8,083.33 / $3,025.59 / $5,057.75, the trend populated)
+  and 253 (THE SETTINGS SWITCH HIT-AREA FACE AT DESKTOP — the 36×20
+  painted track with the 36×32 clickable box (elementFromPoint
+  resolving to the switch 4px past both edges, the F-225d doctrine)
+  and the description wired) + the two comparison captures at TRUE
+  390×844.
+
 - [SR] v2.64.0 (session 267, R-64 — the savings-tab, sort-count, and
   calendar-roundtrip round): the fresh-eyes audit (three Mode-C passes —
   the R-63 cure surfaces driven by the session (the parity-266 battery
@@ -3014,8 +3088,8 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1895) → `next build` → the 15-assertion smoke ladder on the
-  standalone artifact → Playwright e2e (157) against a pinned `db/e2e.db`.
+  → vitest (1911) → `next build` → the 15-assertion smoke ladder on the
+  standalone artifact → Playwright e2e (159) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
   R-4.5, session 211 — green end-to-end from cold): the sweep,
@@ -3146,7 +3220,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 119 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 120 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -3435,11 +3509,11 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 119 | 1895 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 120 | 1911 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
-| — architecture pins | 87 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, db-transient) | `tests/` | source-scanning contracts |
+| — architecture pins | 88 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 28 | auth, rate-limit, csv, uploads, upload-sniff, headers, boot-env, search-query, store-logout, store-hydrate, store-staleness, … | `tests/` | behavior |
-| E2E | 7 | 157 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
+| E2E | 7 | 159 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
 
 *docs-counts pins are re-anchored when doc/test counts change — keep them
@@ -3470,10 +3544,10 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1895/1895 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1911/1911 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
-- [ ] `CI=1 bun run test:e2e` → 157/157
+- [ ] `CI=1 bun run test:e2e` → 159/159
 - [ ] No secrets staged; `git status` clean of scratch files
 - [ ] Docs lockstep: README/PAD/AGENTS/CLAUDE/worklog updated with behavior changes
 
@@ -3540,7 +3614,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1895 unit / 157 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1911 unit / 159 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -3566,7 +3640,7 @@ comments explain why.
 
 | Priority | Issue | Impact | Status |
 |----------|-------|--------|--------|
-| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 213): 1 advisory: 0 high / 1 moderate — all dev-toolchain, zero runtime chains | Chain (the lone residue — fix UNREACHABLE within its parent's range): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1. CURED at R-9 (session 213, the prisma 6→7 major): the deepmerge-ts HIGH (GHSA-ggr8-5vv4-36mx) — @prisma/config 7.x carries deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5; the migration contract is pinned (`tests/prisma-7-contract.test.ts` + `tests/dependency-floors-213.test.ts`). The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 213; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts` + `tests/dependency-floors-213.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks the fix is cured same-session) |
+| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 268): 2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains | NEW at session 268 (R-65, F-268d): picomatch GHSA-fc5q-39xc-vjpf / CVE-2026-112366 (ReDoS via single-branch repeated extglob, CVSS 8.7) — affected ≤ 4.0.7 and 4.0.7 IS the latest npm release (NO FIX EXISTS); every dependency path is dev-toolchain (typescript-estree→tinyglobby, vite; 26 terminal paths, all dev), zero runtime chains, nothing in the shipped standalone artifact. Chain (the standing residue — fix UNREACHABLE within its parent's range): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1. CURED at R-9 (session 213, the prisma 6→7 major): the deepmerge-ts HIGH (GHSA-ggr8-5vv4-36mx) — @prisma/config 7.x carries deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5; the migration contract is pinned (`tests/prisma-7-contract.test.ts` + `tests/dependency-floors-213.test.ts`). The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 268; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts` + `tests/dependency-floors-213.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks the fix is cured same-session) |
 | LOW | Session cookie name is `neo_session` (scaffold legacy) | Cosmetic; smoke + specs grep it — a rename is a coordinated change | Accepted |
 | LOW | No migration journal (db:push workflow) | Schema history lives in git, not SQL files — acceptable for the single-user product | Accepted |
 | LOW | AI coach is rule-based (honest labeling) | No LLM answers offline; the provider seam exists for a future engine | By design (ADR-005) |
@@ -3575,7 +3649,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1895 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1911 unit · build · smoke 15/15 ·
 152 e2e).
 
 **Re-triage: re-run `bun audit` before every push.** A NEW runtime-chain

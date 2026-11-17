@@ -438,19 +438,32 @@ function NotificationRow({
         <label htmlFor={`switch-${id}`} className="text-base font-medium text-stone-900 dark:text-stone-100">
           {label}
         </label>
-        <p className="text-sm text-stone-500 dark:text-stone-400">{description}</p>
+        <p id={`switch-${id}-desc`} className="text-sm text-stone-500 dark:text-stone-400">
+          {description}
+        </p>
       </div>
       <button
         id={`switch-${id}`}
         type="button"
         role="switch"
         aria-checked={checked}
+        aria-describedby={`switch-${id}-desc`}
         onClick={() => onChange(!checked)}
         className={cn(
           // Session-231 (R-28, F-231k): the vestigial `peer` class retired
           // — no sibling-reading consumer exists in the row (a v2-era
           // checkbox idiom survivor; the label precedes the button in DOM).
-          "inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          // Session-268 (R-65, F-268b): the hit-area extension — the painted
+          // track keeps the reference's own 36 by 20 genus (live-measured
+          // through agent-browser), while an empty-content pseudo at
+          // negative vertical insets extends the CLICKABLE box to 36 by 32
+          // (the 8px insets offset from the PADDING box, so the 2px border
+          // spends 2px of each side — 6px past the border box each way),
+          // past the WCAG 2.5.8 24px floor the dialog close and the toast
+          // dismiss already honor (the F-235f/F-236d precedent class). No
+          // DOM element joins (the interior census cannot see it) and no
+          // painted pixel changes (the sweep cannot see it).
+          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring after:absolute after:-inset-y-2 after:inset-x-0 after:content-['']",
           // Session-221 (R-18, F-221n): the unchecked track darkens one
           // step AND gains a visible border — the old stone-300 track on
           // the white/80 card measured 1.49:1 (the white thumb vs it

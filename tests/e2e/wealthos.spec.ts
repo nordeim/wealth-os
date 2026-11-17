@@ -553,6 +553,54 @@ test.describe("the Expenses tabs + search", () => {
     await expect(page.getByText("Whole Foods Run").first()).toBeVisible();
   });
 
+  test("a cleared From date keeps the analytics ledger visible (F-268c — the empty bound is open)", async ({ page }) => {
+    // Session-268 (R-65): a cleared native date input yields "" and
+    // toDate("") is an Invalid Date — the raw NaN comparison went
+    // false for EVERY row, so one cleared keystroke zeroed the whole
+    // page (the $0.00 stat row, the no-data faces, a headers-only
+    // export). The empty bound is an OPEN bound now (the Expenses
+    // parseBound doctrine carried to this seam).
+    await page.goto("/Analytics");
+    // Sanity: the default range renders the trend card.
+    await expect(page.getByText("Income vs Expenses Trend")).toBeVisible();
+    // Clear the From date (the clear affordance / delete key path).
+    await page.getByLabel("From date").fill("");
+    // The stat row keeps the corpus's real averages — not the
+    // $0.00 averages-of-an-undefined-window the NaN bound produced —
+    // and no range-scoped face wears the no-data message.
+    const statRow = page.locator("div.grid").filter({ hasText: "Avg Monthly Income" }).first();
+    await expect(statRow).toBeVisible();
+    const statText = await statRow.textContent();
+    expect(statText, `the stat row must not zero: ${statText}`).not.toContain("$0.00");
+    await expect(page.getByText("No data in the selected range")).toHaveCount(0);
+  });
+
+  test("the settings switch's hit area extends past the painted track (F-268b — the 24px floor)", async ({ page }) => {
+    // Session-268 (R-65): the NotificationRow switch paints the
+    // reference's own 36 by 20 track (live-measured — parity-faithful,
+    // so the cure is paint-invisible): an empty-content pseudo at
+    // negative vertical insets extends the CLICKABLE box to 36 by 32
+    // (the 8px insets offset from the padding box, so the 2px border
+    // spends 2px of each side — 6px past the border box each way). A
+    // click 4px ABOVE the track's top edge lands in the extension zone
+    // — pre-cure it hit only the row's dead space and the switch never
+    // toggled. The aria-describedby wiring (F-248j's completion) rides
+    // the same edit.
+    await page.goto("/Settings");
+    const sw = page.getByRole("switch").first();
+    await sw.scrollIntoViewIfNeeded();
+    await expect(sw).toBeVisible();
+    const describedBy = await sw.getAttribute("aria-describedby");
+    expect(describedBy, "the switch must point at its description").toBeTruthy();
+    const before = await sw.getAttribute("aria-checked");
+    const box = await sw.boundingBox();
+    expect(box).toBeTruthy();
+    // 4px above the track's top edge — inside the 6px effective
+    // extension, outside the painted 20px box.
+    await page.mouse.click(box!.x + box!.width / 2, box!.y - 4);
+    await expect(sw).toHaveAttribute("aria-checked", before === "true" ? "false" : "true");
+  });
+
   test("the DARK-mode Select highlight stays readable (F-221b — the 1.18:1 wash)", async ({ page }) => {
     // Session-221 (R-18): the SelectItem's focus wash carried no dark
     // arms — the highlighted option computed neutral-900 rgb(23,23,23)

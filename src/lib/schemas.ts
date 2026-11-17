@@ -154,6 +154,13 @@ const dateField = (message: string) =>
     .min(1, message)
     .refine((v) => {
       if (!/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z)?$/.test(v)) return false;
+      // Session-268 (R-65, F-268a): sub-100 years are rejected — the
+      // string parser this round-trip rides does NOT remap them, but
+      // toDate's numeric constructor does (year 50 reads as 1950), so
+      // a "0050-06-15" row would store once and render 1900 years
+      // late on every read. A skip beats an invented century (the
+      // csv.ts two-digit-year remap doctrine).
+      if (Number(v.slice(0, 4)) < 100) return false;
       const d = new Date(v);
       return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v.slice(0, 10);
     }, "Enter a valid date");

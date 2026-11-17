@@ -111,6 +111,15 @@ export default function AnalyticsPage() {
     () =>
       txs.filter((t) => {
         const d = toDate(t.date).getTime();
+        // Session-268 (R-65, F-268c): an EMPTY bound is an OPEN bound
+        // (the Expenses seam's own parseBound doctrine) — a cleared
+        // date input yields "", toDate("") is an Invalid Date, and the
+        // raw NaN comparison went false for EVERY row: a full ledger
+        // wore the $0.00 stat row, the no-data faces, and a
+        // headers-only export off one cleared keystroke. The guard
+        // sits BEFORE the parse; null means "no bound on this side".
+        const fromBound = from === "" ? null : toDate(from).getTime();
+        const toBound = to === "" ? null : endOfDayExclusive(toDate(to));
         // Session-259 (R-56, F-259b): the end bound is the next LOCAL
         // midnight (the finance.ts helper) — the fixed 23h59m59s pad it
         // replaced assumed 24-hour days, so on a 23h DST spring-forward
@@ -118,7 +127,7 @@ export default function AnalyticsPage() {
         // code on three zones; the UTC sandbox is why every gate was
         // blind — the F-218d family's millisecond edition). The same-day
         // rows stay included; the bound is exclusive at the midnight.
-        return d >= toDate(from).getTime() && d < endOfDayExclusive(toDate(to));
+        return (fromBound === null || d >= fromBound) && (toBound === null || d < toBound);
       }),
     [txs, from, to],
   );
@@ -128,7 +137,12 @@ export default function AnalyticsPage() {
   // was the mixed-mode regression the F-218d cure itself introduced: on
   // a 1st-of-month `to` a UTC-negative user's trailing bucket keyed on
   // the previous month for a full day.
-  const refDate = React.useMemo(() => toDate(to), [to]);
+  // Session-268 (R-65, F-268c): an open upper bound falls back to a
+  // stable now — the monthly series and its siblings need a real
+  // calendar to bucket against, and the memo only re-derives when
+  // `to` changes (the F-267i staleness genus, the registered trade —
+  // a tab left open overnight buckets to the mount-time calendar).
+  const refDate = React.useMemo(() => (to === "" ? new Date() : toDate(to)), [to]);
   const trend = React.useMemo(() => cashFlowSeries(inRange, n, refDate), [inRange, n, refDate]);
   const avg = React.useMemo(() => monthlyAverages(trend), [trend]);
   const breakdown = React.useMemo(() => expenseBreakdown(inRange, refDate), [inRange, refDate]);

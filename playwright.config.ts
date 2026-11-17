@@ -70,7 +70,7 @@ export default defineConfig({
     // trip resend (6>5) or verify (21>20) and fail the ladder tests
     // with spurious 429s. The gate is immune (its CI=1 prefix forces
     // the fresh boot); for repeated local runs export CI=1 or wait out
-    // the window (self-heals in 15 min).
+    // the window (it heals itself in 15 min).
     env: {
       ...process.env,
       PORT: String(PORT),

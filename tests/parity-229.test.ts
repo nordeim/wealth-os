@@ -116,8 +116,59 @@ function walkSrc(dir: string, files: string[] = []): string[] {
 }
 
 const SRC_ROOT = path.resolve(import.meta.dirname, "..", "src");
-const SRC_FILES = walkSrc(SRC_ROOT);
+// Session-268 (R-65, F-268g): the tracked root config files join the
+// walk — Tailwind's content detection scans them (the F-245e lesson:
+// the @source not directives exclude only directories and *.md, so
+// the root configs are inside the scan set), and the net's live
+// universe must match the scan set for the invariant to be honest.
+const ROOT_CONFIG_FILES = [
+  "next.config.ts",
+  "playwright.config.ts",
+  "eslint.config.mjs",
+  "vitest.config.ts",
+  "prisma.config.ts",
+  "postcss.config.mjs",
+  "components.json",
+  "tsconfig.json",
+  "package.json",
+]
+  .map((n) => path.resolve(import.meta.dirname, "..", n))
+  .filter((p) => existsSync(p));
+const SRC_FILES = [...walkSrc(SRC_ROOT), ...ROOT_CONFIG_FILES];
 const SRC_REL = (f: string) => path.relative(path.resolve(import.meta.dirname, ".."), f);
+
+// ---- F-268g: the net's file universe covers the root configs -------------
+
+describe("F-268g — the root config files join the net (the scan-set parity)", () => {
+  // Session-268 (R-65, F-268g): Tailwind's content detection scans the
+  // root config files (the F-245e lesson — three bare-word carriers
+  // lived in the root configs; the @source not directives exclude only
+  // directories and *.md), so the "whole-tree" invariant must read
+  // them too — a class-shaped token in a root-config comment could
+  // emit dead CSS with no net to catch it. The universe leg pins the
+  // coverage itself (born RED over the src/-scoped walk).
+  const ROOT_CONFIGS = [
+    "next.config.ts",
+    "playwright.config.ts",
+    "eslint.config.mjs",
+    "vitest.config.ts",
+    "prisma.config.ts",
+    "postcss.config.mjs",
+    "components.json",
+    "tsconfig.json",
+    "package.json",
+  ];
+
+  it("the walk's file universe carries every tracked root config", () => {
+    const rels = SRC_FILES.map(SRC_REL);
+    for (const name of ROOT_CONFIGS) {
+      expect(
+        rels,
+        `the net must read ${name} (Tailwind's scan set includes it)`,
+      ).toContain(name);
+    }
+  });
+});
 
 // The live token universe: every token in comment-stripped src code.
 const LIVE_TOKENS = new Set<string>();

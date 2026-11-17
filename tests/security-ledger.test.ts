@@ -98,10 +98,17 @@ describe("session-203: the security ledger (R-1 — the bun audit doctrine has t
     );
     // Session-213 (R-9): the census re-anchored 2 → 1 after the prisma
     // 6→7 major cured the deepmerge-ts HIGH (the ORM major carried
-    // @prisma/config's own fix). The remaining one is range-unreachable —
-    // the row must keep saying so.
-    expect(pad).toContain("1 advisory: 0 high / 1 moderate — all dev-toolchain, zero runtime chains");
+    // @prisma/config's own fix). Session-268 (R-65, F-268d): the census
+    // re-anchored 1 → 2 — a NEW dev-chain HIGH (picomatch
+    // GHSA-fc5q-39xc-vjpf / CVE-2026-112366, ReDoS via single-branch
+    // repeated extglob): 4.0.7 IS the latest npm release, NO FIX
+    // EXISTS, every dependency path is dev-toolchain
+    // (typescript-estree→tinyglobby, vite — zero runtime chains). The
+    // row must keep saying so; the minimatch moderate (range-unreachable
+    // until typescript-estree moves) stands unchanged.
+    expect(pad).toContain("2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains");
     expect(pad).toContain("GHSA-g3hv-75wg-m249");
+    expect(pad).toContain("GHSA-fc5q-39xc-vjpf");
     expect(pad).toContain("Re-triage: re-run `bun audit` before every push");
   });
 });

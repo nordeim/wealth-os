@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2052%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2070%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,8 +59,8 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1895 checks incl. property tests |
-| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 157 checks; chromium; seeded `db/e2e.db` |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1911 checks incl. property tests |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 159 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
 ```mermaid
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 119 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 120 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,8 +166,8 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1895 checks / 119 files |
-| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 157 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
+| Unit (Vitest) | `bun run test` | 1911 checks / 120 files |
+| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 159 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
 | Parity sweeps | `bun run gate:full` | **active** (re-activated v2.8.0 / R-4.5): the standing gate + six WealthOS-native drift gates — the four sweep classes (1440×900 · 390×844 · 768×1024 · 1024×768, theme-matched zero-data baselines), the fullpage sweep (the 11-page below-the-fold axis with the zero-data sentinel), and the interior census (four-axis standing allowances at margin 0) — green end-to-end from cold at v2.8.0; run it when parity surfaces changed or per the standing cadence (the pre-push bar stays `bun run gate`; the sweep legs need the live reference, so `gate` remains the offline gate) |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1895 unit · 157 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1911 unit · 159 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 267: **R-64 shipped — the savings-tab, sort-count, and calendar-roundtrip round**: the fresh-eyes audit (three Mode-C passes — the R-63 cure surfaces (the parity-266 battery re-run green 16/16 at HEAD) · the API/auth/security layer's twentieth consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; every candidate dismissed into a documented posture) · the UI/a11y/shell layer — all eight standing contracts verified, five new findings after dedup, every material claim re-verified at file:line (the savings-bucket emptiness census-verified, the calendar-overflow invention runtime-proven, the reference's one-genus dialog live-measured)): 0 Critical / 0 High / 1 Medium / 4 Low / 4 Informational NEW after dedup. THE ROUND'S MEDIUM LIVES INSIDE F-266c'S OWN CHARTER: **F-267a the no-matches discriminator misses the budget tab** — the corpus's savings bucket is empty, so the Savings tab alone rendered the onboarding face for a 72-expense ledger, and the Clear Filters action did not reset the tab (the cure: a dedicated over-constraint predicate counting the tab, with the sort pair excluded — **F-267b** — and the Clear lifting every constraint the page owns). Plus: **F-267c** the seam's custom-bound guard admitted calendar-invalid forms (toDate's normalizing constructor invented Mar 3 for a Feb-31 bound — the cure: the calendar round-trip, the csv.ts stageWrittenLiteral doctrine) · **F-267d** the four dialogs' Date inputs joined the FORM_INPUT genus · **F-267e** the split derivation memoized · F-267f the bound-field docs' twin clause · F-267g the Escape guard's invariant comment. The mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 268: **R-65 shipped — the year-remap, switch-target, and cleared-bound round**: the fresh-eyes audit (three Mode-C passes — the R-64 cure surfaces (the parity-267 battery re-run green 18/18 at HEAD) · the API/auth/security layer's twenty-first consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; 15 candidates dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified, four new findings after dedup, every material claim re-verified at file:line (the year-remap runtime-proven on both sides of the seam, the reference's own 36×20 switch live-measured, the cleared-bound NaN zeroing runtime-proven)): 0 Critical / 0 High / 0 Medium / 4 Low / 3 Informational NEW after dedup. THE ROUND'S FOUR LOWS: **F-268a the API date validator admitted sub-100 years the toDate constructor remaps to 19xx** (a stored "0050-06-15" row read 1950 on every render and the edit prefill silently rewrote the stored year — the cure: boundary rejection + the remap-safe setter arm) · **F-268b the settings switch's touch target sat under the WCAG 2.5.8 24px floor** (the reference's own 36×20 genus is parity-faithful, so the cure is the paint-invisible hit-area extension to a 36×32 clickable box + F-248j's aria-describedby completion) · **F-268c a cleared analytics date input silently zeroed the page** (toDate("") is an Invalid Date, so both range predicates went false for every row — the $0.00 stat row and the headers-only export; the cure: the empty-bound-is-open doctrine) · **F-268d the security census re-anchored 1 → 2** (a NEW dev-chain picomatch HIGH with no fix released — 4.0.7 IS the latest npm dist; the PAD row + the pin moved same-commit). Plus: F-268e/F-268f the battery-gap riders · F-268g the carrier net's root-config extension. The mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

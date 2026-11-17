@@ -88,7 +88,23 @@ const UTC_MIDNIGHT_ISO = /^(\d{4})-(\d{2})-(\d{2})(?:T00:00:00(?:\.000)?Z)?$/;
 export function toDate(value: Date | string): Date {
   if (value instanceof Date) return value;
   const m = UTC_MIDNIGHT_ISO.exec(value);
-  if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  if (m) {
+    // Session-268 (R-65, F-268a): V8's numeric constructor remaps
+    // years 0-99 to 19xx (year 50 reads as 1950). The setter form
+    // does not remap — the sub-100 arm still anchors local midnight
+    // of the calendar the digits wrote. A leap-day sub-100 year that
+    // survives the boundary round-trip keeps its date here too: every
+    // such year is divisible by 4 (the boundary's calendar round-trip
+    // refuses the others) and the base year is leap, so the day
+    // carries across the setter unchanged.
+    const y = Number(m[1]);
+    if (y < 100) {
+      const d = new Date(2000, Number(m[2]) - 1, Number(m[3]));
+      d.setFullYear(y);
+      return d;
+    }
+    return new Date(y, Number(m[2]) - 1, Number(m[3]));
+  }
   return new Date(value);
 }
 

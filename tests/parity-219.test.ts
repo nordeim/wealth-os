@@ -92,15 +92,19 @@ describe("F-219d/e/f/g — every stored-date parse routes through toDate", () =>
 
   it("analytics: the series refs route through toDate (the mixed-mode cure)", () => {
     const src = read("src/app/(app)/analytics/page.tsx");
-    expect(src).toMatch(/const refDate = React\.useMemo\(\(\) => toDate\(to\)/);
+    // Session-268 (R-65, F-268c): the refDate seam gained the
+    // empty-bound guard — a cleared `to` input falls back to a stable
+    // now (an Invalid Date ref buckets every month to NaN); every
+    // present value still routes through toDate (the F-219e intent).
+    expect(src).toMatch(/const refDate = React\.useMemo\(\(\) => \(to === "" \? new Date\(\) : toDate\(to\)\)/);
     // the five series seams consume refDate (not the raw new Date(to))
     expect(src).not.toMatch(/cashFlowSeries\(inRange, n, new Date\(to\)\)/);
     expect(src).not.toMatch(/expenseBreakdown\(inRange, new Date\(to\)\)/);
     expect(src).not.toMatch(/budgetCategorySplit\(inRange, new Date\(to\)\)/);
     expect(src).not.toMatch(/spendingByDayOfWeek\(inRange, new Date\(to\)\)/);
     expect(src).not.toMatch(/categoryTrend\(inRange, n, new Date\(to\)/);
-    // (the RANGE FILTER's new Date(to).getTime() comparison stays raw by
-    // design — UTC instants on both sides, the audit's own carve-out)
+    // (the RANGE FILTER's comparison stays routed through toDate by
+    // design — the F-268c guard carries it; see the parity-268 battery)
   });
 
   it("goals: the card label routes through toDate", () => {
