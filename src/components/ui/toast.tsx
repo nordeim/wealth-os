@@ -91,7 +91,7 @@ function Toaster() {
       // Session-7 live pin: the reference viewport is top-of-screen on
       // phones and bottom-right from sm (sonner-style), a 420px cap at
       // md (ours rides the md variant; the reference's is bare).
-      className="pointer-events-none fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse gap-2 p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"
+      className="pointer-events-none fixed top-0 z-[100] flex max-h-dvh w-full flex-col-reverse gap-2 p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"
     >
       {items.map((t) => (
         <ToastCard key={t.id} item={t} />

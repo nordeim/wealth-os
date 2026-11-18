@@ -9,7 +9,7 @@ export const SHELL_LAYOUT = {
   // wash equally alone since it landed; the duplicate literal was the
   // divergence genus F-232h retired for the sidebar, waiting on a
   // future token edit to drift the shell wash.
-  root: "flex h-screen overflow-hidden bg-background page-wash",
+  root: "flex h-dvh overflow-hidden bg-background page-wash",
   sidebar: "hidden lg:flex lg:w-64 lg:flex-col",
   mainColumn: "flex flex-1 flex-col overflow-hidden",
   main: "flex-1 overflow-y-auto scrollbar-thin",
@@ -27,7 +27,7 @@ export const NAV_LAYOUT = {
   // Session-239 (R-36, F-239j): the nav scrolls internally on short lg
   // viewports — the F-219h drawer cure's desktop twin. Content ≈730px
   // (brand 64 + nav 546 + footer 119, live-measured on the artifact at
-  // session 264) inside the h-screen overflow-hidden
+  // session 264) inside the h-dvh overflow-hidden
   // root: without the overflow pair the footer (user row, Synced pill)
   // is unreachable at e.g. 1024×600. Pixel-unseen when content fits
   // (no scrollbar renders); the container's min-h-0 groundwork above

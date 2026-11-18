@@ -12,7 +12,7 @@ import { LoadingBlock } from "@/components/shared/page-parts";
 import type { User as AppUser } from "@/types";
 
 /**
- * App chrome — the WealthOS shell: an `flex h-screen` row holds the
+ * App chrome — the WealthOS shell: an `flex h-dvh` row holds the
  * dark sidebar as an in-flow flex child (visible from lg) and a
  * `flex-1 … overflow-hidden` main column whose `main` is the ONLY
  * scroller. Below lg the sticky mobile header + the full-screen

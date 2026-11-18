@@ -16,7 +16,7 @@ import { e2ePort } from "./tests/e2e/e2e-port";
 // tests/e2e/auth.spec.ts opts back out with an empty storageState because
 // it tests the logged-out surface.
 //
-// The unit layer stays in Vitest (see vitest.config.ts — it matches
+// The unit layer stays in Vitest (see vitest.config.mts — it matches
 // *.test.ts only, so these *.spec.ts / *.setup.ts files are never picked
 // up twice).
 

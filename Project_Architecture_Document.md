@@ -16,6 +16,54 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.70.0 (session 273, R-70 — the dynamic-viewport,
+  config-loader, and register-promotion round): the fresh-eyes audit
+  (three Mode-C passes — the R-69 cure surfaces driven by the session
+  (all seventeen HOLDING at file:line: the advisory census
+  live-accurate against a fresh bun audit, the phantom-primitive
+  family, the §18 layer map, the §4/§19 token mirror, the count
+  family, the box-text wiring, the parity-272 battery 23/23 +
+  parity-271 17/17 + docs-counts 18/18 re-run green), the
+  API/auth/security layer (the TWENTY-SIXTH consecutive clean bill —
+  all thirteen house contracts, 45 handlers / 30 route files read
+  line-by-line, every candidate dismissed into documented postures),
+  and the UI/a11y/shell layer (all eight standing contracts verified
+  holding live — the drawer, the theme, the v4 scanner, the a11y
+  two-gate 47/47, the shell twins, the geometry pin, the date seams,
+  the escape stacking)) — 0 Critical / 0 High / 0 Medium / 2 Low /
+  3 Informational NEW after dedup, every material claim re-verified
+  at file:line (the h-screen carrier census over the whole tree; the
+  vitest warning reproduced and its cure path empirically validated
+  by a scratch rename BEFORE the plan; the toast max-height genus;
+  the ledger anchor arithmetic). THE SHELL ROOT'S DYNAMIC-VIEWPORT
+  SWAP (F-273a, Low — the flagship: the F-220p register entry
+  promoted with the reference construction DECODED — the reference
+  has NO fixed-height shell (the F-207e document-scrolled original;
+  the F-210a absorbed superset), so the h-screen → h-dvh swap is
+  parity-neutral by construction and byte-identical in headless
+  Chromium where 100dvh equals 100vh; on iOS Safari the static 100vh
+  root plus overflow-hidden left the bottom of main's scroll region
+  unreachable behind the expanded browser chrome — the F-219h genus
+  at the shell; two comment carriers reworded; the toast column's
+  max-height rides the same cure). THE VITEST CONFIG-LOADER CURE
+  (F-273b, Low — the rider: the deprecated-path warning fired on
+  every unit run; vitest.config.ts renames to .mts with the tsconfig
+  *.mts include (the renamed file cannot escape the type gate) and
+  the six reference sites trued same-commit per the contract-change
+  rule). Registered: F-273c the ledger anchor drift (the prepend
+  convention), F-273d the axe substring matching, F-273e the iOS
+  background-attachment degradation. The verification: lint 0/0 ·
+  tsc 0 · 1981 unit (125 files, +9) · build ·
+  smoke 15/15 · 161 e2e (zero new legs — the swap is a class-token
+  change over an identical computed height in the e2e environment;
+  the standing battery the proof) · THE SIX PARITY DRIFT GATES
+  RE-RUN CLEAN (the round changed a swept surface — the shell root
+  class — and the drift chain itself proved zero pixel movement:
+  the four sweep classes, the fullpage axis, the interior census at
+  0-event margin) · census MATCH · the captures (the shell's desktop
+  face with the computed-height dvh proof, the main scroller's
+  reachability face with the footer visible, the mobile drawer at
+  390).
 - [SR] v2.69.0 (session 272, R-69 — the census-reanchor,
   phantom-primitive, and layer-map round): the fresh-eyes audit
   (three Mode-C passes — the R-68 cure surfaces driven by the session
@@ -3332,7 +3380,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1972) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1981) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (161) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -3466,7 +3514,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, BankAccount, …)
-├── tests/                       # 124 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 125 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -3756,9 +3804,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 124 | 1972 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 125 | 1981 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
-| — architecture pins | 92 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, parity-269, parity-270, parity-271, parity-272, db-transient) | `tests/` | source-scanning contracts |
+| — architecture pins | 93 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, parity-269, parity-270, parity-271, parity-272, parity-273, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 28 | auth, rate-limit, csv, uploads, upload-sniff, headers, boot-env, search-query, store-logout, store-hydrate, store-staleness, … | `tests/` | behavior |
 | E2E | 7 | 161 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -3791,7 +3839,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1972/1972 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1981/1981 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 161/161
@@ -3861,7 +3909,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1972 unit / 161 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1981 unit / 161 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -3896,7 +3944,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1972 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1981 unit · build · smoke 15/15 ·
 161 e2e — the e2e tail rides the docs-counts window since session 269,
 the F-269c cure).
 

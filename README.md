@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2133%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2142%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1972 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1981 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 161 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -99,12 +99,12 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 124 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 125 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
 ├── 📄 playwright.config.ts    # Port 3100; pinned e2e.db; authenticated storageState
-├── 📄 vitest.config.ts        # Node environment, jsdom-free
+├── 📄 vitest.config.mts       # Node environment, jsdom-free
 └── 📄 AGENTS.md / CLAUDE.md / Project_Architecture_Document.md / wealth-os_SKILL.md / worklog.md
 ```
 
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1972 checks / 124 files |
+| Unit (Vitest) | `bun run test` | 1981 checks / 125 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 161 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 18 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1972 unit · 161 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1981 unit · 161 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 272: **R-69 shipped — the census-reanchor, phantom-primitive, and layer-map round**: the fresh-eyes audit (three Mode-C passes — the R-68 cure surfaces (all twelve HOLDING, the parity-271 battery 17/17 re-run green) · the API/auth/security layer's twenty-fifth consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; 10 candidates dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 7 Medium / 11 Low / 2 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-272a the security ledger's advisory census moved 2 → 1** (npm's audit endpoint stopped returning the picomatch HIGH against the same picomatch@4.0.7 the lockfile still resolves — verified at the registry's bulk endpoint; the GitHub advisory still publishes it; the PAD §10 row + the security-ledger pin re-anchored same-commit). Plus the phantom-primitive family (the skill doc's stack table still naming the tabs twin after R-68 trued the label twin in the same row · the README architecture row naming Label and Tabs · the PAD §1.2/§3.2/§5.3 twins naming input/label/textarea) and the layer-map/token-mirror pair (the §18 z-index ladder drifted four rows deep against the tree and its own §17 · the §4/§19 mirrors carrying the pre-cure white ink for the primary-foreground the F-219a cure set to stone-900, retired tokens, stale ramp ranges) plus the count family (18 families, the phantom api family and phantom names, the 15-assertion smoke counts, the stone-500 arithmetic, the contrast figures, the line counts) and the box-text constant wiring at the three settings sites (byte-identical classes — zero DOM change): 1972 unit (+23) · 161 e2e (zero new legs) · smoke 15/15 · census MATCH; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 273: **R-70 shipped — the dynamic-viewport, config-loader, and register-promotion round**: the fresh-eyes audit (three Mode-C passes — the R-69 cure surfaces (all seventeen HOLDING, the parity-272 battery 23/23 re-run green) · the API/auth/security layer's twenty-sixth consecutive clean bill (all thirteen house contracts, 45 handlers / 30 route files) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 0 Medium / 2 Low / 3 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-273a the shell root's h-screen → h-dvh swap** — the F-220p register entry promoted with the reference construction decoded (the reference has no fixed-height shell — the F-210a absorbed superset — so the swap is parity-neutral by construction; in headless Chromium 100dvh equals 100vh, and the six parity drift gates re-ran CLEAN to prove it; on iOS Safari the static root left the scroller's bottom unreachable behind the expanded chrome — the F-219h genus cured at the shell, with the toast column's max-height riding the same cure). Plus F-273b the vitest config-loader deprecation cured (vitest.config.mts + the tsconfig *.mts include + the six reference sites, the parity-229 walk pins updated same-commit): **1981 unit (+9) · 161 e2e (zero new legs) · smoke 15/15 · census MATCH · the six drift gates CLEAN**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

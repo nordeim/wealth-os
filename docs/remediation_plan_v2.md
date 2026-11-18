@@ -1521,7 +1521,129 @@
 > drift gates CLEAN · census MATCH · captures.)
 
 
-> **Current version: v2.69.0** (session 272 — the
+> **Current version: v2.70.0** (session 273 — the
+dynamic-viewport, config-loader, and register-promotion round R-70:
+the operator re-sent the standing directive after the R-69 ship pair
+(488b49c2 + the owner's 545710ad session-log update carrying
+docs/session_128.md, the session-272 transcript — fetched by the
+fresh clone and reviewed at intake per the odd-number record
+convention, this record riding docs/session_129.md). Per the
+recorded rhythm, findings-led iteration: refresh, re-audit,
+remediate, verify, capture, document, commit, push — with the
+operator's named asks (the mobile navigation comparison, the
+Tailwind v4 state, the .env/db contract, the vitest/playwright
+configs, the sitemap/SEO surface, the .env.example, the screenshots,
+the SSH-wrapper push) re-verified along the way.)
+
+The intake: the workspace had been reset (a fresh clone at HEAD
+545710ad — tree clean; the prior session's work ALREADY SHIPPED as
+488b49c2 + the owner's 545710ad session-log update carrying
+docs/session_128.md), the environment rebuilt cold (bun install +
+the postinstall prisma generate, .env from .env.example on the
+DATABASE_URL="file:../db/custom.db" contract, db/ at the repo root,
+db push + seed, census MATCH (81/4/3/6/5/7, users=1)); the one
+cold-start deviation was environmental — the cached Playwright
+chromium build did not match the 1.65 pin (the headless-shell 1254
+build installed, then the battery ran green).
+
+THE COLD BASELINE GATE GREEN AT HEAD — the v2.69.0 ship state
+reproduced exactly, no discovery: lint 0/0 · tsc 0 · 1972/1972 unit
+(124 files) · build (the 4 documented Turbopack tracing warnings) ·
+smoke 15/15 · 161/161 e2e · census MATCH.
+
+The standing layers: probe:ref STABLE on every layer (the app
+bundle 1,402,874 bytes / md5 6d3779af…, the stylesheet md5
+96f24d45…, the demo-data ZERO census, the desktop nav census 256px ·
+9 links, the TRUE-390 menu census opens=true · 9 destinations) ·
+**the mobile-nav comparison verified on BOTH sides at TRUE 390×844**
+(the reference through probe:ref's TRUE-390 menu census; the clone
+side riding the standing comparison-265.ts on the production
+artifact over the scratch db/comparison.db — pre-open 0 · 9
+destinations + Sign Out · aria-expanded true→false · post-close 0 ·
+census tripwire MATCH · no Tailwind v4 regression) · `bun audit`
+UNCHANGED (the 1-advisory dev-chain census the R-69 re-anchor
+carries — the minimatch moderate, zero runtime) · neo-crm unchanged
+(b3d0fbe) · the SEO surface verified (smoke leg 12: sitemap + robots
++ manifest 200; the metadata/pwa/page-titles pins 30/30) · the .env
+contract + the db/ at the repo root + the vitest/playwright configs
++ the .env.example standing.
+
+The session-273 fresh-eyes audit (three Mode-C research passes
+dispatched as parallel research subagents per the house convention,
+every material claim re-verified at file:line by the driving
+session — the R-69 cure surfaces: all seventeen HOLDING (the PAD §10
+census row + the security-ledger pin live-accurate against a fresh
+`bun audit`; the phantom-primitive family trued across
+SKILL/README/PAD; the §18 layer map; the §4/§19 token mirror; the
+count family; the boxText wiring at its three settings sites; the
+parity-272 battery 23/23 + parity-271 17/17 + docs-counts 18/18 +
+security-ledger 2/2 all re-run green) · the API/auth/security layer:
+the TWENTY-SIXTH consecutive clean bill (all thirteen house
+contracts, 30 route files / 45 handlers read line-by-line, the
+census exact; every candidate dismissed into documented postures —
+the in-band OTP/reset knobs, the uploads GET capability-URL
+publicity, the per-account bucket trade-offs, the unbucketed read
+classes, the CSRF layering, the HSTS parity pin) · the UI/a11y/shell
+layer: all eight standing contracts verified holding live (the
+drawer mechanics with the stacked guard and the skip-link exclusion,
+the theme system with the inline bootstrap equivalence traced, the v4
+scanner discipline with the phantom-variant grep clean and the three
+guard suites 72/72, the a11y two-gate 47/47 with the scrollThrough
+helper, the shell twins 31/31, the geometry pin, the date seams 180
+tests green, the escape stacking). The genuine rot this round: TWO
+LOW findings and three registered notes — 0 Critical / 0 High / 0
+Medium / 2 Low / 3 Informational NEW after dedup, every material
+claim re-verified at file:line (the h-screen carrier census over the
+whole tree; the vitest warning reproduced and its cure path
+empirically validated by a scratch rename BEFORE the plan; the toast
+max-height genus; the ledger anchor arithmetic).
+
+The round's flagship: **F-273a the shell root's h-screen (100vh)
+dynamic-viewport trap, promoted from F-220p's register with the
+reference construction DECODED** — the R-17 registration said
+"h-dvh is the robust form — reference construction unknown"; the
+decode: the reference has NO fixed-height shell at all (F-207e: its
+section shells are min-h-screen document-scrolled surfaces;
+F-210a: the scroll-model divergence is the deliberately absorbed
+superset — our viewport-locked internal scroller), so no parity
+constraint binds our shell's height MECHANISM and the swap is
+parity-neutral by construction; in headless Chromium 100dvh equals
+100vh, so every pixel-level gate (the sweeps, the fullpage axis,
+the interior census, the e2e battery) stays byte-identical. On iOS
+Safari the static 100vh root plus overflow-hidden left the bottom
+of main's scroll region (the copyright footer, list bottoms)
+unreachable behind the expanded browser chrome — the exact genus
+the F-219h drawer cure fixed inside the sheet, now cured at the
+shell. The round's rider: **F-273b the vitest config-loader
+deprecation** (the warning fired on every unit run; the .mts rename
+cures it — empirically validated pre-plan, and the parity-229
+root-config walk pins the rename in the same commit per the
+contract-change rule). Registered: F-273c the §2.30 ledger PAD
+anchors (inherent to the revision-block-prepend convention;
+navigation is by content-grep), F-273d the axe sanctioned-register
+substring matching (the register discipline manages it), F-273e the
+iOS background-attachment: fixed degradation (the decorative
+page-wash glow only; the flat background token still paints).
+
+The execution contract (R-70): the plan v2.70.0 written and
+validated against the tree (this script, insertions only, every
+anchor asserted) → **R-70.1** the pins born honest RED (the
+parity-273 battery over the false forms at HEAD) → **R-70.2** the
+cures (the h-dvh swap at the shell root + the two comment carriers
+reworded + the toast max-height same-genus completion; the
+vitest.config.mts rename + its six reference sites) → **R-70.3**
+the verification (parity-273 GREEN · parity-229 GREEN at the
+updated walk list · docs-counts GREEN at the advanced trio · the
+sibling batteries GREEN · lint 0/0 · tsc 0 · the unit suite at the
+new count · build · smoke 15/15 · the FULL e2e battery 161/161 ·
+**the six parity drift gates RE-RUN CLEAN** (this round changed a
+swept surface — the shell root class string — and the honest
+verification is the drift chain itself proving dvh equals vh in the
+capture environment, not the assertion that it should) · census
+MATCH · the captures (the standing evidence faces + the round's
+touched face).
+
+> **Previous version: v2.69.0** (session 272 — the
 census-reanchor, phantom-primitive, and layer-map round R-69: the
 operator re-sent the standing directive after the R-68 ship pair
 (64dd7be6 + the owner's 1761effb session-log update carrying
@@ -5191,6 +5313,32 @@ bill (twelve contracts, 45 handlers / 30 route files, 10 candidates
 dismissed into documented postures) and the UI/a11y/shell layer's
 eight standing contracts all holding live.
 
+### 2.31 Session-273 audit ledger (the fresh-eyes round over the v2.69.0 ship state)
+
+Three Mode-C passes (the R-69 cure surfaces · the API/auth/security
+layer · the UI/a11y/shell layer), every material claim re-verified at
+file:line by the driving session. The API layer's twenty-sixth
+consecutive clean bill and the UI layer's eight standing contracts
+are the round's clean columns; the genuine rot is one promoted
+register entry and one standing toolchain warning.
+
+| ID | Severity | Finding (verified at file:line) | Location | Disposition |
+|---|---|---|---|---|
+| F-273a | Low | **THE SHELL ROOT'S h-screen (100vh) IS THE DYNAMIC-VIEWPORT TRAP — the F-220p register entry, promoted with the reference construction decoded.** SHELL_LAYOUT.root reads "flex h-screen overflow-hidden bg-background page-wash" — the viewport-locked internal-scroller shell (the F-210a absorbed superset). On iOS Safari the static 100vh extends under the expanded browser chrome while overflow-hidden keeps the document itself from ever scrolling, so the bottom of main's scroll region (the copyright footer, list bottoms) is unreachable until the toolbar collapses — the exact genus the F-219h drawer cure fixed inside the sheet, at the shell. The R-17 (F-220p) registration said "h-dvh is the robust form — reference construction unknown"; this session decoded it: the reference has NO fixed-height shell (F-207e: its shells are min-h-screen document-scrolled; F-210a: the scroll-model divergence is the deliberate superset), so no parity constraint binds the height mechanism and the swap is parity-neutral — in headless Chromium 100dvh equals 100vh, leaving every pixel-level gate byte-identical. Two comment carriers ride the same token (page-layout.ts:30, app-shell.tsx:15 — comment-carried h-screen emits dead CSS once the code site is cured, the F-229d net's own trigger). | `src/lib/page-layout.ts:12` (the code site) · `src/lib/page-layout.ts:30` + `src/components/layout/app-shell.tsx:15` (the comment carriers) vs the F-220p register row and the F-207e/F-210a reference decode | **R-70** (the root swaps to h-dvh; both comments reworded to the dynamic-viewport form; pinned by the parity-273 shell-root and comment-carrier legs) |
+| F-273b | Low | **THE VITEST CONFIG RIDES THE DEPRECATED CONFIG-LOADER PATH — the warning fires on every unit run.** "Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite: ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `\"type\": \"module\"`". The config already uses import.meta.dirname (ESM-only); the runner loader transpiles it today, the future native default would fail to load it. Cure path empirically validated pre-plan: the rename to vitest.config.mts eliminates the warning (0 occurrences on a scratch run) and trips exactly the parity-229 root-config walk pin (born RED by design — the contract-change rule updates it in the same commit). | `vitest.config.ts:1` vs the warning reproduced on every `CI=1 vitest run` · the scratch-rename validation (this session) | **R-70** (git mv to vitest.config.mts + the tsconfig.json include extended with **/*.mts (the renamed file cannot escape the type gate) + the six reference sites trued: next.config.ts:75 exclusion entry, tests/parity-229.test.ts:172,261 walk lists, README.md:107 tree row, wealth-os_SKILL.md:185 file card, playwright.config.ts:19 comment; pinned by the parity-273 rename legs) |
+| F-273c | Informational | **THE §2.30 LEDGER'S PAD LINE ANCHORS DRIFTED +59 LINES.** The R-69 commit prepended the v2.69.0 revision entry at the PAD head, shifting every downstream anchor cited in the ledger (3831→3890, 3184→3240, 3406→3462, 3627→3685, 3872→3931, 3616→3674). Inherent to the revision-block-prepend convention; the documented navigation practice is content-grep, not line numbers. | `docs/remediation_plan_v2.md` §2.30 citations vs the current PAD | Registered (the convention documented; not cured) |
+| F-273d | Informational | **THE A11Y SPEC'S SANCTIONED-REGISTER MATCHING IS SUBSTRING-BASED.** The matcher's `target.includes(needle)` approves any flagged node carrying a sanctioned class on any surface — a future sub-AA regression reusing a sanctioned class would auto-pass the two-gate. The register discipline (retiring stale arms every round) is the documented mitigation; the tightening (full class-token equality) deferred to the next register touch. | `tests/e2e/a11y.spec.ts:109` | Registered (the tightening deferred; the discipline documented) |
+| F-273e | Informational | **background-attachment: fixed IS IGNORED ON iOS SAFARI.** The page-wash's radial glows ride content instead of the viewport on WebKit. The flat --color-background base still paints the canvas — only the decorative glow positioning degrades on one browser family. | `src/app/globals.css:496` | Registered (no cure required; a @supports guard is the shape if ever revisited) |
+
+Recorded, not cured: F-273c, F-273d, F-273e. The audit's clean
+columns: the API/auth/security layer's twenty-sixth consecutive clean
+bill (thirteen contracts, 45 handlers / 30 route files) and the
+UI/a11y/shell layer's eight standing contracts all holding live. The
+round also re-confirmed the standing registers (the sidebar brand h2
+— the F-242h register; the WCAG-exemption register — the documented
+parity posture; the toast max-h-screen — cured with F-273a as the
+same-genus completion, not a separate row).
+
 ## 3. The remediation program (R-items)
 
 Status legend: `Done(v2.N.M)` · `In progress` · `Programmed(session ≥ 204)` ·
@@ -7514,6 +7662,79 @@ The standing operator asks re-verified along the way (the
 sitemap/robots/manifest family, the mobile-nav comparison —
 the drawer battery + probe:ref's TRUE-390, the .env.example,
 the captures, the docs lockstep).
+
+### R-70 — The dynamic-viewport, config-loader, and register-promotion round (session 273)
+
+The operator re-sent the standing directive after the R-69 ship pair
+(488b49c2 + the owner's 545710ad session-log update carrying
+docs/session_128.md, the session-272 transcript — fetched by the
+fresh clone and reviewed at intake per the odd-number record
+convention). Per the recorded rhythm, findings-led iteration. The
+intake and the standing layers are recorded in the version header
+above; this section carries the findings, the cures, and the
+verification contract.
+
+**The findings (each verified at file:line by the driving session —
+the API layer's twenty-sixth consecutive clean bill and the UI
+layer's eight standing contracts are the round's clean columns; the
+genuine rot is one promoted register entry and one standing
+toolchain warning):** the §2.31 ledger's five rows — F-273a THE
+ROUND'S FLAGSHIP (the shell root's h-screen dynamic-viewport trap —
+the F-220p register entry promoted with the reference construction
+decoded: the reference has no fixed-height shell, the scroll-model
+divergence is the F-210a absorbed superset, so the h-dvh swap is
+parity-neutral by construction and byte-identical in headless
+Chromium where 100dvh equals 100vh; on iOS Safari the static 100vh
+plus overflow-hidden left the bottom of main's scroll region
+unreachable behind the expanded browser chrome — the F-219h genus at
+the shell; two comment carriers ride the same token) · F-273b THE
+RIDER (the vitest config-loader deprecation — the warning fires on
+every unit run; the .mts rename cures it, empirically validated
+pre-plan; the parity-229 walk pin trips born-RED by design and rides
+the contract-change rule) · F-273c/F-273d/F-273e THE THREE
+REGISTERED NOTES (the ledger anchor drift inherent to the prepend
+convention; the axe substring matching with its documented register
+discipline; the iOS background-attachment degradation of the
+decorative wash).
+
+**The cures (R-70.2):** the shell root swaps h-screen → h-dvh
+(SHELL_LAYOUT.root, page-layout.ts:12) with both comment carriers
+reworded to the dynamic-viewport form (page-layout.ts:30,
+app-shell.tsx:15 — a comment-carried h-screen would emit dead CSS
+once the code site is cured, the F-229d net's own trigger) and the
+toast column's max-h-screen → max-h-dvh (toast.tsx:94 — the
+same-genus completion: a fixed-position element capped at the static
+viewport on the mobile widths where the dynamic toolbar lives); the
+min-h-screen document-scrolled forms (the auth faces, the error
+pages, the body, the page shells) are classified SAFE by construction
+(min-height on document-scrolled surfaces never traps content — the
+page can always scroll) and recorded, not touched. The vitest config
+renames to vitest.config.mts with its six reference sites trued in
+the same commit (the next.config.ts outputFileTracingExcludes entry,
+the parity-229 root-config walk lists at both sites, the README tree
+row, the skill doc's file card, the playwright config comment).
+
+**The verification contract (R-70.3):** the parity-273 battery born
+honest RED against the pre-cure tree (the false forms ride the tree
+at HEAD: the h-screen root and comments, the max-h-screen toast, the
+.config.ts filename and its reference sites) → the cures →
+parity-273 GREEN · parity-229 GREEN at the updated walk list ·
+docs-counts GREEN at the advanced trio (the v2.70.0 block lands
+together with the advance — the F-249b structural gate enforces the
+pairing) · the sibling batteries GREEN (parity-272 · parity-271 ·
+parity-243 · parity-236 · parity-270) → lint 0/0 · tsc 0 · the unit
+suite at the new count · build · smoke 15/15 (leg 14's artifact
+hygiene now excludes the .mts form) · the FULL e2e battery 161/161
+(zero new legs — the swap is a class-token change over an identical
+computed height in the e2e environment; the standing battery the
+proof) · **the six parity drift gates RE-RUN CLEAN** (the round
+changed a swept surface — the shell root class — and the honest
+verification is the drift chain itself: the four sweep classes, the
+fullpage axis, and the interior census proving zero pixel movement,
+the dvh-equals-vh property demonstrated rather than asserted) ·
+census MATCH · the captures (the standing evidence faces + the
+round's touched surface — the shell, evidenced at desktop and the
+390 drawer).
 
 ### R-69 — The census-reanchor, phantom-primitive, and layer-map round (session 272)
 
@@ -10430,6 +10651,7 @@ six parity drift legs.
 ## 5. Execution history
 
 | Version | Session | R-items executed | Gate at ship | Commit |
+| v2.70.0 | 273 | **R-70** (the dynamic-viewport, config-loader, and register-promotion round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 (the reference through probe:ref's TRUE-390 menu census; the clone side riding the standing comparison-265.ts on the production artifact over the scratch db/comparison.db — pre-open 0 · 9 destinations + Sign Out · the aria-expanded flip · post-close 0 · the census tripwire MATCH); the workspace had been reset (a fresh clone at HEAD 545710ad — tree clean; the prior session's work ALREADY SHIPPED as 488b49c2 + the owner's 545710ad session-log update carrying docs/session_128.md, the session-272 transcript — fetched and reviewed at intake per the odd-number record convention, this record riding docs/session_129.md); the environment rebuilt cold (bun install + the postinstall prisma generate, .env from .env.example on the DATABASE_URL="file:../db/custom.db" contract, db/ at the repo root, db push + seed, census MATCH (81/4/3/6/5/7, users=1)); the one cold-start deviation environmental — the cached Playwright chromium build did not match the 1.65 pin (the headless-shell 1254 build installed, then the battery ran green); THE COLD BASELINE GATE GREEN AT HEAD — the v2.69.0 ship state reproduced exactly, no discovery: lint 0/0 · tsc 0 · 1972/1972 unit (124 files) · build (the 4 documented Turbopack tracing warnings) · smoke 15/15 · 161/161 e2e. The standing layers: probe:ref STABLE on every layer (the bundle 1,402,874 bytes / md5 6d3779af…, the stylesheet md5 96f24d45…, the demo-data ZERO census, the desktop nav census 256px · 9 links, the TRUE-390 menu census opens=true · 9 destinations) · neo-crm unchanged (b3d0fbe) · `bun audit` UNCHANGED (the 1-advisory dev-chain census the R-69 re-anchor carries) · the SEO surface verified (smoke leg 12 + the metadata/pwa/page-titles pins 30/30) · the .env contract + the db/ at the root + the configs + the .env.example standing. The session-273 fresh-eyes audit (three Mode-C passes dispatched as parallel research subagents per the house convention, every material claim re-verified at file:line by the driving session: the R-69 cure surfaces — all seventeen HOLDING (the advisory census live-accurate against a fresh bun audit; the phantom-primitive family; the §18 layer map; the §4/§19 token mirror; the count family; the box-text wiring; the parity-272 battery 23/23 + parity-271 17/17 + docs-counts 18/18 + security-ledger 2/2 re-run green) · the API/auth/security layer — the TWENTY-SIXTH consecutive clean bill (thirteen house contracts, 45 handlers / 30 route files read line-by-line, every candidate dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified holding live (the a11y two-gate 47/47, the mobile battery 20/20, the guard suites 72/72, the date seams 180 green)): 0 Critical / 0 High / 0 Medium / 2 Low / 3 Informational NEW after dedup. THE ROUND'S CURES: **F-273a the shell root's h-screen → h-dvh swap** (the F-220p register entry promoted with the reference construction DECODED — the reference has NO fixed-height shell (the F-207e document-scrolled original; the F-210a absorbed superset), so the swap is parity-neutral by construction and byte-identical in headless Chromium where 100dvh equals 100vh; on iOS Safari the static 100vh root plus overflow-hidden left the bottom of main's scroll region unreachable behind the expanded browser chrome — the F-219h genus at the shell; the two comment carriers reworded (a comment-carried h-screen emits dead CSS once the code site cures — the F-229d net's own trigger); the toast column's max-h-screen rides the same cure; the min-h-screen document-scrolled forms classified SAFE by construction) · **F-273b the vitest config-loader deprecation cured** (vitest.config.ts → vitest.config.mts — empirically validated pre-plan with a scratch rename — plus the tsconfig.json **/*.mts include so the renamed file cannot escape the type gate, and the six reference sites: the next.config exclusion entry, the parity-229 walk lists at both sites, the README tree row, the skill doc's file card, the playwright config comment). Registered: F-273c the ledger anchor drift (the prepend convention), F-273d the axe substring matching, F-273e the iOS background-attachment degradation. The plan v2.70.0 written and validated against the tree (scripts/plan-273.py — the head block, the §2.31 ledger with five rows, the R-70 section; scripts/cures-273.py + scripts/cures-273b.py after the first script's 2-space window missed the parity-229 ROOT_CONFIGS twin at 4-space indentation — the F-247e slice-window lesson's own edition, the continuation recorded per the one-shot convention). **R-70.1** the pins born honest RED (the parity-273 battery: 9 legs fail — the false forms ride the tree at HEAD) → **R-70.2** the cures (the dynamic-viewport family at four src sites + the rename with its seven companion sites + the ledger trues) → **R-70.3** the verification (parity-273 GREEN 9/9 · parity-229 GREEN 23/23 at the updated walk lists · docs-counts GREEN at the advanced trio (the TWENTY-FOURTH gate-enforced ride — the v2.70.0 block lands together with the advance) · parity-272/271/243/236/270 GREEN · lint 0/0 · tsc 0 · **1981/1981 unit (125 files, +9)** · build · smoke 15/15 · **161/161 e2e (zero new legs — the swap is a class-token change over an identical computed height in the e2e environment; the standing battery the proof)** · **THE SIX PARITY DRIFT GATES RE-RUN CLEAN** (the round changed a swept surface — the shell root class — and the drift chain itself proved zero pixel movement: the four sweep classes at 1440/390/768/1024, the fullpage axis within baseline + 0.5, the interior census at 0-event margin) · census MATCH · the captures — 263 the shell's desktop face at 1280×800 with the computed-height dvh proof (800px == the viewport) + the flagship dashboard asserted · 264 the main scroller's reachability face (the expenses page scrolled to the bottom, the copyright footer visible — the genus's desktop proof) · 265 the mobile drawer at 390×844 (9 destinations + Sign Out); the census tripwire MATCH) | lint 0/0 · tsc 0 · **1981 unit (125 files, +9)** · build · smoke 15/15 · **161 e2e (zero new legs)** · **the six parity drift gates CLEAN** · census MATCH | (this session's execution commit) |
 | v2.69.0 | 272 | **R-69** (the census-reanchor, phantom-primitive, and layer-map round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 (the reference through probe:ref's TRUE-390 menu census; the clone side riding the standing comparison-265.ts on the production artifact over the scratch db/comparison.db — pre-open 0 · 9 destinations + Sign Out · the aria-expanded flip · post-close 0 · the census tripwire MATCH); the workspace had been reset (a fresh clone at HEAD 1761effb — tree clean; the prior session's work ALREADY SHIPPED as 64dd7be6 + the owner's 1761effb session-log update carrying docs/session_126.md, the session-271 transcript — fetched and reviewed at intake per the odd-number record convention, this record riding docs/session_127.md); the environment rebuilt cold (bun install + the postinstall prisma generate, .env from .env.example on the DATABASE_URL="file:../db/custom.db" contract, db/ at the repo root, db push + seed, census MATCH (81/4/3/6/5/7, users=1)); the one cold-start deviation environmental — the cached Playwright chromium build did not match the 1.65 pin (the headless-shell 1254 build installed, then the battery ran green); THE COLD BASELINE GATE GREEN AT HEAD — the v2.68.0 ship state reproduced exactly, no discovery: lint 0/0 · tsc 0 · 1949/1949 unit (123 files) · build (the 4 documented Turbopack tracing warnings) · smoke 15/15 · 161/161 e2e. The standing layers: probe:ref STABLE on every layer · neo-crm unchanged (b3d0fbe) · the SEO surface verified (smoke leg 12) · the .env contract + the db/ at the root + the configs + the .env.example standing · **`bun audit` CHANGED — the census moved 2 → 1** (the picomatch HIGH dropped off npm's audit data — verified by the driving session at the registry's bulk advisory endpoint; the GitHub advisory still publishes it; picomatch@4.0.7 still rides the lockfile). The session-272 fresh-eyes audit (three Mode-C passes dispatched as parallel research subagents per the house convention, every material claim re-verified at file:line by the driving session: the R-68 cure surfaces — all twelve HOLDING, the parity-271 battery 17/17 re-run green · the API/auth/security layer — the TWENTY-FIFTH consecutive clean bill (twelve contracts, 45 handlers / 30 route files, 10 candidates dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 7 Medium / 11 Low / 2 Informational NEW after dedup. THE ROUND'S CURES: F-272a the security-ledger census re-anchored 2 → 1 (the PAD §10 row + the security-ledger pin, same commit — the F-268d doctrine) · F-272b/F-272c/F-272d/F-272e the phantom-primitive family trued across SKILL/README/PAD (the stack table's tabs twin · the README architecture row · the PAD §1.2 label row · the PAD §3.2/§5.3 inventories) · F-272f/F-272g the layer map and token mirror trued (the §18 z-index ladder to the real tree census · the §4/§19 mirrors to the real @theme — the stone-900 primary-foreground, the retired tokens dropped, the @utility + token-flip mechanism, the ramp ranges re-derived) · F-272h through F-272q the count family trued (18 families · the phantom api family · PageHeader/BankAccount/KpiCard · the 15-assertion smoke counts · the stone-600 floor with the 4.40:1 computation · the 4.80/5.48/4.83 contrast figures · the line counts and anchors, self-verifying pins · the wrapping glosses) · F-272r the box-text constant wired at its three settings sites (byte-identical classes — zero DOM change) · F-272t the Bun floor rider. Registered: F-272s. The plan v2.69.0 written and validated against the tree. **R-69.1** the pins born honest RED (the parity-272 battery: 23 legs fail — the false forms ride the docs at HEAD; the security-ledger census pin re-anchored against the stale row) → **R-69.2** the cures (the doc set + one src wiring) → **R-69.3** the verification (parity-272 GREEN 23/23 · security-ledger GREEN at the re-anchored census · parity-271 GREEN at the followed cure · docs-counts GREEN at the advanced trio (the TWENTY-THIRD gate-enforced ride — the v2.69.0 block lands together with the advance) · parity-229/236/243/270 GREEN · lint 0/0 · tsc 0 · **1972/1972 unit (124 files, +23)** · build · smoke 15/15 · **161/161 e2e (zero new legs — the standing battery the proof the wiring changed no behavior)** · census MATCH · the drift chain not re-run (zero swept/censused surfaces changed — docs plus one class-identical src consolidation) · the captures — the standing evidence faces: the dashboard, the expenses section, the mobile drawer at 390) | lint 0/0 · tsc 0 · **1972 unit (124 files, +23)** · build · smoke 15/15 · **161 e2e (zero new legs — zero behavioral change)** · census MATCH · the drift chain not re-run (zero swept/censused surfaces changed) | (this session's execution commit) |
 | v2.68.0 | 271 | **R-68** (the doc-truth, pin-depth, and register-note round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 (the reference through probe:ref's TRUE-390 menu census; the clone side riding the standing comparison-265.ts on the production artifact over the scratch db/comparison.db — pre-open 0 · 9 destinations + Sign Out · the aria-expanded flip · post-close 0 · the census tripwire MATCH); the workspace stood at HEAD fbb29c86, the environment already built warm, git pull fast-forwarding 854e9438..fbb29c86 carrying docs/session_124.md alone (the owner's session-270 transcript, reviewed at intake per the odd-number record convention); the baseline gate GREEN at HEAD — the v2.67.0 ship state reproduced exactly, no discovery: lint 0/0 · tsc 0 · 1932/1932 unit (122 files) · build · smoke 15/15 · 161/161 e2e · census MATCH on the first run). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` UNCHANGED — the 2-advisory dev-chain census under F-268d's standing posture; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the configs + the .env.example standing). The session-271 fresh-eyes audit (three Mode-C passes dispatched as parallel research subagents per the house convention, every material claim re-verified at file:line by the driving session: the R-67 cure surfaces — all five HOLDING with the four guard suites re-run green 61/61 · the API/auth/security layer — the TWENTY-FOURTH consecutive clean bill (twelve contracts, 45 handlers / 30 route files, 3 candidates dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified, the genuine rot found in the distilled docs): 0 Critical / 0 High / 2 Medium / 7 Low / 9 Informational NEW after dedup, every material claim re-verified at file:line (the a11y battery counted live through the playwright list census — 46 tests at 1280×800, not 10 at 1440×900; the phantom UI inventory counted against the actual directory — 18 tsx, not 23, with five phantom ui files named; the Radix label claim grepped against package.json — no react-label dependency exists; the three-step carriers read against the import page's two Step headings). THE ROUND'S CURES: F-271c/F-271d the skill doc's §8 and inventory trued (the battery opener's real count and viewports · the stack table's slot-not-label · the 8-tsx ui row and 18-tsx heading · the labels bullet's htmlFor association) · F-271a the stacked-order depth leg (mutation-verified: a hollowed body REDs the depth pin while the title pin stays green) · F-271b the dialect probe's vacuity companion (mutation-verified: a reworded probe line REDs the battery) · F-271e/F-271f/F-271g the README feature-truth trio (the two-step wizard on all three carriers · the unwired provider seam · the editable saved-amount form) · F-271h/F-271i the skill doc's mechanism truth (the per-component focus ring · the 24px floor and the 19-check battery) · F-271j/F-271k/F-271l the three riders (the 400 citation · the link variant's contrast register note · the contrast figures — including a third red-700 carrier the battery's whole-file pin caught live mid-round). Registered: F-271m through F-271r. The plan v2.68.0 written and validated against the tree. **R-68.1** the pins born honest RED (the parity-271 battery: 14 cure legs fail + 3 hardening legs pass, the two hardening legs mutation-verified) → **R-68.2** the cures (17 doc/comment sites + the register note; zero application behavior changed) → **R-68.3** the verification (parity-271 GREEN 17/17 · parity-229/236/270 GREEN · docs-counts GREEN at the advanced trio · lint 0/0 · tsc 0 · the unit suite at the new count · build · smoke 15/15 · the FULL e2e battery 161/161 — zero new legs, the standing battery the proof the doc round changed no behavior · census MATCH · the captures — the standing evidence faces: the dashboard at 1280×800, the expenses filters card and the mobile drawer at 390×844) | lint 0/0 · tsc 0 · **1949 unit (123 files, +17)** · build · smoke 15/15 · **161 e2e (zero new legs — zero UI change)** · census MATCH · the drift chain not re-run (zero swept/censused surfaces changed — docs and two comments; the standing battery the proof) | (this session's execution commit) |
 | v2.67.0 | 270 | **R-67** (the liveness-fabrication, stacked-escape, and comment-truth round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 (the reference through probe:ref's agent-browser leg; the clone side riding the production artifact on the scratch db/comparison.db per the session-253 toolchain note — the aria-expanded flip verified on open AND close, zero visible nav links after the close); the workspace had been RESET — a fresh clone at HEAD 006c3c39 with the environment rebuilt cold (the one deviation environmental: the fresh sandbox carried the wrong Playwright chromium build, the headless-shell 1254 installed before the battery); the cold baseline GREEN at HEAD — the v2.66.0 ship state reproduced exactly, no discovery). The audit round: the standing layers re-verified (probe:ref STABLE; `bun audit` UNCHANGED — the 2-advisory dev-chain census under F-268d's standing posture; neo-crm unchanged (b3d0fbe); the SEO surface verified (smoke leg 12); the .env contract + the db/ at the repo root + the configs + the .env.example standing). The session-270 fresh-eyes audit (three Mode-C passes: the R-66 cure surfaces — the parity-269/parity-229/docs-counts batteries + the security-ledger pin re-run green · the API/auth/security layer — the TWENTY-THIRD consecutive clean bill (twelve contracts, 45 handlers / 30 route files, 7 dismissed candidates) · the UI/a11y/shell layer — all eight standing contracts verified, three new findings after dedup, one candidate dismissed as the audit prompt's own stale citation): 0 Critical / 0 High / 0 Medium / 3 Low / 2 Informational NEW after dedup, every material claim re-verified at file:line (the duplicated ladder comment read directly; the liveness fabrication live-proven through the engine's semantics with the offending token grepped absent from every walked code site; the stacked-order interleaving decoded through both guards' verbatim logic). THE ROUND'S CURES: F-270a the docs-counts comment ladder collapsed to one copy + the no-duplicated-ladder pin · F-270b the hash-dialect arm (the env example's and the ignore list's hash-marked lines route to the comments side) + the ignore list joins the walk + the residue trued to the lockfile and license + the maiden catch reworded · F-270c the F-266d comment trued + the stacked-order e2e leg · F-270d/F-270e the two comment riders. The plan v2.67.0 written and validated against the tree. **R-67.1** the pins born RED (the parity-270 battery + the parity-229 engine extensions; the maiden run catches the env example's prose carrier live) → **R-67.2** the cures → **R-67.3** the verification (parity-270 GREEN · parity-229 GREEN over the widened walk · lint 0/0 · tsc 0 · the unit suite at the new count · build · smoke 15/15 · the FULL e2e battery (+1 leg) · census MATCH · the drift chain re-run · the captures — the stacked-order faces, the standing mobile drawer) | lint 0/0 · tsc 0 · **1932 unit (122 files, +8)** · build · smoke 15/15 · **161 e2e (+1)** · census MATCH · the six parity drift gates CLEAN | (this session's execution commit) |
