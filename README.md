@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2110%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2133%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -54,12 +54,12 @@ alive from the first login.
 | UI runtime | React | 19.3.1 | No `forwardRef`, function components everywhere |
 | Language | TypeScript (strict) | 5.9.3 | `tsc --noEmit` gate; no `any` |
 | Styling | Tailwind CSS (CSS-first `@theme`) | 4.3.5 | v3-re-pinned palette; no `tailwind.config.js` |
-| UI primitives | Radix UI + lucide-react | 1.3–2.4 / 0.525 | Dialog, Select, Tabs, Dropdown, Popover, Label |
+| UI primitives | Radix UI + lucide-react | 1.3–2.4 / 0.525 | Dialog, Select, Dropdown, Popover, Slot |
 | Charts | recharts | 3.10.1 | Cashflow area, category donut, budget bars |
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1949 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1972 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 161 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -70,7 +70,7 @@ flowchart TB
   end
   subgraph App[Next.js 16 standalone server]
     R[App Router pages<br/>9 sections + capital aliases]
-    H[Route handlers /api/*<br/>20 resource families]
+    H[Route handlers /api/*<br/>18 resource families]
     AU[HMAC cookie auth<br/>neo_session 7-day]
   end
   subgraph Data
@@ -89,17 +89,17 @@ flowchart TB
 wealth-os/
 ├── 📂 src/app/(app)/          # The 9 sections; each route has a capital + lowercase twin
 │   └── 📂 dashboard/          # Financial Dashboard (the flagship page)
-├── 📂 src/app/api/            # 20 route-handler families (transactions, ai, import, …)
+├── 📂 src/app/api/            # 18 route-handler families (transactions, ai, import, …)
 ├── 📂 src/components/
 │   ├── 📂 layout/             # app-shell, sidebar, mobile-nav, mobile-header, theme
 │   ├── 📂 shared/             # page-parts (shared page building blocks), ai-coach dialog
-│   └── 📂 ui/                 # Radix-wrapped primitives (button, input, tabs, …)
+│   └── 📂 ui/                 # ui primitives (button, dialog, dropdown, select, tabs, toast, …)
 ├── 📂 src/lib/                # The seams: finance.ts, ai.ts, schemas.ts, api.ts, auth.ts,
 │                              # db-path.ts, site.ts, page-layout.ts, rate-limit.ts
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 123 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 124 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1949 checks / 123 files |
+| Unit (Vitest) | `bun run test` | 1972 checks / 124 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 161 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -219,10 +219,10 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 
 | Phase | Status | Key Deliverables |
 |---|---|---|
-| WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1949 unit · 161 e2e · 15 smoke · full gate green |
+| WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 18 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
+| Verification layer | ✅ Complete | 1972 unit · 161 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 271: **R-68 shipped — the doc-truth, pin-depth, and register-note round**: the fresh-eyes audit (three Mode-C passes — the R-67 cure surfaces (all five HOLDING: the collapsed ladder, the hash-dialect arm with its edge cases each checked, the trued comment, the behavioral e2e leg, both riders) · the API/auth/security layer's twenty-fourth consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; 3 candidates dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified, the genuine rot found in the distilled docs): 0 Critical / 0 High / 2 Medium / 7 Low / 9 Informational NEW after dedup, every material claim re-verified at file:line (the a11y battery counted live through the playwright list census; the phantom UI inventory counted against the actual directory; the Radix label claim grepped against package.json). THE ROUND'S TWO MEDIUMS: **F-271c the skill doc's a11y battery claim wrong on count and viewport** (10 checks at 1440×900 claimed vs 46 tests at 1280×800 + 390×844 actual — 1440 belongs to the parity sweeps) · **F-271d the skill doc's UI inventory names a primitive and five files that do not exist** (the Radix label package, a 13-tsx ui row with five phantom files, a 23-tsx heading vs the real 18, and the §8 Label-primitive claim vs plain label htmlFor). Plus the pin-depth pair (F-271a the stacked-order pointer pin title-deep — the depth leg anchors on the behavioral body, mutation-verified · F-271b the dialect probe's vacuity companion), the README feature-truth trio (the three-step wizard vs the two-step UI · the env-wired LLM provider claim vs the unwired seam · the goals contribution claim vs the editable saved-amount path), the skill doc's mechanism truth (the focus-ring base-layer claim vs the per-component utilities · the mobile-battery count and touch-target posture), and three riders (the 409 citation, the link variant's register note, the stale contrast figures — including a third red-700 carrier the battery's whole-file pin caught live). Zero application behavior changed: 1949 unit (+17) · 161 e2e (the standing battery, zero new legs) · smoke 15/15 · census MATCH; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 272: **R-69 shipped — the census-reanchor, phantom-primitive, and layer-map round**: the fresh-eyes audit (three Mode-C passes — the R-68 cure surfaces (all twelve HOLDING, the parity-271 battery 17/17 re-run green) · the API/auth/security layer's twenty-fifth consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; 10 candidates dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 7 Medium / 11 Low / 2 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-272a the security ledger's advisory census moved 2 → 1** (npm's audit endpoint stopped returning the picomatch HIGH against the same picomatch@4.0.7 the lockfile still resolves — verified at the registry's bulk endpoint; the GitHub advisory still publishes it; the PAD §10 row + the security-ledger pin re-anchored same-commit). Plus the phantom-primitive family (the skill doc's stack table still naming the tabs twin after R-68 trued the label twin in the same row · the README architecture row naming Label and Tabs · the PAD §1.2/§3.2/§5.3 twins naming input/label/textarea) and the layer-map/token-mirror pair (the §18 z-index ladder drifted four rows deep against the tree and its own §17 · the §4/§19 mirrors carrying the pre-cure white ink for the primary-foreground the F-219a cure set to stone-900, retired tokens, stale ramp ranges) plus the count family (18 families, the phantom api family and phantom names, the 15-assertion smoke counts, the stone-500 arithmetic, the contrast figures, the line counts) and the box-text constant wiring at the three settings sites (byte-identical classes — zero DOM change): 1972 unit (+23) · 161 e2e (zero new legs) · smoke 15/15 · census MATCH; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

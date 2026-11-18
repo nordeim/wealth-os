@@ -16,6 +16,62 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.69.0 (session 272, R-69 — the census-reanchor,
+  phantom-primitive, and layer-map round): the fresh-eyes audit
+  (three Mode-C passes — the R-68 cure surfaces driven by the session
+  (all twelve HOLDING at file:line: the §8 battery opener, the stack
+  table, the inventory, the import paragraph, the design-genus line,
+  the §19 pairings, both mobile-count sites, the README trio, the
+  forgot-password rationale, the register note, the parity-271
+  battery 17/17 re-run green), the API/auth/security layer (the
+  TWENTY-FIFTH consecutive clean bill — all twelve house contracts,
+  45 handlers / 30 route files read line-by-line, 10 candidates
+  dismissed into documented postures), and the UI/a11y/shell layer
+  (all eight standing contracts verified holding live — the drawer,
+  the theme, the v4 scanner with a fresh 110/110 color-token census,
+  the a11y two-gate, the shell, the geometry pin, the date seams, the
+  escape stacking)) — 0 Critical / 0 High / 7 Medium / 11 Low /
+  2 Informational NEW after dedup, every material claim re-verified
+  at file:line (the npm bulk-endpoint probe; the Radix dependency
+  census; the ui-directory count; the @theme extraction — 142 tokens
+  and the real ramp steps; the z-index census; the contrast ratios
+  computed independently; the line counts taken live). THE SECURITY
+  LEDGER'S ADVISORY CENSUS MOVED 2 → 1 (F-272a, Medium — the
+  flagship: npm's audit endpoint stopped returning the picomatch HIGH
+  (GHSA-fc5q-39xc-vjpf) against the same picomatch@4.0.7 the lockfile
+  still resolves, while the GitHub advisory page still publishes it;
+  the §10 advisories row and the security-ledger census pin
+  re-anchored same-commit with the decode and the re-triage duty).
+  THE PHANTOM-PRIMITIVE FAMILY (F-272b/F-272c/F-272d/F-272e, Medium —
+  the skill doc's stack table still naming the tabs twin after the
+  R-68 cure trued the label twin in the same row; the README
+  architecture row naming Label and Tabs; the PAD §1.2 "label 2.1.17"
+  package row; the PAD §3.2/§5.3 ui inventories naming
+  input/label/textarea — the F-271d genus surviving in the PAD twins
+  the R-68 battery never read). THE LAYER-MAP AND TOKEN-MIRROR PAIR
+  (F-272f/F-272g, Medium — the §18 z-index ladder drifted four rows
+  deep against the tree and its own §17 (a phantom z-20 sticky-header
+  layer, the header at the wrong step, the drawer at the wrong step,
+  the skip link's step misattributed); the §4 mirror and §19 reference
+  carrying the pre-cure white ink for the primary-foreground the
+  F-219a cure set to stone-900, the retired subtle and radius tokens,
+  the retired dark-body mechanism prose, and seven stale ramp ranges).
+  Plus the count family (F-272h the "20 families" on five carriers
+  against the real 18/30/45 · F-272i the phantom /api/analytics
+  family · F-272j the phantom names PageCard/AccountView/StatCard ·
+  F-272k/F-272l the 14-vs-15 smoke counts · F-272m the stone-500
+  arithmetic (4.40:1 computed) · F-272n/F-272o the stale line counts
+  · F-272p the three understated contrast figures (4.80/5.48/4.83) ·
+  F-272q the phantom input and the wrapping gloss · F-272r the dead
+  box-text constant wired at its three settings sites — byte-identical
+  classes, zero DOM change · F-272t the Bun floor rider). Registered:
+  F-272s (the PAD H1 marker convention). The verification: lint 0/0 ·
+  tsc 0 · 1972 unit (124 files, +23) · build ·
+  smoke 15/15 · 161 e2e (zero new legs — the box-text wiring is
+  class-string consolidation over a byte-identical DOM; the standing
+  battery the proof) · census MATCH · the captures (the standing
+  evidence faces: the dashboard, the expenses section, the mobile
+  drawer at 390).
 - [SR] v2.68.0 (session 271, R-68 — the doc-truth, pin-depth,
   and register-note round): the fresh-eyes audit (three Mode-C
   passes — the R-67 cure surfaces driven by the session (all five
@@ -3181,7 +3237,7 @@ rejected alternatives live there.
 | UI runtime | React | 19.3.1 | Current React; no forwardRef ceremony |
 | Language | TypeScript (strict) | 5.9.3 | Compile-time contract; `tsc --noEmit` is a gate |
 | Styling | Tailwind CSS | 4.3.5 | CSS-first `@theme` (no config file); v3-re-pinned palette because v4's oklch re-derivation renders visibly different colors |
-| UI primitives | Radix UI | dialog 1.3.1 · select 2.4.1 · dropdown 2.2.1 · popover 1.3.1 · label 2.1.17 · slot 1.5.0 | Accessible primitives the design wraps, not rebuilds |
+| UI primitives | Radix UI | dialog 1.3.1 · select 2.4.1 · dropdown 2.2.1 · popover 1.3.1 · slot 1.5.0 | Accessible primitives the design wraps, not rebuilds |
 | Icons | lucide-react | 0.525.0 | Consistent stroke family |
 | Charts | recharts | 3.10.1 | Declarative SVG charts (area, donut, bars) |
 | State | Zustand | 5.1.0 | Minimal client store without Context ceremony |
@@ -3189,7 +3245,7 @@ rejected alternatives live there.
 | Validation | Zod | 4.6.7 | Boundary parsing; message-carrying failures |
 | Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | Fast, ESM-native; property tests for money math |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | Real-browser journeys + a11y assertions |
-| Toolchain | Bun | ≥1.3.14 | Fast installs/scripts; node-compatible build |
+| Toolchain | Bun | ≥ 1.3 | Fast installs/scripts; node-compatible build |
 
 ### 1.3 Architecture Decision Records (ADRs)
 
@@ -3276,7 +3332,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (1949) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (1972) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (161) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -3318,7 +3374,7 @@ flowchart TB
   subgraph Server["Node / Bun — single standalone process"]
     NEXT[Next.js 16 server]
     PAGES[App Router pages<br/>9 sections × route twins]
-    API[Route handlers /api/*<br/>20 families]
+    API[Route handlers /api/*<br/>18 families]
     AUTH[Auth seam<br/>scrypt + HMAC cookie]
     RL[Rate limiter<br/>per-IP buckets]
     AISEAM[AI provider seam<br/>deterministic local engine]
@@ -3392,23 +3448,25 @@ wealth-os/
 │   │   │   ├── income/ expenses/ accounts/ investments/
 │   │   │   ├── import/ analytics/ goals/ settings/
 │   │   │   └── <Capital>/page.jsx  # one-line re-export twins (ADR-004)
-│   │   ├── api/                 # 20 families: transactions, income-sources, accounts,
+│   │   ├── api/                 # 18 families: transactions, income-sources, accounts,
 │   │   │   │                    # investments, goals, budgets, ai, import, dashboard,
-│   │   │   │                    # analytics, auth/*, export, reset, search, settings,
-│   │   │   │                    # users, health, upload(s)
+│   │   │   │                    # auth/*, export, reset, search, settings, users,
+│   │   │   │                    # health, upload, uploads
 │   │   └── manifest.json/ robots.txt/ sitemap.xml/   # SEO family (derive from site.ts)
 │   ├── components/
 │   │   ├── layout/              # app-shell, sidebar, mobile-nav (plain div, NOT Radix),
 │   │   │                        # mobile-header, theme (+useIsDark hook), nav-config,
 │   │   │                        # login-card, guest-login-redirect
-│   │   ├── shared/              # page-parts.tsx (PageCard, KpiCard, EmptyState, …),
+│   │   ├── shared/              # page-parts.tsx (PageHeader, KpiCard, EmptyState, …),
 │   │   │                        # ai-coach.tsx (the coach dialog)
-│   │   └── ui/                  # Radix-wrapped primitives: button, input, select,
-│   │                            # tabs, dialog, dropdown, label, popover, textarea
+│   │   └── ui/                  # 8 primitives: avatar, badge, button, dialog,
+│   │                            # dropdown, select, tabs, toast (button/dialog/
+│   │                            # dropdown/select ride Radix; tabs, badge, toast
+│   │                            # are native-ARIA; avatar is a helper seam)
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
-│   └── types/index.ts           # shared domain types (Transaction, AccountView, …)
-├── tests/                       # 123 unit suites (incl. architecture pins) + e2e/ 7 specs
+│   └── types/index.ts           # shared domain types (Transaction, BankAccount, …)
+├── tests/                       # 124 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -3613,10 +3671,10 @@ as **literal hex in `@theme`** (`src/app/globals.css`):
 | Settings glass genus | `SETTINGS_CARD` (page-layout.ts) | The settings page's OWN card family (F-205b's second half, session 208): `bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg` + the shadcn CardHeader/CardTitle/CardContent anatomy + the blue GDPR box (`bg-blue-600` Export button) + the amber import box | blue-800 on blue-50 = 7.2:1 (AA) |
 | `--color-background` | `#faf9f7` | Light page wash | — |
 | `--color-foreground` | `#1c1917` stone-900 | Headings/body | 16.1:1 on background (AAA) |
-| `--color-muted` | `#78716c` stone-500 | Secondary text | 4.7:1 on white (AA) |
+| `--color-muted` | `#78716c` stone-500 | Secondary text | 4.80:1 on white (AA) |
 | `--color-line` | `#e7e5e4` stone-200 | Card borders | decorative |
-| emerald-700 | `#047857` | Positive deltas, income | 5.2:1 (AA) |
-| red-600 | `#dc2626` | Negative deltas, destructive | 4.5:1 (AA) |
+| emerald-700 | `#047857` | Positive deltas, income | 5.48:1 (AA) |
+| red-600 | `#dc2626` | Negative deltas, destructive | 4.83:1 (AA) |
 
 Dark theme re-maps the same token set via `.dark` (values in globals.css).
 Inactive tab labels were deliberately darkened stone-500→stone-600 in
@@ -3624,9 +3682,10 @@ places where text-on-stone-100 needed AA (a11y spec pins it).
 
 ### 5.3 Component Primitives
 
-Radix wrapped by `src/components/ui/*` (button/input/select/tabs/dialog/
-dropdown/popover/label/textarea) styled with cva variants + the token
-classes. Layout genus constants (dialog widths, table paddings, login
+`src/components/ui/*` (avatar, badge, button, dialog, dropdown, select,
+tabs, toast — button/dialog/dropdown/select ride Radix; tabs, badge, and
+toast are native-ARIA; avatar exports the avatarTextColor helper)
+styled with cva variants + the token classes. Layout genus constants (dialog widths, table paddings, login
 card metrics) live in `src/lib/page-layout.ts` so pages and tests share
 one source.
 
@@ -3697,9 +3756,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 123 | 1949 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 124 | 1972 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance|ai|schemas-finance|verification-code.test.ts` | property + example based |
-| — architecture pins | 91 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, parity-269, parity-270, parity-271, db-transient) | `tests/` | source-scanning contracts |
+| — architecture pins | 92 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, parity-269, parity-270, parity-271, parity-272, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 28 | auth, rate-limit, csv, uploads, upload-sniff, headers, boot-env, search-query, store-logout, store-hydrate, store-staleness, … | `tests/` | behavior |
 | E2E | 7 | 161 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -3732,7 +3791,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 1949/1949 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 1972/1972 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 161/161
@@ -3802,7 +3861,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 1949 unit / 161 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 1972 unit / 161 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -3828,7 +3887,7 @@ comments explain why.
 
 | Priority | Issue | Impact | Status |
 |----------|-------|--------|--------|
-| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 268): 2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains | NEW at session 268 (R-65, F-268d): picomatch GHSA-fc5q-39xc-vjpf / CVE-2026-112366 (ReDoS via single-branch repeated extglob, CVSS 8.7) — affected ≤ 4.0.7 and 4.0.7 IS the latest npm release (NO FIX EXISTS); every dependency path is dev-toolchain (typescript-estree→tinyglobby, vite; 26 terminal paths, all dev), zero runtime chains, nothing in the shipped standalone artifact. Chain (the standing residue — fix UNREACHABLE within its parent's range): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1. CURED at R-9 (session 213, the prisma 6→7 major): the deepmerge-ts HIGH (GHSA-ggr8-5vv4-36mx) — @prisma/config 7.x carries deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5; the migration contract is pinned (`tests/prisma-7-contract.test.ts` + `tests/dependency-floors-213.test.ts`). The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 268; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts` + `tests/dependency-floors-213.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks the fix is cured same-session) |
+| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 272): 1 advisory: 1 moderate — all dev-toolchain, zero runtime chains | RE-ANCHORED at session 272 (R-69, F-272a): the picomatch HIGH (GHSA-fc5q-39xc-vjpf / CVE-2026-112366) dropped off npm's audit data against the same picomatch@4.0.7 the lockfile still resolves (verified at the registry's bulk advisory endpoint; the GitHub advisory page still publishes it — affected ≤ 4.0.7, no patch released; 26 terminal dev-chain paths, zero runtime); the re-triage duty watches its return. NEW at session 268 (R-65, F-268d): picomatch GHSA-fc5q-39xc-vjpf / CVE-2026-112366 (ReDoS via single-branch repeated extglob, CVSS 8.7) — affected ≤ 4.0.7 and 4.0.7 IS the latest npm release (NO FIX EXISTS); every dependency path is dev-toolchain (typescript-estree→tinyglobby, vite; 26 terminal paths, all dev), zero runtime chains, nothing in the shipped standalone artifact. Chain (the standing residue — fix UNREACHABLE within its parent's range): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1. CURED at R-9 (session 213, the prisma 6→7 major): the deepmerge-ts HIGH (GHSA-ggr8-5vv4-36mx) — @prisma/config 7.x carries deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5; the migration contract is pinned (`tests/prisma-7-contract.test.ts` + `tests/dependency-floors-213.test.ts`). The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 272; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts` + `tests/dependency-floors-213.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks the fix is cured same-session) |
 | LOW | Session cookie name is `neo_session` (scaffold legacy) | Cosmetic; smoke + specs grep it — a rename is a coordinated change | Accepted |
 | LOW | No migration journal (db:push workflow) | Schema history lives in git, not SQL files — acceptable for the single-user product | Accepted |
 | LOW | AI coach is rule-based (honest labeling) | No LLM answers offline; the provider seam exists for a future engine | By design (ADR-005) |
@@ -3837,7 +3896,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 1949 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 1972 unit · build · smoke 15/15 ·
 161 e2e — the e2e tail rides the docs-counts window since session 269,
 the F-269c cure).
 
@@ -3854,24 +3913,24 @@ vulnerable runtime resolution trips the unit gate.
 
 | File | Lines | Purpose |
 |------|-------|---------|
-| `prisma/schema.prisma` | ~150 | The 8-model data contract |
-| `prisma/seed.ts` | ~300 | Deterministic demo corpus (idempotent) |
-| `src/lib/finance.ts` | ~400 | Domain math: rollups, 50/30/20, cashflow series |
-| `src/lib/ai.ts` | ~350 | The AI provider seam + local insight engine |
-| `src/lib/schemas.ts` | ~510 | Every Zod boundary schema |
-| `src/lib/api.ts` | ~120 | The ok/ERR envelope + guards |
-| `src/lib/auth.ts` | ~180 | HMAC cookie sessions, tokenVersion revocation |
-| `src/lib/db-path.ts` | ~100 | The runtime==CLI database anchor |
-| `src/lib/site.ts` | ~180 | Metadata factory (titles, OG, sitemap source) |
-| `src/lib/page-layout.ts` | ~200 | Layout genus constants (dialogs, tables, login) |
-| `src/components/layout/app-shell.tsx` | ~120 | The authenticated shell |
-| `src/components/layout/mobile-nav.tsx` | ~110 | The plain-div mobile drawer (NOT Radix) |
-| `src/components/shared/page-parts.tsx` | ~200 | Shared page building blocks |
-| `src/app/(app)/dashboard/page.tsx` | ~400 | The flagship dashboard |
-| `src/app/globals.css` | ~250 | Tailwind v4 @theme tokens (v3-pinned palette) |
-| `scripts/smoke-test.sh` | ~160 | The 14-assertion artifact ladder |
-| `tests/e2e/wealthos.spec.ts` | ~260 | The 26-journey section + CRUD spec |
-| `docs/ssh_git_wrapper_v3.py` | ~300 | The verified SSH push wrapper |
+| `prisma/schema.prisma` | ~230 | The 8-model data contract |
+| `prisma/seed.ts` | ~330 | Deterministic demo corpus (idempotent) |
+| `src/lib/finance.ts` | ~970 | Domain math: rollups, 50/30/20, cashflow series |
+| `src/lib/ai.ts` | ~310 | The AI provider seam + local insight engine |
+| `src/lib/schemas.ts` | ~660 | Every Zod boundary schema |
+| `src/lib/api.ts` | ~450 | The ok/ERR envelope + guards |
+| `src/lib/auth.ts` | ~230 | HMAC cookie sessions, tokenVersion revocation |
+| `src/lib/db-path.ts` | ~230 | The runtime==CLI database anchor |
+| `src/lib/site.ts` | ~120 | Metadata factory (titles, OG, sitemap source) |
+| `src/lib/page-layout.ts` | ~530 | Layout genus constants (dialogs, tables, login) |
+| `src/components/layout/app-shell.tsx` | ~160 | The authenticated shell |
+| `src/components/layout/mobile-nav.tsx` | ~220 | The plain-div mobile drawer (NOT Radix) |
+| `src/components/shared/page-parts.tsx` | ~280 | Shared page building blocks |
+| `src/app/(app)/dashboard/page.tsx` | ~700 | The flagship dashboard |
+| `src/app/globals.css` | ~590 | Tailwind v4 @theme tokens (v3-pinned palette) |
+| `scripts/smoke-test.sh` | ~200 | The 15-assertion artifact ladder |
+| `tests/e2e/wealthos.spec.ts` | ~1200 | The 26-journey section + CRUD spec |
+| `docs/ssh_git_wrapper_v3.py` | ~340 | The verified SSH push wrapper |
 
 ## 12. Glossary
 

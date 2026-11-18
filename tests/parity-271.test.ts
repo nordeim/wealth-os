@@ -64,9 +64,13 @@ describe("F-271c/F-271d/F-271h/F-271i/F-271l — the skill doc's §8 and invento
     // shared 2 + ui 8 = 18).
     expect(skill).toContain("Component inventory (18 tsx files");
     expect(skill).toContain("| `src/components/ui/` | 8 tsx |");
+    // Session-272 (R-69, F-272q): the row's gloss trued from the
+    // "Radix-wrapped primitives" head to the honest wrapping form (the
+    // R-68 pin followed the cure — same commit, the contract-change rule).
     expect(skill).toContain(
-      "avatar, badge, button, dialog, dropdown, select, tabs, toast",
+      "avatar (the avatarTextColor helper), badge, button, dialog, dropdown, select, tabs, toast",
     );
+    expect(skill).toContain("badge/tabs/toast are native-ARIA");
     expect(skill).not.toContain("13 tsx");
     expect(skill).not.toContain("23 tsx");
     expect(skill).not.toContain("icons, input, label, select, table");

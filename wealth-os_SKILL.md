@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 1949 / Playwright 161 / smoke 15). Covers the design system,
+  layer (Vitest 1972 / Playwright 161 / smoke 15). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -117,13 +117,13 @@ Locked versions from `package.json` (verified at distillation):
 | UI runtime | `react` / `react-dom` | 19.3.1 | No `forwardRef` anywhere — `ref` as a plain prop |
 | Language | `typescript` | 5.9.3 | `tsc --noEmit` gate; strict; zero `any` in `src/` |
 | Styling | `tailwindcss` | 4.3.5 | CSS-first `@theme` in `src/app/globals.css`; NO `tailwind.config.js`; v3-re-pinned palette (§4) |
-| UI primitives | Radix UI (`@radix-ui/react-dialog`, `-select`, `-tabs`, `-dropdown-menu`, `-popover`, `-slot`) | 1.3–2.4 | Wrapped in `src/components/ui/*`; the mobile drawer deliberately does NOT use Dialog (§9 A-1) |
+| UI primitives | Radix UI (`@radix-ui/react-dialog`, `-select`, `-dropdown-menu`, `-popover`, `-slot`) | 1.3–2.4 | Wrapped in `src/components/ui/*`; the mobile drawer deliberately does NOT use Dialog (§9 A-1) |
 | Icons | `lucide-react` | 0.525 | Parity pin — the reference's own bundle-decoded version |
 | Charts | `recharts` | 3.10.1 | Cashflow area, category donut, budget bars, portfolio allocation |
 | State | `zustand` | 5.1.0 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` + `@prisma/adapter-libsql` | 7.10.1 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3); R-9: the prisma 7 major — generated client in `src/generated/prisma` (postinstall), PrismaLibSql driver adapter (bun hard-blocks better-sqlite3 — oven-sh/bun#4290), `prisma.config.ts` on the db-path seam |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses. The `dompurify` npm override (3.4.17 — session 198's critical cure) stays as a defensive pin |
-| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 1949 checks / 123 files |
+| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 1972 checks / 124 files |
 | E2E tests | `@playwright/test` + `axe-core` | 1.65.0 / 4.14.0 | Chromium; 161 checks / 7 specs; own db + port 3100 |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
 | Runtime tooling | `bun` | ≥ 1.3 | `bun run` scripts; Node-compatible build/start |
@@ -199,7 +199,7 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (1949 checks) |
+| Unit tests | `bun run test` (1972 checks) |
 | E2E (boots own server) | `CI=1 bun run test:e2e` (161 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (15 assertions; needs build) |
@@ -209,16 +209,16 @@ populated KPI cards and charts. Then `bun run db:census` must print
 
 ## 4. The Design System (Code-First)
 
-Everything lives in `src/app/globals.css` (396 lines) — Tailwind v4
+Everything lives in `src/app/globals.css` (589 lines) — Tailwind v4
 CSS-first, no config file. Structure:
 
 1. `@import "tailwindcss";` + `@import "tw-animate-css";`
 2. `@custom-variant dark (&:where(.dark, .dark *));` — class-based dark mode
 3. The `@theme` block (§19 has the complete token tables)
 4. `@layer base` — body wash, focus-visible ring, scrollbar rules
-5. `@layer utilities` — `.dark body`, `.sidebar-gradient`, `.page-wash`
-   re-maps: dark mode re-declares the semantic tokens once and every
-   surface follows
+5. `@utility` declarations — `card-hover`, `sidebar-gradient`, `page-wash`
+   (each with its own `.dark` variant); dark mode re-declares the
+   semantic tokens once in the `.dark` block and every surface follows
 
 **Session-217 (R-14, F-217c) — the `.dark` completion contract:** the
 `.dark` block AFTER the `@theme` emission flips BOTH token families —
@@ -240,7 +240,7 @@ the rule. Pinned: `tests/dark-tokens.test.ts` + `tests/palette-pins.test.ts`
 ```css
 --color-primary: #f59e0b;          /* amber-500 — the reference's own CTA hue */
 --color-primary-hover: #d97706;    /* amber-600 */
---color-primary-foreground: #ffffff;
+--color-primary-foreground: #1c1917;  /* stone-900 ink on amber (session 219) */
 --color-primary-navy: #0f1419;      /* the section-H1 navy — 7 of 9 pages (session 207) */
 /* Session-208 parity genera (live-extracted):
    KPI_TONES — the stat-tile gradients (emerald/teal · rose/red · amber/yellow ·
@@ -272,15 +272,11 @@ the rule. Pinned: `tests/dark-tokens.test.ts` + `tests/palette-pins.test.ts`
 --color-surface: #ffffff;          /* cards */
 --color-foreground: #1c1917;       /* stone-900 ink */
 --color-muted: #78716c;            /* stone-500 secondary text */
---color-subtle: #a8a29e;           /* stone-400 */
 --color-line: #e7e5e4;             /* stone-200 hairlines */
 --color-line-strong: #d6d3d1;      /* stone-300 */
 --color-line-soft: #f5f5f4;        /* stone-100 table stripes */
 --color-ring: #1c1917;             /* focus ring */
 --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
---radius-card: 0.75rem;            /* 12px cards */
---radius-button: 0.5rem;           /* 8px buttons */
---radius-pill: 9999px;             /* badges/chips */
 ```
 
 **Status family** (soft backgrounds pair with solid text): success
@@ -329,8 +325,8 @@ prisma/schema.prisma          ← the data model
 | Directory | Files | Purpose |
 |---|---|---|
 | `src/components/layout/` | 8 tsx + nav-config.ts | app-shell, sidebar, mobile-nav (the drawer), mobile-header, theme, login-card, guest-login-redirect, reset-password-screen |
-| `src/components/shared/` | 2 tsx | page-parts (shared page building blocks: PageHeader, StatCard, EmptyState, …), ai-coach (the floating coach dialog) |
-| `src/components/ui/` | 8 tsx | Radix-wrapped primitives: avatar, badge, button, dialog, dropdown, select, tabs, toast |
+| `src/components/shared/` | 2 tsx | page-parts (shared page building blocks: PageHeader, KpiCard, EmptyState, …), ai-coach (the floating coach dialog) |
+| `src/components/ui/` | 8 tsx | avatar (the avatarTextColor helper), badge, button, dialog, dropdown, select, tabs, toast — button/dialog/dropdown/select ride Radix; badge/tabs/toast are native-ARIA |
 
 **Client vs Server decision tree:**
 
@@ -386,7 +382,7 @@ export async function POST(req: Request) {
 Every handler: `try/catch` → `ERR.INTERNAL()`, Zod for input, ownership
 checks return 404 (never 403 — no resource enumeration), the envelope is
 `{ ok: true, data } | { ok: false, error: { code, message } }`
-(`src/lib/api.ts`, 308 lines).
+(`src/lib/api.ts`, 446 lines).
 
 **The AI provider seam** (`src/lib/ai.ts`): `getAiProvider()` returns the
 deterministic local engine; the route (`/api/ai/coach`) and the
@@ -398,19 +394,19 @@ LLM can be wired by adding one provider behind the same seam (§15 P-6).
 The hook surface is deliberately tiny — three, all in the layout/theme and
 store layers:
 
-**`useTheme(): ThemeContextValue`** — `src/components/layout/theme.tsx:111`.
+**`useTheme(): ThemeContextValue`** — `src/components/layout/theme.tsx:154`.
 Reads/writes the theme (light/dark) with `localStorage` persistence and
 the `.dark` class on `<html>`. Why it exists: the SSR-safe read (below).
 
-**`useIsDark(): boolean`** — `src/components/layout/theme.tsx:63`. The
+**`useIsDark(): boolean`** — `src/components/layout/theme.tsx:78`. The
 SSR-safe dark-mode read: returns `false` on the server, then the real
 value after mount, WITHOUT referencing `document` during the server
 render. **Never** read `document.documentElement.classList` at module
 scope or in a render path that can run server-side — that was the live
 e2e-caught SSR crash (§9 A-2). Grep for `useIsDark()` and use it.
 
-**`useWealthOs`** — `src/stores/wealthos-store.ts:383`. The ONE Zustand
-store (384 lines): theme-independent UI state (drawer open, coach open,
+**`useWealthOs`** — `src/stores/wealthos-store.ts:737`. The ONE Zustand
+store (738 lines): theme-independent UI state (drawer open, coach open,
 toasts). Server state (finance data) does NOT live here — pages fetch
 from the API family and keep derived UI state local. Adding a second
 store needs a stronger reason than convenience.
@@ -444,7 +440,7 @@ reference ships no Escape handling at all (our superset).
 | `Budget` | category budgets | category, monthlyLimit |
 | `Setting` | per-user settings | key/value JSON |
 
-**The domain math lives in `src/lib/finance.ts` (622 lines, pure and
+**The domain math lives in `src/lib/finance.ts` (969 lines, pure and
 unit-tested — never inline rollups in components):** monthly income/
 expense rollups, `netBalance`, `savingsRate`, MoM `deltaPct`,
 `cashFlowSeries`, `financialHealthScore` (0–100 with bands + advice),
@@ -454,7 +450,7 @@ expense rollups, `netBalance`, `savingsRate`, MoM `deltaPct`,
 functions take plain `*Like` interfaces (§20) so tests run without
 Prisma.
 
-**The seed (`prisma/seed.ts`, 305 lines, deterministic):** deleteMany
+**The seed (`prisma/seed.ts`, 333 lines, deterministic):** deleteMany
 first (idempotent), one demo user, 4 income sources, 3 bank accounts, 6
 investments, 5 goals, 7 budgets, and six months of transactions whose
 count is **date-dependent by design** (never future rows; occasional
@@ -463,7 +459,7 @@ and transactions as bounds 54..108 — `tests/db-census.test.ts` +
 `scripts/census.ts` enforce it. Recalibrate bounds only when the
 generator plan changes.
 
-**The AI coach (`src/lib/ai.ts`, 280 lines):** a deterministic local
+**The AI coach (`src/lib/ai.ts`, 308 lines):** a deterministic local
 financial-intelligence engine. Input is `AiContext` (the finance data);
 output is `CoachAnswer { answer }` plus typed `Insight` cards (positive /
 neutral / warning tones). It computes health bands, top categories,
@@ -682,7 +678,7 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 1949 passed / 123 files
+- [ ] `bun run test` — 1972 passed / 124 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 15/15 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)
@@ -1005,14 +1001,15 @@ Complete census (verified by grep; keep additions inside this ladder):
 
 | Layer | Class | Element / Location | Purpose |
 |---|---|---|---|
-| 20 | `z-20` | expenses table sticky header | row header stays above cells |
-| 40 | `z-40` | mobile header (`mobile-header.tsx`) + drawer overlay (`mobile-nav.tsx`) | the sticky bar the drawer slides UNDER |
-| 50 | `z-50` | drawer content, select/dropdown content (`select.tsx`, `dropdown.tsx`) | pop above page chrome |
-| 60 | `z-[60]` | elevated select/dropdown surfaces | above the drawer when both open |
+| 10 | `z-10` | sidebar interior (brand, nav, footer — NAV_LAYOUT) | above the sidebar gradient |
+| 40 | `z-40` | drawer overlay + sheet (`mobile-nav.tsx`, MOBILE_NAV) | slides under the sticky header |
+| 50 | `z-50` | mobile header (MOBILE_HEADER), dialog overlay + content, select/dropdown/menu content | page chrome + portals |
+| 60 | `z-[60]` | skip link's focused reveal (app-shell, the F-225d cure) | above the whole z-50 family |
 | 100 | `z-[100]` | toast viewport (`toast.tsx`) | always last |
 
-Rules: toasts outrank everything; portal content (Radix) at 50/60; page
-chrome at 20/40. New overlays join the ladder — no ad-hoc `z-[999]`.
+Rules: toasts outrank everything; portal content (Radix) at 50; the
+skip link clears the whole z-50 family at 60; page chrome at 10/40.
+New overlays join the ladder — no ad-hoc `z-[999]`.
 
 ## 19. Color Reference (Complete)
 
@@ -1026,12 +1023,11 @@ semantic layer is the API you should actually use.
 |---|---|---|---|
 | `--color-primary` | `#f59e0b` | `bg-primary` | CTA buttons (amber→yellow gradient), brand |
 | `--color-primary-hover` | `#d97706` | | hover state |
-| `--color-primary-foreground` | `#ffffff` | | text on primary |
+| `--color-primary-foreground` | `#1c1917` | | text on primary |
 | `--color-background` | `#faf9f7` | `bg-background` | page wash |
 | `--color-surface` | `#ffffff` | `bg-surface` | cards |
 | `--color-foreground` / `--color-ink` | `#1c1917` | `text-foreground` | headings/body |
 | `--color-muted` / `--color-muted-ink` | `#78716c` | `text-muted` | secondary text |
-| `--color-subtle` | `#a8a29e` | | tertiary text |
 | `--color-line` | `#e7e5e4` | `border-line` | card borders, dividers |
 | `--color-line-strong` | `#d6d3d1` | | emphasized borders |
 | `--color-line-soft` | `#f5f5f4` | | table stripes |
@@ -1044,24 +1040,25 @@ semantic layer is the API you should actually use.
 | `--color-chart-expense` | `#f43f5e` | | expense series, donut |
 | `--color-chart-net` | `#f59e0b` | | net line |
 
-**Re-pinned ramps (v3 hex, the full `@theme` set):** amber 50–900
-(`#fffbeb` → `#78350f`), blue 50–700 (`#eff6ff` → `#1d4ed8`), cyan
-400/500 (`#22d3ee`/`#06b6d4`), emerald 50–800 (`#ecfdf5` → `#065f46`),
-red 50–700 (`#fef2f2` → `#b91c1c`), rose 50–700 (`#fff1f2` → `#be123c`),
-stone 50–950 (`#fafaf9` → `#0c0a09`), teal 50–700 (`#f0fdfa` →
-`#0f766e`).
+**Re-pinned ramps (v3 hex, the full `@theme` set):** amber 50–950
+(`#fffbeb` → `#451a03`), blue 50–950 (`#eff6ff` → `#172554`), cyan 500
+(`#06b6d4`), emerald 50–950 (`#ecfdf5` → `#022c22`), red 50–950
+(`#fef2f2` → `#450a0a`), rose 50–950 non-contiguous (`#fff1f2` →
+`#4c0519`; no 100, no 700), stone 50–950 (`#fafaf9` → `#0c0a09`), teal
+500–700 (`#14b8a6` → `#0f766e`).
 
-**Dark theme:** `.dark` class on `<html>` + `@custom-variant dark`;
-`.dark body`, `.sidebar-gradient`, `.page-wash` re-map the semantic set
-(stone-950 washes, stone-800 surfaces, stone-100 ink); the `.dark` block
-flips the seven app-native tokens too (session-217 — see §2). Because
-surfaces read the semantic tokens, a re-map propagates everywhere — new
-surfaces must consume tokens, not hex.
+**Dark theme:** `.dark` class on `<html>` + `@custom-variant dark`; the
+`.dark` block flips the semantic set AND the seven app-native tokens
+(session-217 — see §2); the `sidebar-gradient` and `page-wash` utilities
+carry their own `.dark` variants. Because surfaces read the semantic
+tokens, a flip propagates everywhere — new surfaces must consume tokens,
+not hex.
 
 **AA-critical pairings (pinned by the a11y battery):** inactive tabs
 `stone-600` on `stone-100`; KPI deltas the `emerald-700`/`red-600` pair
 light / `400` dark;
-body `stone-500`+ never below 4.5:1 on `stone-100`.
+body text `stone-600`+ (`stone-500` on `stone-100` computes 4.40:1 —
+sub-AA for body).
 
 **Forbidden:** v4-default (oklch) classes; raw hex in components; new
 hues outside the sanctioned register without a reference citation.
@@ -1144,13 +1141,13 @@ survives from the scaffold; the smoke ladder greps it by name),
 HMAC-SHA256-signed stateless cookie: `base64url(JSON{uid,iat,exp,v}) +
 "." + hex HMAC`.
 
-**Layout constants (`src/lib/page-layout.ts`, 262 lines):** the
+**Layout constants (`src/lib/page-layout.ts`, 526 lines):** the
 structured shapes the ui primitives consume — `DIALOG_*`, `TABLE_*`,
 `LOGIN_LAYOUT`, `MOBILE_NAV_LAYOUT`, `MOBILE_NAV_SHEET`, tab panel
 constants. The ui primitives import these; keep the shapes structured
 (objects), not flat strings.
 
-**Zod schemas (`src/lib/schemas.ts`, 504 lines, 24 exported):** the
+**Zod schemas (`src/lib/schemas.ts`, 658 lines, 24 exported):** the
 transaction/income-source/account/investment/goal/budget create+update
 families, auth payloads (login/signup/verify/reset), import payloads,
 with money/date/enum field helpers.
@@ -1204,7 +1201,7 @@ The essentials:
 
 ## Appendix D — Post-Deploy Live-Site Validation
 
-- **Smoke ladder** (`scripts/smoke-test.sh`, 14 checks): boots the
+- **Smoke ladder** (`scripts/smoke-test.sh`, 15 checks): boots the
   standalone artifact on :3210 with a scratch `db/smoke.db`; walks the
   finance API (401 wall → sessioned read → Zod 400 → minimal create),
   the guest-root server-side wall, the `neo_session` cookie, and the

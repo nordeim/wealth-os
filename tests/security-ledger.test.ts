@@ -103,10 +103,20 @@ describe("session-203: the security ledger (R-1 — the bun audit doctrine has t
     // GHSA-fc5q-39xc-vjpf / CVE-2026-112366, ReDoS via single-branch
     // repeated extglob): 4.0.7 IS the latest npm release, NO FIX
     // EXISTS, every dependency path is dev-toolchain
-    // (typescript-estree→tinyglobby, vite — zero runtime chains). The
-    // row must keep saying so; the minimatch moderate (range-unreachable
-    // until typescript-estree moves) stands unchanged.
-    expect(pad).toContain("2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains");
+    // (typescript-estree→tinyglobby, vite — zero runtime chains).
+    // Session-272 (R-69, F-272a): the census re-anchored 2 → 1 —
+    // npm's audit endpoint stopped returning the picomatch HIGH
+    // against the same picomatch@4.0.7 the lockfile still resolves
+    // (verified at the registry's bulk advisory endpoint by the
+    // driving session; the GitHub advisory page still publishes it,
+    // affected ≤ 4.0.7, no patch released; 26 terminal dev-chain
+    // paths, zero runtime). The row's decode carries the re-anchor;
+    // the re-triage duty watches the advisory's return. The minimatch
+    // moderate (range-unreachable until typescript-estree moves)
+    // stands unchanged.
+    expect(pad).toContain("1 advisory: 1 moderate — all dev-toolchain, zero runtime chains");
+    expect(pad).not.toContain("2 advisories: 1 high / 1 moderate");
+    expect(pad).toContain("dropped off npm's audit data");
     expect(pad).toContain("GHSA-g3hv-75wg-m249");
     expect(pad).toContain("GHSA-fc5q-39xc-vjpf");
     expect(pad).toContain("Re-triage: re-run `bun audit` before every push");

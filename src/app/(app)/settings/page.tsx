@@ -274,7 +274,7 @@ export default function SettingsPage() {
                       {budget.category}
                     </span>
                     <span className="flex items-center gap-3">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">
+                      <span className={SETTINGS_CARD.boxText}>
                         ${budget.amount.toLocaleString("en-US", { minimumFractionDigits: 0 })}/mo
                       </span>
                       <Button
@@ -310,7 +310,7 @@ export default function SettingsPage() {
                 <ShieldCheck className="h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                 <div>
                   <h3 className={SETTINGS_CARD.gdprTitle}>GDPR Compliant Export</h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-400">
+                  <p className={SETTINGS_CARD.boxText}>
                     Download all your data in JSON format. This includes expenses, income, goals,
                     and account information.
                   </p>
@@ -348,7 +348,7 @@ export default function SettingsPage() {
                 <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                 <div>
                   <h3 className={SETTINGS_CARD.importTitle}>Import Warning</h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-400">
+                  <p className={SETTINGS_CARD.boxText}>
                     Importing will add data to your existing records. Make sure to backup your
                     current data first. Use the Import page to upload a bank CSV.
                   </p>
