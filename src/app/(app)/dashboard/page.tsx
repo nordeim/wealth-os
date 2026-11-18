@@ -72,6 +72,10 @@ export default function DashboardPage() {
   const [coachOpen, setCoachOpen] = React.useState(false);
 
   // Render-stable timestamp (the memo derivations depend on it).
+  // Session-269 (R-66, F-269h): the registered trade — a tab left
+  // open overnight buckets the Today labels and the KPI month windows
+  // to the mount-time calendar (the analytics refDate's own F-267i
+  // genus; remounting or a refresh re-derives).
   const [now] = React.useState(() => new Date());
   const txs = store.transactions;
   const investments = store.investments;

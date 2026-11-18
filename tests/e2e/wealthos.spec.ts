@@ -601,6 +601,50 @@ test.describe("the Expenses tabs + search", () => {
     await expect(sw).toHaveAttribute("aria-checked", before === "true" ? "false" : "true");
   });
 
+  test("a year-0206 row round-trips through the edit dialog (F-269a — the padded prefill)", async ({ page }) => {
+    // Session-269 (R-66): the boundary admits the whole year-100-and-up
+    // class and the seam reads those years honestly — but the prefill
+    // bridge emitted a THREE-digit-year string the native date input
+    // treats as no value and the boundary rejects on save, so a
+    // description-only edit of the row was blocked until the date was
+    // re-picked. The cure pads the year: the prefill displays and the
+    // unchanged-date save lands clean.
+    const created = await page.request.post("/api/transactions", {
+      data: {
+        description: "Year-0206 probe row",
+        amount: 12.34,
+        type: "expense",
+        category: "Other",
+        budgetCategory: "needs",
+        date: "0206-06-15",
+      },
+    });
+    expect(created.ok(), "the API admits the year-0206 row (the F-268a shoulder)").toBe(true);
+    const rowId = (await created.json()).data.id;
+
+    try {
+      await page.goto("/Expenses");
+      // The search surfaces the row (a year-0206 date sorts to the
+      // very end of the date-descended list otherwise).
+      await page.getByPlaceholder("Search expenses...").fill("Year-0206 probe row");
+      const row = page.locator("li").filter({ hasText: "Year-0206 probe row" }).first();
+      await expect(row).toBeVisible();
+      await row.getByRole("button", { name: "Edit" }).click();
+      const dialog = page.getByRole("dialog");
+      await expect(dialog).toBeVisible();
+      // THE assertion: the date input carries the padded, valid value —
+      // pre-cure it rendered empty (a three-digit year is not a date
+      // state the input can represent).
+      await expect(dialog.getByLabel("Date")).toHaveValue("0206-06-15");
+      // The unchanged-date save must land clean (pre-cure: the 400
+      // "Enter a valid date" on the unpadded re-emit).
+      await dialog.getByRole("button", { name: "Save Changes" }).click();
+      await expect(page.getByText("Expense updated")).toBeVisible({ timeout: 10_000 });
+    } finally {
+      await page.request.delete(`/api/transactions/${rowId}`);
+    }
+  });
+
   test("the DARK-mode Select highlight stays readable (F-221b — the 1.18:1 wash)", async ({ page }) => {
     // Session-221 (R-18): the SelectItem's focus wash carried no dark
     // arms — the highlighted option computed neutral-900 rgb(23,23,23)

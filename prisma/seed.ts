@@ -44,7 +44,7 @@ async function main() {
   // keep every OTHER account's rows. Session-215 (R-12, F-215e): the
   // pre-215 seed opened with seven UNSCOPED wipes — an
   // install-wide wipe on every `bun run db:seed` (the seed-side edition
-  // of F-214a, alive under R-10's own open-signup premise). The demo
+  // of F-214a, alive under R-10's own anyone-can-sign-up premise). The demo
   // user now upserts FIRST (the id resolvable), then every delete
   // scopes through the demo owner. Users land through UPSERT-BY-EMAIL
   // (stable ids — the session-cookie's provenance; see the session-162

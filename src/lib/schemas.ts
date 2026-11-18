@@ -197,9 +197,10 @@ const clearableDateField = (message: string) =>
 // real data returns 1 on the same row, the empty call returns 0).
 // The refine makes the no-field body the honest 400 through the
 // existing parseBody issue mapping; unknown-only keys strip to {}
-// and hit the same guard. settings PUT and users PATCH ride
-// db.<model>.update (a no-op that returns the record), not
-// updateMany — they are deliberately NOT built through the guard.
+// and hit the same guard. users PATCH rides db.user.update and
+// settings PUT rides db.setting.upsert (session-269, F-269g: both
+// no-op forms that return the record, not a count), so they are
+// deliberately NOT built through the guard.
 const updateSchema = <T extends z.ZodRawShape>(shape: T) =>
   z.object(shape).refine((v) => Object.keys(v).length > 0, "No fields to update");
 

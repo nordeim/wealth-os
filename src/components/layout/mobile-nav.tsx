@@ -46,7 +46,24 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onOpenChange(false);
+      if (e.key !== "Escape") return;
+      // Session-269 (R-66, F-269d): a stacked surface owns this
+      // Escape — the expenses filter card's own guard doctrine
+      // (session 266, F-266d) carried to the shell. Radix's
+      // dismissable layer closes the dialog on the keydown WITHOUT
+      // stopping propagation, so an unguarded window listener would
+      // close the drawer underneath as well — one press, two
+      // surfaces. Both dialog genera unmount when closed (the Radix
+      // content, this drawer's conditional return), so DOM presence
+      // is the exact test for an open surface. The census excludes
+      // this drawer's own element id: the drawer IS a dialog, and a
+      // naive census would match the drawer itself and never close.
+      if (document.querySelector("[data-radix-popper-content-wrapper]")) return;
+      const stackedDialog = Array.from(
+        document.querySelectorAll('[role="dialog"]'),
+      ).find((el) => el.id !== "mobile-nav-drawer");
+      if (stackedDialog) return;
+      onOpenChange(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

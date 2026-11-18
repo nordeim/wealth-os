@@ -119,8 +119,14 @@ const SRC_ROOT = path.resolve(import.meta.dirname, "..", "src");
 // Session-268 (R-65, F-268g): the tracked root config files join the
 // walk — Tailwind's content detection scans them (the F-245e lesson:
 // the @source not directives exclude only directories and *.md, so
-// the root configs are inside the scan set), and the net's live
-// universe must match the scan set for the invariant to be honest.
+// the root configs are inside the scan set). Session-269 (R-66,
+// F-269b): the human-editable tracked files under prisma/ plus the
+// env example join too — seed.ts is a commented TypeScript source,
+// exactly the genus the net watches. The residue stays deliberately
+// outside: the lockfile, the license, and the ignore list — machine-
+// generated or non-code prose, never human-editable source (the
+// env example's hash-marked lines read as code to the splitter, so
+// its prose joins the live universe rather than the comment nets).
 const ROOT_CONFIG_FILES = [
   "next.config.ts",
   "playwright.config.ts",
@@ -131,6 +137,9 @@ const ROOT_CONFIG_FILES = [
   "components.json",
   "tsconfig.json",
   "package.json",
+  "prisma/seed.ts",
+  "prisma/schema.prisma",
+  ".env.example",
 ]
   .map((n) => path.resolve(import.meta.dirname, "..", n))
   .filter((p) => existsSync(p));
@@ -138,6 +147,33 @@ const SRC_FILES = [...walkSrc(SRC_ROOT), ...ROOT_CONFIG_FILES];
 const SRC_REL = (f: string) => path.relative(path.resolve(import.meta.dirname, ".."), f);
 
 // ---- F-268g: the net's file universe covers the root configs -------------
+
+// ---- F-269b: the human-editable tracked files join the net ------------------
+
+describe("F-269b — the prisma sources and the env example join the net", () => {
+  // Session-269 (R-66, F-269b): the F-268g universe leg claimed the
+  // walk matched Tailwind's scan set while prisma/seed.ts (a commented
+  // TypeScript source — exactly the genus this net watches),
+  // prisma/schema.prisma, and .env.example sat tracked and unexcluded,
+  // inside the scan set but outside the walk. The three join now; the
+  // machine/prose residue (the lockfile, the license, the ignore list)
+  // stays deliberately outside — documented in the walk's comment.
+  const HUMAN_EDITABLE = [
+    "prisma/seed.ts",
+    "prisma/schema.prisma",
+    ".env.example",
+  ];
+
+  it("the walk's file universe carries the human-editable tracked files", () => {
+    const rels = SRC_FILES.map(SRC_REL);
+    for (const name of HUMAN_EDITABLE) {
+      expect(
+        rels,
+        `the net must read ${name} (Tailwind's scan set includes it)`,
+      ).toContain(name);
+    }
+  });
+});
 
 describe("F-268g — the root config files join the net (the scan-set parity)", () => {
   // Session-268 (R-65, F-268g): Tailwind's content detection scans the

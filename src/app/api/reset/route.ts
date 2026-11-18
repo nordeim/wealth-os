@@ -26,6 +26,12 @@ export async function POST(req: Request) {
   if (read.tooLarge) return ERR.BAD_REQUEST("Request body too large");
 
   const body = read.value;
+  // Session-269 (R-66, F-269f): this strict-equality literal is the
+  // one body-consuming validation outside the schemas.ts family —
+  // bounded, gated on content type, and decided before any db read,
+  // with strict equality leaving no coercion or injection surface.
+  // The exception is claimed here per the users-PATCH message-drift
+  // precedent (a one-field schema for a single literal is ceremony).
   if (!body || body.confirm !== "RESET") {
     return ERR.BAD_REQUEST('Type "RESET" to confirm');
   }
