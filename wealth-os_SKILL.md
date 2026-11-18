@@ -6,7 +6,7 @@ description: >
   investments, budgets, goals, CSV import, analytics, AI coach) on Next.js 16
   App Router + React 19 + TypeScript strict + Tailwind CSS v4 (CSS-first) +
   Prisma/SQLite + Zod + Zustand + recharts, with a three-tier verification
-  layer (Vitest 1932 / Playwright 161 / smoke 15). Covers the design system,
+  layer (Vitest 1949 / Playwright 161 / smoke 15). Covers the design system,
   the finance domain seams, the db-path contract, the route-twin technique,
   the mobile-drawer construction, auth, the deterministic AI coach, the
   anti-pattern ledger, and the full debugging playbook. Use it to extend,
@@ -89,9 +89,10 @@ then an AI coach turns those numbers into concrete recommendations.
 - Warm-minimal editorial genus: `#faf9f7` page wash, white cards,
   `#1c1917` ink, `#e7e5e4` hairlines, amber-500 `#f59e0b` primary with a
   subtle amber→yellow gradient on CTAs.
-- Positive deltas are emerald, negative are red/rose; the reference's KPI
-  deltas use `emerald-700`/`red-700`-class values for AA contrast at small
-  sizes.
+- Positive deltas are emerald, negative are red/rose; the KPI delta genus
+  is the `emerald-700`/`red-600` pair in light mode with the `400`
+  dark-mode arms (the F-218j AA re-pin — the reference's own red sat at
+  the lighter 500 step and failed AA at small sizes).
 - No purple-gradient-on-white clichés, no generic dashboard blue, no
   runtime font fetching (Inter-first system stack, inlined at build).
 - Charts use the reference's own triad: teal income `#14b8a6`, rose
@@ -116,13 +117,13 @@ Locked versions from `package.json` (verified at distillation):
 | UI runtime | `react` / `react-dom` | 19.3.1 | No `forwardRef` anywhere — `ref` as a plain prop |
 | Language | `typescript` | 5.9.3 | `tsc --noEmit` gate; strict; zero `any` in `src/` |
 | Styling | `tailwindcss` | 4.3.5 | CSS-first `@theme` in `src/app/globals.css`; NO `tailwind.config.js`; v3-re-pinned palette (§4) |
-| UI primitives | Radix UI (`@radix-ui/react-dialog`, `-select`, `-tabs`, `-dropdown-menu`, `-popover`, `-label`) | 1.3–2.4 | Wrapped in `src/components/ui/*`; the mobile drawer deliberately does NOT use Dialog (§9 A-1) |
+| UI primitives | Radix UI (`@radix-ui/react-dialog`, `-select`, `-tabs`, `-dropdown-menu`, `-popover`, `-slot`) | 1.3–2.4 | Wrapped in `src/components/ui/*`; the mobile drawer deliberately does NOT use Dialog (§9 A-1) |
 | Icons | `lucide-react` | 0.525 | Parity pin — the reference's own bundle-decoded version |
 | Charts | `recharts` | 3.10.1 | Cashflow area, category donut, budget bars, portfolio allocation |
 | State | `zustand` | 5.1.0 | ONE store: `src/stores/wealthos-store.ts` |
 | ORM | `prisma` + `@prisma/client` + `@prisma/adapter-libsql` | 7.10.1 | SQLite dev (PostgreSQL-ready); 8 models; db at repo root (§3); R-9: the prisma 7 major — generated client in `src/generated/prisma` (postinstall), PrismaLibSql driver adapter (bun hard-blocks better-sqlite3 — oven-sh/bun#4290), `prisma.config.ts` on the db-path seam |
 | Validation | `zod` | 4.6.7 | 24 exported schemas in `src/lib/schemas.ts`; every API boundary parses. The `dompurify` npm override (3.4.17 — session 198's critical cure) stays as a defensive pin |
-| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 1932 checks / 122 files |
+| Unit tests | `vitest` + `fast-check` | 5.1.0 / 4.10.2 | Node env, jsdom-free; 1949 checks / 123 files |
 | E2E tests | `@playwright/test` + `axe-core` | 1.65.0 / 4.14.0 | Chromium; 161 checks / 7 specs; own db + port 3100 |
 | Animations | `tw-animate-css` | (pinned) | Radix open/close transitions only; no Framer Motion |
 | Runtime tooling | `bun` | ≥ 1.3 | `bun run` scripts; Node-compatible build/start |
@@ -198,7 +199,7 @@ populated KPI cards and charts. Then `bun run db:census` must print
 | Dev server | `bun run dev` (:3000) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests | `bun run test` (1932 checks) |
+| Unit tests | `bun run test` (1949 checks) |
 | E2E (boots own server) | `CI=1 bun run test:e2e` (161 checks) |
 | Build (standalone) | `bun run build` |
 | Smoke ladder | `bun run smoke` (15 assertions; needs build) |
@@ -323,13 +324,13 @@ src/lib/*                     ← the seams (finance, ai, schemas, api, auth, db
 prisma/schema.prisma          ← the data model
 ```
 
-**Component inventory (23 tsx files + nav-config.ts):**
+**Component inventory (18 tsx files + nav-config.ts):**
 
 | Directory | Files | Purpose |
 |---|---|---|
 | `src/components/layout/` | 8 tsx + nav-config.ts | app-shell, sidebar, mobile-nav (the drawer), mobile-header, theme, login-card, guest-login-redirect, reset-password-screen |
 | `src/components/shared/` | 2 tsx | page-parts (shared page building blocks: PageHeader, StatCard, EmptyState, …), ai-coach (the floating coach dialog) |
-| `src/components/ui/` | 13 tsx | Radix-wrapped primitives: avatar, badge, button, card, dialog, dropdown, icons, input, label, select, table, tabs, toast |
+| `src/components/ui/` | 8 tsx | Radix-wrapped primitives: avatar, badge, button, dialog, dropdown, select, tabs, toast |
 
 **Client vs Server decision tree:**
 
@@ -471,34 +472,42 @@ run. The store calls `/api/ai/coach`; per the replicate-web-app AI-stub
 policy: no network, no keys, no non-determinism.
 
 **The CSV import (`src/lib/csv.ts` + `/api/import`):** smart column
-detection (header name matching with fallbacks), 3-step wizard (upload →
-detection preview → review & commit), 10 MB cap, CSV/XLS/XLSX.
+detection (header name matching with fallbacks, a synchronous in-pick
+pass), 2-step wizard (upload → review & import), 10 MB cap,
+CSV/XLS/XLSX.
 
 ## 8. Accessibility (WCAG 2.2 AA) Implementation
 
-Verified by the axe battery in `tests/e2e/a11y.spec.ts` (10 checks across
-the section pages + dialogs) at the 1440×900 and 390×844 viewports.
+Verified by the axe battery in `tests/e2e/a11y.spec.ts` — 46 tests (45
+axe legs: light + dark at desktop and phone across all nine sections,
+the anonymous faces, the 404, and the open drawer/dialog states, plus
+the devDep declaration leg) at the 1280×800 and 390×844 viewports.
 
 - **Contrast**: the reference's own inactive-tab `stone-500` on
-  `stone-100` measured 4.0:1 — darkened one step to `stone-600` (AA,
-  negligible visual delta). KPI deltas use `emerald-700`/`red-700`-class
-  values. The rule: contrast fixes prefer darkening one Tailwind step
-  over restyling.
-- **Focus**: a global focus-visible ring (`--color-ring` ink) in
-  `@layer base`; keyboard operability for every dialog/select/dropdown via
-  the Radix primitives.
+  `stone-100` computed 4.40:1 — darkened one step to `stone-600` (AA,
+  negligible visual delta). KPI deltas carry the `emerald-700`/
+  `red-600` pair in light mode with the `400` dark-mode arms. The rule:
+  contrast fixes prefer darkening one Tailwind step over restyling.
+- **Focus**: the house ring rides per-component focus-visible utilities
+  (the Button base, the menu item, the select item — every raw control
+  carries its own); the base layer only tints the UA outline color.
+  Keyboard operability for every dialog/select/dropdown via the Radix
+  primitives.
 - **Heading order**: normalized h1 → h2 → h3 per page (the e2e
   heading-order checks; the reference had violations we did NOT copy).
-- **Labels**: every input pairs with the Radix `Label` primitive; the
+- **Labels**: every input pairs an explicit `<label htmlFor>`
+  association (the vendored Radix label stock retired at F-232a); the
   hamburger's accessible name is "Open navigation menu" — the e2e and
   capture scripts target it by role+name, never by DOM position.
 - **The drawer is NOT a modal**: it is a plain conditional div, so the
   header's ✕ stays in the accessibility tree (§9 A-1 — the Radix Dialog
   variant aria-hid outside content, which e2e caught as a vanished
   button).
-- **Touch targets**: nav rows and buttons meet the 44px-class targets;
-  the mobile battery (`mobile-navigation.spec.ts`, 10 checks) exercises
-  the drawer at 390×844.
+- **Touch targets**: interactive targets meet the WCAG 2.5.8 24px floor
+  (the smallest glyphs carry the F-235f/F-236d/F-268b padding
+  extensions); nav rows are 44px-class. The mobile battery
+  (`mobile-navigation.spec.ts`, 19 checks) exercises the drawer at
+  390×844.
 
 ## 9. Anti-Patterns & Common Bugs
 
@@ -673,7 +682,7 @@ Expected steady-state numbers (verify, don't assume):
 
 - [ ] `bun run lint` — 0 errors, 0 warnings (`--max-warnings 0`)
 - [ ] `bun run typecheck` — 0 errors
-- [ ] `bun run test` — 1932 passed / 122 files
+- [ ] `bun run test` — 1949 passed / 123 files
 - [ ] `bun run build` — green; all WealthOS routes + capital twins listed
 - [ ] `bun run smoke` — 15/15 (boot-gate + artifact hygiene + the
       finance API walk + the guest-root server-side wall)
@@ -987,7 +996,7 @@ Tailwind v4 defaults, no custom breakpoints. Usage census (verified):
 mobile header (z-50: hamburger + brand + theme toggle), drawer overlay
 z-40 sliding under it with content starting `pt-20`, Sign Out pinned at
 the drawer's bottom. The drawer auto-closes when the viewport grows past
-`lg` (superset). The e2e mobile battery (10 checks) and the 390 sweep
+`lg` (superset). The e2e mobile battery (19 checks) and the 390 sweep
 hold this contract.
 
 ## 18. Z-Index Layer Map
@@ -1050,7 +1059,8 @@ surfaces read the semantic tokens, a re-map propagates everywhere — new
 surfaces must consume tokens, not hex.
 
 **AA-critical pairings (pinned by the a11y battery):** inactive tabs
-`stone-600` on `stone-100`; KPI deltas `emerald-700`/`red-700`-class;
+`stone-600` on `stone-100`; KPI deltas the `emerald-700`/`red-600` pair
+light / `400` dark;
 body `stone-500`+ never below 4.5:1 on `stone-100`.
 
 **Forbidden:** v4-default (oklch) classes; raw hex in components; new

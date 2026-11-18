@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2093%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2110%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -36,11 +36,11 @@ alive from the first login.
 | 💰 Income & 💸 Expenses | Full CRUD on transactions and income sources; Needs/Wants/Savings tabs; search; recurring flags with next-date |
 | 🏦 Accounts | Connected bank accounts with balances, institutions, and account types |
 | 📈 Investments | Holdings table with cost basis, current value, and gain/loss per position |
-| 📥 CSV Import | 3-step wizard (upload → smart column detection → review & commit), 10 MB cap, CSV/XLS/XLSX |
+| 📥 CSV Import | 2-step wizard (upload → review & import, with in-pick smart column detection), 10 MB cap, CSV/XLS/XLSX |
 | 📊 Analytics | Overview / Expenses / Income / Investments tabs with client-side aggregations over the dashboard payload |
-| 🎯 Savings Goals | Named targets with progress bars and contribution round-trips |
+| 🎯 Savings Goals | Named targets with progress bars and an editable saved-amount round-trip |
 | 🏷️ Budgets | Budget-vs-actual by category with the 50/30/20 framework |
-| 🤖 AI Coach | Deterministic local financial-intelligence engine (optional LLM provider via env) — no API key needed |
+| 🤖 AI Coach | Deterministic local financial-intelligence engine (an LLM provider seam is reserved but unwired) — no API key needed |
 | 🌓 Theme System | Light + dark themes (DARK default on app routes — the reference's fresh-visitor posture), persisted, SSR-safe |
 | 📱 Mobile Navigation | Non-modal drawer verified at 390×844 in the e2e battery |
 | 📄 Export | Data export (GDPR-style "Export All Data" — JSON via `/api/export`) |
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1932 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1949 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 161 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 122 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 123 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1932 checks / 122 files |
+| Unit (Vitest) | `bun run test` | 1949 checks / 123 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 161 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -188,10 +188,10 @@ and require the session cookie unless marked public.
 | `/api/auth/signup` · `/verify` · `/resend` | POST | Signup + OTP verification (in-app code by default) |
 | `/api/auth/forgot-password` · `/reset-password` | POST | Reset funnel (rate-limited; no account enumeration) |
 | `/api/transactions` · `/api/transactions/[id]` | GET/POST/PATCH/DELETE | Full CRUD; type + month filters |
-| `/api/income-sources` · `/api/accounts` · `/api/investments` · `/api/goals` · `/api/budgets` | GET/POST/PATCH/DELETE | Resource CRUD (goals carry contribution round-trips) |
+| `/api/income-sources` · `/api/accounts` · `/api/investments` · `/api/goals` · `/api/budgets` | GET/POST/PATCH/DELETE | Resource CRUD (goals carry an editable saved-amount round-trip) |
 | `/api/dashboard` | GET | The dashboard's aggregate payload (KPIs, series, budgets, upcoming) |
 | `/api/ai/coach` | POST | The coach: question → insights + answer |
-| `/api/import` | POST | CSV commit (rows validated client-side through the 3-step wizard; GET returns the column-hint vocabulary) |
+| `/api/import` | POST | CSV commit (rows validated client-side through the 2-step wizard; GET returns the column-hint vocabulary) |
 | `/api/export` · `/api/reset` · `/api/search` · `/api/settings` · `/api/users` | GET/POST | Data export, per-user demo reset, global search, per-user settings, own profile (session-scoped since session 214) |
 | `/api/upload` · `/api/uploads/[name]` | POST/GET | Bounded file store (5 MB — the reference's own cap; path-traversal guarded) |
 
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 20 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1932 unit · 161 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1949 unit · 161 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 270: **R-67 shipped — the liveness-fabrication, stacked-escape, and comment-truth round**: the fresh-eyes audit (three Mode-C passes — the R-66 cure surfaces (the parity-269/parity-229/docs-counts batteries + the security-ledger pin re-run green) · the API/auth/security layer's twenty-third consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; 7 candidates dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified, three new findings after dedup, every material claim re-verified at file:line (the duplicated lockstep comment read directly; the liveness fabrication live-proven through the engine's own semantics; the stacked-order interleaving decoded through both guards' verbatim logic)): 0 Critical / 0 High / 0 Medium / 3 Low / 2 Informational NEW after dedup. THE ROUND'S THREE LOWS: **F-270a the R-66 lockstep double-appended its own comment block** (the docs-counts comment ladder carried the Session-269 trio-advance comment twice — collapsed to one copy with the no-doubled-ladder pin) · **F-270b the env example's hash-marked prose fabricated live tokens** (the parity-229 splitter stripped only the slash-forms, so the env example's prose landed on the code side and self-satisfied the net AND fabricated repo-wide liveness through the invariant's early-continue; the hash-dialect arm routes the env-dialect files' hash-marked lines to the comments side, the ignore list joins the walk, the residue trues to the lockfile and the license, and the maiden run caught its second offender live) · **F-270c the F-266d comment's standing-gap parenthetical was half-stale** (the drawer's twin guard landed with F-269d; the comment trues and the stacked-order e2e leg lands — the filters card + drawer both open at 390, one press one surface). Plus F-270d/F-270e the two comment riders. The mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 271: **R-68 shipped — the doc-truth, pin-depth, and register-note round**: the fresh-eyes audit (three Mode-C passes — the R-67 cure surfaces (all five HOLDING: the collapsed ladder, the hash-dialect arm with its edge cases each checked, the trued comment, the behavioral e2e leg, both riders) · the API/auth/security layer's twenty-fourth consecutive clean bill (all twelve house contracts, 45 handlers / 30 route files; 3 candidates dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified, the genuine rot found in the distilled docs): 0 Critical / 0 High / 2 Medium / 7 Low / 9 Informational NEW after dedup, every material claim re-verified at file:line (the a11y battery counted live through the playwright list census; the phantom UI inventory counted against the actual directory; the Radix label claim grepped against package.json). THE ROUND'S TWO MEDIUMS: **F-271c the skill doc's a11y battery claim wrong on count and viewport** (10 checks at 1440×900 claimed vs 46 tests at 1280×800 + 390×844 actual — 1440 belongs to the parity sweeps) · **F-271d the skill doc's UI inventory names a primitive and five files that do not exist** (the Radix label package, a 13-tsx ui row with five phantom files, a 23-tsx heading vs the real 18, and the §8 Label-primitive claim vs plain label htmlFor). Plus the pin-depth pair (F-271a the stacked-order pointer pin title-deep — the depth leg anchors on the behavioral body, mutation-verified · F-271b the dialect probe's vacuity companion), the README feature-truth trio (the three-step wizard vs the two-step UI · the env-wired LLM provider claim vs the unwired seam · the goals contribution claim vs the editable saved-amount path), the skill doc's mechanism truth (the focus-ring base-layer claim vs the per-component utilities · the mobile-battery count and touch-target posture), and three riders (the 409 citation, the link variant's register note, the stale contrast figures — including a third red-700 carrier the battery's whole-file pin caught live). Zero application behavior changed: 1949 unit (+17) · 161 e2e (the standing battery, zero new legs) · smoke 15/15 · census MATCH; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

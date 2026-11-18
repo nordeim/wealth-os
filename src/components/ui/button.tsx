@@ -89,6 +89,13 @@ const buttonVariants = cva(
         // F-128c1 value pair; the s80 badge precedent expresses that
         // accent pair ink as our neutral-900 literal.
         outline: "border border-line bg-surface text-foreground shadow-sm hover:bg-line-soft hover:text-neutral-900 dark:hover:text-neutral-50",
+        // Session-271 (R-68, F-271k — the F-227f register's link
+        // edition): the link arm rides the amber primary as its text
+        // color — roughly 2.1 to 1 on the light surface (the
+        // dashboard's own measured family). Zero consumers today
+        // (the vendored stock register); a future consumer must pin a darker
+        // ink pair or reserve the arm for large text — never inherit
+        // this silently.
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

@@ -17,10 +17,10 @@ import { describe, expect, it } from "vitest";
 // counts that were true at their time and are deliberately NOT pinned. Only
 // live-tense claims (what the gate IS, not what it WAS) ride this contract.
 
-const UNIT_TOTAL = 1932;
+const UNIT_TOTAL = 1949;
 const E2E_TOTAL = 161;
 const SMOKE_TOTAL = 15;
-const TEST_FILES = 122;
+const TEST_FILES = 123;
 // The README badge arithmetic: unit + e2e checks.
 const CHECK_BADGE = UNIT_TOTAL + E2E_TOTAL;
 
@@ -120,8 +120,10 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // the file count takes the suite to 121 — 4 + 89 + 28 = 121.
     // Session-270 (R-67): parity-270 joins the family and the file
     // count takes the suite to 122 — 4 + 90 + 28 = 122.
+    // Session-271 (R-68): parity-271 joins the family and the file
+    // count takes the suite to 123 — 4 + 91 + 28 = 123.
     expect(norm(doc("Project_Architecture_Document.md"))).toContain(
-      "| — architecture pins | 90 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, parity-269, parity-270, db-transient) |",
+      "| — architecture pins | 91 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, parity-269, parity-270, parity-271, db-transient) |",
     );
     // Session-224 (R-21, the F-204a site-inventory completion's own
     // lesson applied to itself): the §7.1 E2E row carried a stale 99
@@ -292,9 +294,12 @@ describe("session-203: the docs-counts lockstep (R-2 — counts move with tests 
     // Session-270 (R-67): the TWENTY-FIRST gate-enforced ride — the
     // v2.67.0 block lands together with the trio's advance to
     // v2.65.0/v2.66.0/v2.67.0 (the v2.64.0 pin ages out).
+    // Session-271 (R-68): the TWENTY-SECOND gate-enforced ride — the
+    // v2.68.0 block lands together with the trio's advance to
+    // v2.66.0/v2.67.0/v2.68.0 (the v2.65.0 pin ages out).
+    expect(p).toMatch(/\[SR\] v2\.68\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1949 unit \(123 files, \+17\)/);
     expect(p).toMatch(/\[SR\] v2\.67\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1932 unit \(122 files, \+8\)/);
     expect(p).toMatch(/\[SR\] v2\.66\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1924 unit \(121 files, \+13\)/);
-    expect(p).toMatch(/\[SR\] v2\.65\.0[\s\S]*?The verification: lint 0\/0 · tsc 0 · 1911 unit \(120 files, \+16\)/);
   });
 
   // Session-249 (R-46, F-249b): the structural cure for the aging genus.

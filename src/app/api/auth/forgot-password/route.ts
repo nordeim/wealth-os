@@ -82,7 +82,7 @@ export async function POST(req: Request) {
   // (<=10ms on a local disk, under network jitter); (b) a naive scrypt
   // burn on the unknown branch would INVERT the signal — scryptSync costs
   // ~100ms and dwarfs the write, making unknown emails measurably SLOWER
-  // instead; (c) signup's 409 openly enumerates by design, so this route
+  // instead; (c) signup's 400 openly enumerates by design, so this route
   // is not the enumeration boundary; (d) the route is rate-limited
   // (10/IP/15min).
   const inAppResetEnabled = process.env.NEO_DISABLE_IN_APP_RESET !== "1";
