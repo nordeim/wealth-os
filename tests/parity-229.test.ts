@@ -55,6 +55,37 @@ function splitSource(src: string): { code: string; comments: string } {
   return { code: code.join(""), comments: coms.join("") };
 }
 
+// Session-270 (R-67, F-270b): the hash-dialect dispatcher. The env
+// dialect (the env example, the ignore list) marks comments with a
+// line-leading hash — the slash-forms never apply. Routing those
+// lines through the COMMENTS side is load-bearing in both directions:
+// a class-shaped token in the prose becomes flaggable by the nets
+// (the file is inside Tailwind's scan set, so a dead utility could
+// emit from it), and its tokens STOP fabricating repo-wide liveness
+// (the invariant's early-continue skips any comment token the live
+// universe carries — a prose token on the code side suppressed flags
+// for the same token in every other file's comments; live-proven at
+// HEAD with a hyphenated prose token absent from every walked code
+// site). The assignment and pattern lines stay code.
+const HASH_DIALECT_FILES = new Set([".env.example", ".gitignore"]);
+
+function splitByDialect(
+  filename: string,
+  src: string,
+): { code: string; comments: string } {
+  if (!HASH_DIALECT_FILES.has(path.basename(filename))) return splitSource(src);
+  const code: string[] = [];
+  const coms: string[] = [];
+  for (const line of src.split("\n")) {
+    if (/^\s*#/.test(line)) {
+      coms.push(line);
+    } else {
+      code.push(line);
+    }
+  }
+  return { code: code.join("\n"), comments: coms.join("\n") };
+}
+
 /** The candidate token set of a text fragment: whitespace-split words
  *  with sentence punctuation trimmed (brackets, slashes and inner
  *  colons stay — they are class-name characters). */
@@ -122,11 +153,18 @@ const SRC_ROOT = path.resolve(import.meta.dirname, "..", "src");
 // the root configs are inside the scan set). Session-269 (R-66,
 // F-269b): the human-editable tracked files under prisma/ plus the
 // env example join too — seed.ts is a commented TypeScript source,
-// exactly the genus the net watches. The residue stays deliberately
-// outside: the lockfile, the license, and the ignore list — machine-
-// generated or non-code prose, never human-editable source (the
-// env example's hash-marked lines read as code to the splitter, so
-// its prose joins the live universe rather than the comment nets).
+// exactly the genus the net watches. Session-270 (R-67, F-270b): the
+// ignore list joins with the hash-dialect arm — it is human-edited,
+// comment-bearing, and inside the scan set (the prior residue claim
+// was wrong about it). The residue stays deliberately outside and
+// genuinely machine-generated: the lockfile and the license alone.
+// The dialect: the env-dialect files' hash-marked lines are COMMENTS
+// in their own format — routed to the comments side by the arm below
+// (their assignment and pattern lines stay code). Pre-arm, the env
+// example's prose landed on the code side and joined the live
+// universe — fabricating repo-wide liveness through the invariant's
+// early-continue (the F-270b flagship; live-proven with a prose token
+// absent from every walked code site).
 const ROOT_CONFIG_FILES = [
   "next.config.ts",
   "playwright.config.ts",
@@ -140,6 +178,7 @@ const ROOT_CONFIG_FILES = [
   "prisma/seed.ts",
   "prisma/schema.prisma",
   ".env.example",
+  ".gitignore",
 ]
   .map((n) => path.resolve(import.meta.dirname, "..", n))
   .filter((p) => existsSync(p));
@@ -172,6 +211,38 @@ describe("F-269b — the prisma sources and the env example join the net", () =>
         `the net must read ${name} (Tailwind's scan set includes it)`,
       ).toContain(name);
     }
+  });
+});
+
+describe("F-270b — the hash-dialect arm and the ignore list join the net", () => {
+  // Session-270 (R-67, F-270b): the F-269b extension routed the env
+  // example into the walk but the splitter strips only the slash-forms
+  // — the file's hash-marked prose lines landed on the CODE side, so
+  // its tokens joined the live universe: the file self-satisfied the
+  // net (a class-shaped prose token there was never flagged) AND
+  // fabricated repo-wide liveness (the same token quoted in any other
+  // file's comment was skipped by the engine's early-continue). The
+  // hash-dialect arm routes the env-dialect files' hash-marked lines
+  // to the comments side; the ignore list joins the walk with the arm
+  // from birth (it is human-edited, comment-bearing, and inside the
+  // scan set — the F-269b residue claim was wrong about it).
+  it("the walk's file universe carries the ignore list (the human-edited dialect file)", () => {
+    const rels = SRC_FILES.map(SRC_REL);
+    expect(
+      rels,
+      "the net must read .gitignore (Tailwind's scan set includes it)",
+    ).toContain(".gitignore");
+  });
+
+  it("a hash-marked-only token of the env example never joins the live universe", () => {
+    // The probe token rides the env example's hash-marked prose lines
+    // alone (grep-verified unique to them across the whole walk). If
+    // this leg REDs, the dialect arm regressed: the hash lines are
+    // landing on the code side again and the fabrication door reopens
+    // (a prose token must never satisfy the live-universe check).
+    // If the env example's prose rewords away the probe, pick the next
+    // hash-marked-only token and update the literal here.
+    expect(LIVE_TOKENS.has("zero-config")).toBe(false);
   });
 });
 
@@ -211,7 +282,7 @@ const LIVE_TOKENS = new Set<string>();
 // Per-file comment tokens (for the site-reporting assertions).
 const COMMENT_TOKENS = new Map<string, Set<string>>();
 for (const f of SRC_FILES) {
-  const { code, comments } = splitSource(readFileSync(f, "utf8"));
+  const { code, comments } = splitByDialect(f, readFileSync(f, "utf8"));
   for (const t of tokens(code)) LIVE_TOKENS.add(t);
   for (const t of tokens(comments)) {
     if (!isClassShaped(t)) continue;
@@ -439,7 +510,7 @@ describe("F-245e — the bare-word dead-carrier invariant (the genus net)", () =
   // lesson's own trap, caught before any cure landed.)
   const BARE_COMMENT_TOKENS = new Map<string, Set<string>>();
   for (const f of SRC_FILES) {
-    const { comments } = splitSource(readFileSync(f, "utf8"));
+    const { comments } = splitByDialect(f, readFileSync(f, "utf8"));
     const toks = tokens(comments);
     if (toks.size) BARE_COMMENT_TOKENS.set(SRC_REL(f), toks);
   }

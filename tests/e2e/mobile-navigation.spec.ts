@@ -83,6 +83,44 @@ test.describe("mobile navigation drawer", () => {
     ).toBeVisible();
   });
 
+  test("stacked surfaces: Escape closes the drawer over the open filters card, one press each (F-270c)", async ({
+    page,
+  }) => {
+    // Session-270 (R-67, F-270c): the interleaving the F-266d comment
+    // once called the standing battery gap — the REACHABLE stacked
+    // order below lg where the in-flow filters card (role group,
+    // position static) and the drawer are both open. The card's dialog
+    // check stands down for the drawer; the drawer's self-carved census
+    // sees no other dialog — exactly one surface per press, the card on
+    // the second. Zero new signups/logins: the shared storageState
+    // rides.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/Expenses");
+
+    // The filters card opens (the in-flow expansion, the F-265b form).
+    await page.getByRole("button", { name: "Filters", exact: true }).click();
+    const card = page.getByRole("group", { name: "Expense filters" });
+    await expect(card).toBeVisible();
+
+    // The drawer opens OVER the open card (the card is non-modal —
+    // the hamburger stays clickable).
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(card).toBeVisible();
+
+    // First Escape: the drawer alone (the topmost surface).
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toBeHidden();
+    await expect(card).toBeVisible();
+
+    // Second Escape: the card (the drawer's listener unmounted with it).
+    await page.keyboard.press("Escape");
+    await expect(card).toBeHidden();
+    await expect(
+      page.getByRole("button", { name: "Filters", exact: true }),
+    ).toHaveAttribute("aria-expanded", "false");
+  });
+
   test("opening the drawer moves focus into it (F-217e)", async ({ page }) => {
     // Session-217 (R-14): the sheet renders BEFORE the main column in
     // DOM, so natural Tab order ran under the full-screen overlay.

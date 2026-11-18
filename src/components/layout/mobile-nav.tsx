@@ -78,6 +78,12 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
     if (!open) return;
     const sheet = document.querySelector<HTMLElement>(SHEET_SELECTOR);
     sheet?.querySelector<HTMLElement>("a, button")?.focus();
+    // Session-270 (R-67, F-270e): the cycle scope EXCLUDES the skip
+    // link by design — it sits before the sheet in DOM order, and the
+    // drawer IS the navigation surface; backward Tab from the sheet's
+    // first link wraps to the cycle's tail, never under the overlay
+    // to the link (registered so a future a11y sweep does not
+    // rediscover the exclusion as a gap).
     const cycleScope = () =>
       Array.from(
         document.querySelectorAll<HTMLElement>(

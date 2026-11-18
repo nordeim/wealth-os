@@ -194,9 +194,10 @@ export default function ExpensesPage() {
       // WHILE both dialog genera unmount on close: a future
       // force-mounted or hidden-but-mounted dialog genus would leave a
       // stale dialog element in the DOM and silently swallow the
-      // card's Escape (the standing battery gap — the mobile-drawer
-      // stacking order rides unpinned; the desktop leg pins the
-      // mechanism).
+      // card's Escape (the stacked-order gap: the drawer's own twin
+      // guard landed with F-269d, so the surviving gap is the e2e leg
+      // alone — the card-plus-drawer interleaving below lg, one press
+      // one surface, pinned in the mobile battery since R-67).
       if (document.querySelector('[role="dialog"]')) return;
       setFiltersOpen(false);
     };
@@ -711,6 +712,11 @@ export default function ExpensesPage() {
               own card stacks the title, the tablist, and the content
               full-width (live-probed); the Analytics page carries the
               same sibling form. */}
+          {/* Session-270 (R-67, F-270d): the row predates the F-238a
+              sibling form — a single child today, the layout machinery
+              inert by design; the classes stay because the swept face's
+              class set is baseline-pinned (re-derive the sweep before
+              touching). */}
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className={CARD.title}>Expense History ({visible.length})</h2>
           </div>
