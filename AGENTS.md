@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1997) | `bun run test` |
+| Unit tests (2008) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 161) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -96,8 +96,11 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 - The seed's transaction total is **date-dependent by design** (never seeds
   future rows); the census pins it as bounds 54..108, static entities
   exactly. Recalibrate bounds only when the generator plan changes.
-- a11y: every page must stay axe-clean at WCAG 2.2 AA; contrast fixes
-  prefer darkening one Tailwind step over restyling.
+- a11y: every page must stay axe-clean at WCAG 2.2 AA (the design
+  target — the blanket axe run evaluates the default-enabled 2.0
+  and 2.1 set; the 2.2-only criteria ride the bespoke hit-area
+  pins, see the a11y spec header note); contrast fixes prefer
+  darkening one Tailwind step over restyling.
 
 ## Git
 

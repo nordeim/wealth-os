@@ -308,6 +308,10 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.goto("/Dashboard");
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
+    // The modal surfaces lock the main scroller (the drawer's own
+    // lock, Radix's body lock), so the helper is a no-op here today —
+    // kept for the F-221f letter's uniformity (a tall dialog at
+    // phone widths would otherwise slip the leg).
     await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
@@ -319,6 +323,10 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.goto("/Expenses");
     await page.getByRole("button", { name: "Add Expense" }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible();
+    // The modal surfaces lock the main scroller (the drawer's own
+    // lock, Radix's body lock), so the helper is a no-op here today —
+    // kept for the F-221f letter's uniformity (a tall dialog at
+    // phone widths would otherwise slip the leg).
     await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
@@ -392,6 +400,10 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.waitForLoadState("networkidle");
     await page.getByRole("button", { name: /add (your first )?account/i }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible();
+    // The modal surfaces lock the main scroller (the drawer's own
+    // lock, Radix's body lock), so the helper is a no-op here today —
+    // kept for the F-221f letter's uniformity (a tall dialog at
+    // phone widths would otherwise slip the leg).
     await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });

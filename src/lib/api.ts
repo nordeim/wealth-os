@@ -123,12 +123,17 @@ export function isGuarded(x: { user: SessionUser } | { response: NextResponse })
  * Session-68 (F-68a2): the SAME ceiling + helper now gate the sessioned
  * CRUD family too — placed after requireSession, before the parse; the
  * honest CRUD bodies are asString-capped fields, far below the ceiling.
- * Session-72 (M-72c2) + session-73 (N-73a1): the family is THIRTEEN
- * routes (the sessioned resource families x(root+[id]) + settings +
- * users + reset — the users PATCH joined at s72; this comment's "12"
- * enumeration was the s72 record's unlanded half). Session-220
+ * Session-72 (M-72c2) + session-73 (N-73a1): the family was thirteen
+ * routes then (the sessioned resource families x(root+[id]) +
+ * settings + users + reset — the users PATCH joined at s72; that
+ * enumeration's "12" was the s72 record's unlanded half). Session-220
  * (F-220n): the stale CRM-era route names (activities/contacts/
- * events/leads) retired from the enumeration. */
+ * events/leads) retired from the enumeration. Session-276 (R-73,
+ * F-276d): the honest census is FIFTEEN routes — the budgets POST
+ * and budgets DELETE pair rides this default ceiling too (parseBody,
+ * the same placement; the s73 count predates the pair and was never
+ * re-counted; the pass-B twenty-ninth consecutive clean bill caught
+ * it). */
 export const MAX_AUTH_BODY_BYTES = 16 * 1024;
 
 /** True when the request DECLARES a body larger than the ceiling —
