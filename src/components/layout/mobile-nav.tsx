@@ -164,7 +164,13 @@ function DrawerNav({ onNavigate }: { onNavigate?: () => void }) {
   // family's tenth member (the sidebar MenuItem's twin). The drawer
   // closes on activation, but a keyboard repeat or rapid refire could
   // issue a second POST inside the first's window; the entry guard +
-  // the disabled arm close it (a failed POST re-arms for a retry).
+  // the disabled arm close it. Session-274 (R-71, F-274b): the re-arm
+  // truth — the navigate on activation unmounts this component before
+  // the POST resolves, so the state reset below lands on an unmounted
+  // tree; the honest re-arm is the fresh initial state a reopen
+  // remounts with, and a failed POST surfaces through the store-error
+  // banner (the sidebar twin — whose rail stays mounted — is the arm
+  // where an in-place re-arm actually runs).
   const [busy, setBusy] = React.useState(false);
 
   const signOut = async () => {

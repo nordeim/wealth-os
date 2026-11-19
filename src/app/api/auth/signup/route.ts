@@ -1,4 +1,5 @@
 import { db, isTransientDbError } from "@/lib/db";
+import { Prisma } from "@/generated/prisma/client";
 import { ERR, logApiError, ok, parseBody, requireJsonContentType } from "@/lib/api";
 import { hashPassword } from "@/lib/auth";
 import { signupSchema } from "@/lib/schemas";
@@ -148,8 +149,11 @@ export async function POST(req: Request) {
       // duplicate check above and the unique constraint answers a raw
       // 500 "Something went wrong". The P2002 arm answers the same
       // duplicate 400 the explicit check does (the settings route's
-      // pattern).
-      if (typeof e === "object" && e !== null && "code" in e && (e as { code?: string }).code === "P2002") {
+      // pattern). Session-274 (R-71, F-274a): the arm NOW carries the
+      // instanceof form itself — the structural type check it shipped
+      // with was the lone Prisma-code outlier of the family
+      // (behaviorally equivalent, but the one drift).
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
         return ERR.BAD_REQUEST("A user with this email already exists");
       }
       throw e;
