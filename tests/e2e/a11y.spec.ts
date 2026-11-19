@@ -12,6 +12,20 @@ import { readFileSync } from "node:fs";
 //      recharts genus.
 //
 // The axe engine rides the DECLARED devDep (package.json: axe-core).
+//
+// Session-275 (R-72, F-275c — the coverage truth): the blanket gate
+// rides axe.run() with NO runOnly, which evaluates the engine's
+// DEFAULT-ENABLED set — the WCAG 2.0/2.1 A and AA rules. The
+// 2.2-only criteria ride elsewhere: target-size (2.5.8) ships
+// DISABLED BY DEFAULT in axe-core 4.14 (the sole wcag22aa-tagged
+// rule, switched off at registration) and is covered by the bespoke
+// hit-area pins (the switch leg, the dialog close and toast dismiss
+// targets); dragging (2.5.7) and focus-not-obscured (2.4.11) carry
+// no default-enabled rule and ride the escape-stacking and skip-link
+// legs. The doc set's "WCAG 2.2 AA" is the design target; this gate
+// is its executable floor — a future small-control surface needs its
+// own targeted pin, not a blanket runOnly (the reference's own
+// parity-mandated small controls would trip the rule family).
 
 const AXE_PATH = "node_modules/axe-core/axe.min.js";
 
@@ -294,6 +308,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.goto("/Dashboard");
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
+    await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
 
@@ -304,6 +319,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.goto("/Expenses");
     await page.getByRole("button", { name: "Add Expense" }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible();
+    await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
 
@@ -376,6 +392,7 @@ test.describe("a11y two-gate (WealthOS)", () => {
     await page.waitForLoadState("networkidle");
     await page.getByRole("button", { name: /add (your first )?account/i }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible();
+    await scrollThrough(page);
     assertTwoGate(await runAxe(page));
   });
 

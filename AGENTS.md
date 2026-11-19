@@ -21,7 +21,7 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
 | Dev server | `bun run dev` (:3000, tees to `dev.log`) |
 | Lint (fails on warnings) | `bun run lint` |
 | Typecheck | `bun run typecheck` |
-| Unit tests (1990) | `bun run test` |
+| Unit tests (1997) | `bun run test` |
 | Single unit file | `CI=1 ./node_modules/.bin/vitest run tests/<file>.test.ts` |
 | E2E (boots own server, 161) | `CI=1 bun run test:e2e` |
 | Single e2e spec | `CI=1 ./node_modules/.bin/playwright test tests/e2e/<spec>.spec.ts` |
@@ -226,7 +226,10 @@ branches; push via `docs/ssh_git_wrapper_v3.py` (runbook:
   `text-foreground` utility on `<body>` — flip the TOKEN, not the rule.
   Pinned in `tests/dark-tokens.test.ts` + the a11y dark legs.
 - **A DOM-scoped outside-close listener fires on PORTALED Radix
-  surfaces** (session-217, F-217a): the Expenses filters popover's
+  surfaces** (session-217, F-217a — the Expenses popover genus
+  retired at F-265b for the reference's in-flow expansion card;
+  the lesson binds portaled surfaces generally): the Expenses
+  filters popover's
   pointerdown guard closed on Select OPTIONS — they live in
   `document.body` through `SelectPrimitive.Portal`, so "outside the
   popover group" is their normal address; the popover unmounted

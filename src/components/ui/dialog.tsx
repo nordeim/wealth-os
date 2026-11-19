@@ -80,8 +80,10 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   // the title element computes textAlign start — no centering below sm,
   // no stock-shadcn header pair). Our DIALOG_HEADER already carries the
   // genus; the pre-229 docblock's "centers below sm" claim was false.
-  // The old right-side clearance is gone (the X is the opacity pattern
-  // now).
+  // The old right-side clearance is gone (the close X sits at full
+  // opacity in the stone ink, a hover one step deeper in each mode —
+  // the F-221l contrast cure; the S15 opacity dimming retired with it,
+  // and the constant's own comment carries the measured ratios).
   return <div className={cn(DIALOG_HEADER, className)} {...props} />;
 }
 

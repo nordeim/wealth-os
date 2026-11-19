@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2151%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2158%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1990 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 1997 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 161 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 126 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 127 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 1990 checks / 126 files |
+| Unit (Vitest) | `bun run test` | 1997 checks / 127 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 161 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 18 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 1990 unit · 161 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 1997 unit · 161 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 274: **R-71 shipped — the predicate-outlier, mechanism-truth, and phantom-pin round**: the fresh-eyes audit (three Mode-C passes — the R-70 cure surfaces (all six HOLDING, 64/64 across the four re-run batteries) · the API/auth/security layer's twenty-seventh consecutive clean bill (all thirteen house contracts, 45 handlers / 30 route files) · the UI/a11y/shell layer — all eight standing contracts verified holding live, 148/148 across the ten re-run batteries): 0 Critical / 0 High / 0 Medium / 4 Low / 8 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-274a the signup P2002 arm's instanceof convergence** — the lone duck-typed predicate of the Prisma-code family retired (its own comment cited the settings route's pattern; the genus leg now pins every P-coded literal comparison in src to the family form). Plus the doc-truth trio (F-274b the drawer sign-out docblock reworded to the remount truth · F-274c the skill doc's phantom dompurify pin reworded to the retirement truth · F-274d the README row's duplicated lead-in deduplicated) and F-274e the reserved softs' dark-flip asymmetry named in the F-224t register: **1990 unit (+9) · 161 e2e (zero new legs — no swept surface moves) · smoke 15/15 · census MATCH**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 275: **R-72 shipped — the docblock-tail, pipe-truth, and gate-coverage round**: the fresh-eyes audit (three Mode-C passes — the R-71 cure surfaces (all five HOLDING, 73/73 across the five re-run batteries) · the API/auth/security layer's twenty-eighth consecutive clean bill (all thirteen house contracts, 45 handlers / 30 route files) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 0 Medium / 4 Low / 11 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-275a the DialogHeader docblock's opacity tail** — the F-274b genus one file over (the session-15 parenthetical claimed the close X rides the opacity pattern while F-221l retired the dimming 53 sessions ago; the parenthetical now carries the mechanism truth with the F-221l citation). Plus the riders (F-275b the PAD §7.1 row's unescaped pipes escaped · F-275c the a11y spec header's coverage-truth note (the default-enabled set vs the 2.2-only bespoke pins) · F-275d the three open-state a11y legs' scroll helper · F-275e the AGENTS F-217a entry's genus-retirement cross-ref): **1997 unit (+7) · 161 e2e (zero new legs — no swept surface moves) · smoke 15/15 · census MATCH**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License
