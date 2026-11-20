@@ -28,8 +28,17 @@ const norm = (s: string): string => s.replace(/\s+/g, " ");
 const normComment = (s: string): string =>
   norm(s.replace(/^[ \t]*(?:\/\/|\*)[ \t]*/gm, " "));
 
-// The doc set the table-truth censuses walk (the seven living docs —
-// worklog.md joined at this round, the F-277d scope cure).
+// The doc set the table-truth censuses walk (the fifteen-file curated
+// tracked-doc family — worklog.md joined the seven living docs at
+// session 277's F-277d scope cure; session 278's F-278a extension
+// added the eight curated files: the deployment guide, the Tailwind
+// validation report, the coding agent prompt, the push runbook, the
+// session-199 implementation plan, the skills inventory, the web-app
+// evaluation report, and the sibling skill doc at the root; the
+// transcript family and the skills library stay outside the census —
+// the immutable-record doctrine and the owner's exclusion directive;
+// docs/worklog.md is the parity-227-pinned symlink of the censused
+// root log).
 const DOCS = [
   "docs/remediation_plan_v2.md",
   "README.md",
@@ -38,6 +47,14 @@ const DOCS = [
   "wealth-os_SKILL.md",
   "Project_Architecture_Document.md",
   "worklog.md",
+  "docs/DEPLOYMENT.md",
+  "docs/Tailwind-V4-Validation-Report.md",
+  "docs/coding_agent_prompt.md",
+  "docs/how-to-git-push-using-ssh-wrapper_SKILL.md",
+  "docs/implementation-plan-session-199-wealthos.md",
+  "docs/skills-inventory.md",
+  "docs/web-app-codebase-evaluation-report.md",
+  "neo-crm_SKILL.md",
 ] as const;
 
 // Strip fenced code blocks (the F-277d fence-awareness): a line that
@@ -60,6 +77,12 @@ function stripFences(text: string): string[] {
 // The delimiter-row shape a GFM table's second line must carry.
 const isDelimiter = (l: string): boolean => /^\s*\|[\s:|-]+\|\s*$/.test(l);
 
+// The indented-row predicate (session 278, R-75, F-278b): GFM admits
+// tables indented up to three leading spaces — the census's row
+// predicate must admit them too (the fence-awareness hardening's
+// soundness sibling).
+const isPipeRow = (l: string) => /^ {0,3}\|/.test(l);
+
 // ---- F-277a: the §2 ledger's tables render as tables --------------------
 
 describe("F-277a — the §2 ledger tables render as tables (no blank-line splits)", () => {
@@ -80,9 +103,9 @@ describe("F-277a — the §2 ledger tables render as tables (no blank-line split
       const lines = stripFences(read(rel));
       let i = 0;
       while (i < lines.length) {
-        if ((lines[i] ?? "").startsWith("|")) {
+        if (isPipeRow(lines[i] ?? "")) {
           let j = i;
-          while (j < lines.length && (lines[j] ?? "").startsWith("|")) j += 1;
+          while (j < lines.length && isPipeRow(lines[j] ?? "")) j += 1;
           const block = lines.slice(i, j) as string[];
           if (block.length < 2 || !isDelimiter(block[1] as string)) {
             offenders.push(`${rel}:${i + 1}..${j} (${block.length} lines)`);
@@ -214,8 +237,9 @@ describe("F-277d — the parity-276 census is hardened (fence-aware, seven docs)
   it("the DOCS list covers worklog.md (the seventh living doc)", () => {
     // The pre-cure DOCS list covered six files; worklog.md — the
     // seventh living doc — was absent (luck-of-the-tree: zero
-    // pipe-prefixed blocks there today). The hardened census walks
-    // all seven.
+    // pipe-prefixed blocks there today). The hardened census walked
+    // all seven until session 278 (R-75, F-278a) extended both DOCS
+    // lists to the fifteen-file curated tracked-doc family.
     expect(census).toContain('"worklog.md"');
   });
 });

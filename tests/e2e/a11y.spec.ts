@@ -84,7 +84,11 @@ const SANCTIONED: Record<string, Array<{ any: string[]; cite: string }>> = {
     // a future white-on-amber regression — the F-220p class.
     {
       // the muted micro-captions (the % funded, the synced pill)
-      any: ["text-stone-400", "text-stone-500"],
+      // Session-278 (R-75, F-278c): the stone 400 caption matcher
+      // de-dups to the gradient arm's cite above — one cite covers
+      // both surfaces (the F-220p stale-arm class's de-dup
+      // edition; the register's union is unchanged).
+      any: ["text-stone-500"],
       cite: "the muted caption family — the reference's own palette",
     },
   ],

@@ -1130,7 +1130,7 @@ the raw contract (`.env`) and re-assert the intended rule.
 |---|---|---|
 | Page unstyled | postcss config | `cat postcss.config.mjs` — must list `@tailwindcss/postcss` |
 | Data null everywhere | hydrate wiring | check `AppShell` calls `hydrate()`; `curl /api/auth/me` shape |
-| DB "outside the repo" | bun absolutization | `for pid in $(pgrep -f next-server); do ls -l /proc/$pid/fd | grep .db; done` — every handle must point at `<repo>/db/*.db` |
+| DB "outside the repo" | bun absolutization | `for pid in $(pgrep -f next-server); do ls -l /proc/$pid/fd \| grep .db; done` — every handle must point at `<repo>/db/*.db` |
 | E2E stale data | deleted inode | reseed in place; never `rm db/e2e.db` while a server may reuse it |
 | Login rejected | rate limiter / AUTH_SECRET changed | wait 15 min or restart (per-process limiter); re-sign-in |
 | 401 on API but page renders | cookie path/Secure flags | check `NODE_ENV=production` + https when debugging standalone |

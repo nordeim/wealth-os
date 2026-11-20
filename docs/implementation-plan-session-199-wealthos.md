@@ -120,7 +120,7 @@ tests (fresh signup users see exactly the reference's empty genus).
 | Styling | Tailwind v3 CDN runtime | Tailwind v4 CSS-first `@theme` (kept) | The repo's v4 hardening (v3 palette re-pins, hover-variant unwrap, shadow/blur renames) is exactly the skill-validated approach; tokens re-pinned to WealthOS values |
 | Dark mode | `.dark` class | `@custom-variant dark` + class strategy + `localStorage` + system default | Reference behavior; no FOUC via inline script |
 | Fonts | Inter via Google `@import` | `Inter` first in `--font-sans` stack, no external fetch | Self-hosted production posture; no runtime third-party dependency (deviation documented) |
-| DB / API | Base44 entities API | Prisma/SQLite + Zod-validated `/api/*` routes (envelope `{ok,data|error}`) | Real backend, per replicate-web-app skill (never proxy the platform) |
+| DB / API | Base44 entities API | Prisma/SQLite + Zod-validated `/api/*` routes (envelope `{ok,data\|error}`) | Real backend, per replicate-web-app skill (never proxy the platform) |
 | Auth | Base44 session (email+social) | Kept hardened scrypt + HMAC httpOnly cookies + rate limiting + verification/reset funnels | Security superset; social buttons rendered for parity, click explains configuration (no dead controls) |
 | Charts | recharts-like SVG | recharts 3 (already a dep) | Same chart genus, tested |
 | AI | Base44 AI (LLM) | `AiProvider` seam: deterministic `LocalInsightsProvider` (rule-based finance analysis) + optional env-configured LLM provider | Fully functional offline; no hardcoded keys (skill §AI-stub policy) |

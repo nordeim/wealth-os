@@ -1521,7 +1521,143 @@
 > drift gates CLEAN · census MATCH · captures.)
 
 
-> **Current version: v2.74.0** (session 277 — the
+> **Current version: v2.75.0** (session 278 — the
+census-family, indented-walker, and register-hygiene round R-75: the
+operator re-sent the standing directive after the R-74 ship pair
+(685e705d + the owner's 4983fd08 session-log update carrying
+docs/session_138.md, the session-277 transcript — fetched by the
+fresh clone and reviewed at intake per the odd-number record
+convention, this record riding docs/session_139.md). Per the
+recorded rhythm, findings-led iteration: refresh, re-audit,
+remediate, verify, capture, document, commit, push — with the
+operator's named asks (the mobile navigation comparison, the
+Tailwind v4 state, the .env/db contract, the vitest/playwright
+configs, the sitemap/SEO surface, the .env.example, the screenshots,
+the SSH-wrapper push) re-verified along the way.)
+
+The intake: the workspace had been RESET (a fresh clone at HEAD
+4983fd08 — tree clean; the prior session's work ALREADY SHIPPED as
+685e705d + the owner's session-log update); the environment rebuilt
+cold (bun install, 594 packages, the postinstall prisma generate
+into src/generated/prisma; .env from .env.example on the
+DATABASE_URL="file:../db/custom.db" contract; db/ at the repo root;
+db push + seed; census MATCH (81/4/3/6/5/7, users=1)); the toolchain
+legs (the chromium headless-shell 1254 install the e2e battery
+rides; paramiko 5.1.0 for the SSH push shim).
+
+THE COLD BASELINE GATE GREEN AT HEAD — the v2.74.0 ship state
+reproduced exactly, no discovery: lint 0/0 · tsc 0 · 2019/2019 unit
+(129 files) · build (the 4 documented Turbopack tracing warnings) ·
+smoke 15/15 · 161/161 e2e · census MATCH.
+
+The standing layers: probe:ref STABLE on every layer (the app
+bundle 1,402,874 bytes / md5 6d3779af…, the stylesheet md5
+96f24d45…, the demo-data ZERO census, the desktop nav census
+256px · 9 links, the TRUE-390 menu census opens=true · 9
+destinations) · **the mobile-nav comparison verified on BOTH sides
+at TRUE 390×844** (the reference through probe:ref's TRUE-390 menu
+census; the clone side riding the standing comparison-265.ts on the
+production artifact over the scratch db/comparison.db — pre-open 0 ·
+9 destinations + Sign Out · aria-expanded true→false · post-close 0 ·
+census tripwire MATCH · no Tailwind v4 regression) · `bun audit`
+UNCHANGED (the two-vulnerability dev-chain census the R-74
+re-anchor carries — the effect HIGH via prisma CLI's
+@prisma/config exact-pin plus the minimatch moderate; the runtime
+@prisma/client chain clean) · neo-crm unchanged (b3d0fbe) · the
+SEO surface verified (smoke leg 12: sitemap + robots + manifest 200;
+the metadata/pwa/page-titles pins green inside the unit suite) ·
+the .env contract + the db/ at the root + the vitest/playwright
+configs + the .env.example standing.
+
+The session-278 fresh-eyes audit (three Mode-C research passes
+dispatched as parallel research subagents per the house convention,
+every material claim re-verified at file:line by the driving session
+— the R-74 cure surfaces: all five HOLDING (the parity-277 battery
+11/11 inside the cold-gate's full-suite run; the three healed §2
+splits, the re-anchored advisory census + the flipped pin pair, the
+reworded api.ts guards comment at the live twenty-route-file count,
+the hardened parity-276 census all read at file:line — one pass-A
+claim REFUTED at re-verification: the "ungated docs/worklog.md twin"
+is the F-227a symlink, its content already pinned to the root log by
+parity-227's alias legs) · the API/auth/security layer: the
+THIRTY-FIRST consecutive clean bill (all thirteen house contracts,
+45 handlers / 30 route files read line-by-line — the census
+re-verified at exactly 30; every candidate dismissed into
+documented postures; the api.ts 455-line file-card and the
+fifteen/twenty-route comment censuses live-accurate) · the
+UI/a11y/shell layer: all eight standing contracts verified holding
+live (the drawer mechanics, the theme three-way seam, the v4
+scanner with the whole-tree invariant + the bare-word net, the a11y
+two-gate, the shell twins, the geometry pin, the date seams, the
+escape stacking; the z-ladder census exact at 10/40/50/60/100; every
+SKILL file-card count verified drift-free)): 0 Critical / 0 High /
+0 Medium / 1 Low / 3 Informational NEW after dedup, every material
+claim re-verified at file:line.
+
+The round's flagship: **F-278a the table-truth censuses' DOCS set
+never covered the curated tracked-doc family — two live
+unescaped-pipe rows ride outside every census (the F-277d genus one
+family over).** Both batteries' DOCS lists enumerate the seven
+living docs while the tracked markdown family at the root and under
+docs/ carries fifteen curated files (the eight more: DEPLOYMENT,
+the Tailwind-V4 validation report, coding_agent_prompt, the push
+runbook skill, the session-199 implementation plan,
+skills-inventory, the web-app evaluation report, and the sibling
+neo-crm skill doc at the root) — and a driving-session census over
+that family found two genuine offenders: neo-crm_SKILL.md:1133 (a
+debugging-guide row whose command pipe inside the code span splits
+the row into five cells against a four-cell header) and
+docs/implementation-plan-session-199-wealthos.md:123 (the
+stack-mapping row whose envelope-form pipe inside the code span
+splits it into six against five) — each rendering phantom cells on
+GitHub, invisible to every gate. The scope rationale (living docs
+only) lived in session records, never pinned.
+
+The round's riders: **F-278b the two census walkers' indented-row
+blind spot** (both pipe predicates are column-0-only while GFM
+admits tables indented up to three leading spaces — the
+fence-awareness hardening's soundness sibling; zero live instances
+outside fences today, the F-277d(a) genus's own remainder) ·
+**F-278c the a11y register's duplicate sanctioned matcher**
+(text-stone-400 rides both the amber/stone gradient arm and the
+muted-captions arm — the F-220p stale-arm warning class: a
+duplicate entry means retiring one arm would not retire the class;
+the register's union is unchanged by the de-dup) · **F-278d
+registered** (the @theme block's one prose var citation — the
+do-NOT-"fix"-a-chart warning at globals.css:136; parity-229 does
+not trip CSS-var-shaped prose, and rewording standing prose for
+zero gate value is gratuitous). Registered: F-278e–F-278h (the
+pass-B and pass-C informational postures re-confirmed standing, the
+historical advisory snapshots' session-record doctrine, the standing
+PNG regeneration).
+
+The execution contract (R-75): the plan v2.75.0 written and
+validated against the tree (this script, insertions only, every
+anchor asserted) → **R-75.1** the pins born honest RED (the
+parity-278 battery: 10 legs — the false and missing forms ride the
+tree at HEAD: the two unescaped rows, the two DOCS-list gaps, the
+two walker forms, the register's duplicate) → **R-75.2** the cures
+(scripts/cures-278.py — the two in-cell pipes escape, both DOCS
+lists extend to the fifteen-file curated family with the scope
+doctrine registered, both walkers gain the indented-row predicate,
+the a11y register de-dups with the single-cite annotation; every
+site asserted exactly-once, the script resumable, zero application
+behavior changed) → **R-75.3** the verification (parity-278 GREEN
+10/10 · the sibling batteries GREEN (parity-276 and parity-277 at
+the extended family · security-ledger · parity-272's F-272n
+dynamic file-card at 455 · parity-243 at the advanced mirror) ·
+docs-counts GREEN at the advanced trio — the TWENTY-NINTH
+gate-enforced ride, the v2.75.0 block landing together with the
+advance · lint 0/0 · tsc 0 · 2029/2029 unit (130 files, +10) ·
+build · smoke 15/15 · 161/161 e2e (zero new legs — the round
+changes doc rows and test files; the register's matcher union is
+unchanged; no swept surface moves, no pixel can shift) · census
+MATCH · the captures — the round's touched surfaces are doc rows
+and test files, so the standing faces ride: the flagship dashboard
+at 1280×800 and the mobile drawer at 390×844; the census tripwire
+MATCH).
+
+> **Previous version: v2.74.0** (session 277 — the
 blank-row-split, census-scope, and audit-census round R-74: the
 operator re-sent the standing directive after the R-73 ship pair
 (92f7d0ce + the owner's 1679f4fd session-log update carrying
@@ -5972,6 +6108,38 @@ in-band OTP/reset delivery, the capability-URL publicity, the CSP
 fetch-directive pin, the scrypt promisification, the empty-PUT
 guard, the clear-era contract, the burn-order doctrine).
 
+### 2.36 Session-278 audit ledger (the fresh-eyes round over the v2.74.0 ship state)
+
+Three Mode-C passes (the R-74 cure surfaces · the API/auth/security
+layer · the UI/a11y/shell layer) + the driving session's own
+re-verification, every material claim re-verified at file:line. The
+API layer's thirty-first consecutive clean bill and the UI layer's
+eight standing contracts are the round's clean columns; the genuine
+rot is two unescaped-pipe rows in the never-censused tracked-doc
+family, two column-0-only pipe predicates, and one duplicated
+sanctioned matcher.
+
+| ID | Severity | Finding (verified at file:line) | Location | Disposition |
+|---|---|---|---|---|
+| F-278a | Low | **THE TABLE-TRUTH CENSUSES' DOCS SET NEVER COVERED THE CURATED TRACKED-DOC FAMILY — two live unescaped-pipe rows ride outside every census (the F-277d genus one family over).** Both batteries' DOCS lists enumerate the seven living docs while the tracked markdown family at the root and under docs/ carries fifteen curated files — the eight never-walked: docs/DEPLOYMENT.md, the Tailwind-V4 validation report, coding_agent_prompt, the push runbook skill, the session-199 implementation plan, skills-inventory, the web-app evaluation report, and the sibling neo-crm_SKILL.md at the root. A driving-session census over the family found two genuine offenders: neo-crm_SKILL.md:1133 (the debugging-guide row whose `fd \| grep .db` command pipe inside the code span splits the row into five cells against a four-cell header — the F-247i genus in a file every census excludes) and docs/implementation-plan-session-199-wealthos.md:123 (the stack-mapping row whose `{ok,data\|error}` envelope form inside the code span splits it into six cells against a five-cell header) — each rendering phantom cells on GitHub, invisible to every gate. The scope rationale (living docs only) lived in session records, never pinned; the F-274f posture (the sibling doc's content is correct FOR ITS OWN REPO) binds content sweeps, not structure censuses. The pass-A subagent's twin claim (docs/worklog.md an ungated md5-twin of the root log) was REFUTED at re-verification: the file is the F-227a symlink and parity-227's alias legs already pin its content to the canonical root worklog. | `tests/parity-276.test.ts:134-141` + `tests/parity-277.test.ts:33-41` (the DOCS lists) vs the tracked-doc census; the offenders at `neo-crm_SKILL.md:1133` and `docs/implementation-plan-session-199-wealthos.md:123` | **R-75** (the two in-cell pipes escape — the F-247i house form; both DOCS lists extend to the fifteen-file curated family; the scope doctrine registered: the transcript family docs/session_*.md + docs/prompt-to-*.md excluded by the immutable-record doctrine, the skills/ library by the owner's exclusion directive; pinned by the parity-278 family-census legs + the DOCS source pins) |
+| F-278b | Informational | **THE TWO CENSUS WALKERS' INDENTED-ROW BLIND SPOT — the fence-awareness hardening's soundness sibling.** Both walkers gate table rows on a column-0 pipe prefix (`startsWith("\|")`) while GFM admits tables indented up to three leading spaces — an indented orphan block or blank-split fragment would evade both batteries exactly the way fenced pipe-lines did before F-277d. Zero live instances outside fences today (the only two indented pipe lines in the whole family ride inside the skill doc's ts fence, blanked by fence-stripping — luck, not soundness). | `tests/parity-277.test.ts:83-85` and `tests/parity-276.test.ts:169` (the column-0 predicates) | **R-75** (both walkers gain the indented-row predicate — up to three leading spaces admitted; the parity-278 census leg carries the hardened walker from birth) |
+| F-278c | Informational | **THE A11Y REGISTER'S DUPLICATE SANCTIONED MATCHER — the F-220p stale-arm class's de-dup edition.** `text-stone-400` rides TWO arms of the color-contrast register: the amber/stone-on-gradient arm (whose cite already covers "sidebar + muted captions") and the muted-captions arm — the union is unchanged (either arm sanctions the class) but a future retirement of one arm would silently leave the class auto-sanctioned via the other, exactly the stale-arm auto-sanction the file's own comments warn against. Register hygiene, not a defect. | `tests/e2e/a11y.spec.ts:47` and `:87` (the two arms) | **R-75** (the muted arm drops the duplicate with the single-cite annotation — the gradient arm's cite covers both surfaces; pinned by the parity-278 cite-uniqueness legs) |
+| F-278d | Informational | **THE @theme BLOCK'S ONE PROSE var CITATION — registered, not cured.** The block's single `var(` string is the do-NOT-"fix"-a-chart warning (a chart wired to the CSS variable would silently diverge from the constants the charts actually read); the parity-229 class-shape net does not trip CSS-var-shaped prose, and the warning has stood ~50 sessions without a scanner conflict. Rewording standing prose for zero gate value is gratuitous. | `src/app/globals.css:136` | Registered (the warning stands; the net's blindness to CSS-var shapes is the net's own scope) |
+| F-278e | Informational | **THE PASS-B CLEAN-BILL INFORMATIONAL POSTURES STAND — the documented trades, re-confirmed at the thirty-first consecutive clean bill.** The in-band OTP and reset-link delivery (the NEO_DISABLE_IN_APP_OTP/RESET knobs, warned at every production boot), the default direct-exposure limiter keying, the login per-account third-party-exhaustable trade, the unbucketed health/auth-me families, the reset literal check, the seed-script exception and the structural casts, the unlogged-surface register — every one dismissed into its documented posture again this round. | `src/app/api/auth/signup/route.ts:169` et al. | Registered (the documented postures) |
+| F-278f | Informational | **THE PASS-C INFORMATIONAL POSTURES STAND — the documented dependencies.** The eight render-time clock sites in client pages are hydration-safe only by the AppShell loading gate (already documented); the reserved soft tokens stay light in dark mode by documented design; the a11y spec's register now carries the round's de-dup — the remaining informational notes (the two-fence splitter blind spot, the geometry leg's coverage) re-confirmed standing. | `src/app/(app)/expenses/page.tsx:128` et al. | Registered (the documented postures) |
+| F-278g | Informational | **THE HISTORICAL ADVISORY SNAPSHOTS STAND AS SESSION RECORDS.** The PAD's past-tense re-anchor narratives, the worklog's per-session STANDING-ASKS blocks, and the docs/session_*.md transcripts keep the counts that were true at their time — the rot rides only the living sites the F-277b re-anchor carries (the §10 row, the pin pair). Editing session records retroactively is the docs-counts doctrine's own negative. | `Project_Architecture_Document.md:218-226`; `worklog.md` (the session-277 record) | Registered (the session-record doctrine) |
+| F-278h | Informational | **THE STANDING PNG REGENERATION — the comparison run rewrites `mobile-nav-clone-390.png` at the standing name.** The session's comparison-265.ts run (live-asserted: 9 destinations + Sign Out, the aria-expanded flip, the census tripwire MATCH) rewrites the tracked standing capture — the live-asserted capture IS the session's evidence and rides the round's commit. | `docs/screenshots/mobile-nav-clone-390.png` | Registered (the standing-name convention) |
+
+Recorded, not cured: F-278d through F-278h. The audit's clean
+columns: the API/auth/security layer's thirty-first consecutive
+clean bill (thirteen contracts, 45 handlers / 30 route files — the
+census re-verified at exactly 30 this round) and the UI/a11y/shell
+layer's eight standing contracts all holding live. The round also
+re-confirmed the standing registered postures (the ADR-014
+in-band OTP/reset delivery, the capability-URL publicity, the CSP
+fetch-directive pin, the scrypt promisification, the empty-PUT
+guard, the clear-era contract, the burn-order doctrine).
+
 ## 3. The remediation program (R-items)
 
 Status legend: `Done(v2.N.M)` · `In progress` · `Programmed(session ≥ 204)` ·
@@ -8295,6 +8463,74 @@ The standing operator asks re-verified along the way (the
 sitemap/robots/manifest family, the mobile-nav comparison —
 the drawer battery + probe:ref's TRUE-390, the .env.example,
 the captures, the docs lockstep).
+
+### R-75 — The census-family, indented-walker, and register-hygiene round (session 278)
+
+The operator re-sent the standing directive after the R-74 ship pair
+(685e705d + the owner's 4983fd08 session-log update carrying
+docs/session_138.md, the session-277 transcript — fetched by the
+fresh clone and reviewed at intake per the odd-number record
+convention, this record riding docs/session_139.md). Per the
+recorded rhythm, findings-led iteration. The intake and the standing
+layers are recorded in the version header above; this section
+carries the findings, the cures, and the verification contract.
+
+**The findings (each verified at file:line by the driving session —
+the API layer's thirty-first consecutive clean bill and the UI
+layer's eight standing contracts are the round's clean columns; the
+genuine rot is two unescaped-pipe rows in the never-censused
+tracked-doc family, two column-0-only pipe predicates, and one
+duplicated sanctioned matcher):** the §2.36 ledger's rows — F-278a
+THE ROUND'S FLAGSHIP (the table-truth censuses' DOCS set — seven
+living docs — never covered the fifteen-file curated tracked-doc
+family; two genuine unescaped-in-cell-pipe rows ride outside every
+census: the sibling skill doc's debugging-guide row and the
+session-199 implementation plan's stack-mapping row; the scope
+rationale lived in session records, never pinned; the pass-A "ungated
+twin" claim refuted at re-verification — the F-227a symlink is
+parity-227-pinned) · F-278b THE INDENTED WALKER (both censuses'
+pipe predicates are column-0-only while GFM admits up to three
+leading spaces — the fence-awareness hardening's soundness sibling)
+· F-278c THE REGISTER DE-DUP (text-stone-400 riding two sanctioned
+arms — the F-220p stale-arm class's de-dup edition; the union
+unchanged) · F-278d registered (the @theme prose var citation —
+parity-229 does not trip CSS-var-shaped prose).
+
+**The cures (R-75.2):** the two in-cell pipes escape (the
+debugging-guide row's command pipe and the stack-mapping row's
+envelope-form pipe — the F-247i house form, each row rendering its
+header's cell count again); both DOCS lists extend to the
+fifteen-file curated family (the seven living docs plus DEPLOYMENT,
+the Tailwind-V4 validation report, coding_agent_prompt, the push
+runbook skill, the session-199 implementation plan,
+skills-inventory, the web-app evaluation report, and the sibling
+neo-crm skill doc — the structure census is content-agnostic, the
+F-274f content posture untouched); the scope doctrine registered
+at the census sites (the transcript family and the skills/ library
+excluded — the immutable-record doctrine and the owner's exclusion
+directive); both walkers gain the indented-row predicate (up to
+three leading spaces admitted — GFM's actual form); the a11y
+register de-dups (the muted arm drops the duplicate with the
+single-cite annotation — the gradient arm's cite covers both
+surfaces; the register's union is unchanged).
+
+**The verification contract (R-75.3):** the parity-278 battery born
+honest RED against the pre-cure tree (the false and missing forms
+ride the tree at HEAD: the two unescaped rows, the two DOCS-list
+gaps, the two walker forms, the register's duplicate — the orphan
+census leg rides green-by-design, the standing form from birth) →
+the cures → parity-278 GREEN · the sibling batteries GREEN
+(parity-276 and parity-277 at the extended family · security-ledger
+· parity-272's F-272n dynamic file-card · docs-counts at the
+advanced trio — the v2.75.0 block landing together with the
+advance, the F-249b structural gate enforcing the pairing) → lint
+0/0 · tsc 0 · the unit suite at the new count · build · smoke
+15/15 · the FULL e2e battery 161/161 (zero new legs — the round
+changes doc rows and test files; the register's matcher union is
+unchanged; no swept surface moves, no pixel can shift) · census
+MATCH · the captures (the standing evidence faces — the round's
+touched surfaces are doc rows and test files, so the flagship
+dashboard and the mobile drawer ride).
 
 ### R-74 — The blank-row-split, census-scope, and audit-census round (session 277)
 
@@ -11543,6 +11779,7 @@ six parity drift legs.
 
 | Version | Session | R-items executed | Gate at ship | Commit |
 |---|---|---|---|---|
+| v2.75.0 | 278 | **R-75** (the census-family, indented-walker, and register-hygiene round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 (the reference through probe:ref's TRUE-390 menu census; the clone side riding the standing comparison-265.ts on the production artifact over the scratch db/comparison.db — pre-open 0 · 9 destinations + Sign Out · the aria-expanded flip · post-close 0 · the census tripwire MATCH); the workspace had been RESET (a fresh clone at HEAD 4983fd08 — the prior session's work already shipped as 685e705d + the owner's 4983fd08 session-log update carrying docs/session_138.md, the session-277 transcript — reviewed at intake per the odd-number record convention, this record riding docs/session_139.md); the environment rebuilt cold (bun install 594 packages + the postinstall prisma generate, .env from .env.example on the DATABASE_URL contract, db push + seed, census MATCH (81/4/3/6/5/7, users=1), the chromium headless-shell 1254 install, paramiko 5.1.0 for the push shim); THE COLD BASELINE GATE GREEN AT HEAD — the v2.74.0 ship state reproduced exactly, no discovery: lint 0/0 · tsc 0 · 2019/2019 unit (129 files) · build · smoke 15/15 · 161/161 e2e. The standing layers: probe:ref STABLE on every layer (the bundle 1,402,874 bytes / md5 6d3779af…, the stylesheet md5 96f24d45…, the demo-data ZERO census, the desktop nav census 256px · 9 links, the TRUE-390 menu census opens=true · 9 destinations) · neo-crm unchanged (b3d0fbe) · `bun audit` UNCHANGED (the two-vulnerability dev-chain census the R-74 re-anchor carries — the effect HIGH via prisma CLI's @prisma/config exact-pin plus the minimatch moderate, the runtime chain clean) · the SEO surface verified (smoke leg 12 + the metadata/pwa/page-titles pins green inside the unit suite) · the .env contract + the db/ at the root + the configs + the .env.example standing. The session-278 fresh-eyes audit (three Mode-C passes dispatched as parallel research subagents per the house convention, every material claim re-verified at file:line by the driving session: the R-74 cure surfaces — all five HOLDING (the parity-277 battery 11/11 inside the cold-gate's full-suite run; the three healed §2 splits, the re-anchored advisory census with the flipped pin pair, the reworded api.ts guards comment at the live twenty-route-file count, the hardened parity-276 census all read at file:line; one pass-A claim REFUTED at re-verification — the "ungated docs/worklog.md twin" is the F-227a symlink, its content already pinned by parity-227) · the API/auth/security layer — the THIRTY-FIRST consecutive clean bill (thirteen house contracts, 45 handlers / 30 route files read line-by-line, the census re-verified at exactly 30, every candidate dismissed into documented postures; the api.ts 455-line file-card and the fifteen/twenty-route comment censuses live-accurate) · the UI/a11y/shell layer — all eight standing contracts verified holding live, the z-ladder census exact, every SKILL file-card count drift-free): 0 Critical / 0 High / 0 Medium / 1 Low / 3 Informational NEW after dedup. THE ROUND'S CURES: **F-278a the table-truth censuses' DOCS set extended to the curated tracked-doc family** (the flagship — the seven-living-doc lists never covered the fifteen-file curated family; two genuine unescaped-in-cell-pipe rows rode outside every census: the sibling skill doc's debugging-guide row and the session-199 implementation plan's stack-mapping row — both escaped now, both DOCS lists extended, the scope doctrine registered at the census sites: the transcript family and the skills library stay outside by the immutable-record doctrine and the owner's exclusion directive) · **F-278b both census walkers gain the indented-row predicate** (GFM admits tables indented up to three leading spaces — the fence-awareness hardening's soundness sibling; the parity-278 census carries the hardened walker from birth) · **F-278c the a11y register's duplicated stone caption matcher de-dups to one cite** (the gradient arm's cite covers both surfaces; the register's union is unchanged). Registered: F-278d–F-278h (the @theme prose var citation, the pass-B and pass-C informational postures re-confirmed, the historical advisory snapshots' session-record doctrine, the standing PNG regeneration). The plan v2.75.0 written and validated against the tree (scripts/plan-278.py — the head block, the §2.36 ledger with eight rows, the R-75 section). **R-75.1** the pins born honest RED (the parity-278 battery: 10 legs — 9 fail over the tree at HEAD (the two unescaped rows, the two DOCS-list gaps, the two walker forms, the register's duplicate); the orphan census leg rides green-by-design, the standing form from birth) → **R-75.2** the cures (scripts/cures-278.py — the two in-cell pipes escape, both DOCS lists extend to the family with the scope truth in the census comments, both walkers harden with the module-level predicate, the register de-dups with the single-cite annotation; every site asserted exactly-once, the script resumable, zero application behavior changed) → **R-75.3** the verification (parity-278 GREEN 10/10 · the sibling batteries GREEN (parity-276 and parity-277 at the extended family · security-ledger · parity-272's F-272n dynamic file-card at 455 · docs-counts GREEN at the advanced trio — the TWENTY-NINTH gate-enforced ride, the v2.75.0 block landing together with the advance · parity-243 GREEN at the advanced mirror) · lint 0/0 · tsc 0 · **2029/2029 unit (130 files, +10)** · build · smoke 15/15 · **161/161 e2e (zero new legs — the round changes doc rows and test files; the register's matcher union is unchanged; no swept surface moves, no pixel can shift)** · census MATCH · the captures — the standing faces (the mobile drawer at 390×844 with 9 destinations + Sign Out live-asserted + the flagship dashboard at 1280×800); the census tripwire MATCH) | lint 0/0 · tsc 0 · **2029 unit (130 files, +10)** · build · smoke 15/15 · **161 e2e (zero new legs)** · census MATCH | (this session's execution commit) |
 | v2.74.0 | 277 | **R-74** (the blank-row-split, census-scope, and audit-census round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 (the reference through probe:ref's TRUE-390 menu census; the clone side riding the standing comparison-265.ts on the production artifact over the scratch db/comparison.db — pre-open 0 · 9 destinations + Sign Out · the aria-expanded flip · post-close 0 · the census tripwire MATCH); the workspace had been RESET (a fresh clone at HEAD 1679f4fd — the prior session's work already shipped as 92f7d0ce + the owner's 1679f4fd session-log update carrying docs/session_136.md, the session-276 transcript — reviewed at intake per the odd-number record convention, this record riding docs/session_137.md); the environment rebuilt cold (bun install 594 packages + the postinstall prisma generate, .env from .env.example on the DATABASE_URL contract, db push + seed, census MATCH (81/4/3/6/5/7, users=1), the chromium headless-shell 1254 install, paramiko 5.1.0 for the push shim); THE COLD BASELINE GATE GREEN AT HEAD — the v2.73.0 ship state reproduced exactly, no discovery: lint 0/0 · tsc 0 · 2008/2008 unit (128 files) · build · smoke 15/15 · 161/161 e2e. The standing layers: probe:ref STABLE on every layer (the bundle 1,402,874 bytes / md5 6d3779af…, the stylesheet md5 96f24d45…, the demo-data ZERO census, the desktop nav census 256px · 9 links, the TRUE-390 menu census opens=true · 9 destinations) · neo-crm unchanged (b3d0fbe) · `bun audit` MOVED 1 → 2 (a NEW dev-chain HIGH — effect GHSA-7589-6fvf-x4pw via prisma CLI's @prisma/config exact-pin of effect@3.20.0, the runtime chain clean — the round's own F-277b) · the SEO surface verified (smoke leg 12 + the metadata/pwa/page-titles pins green inside the unit suite) · the .env contract + the db/ at the root + the configs + the .env.example standing. The session-277 fresh-eyes audit (three Mode-C passes dispatched as parallel research subagents per the house convention, every material claim re-verified at file:line by the driving session: the R-73 cure surfaces — all five HOLDING (the parity-276 battery 11/11 inside the cold-gate's full-suite run; the §5 table structure, the ten escaped rows, the modal-rationale comment trio, the fifteen-route docblock census, the AGENTS floor pointer all read at file:line) · the API/auth/security layer — the THIRTIETH consecutive clean bill (thirteen house contracts, 45 handlers / 30 route files read line-by-line, the census re-verified at exactly 30, every candidate dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified holding live — 217 targeted unit tests re-run green inside the pass): 0 Critical / 0 High / 2 Medium / 2 Low / 6 Informational NEW after dedup. THE ROUND'S CURES: **F-277a the §2 ledger's three blank-line table splits healed** (the flagship — the F-276a genus surviving one section over: internal blank lines split three §2 tables into orphan pipe-paragraph blocks, 50 rows including Medium-severity findings; the three blanks dropped, the rows rejoined their tables, a fence-aware contiguity census leg rides the parity-277 battery as the structural pin) · **F-277b the advisory census re-anchored to the live bun audit** (the NEW dev-chain effect HIGH decoded in the §10 row — dev-chain only, the runtime @prisma/client chain clean, the exact-pin enumerated, the fix unreachable without a prisma bump while 7.10.1 is the latest stable, the dedicated-dependency-round posture; the security-ledger pin pair flipped same-commit) · **F-277c the api.ts guards comment's honest census** (the twenty-route-file truth; the CRM-era events/reports/export URL-param fossils retired; asString survives at search's q parse alone, asDate is battery-only) · **F-277d the parity-276 census hardened** (fence-aware — fenced code is never table rows; worklog.md joins the DOCS list as the seventh living doc). Registered: F-277e–F-277h (the pass-B and pass-C informational postures re-confirmed standing, the historical advisory snapshots' session-record doctrine, the standing PNG regeneration). The plan v2.74.0 written and validated against the tree (scripts/plan-277.py — the head block, the §2.35 ledger with eight rows, the R-74 section). **R-74.1** the pins born honest RED (the parity-277 battery: 11 legs fail — the three blank splits, the stale advisory census, the stale comment census, the census's two gaps ride the tree at HEAD) → **R-74.2** the cures (scripts/cures-277.py — the three blanks dropped, the §10 row + the pin pair re-anchored, the api.ts comment reworded, the parity-276 census hardened; every site asserted exactly-once, the script resumable) → **R-74.3** the verification (parity-277 GREEN 11/11 · the sibling batteries GREEN (parity-276 at the hardened census · security-ledger at the flipped pin pair · parity-272's F-272n dynamic file-card at the recalibrated 455 lines · docs-counts GREEN at the advanced trio — the TWENTY-EIGHTH gate-enforced ride, the v2.74.0 block landing together with the advance · parity-243 GREEN at the advanced mirror) · lint 0/0 · tsc 0 · **2019/2019 unit (129 files, +11)** · build · smoke 15/15 · **161/161 e2e (zero new legs — the round changes doc tables, one comment, and pin files; no swept surface moves, no pixel can shift; one environmental flake on the F-236f wall leg re-run green in isolation and in the full battery)** · census MATCH · the captures — the standing faces (the mobile drawer at 390×844 with 9 destinations + Sign Out live-asserted + the flagship dashboard at 1280×800); the census tripwire MATCH) | lint 0/0 · tsc 0 · **2019 unit (129 files, +11)** · build · smoke 15/15 · **161 e2e (zero new legs)** · census MATCH | (this session's execution commit) |
 | v2.73.0 | 276 | **R-73** (the table-structure, census-truth, and phantom-comment round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 (the reference through probe:ref's TRUE-390 menu census; the clone side riding the standing comparison-265.ts on the production artifact over the scratch db/comparison.db — pre-open 0 · 9 destinations + Sign Out · the aria-expanded flip · post-close 0 · the census tripwire MATCH); the workspace had been RESET (a fresh clone at HEAD 009f5035 — the prior session's work already shipped as 9d20a0cb + the owner's session-log update carrying docs/session_134.md, the session-275 transcript — reviewed at intake per the odd-number record convention, this record riding docs/session_135.md); the environment rebuilt cold (bun install 594 packages + the postinstall prisma generate, .env from .env.example on the DATABASE_URL contract, db push + seed, census MATCH (81/4/3/6/5/7, users=1), the chromium headless-shell 1254 install, paramiko 5.1.0 for the push shim); THE COLD BASELINE GATE GREEN AT HEAD — the v2.72.0 ship state reproduced exactly, no discovery: lint 0/0 · tsc 0 · 1997/1997 unit (127 files) · build · smoke 15/15 · 161/161 e2e. The standing layers: probe:ref STABLE on every layer (the bundle 1,402,874 bytes / md5 6d3779af…, the stylesheet md5 96f24d45…, the demo-data ZERO census, the desktop nav census 256px · 9 links, the TRUE-390 menu census opens=true · 9 destinations) · neo-crm unchanged (b3d0fbe) · `bun audit` UNCHANGED (the 1-advisory dev-chain census) · the SEO surface verified (smoke leg 12 + the metadata/pwa/page-titles pins green inside the unit suite) · the .env contract + the db/ at the root + the configs + the .env.example standing. The session-276 fresh-eyes audit (three Mode-C passes dispatched as parallel research subagents per the house convention, every material claim re-verified at file:line by the driving session: the R-72 cure surfaces — all five HOLDING (the parity-275 battery 7/7 inside the cold-gate's full-suite run; the dialog docblock truth, the PAD pipes, the a11y coverage note, the scroll calls, the AGENTS cross-ref all read at file:line) · the API/auth/security layer — the TWENTY-NINTH consecutive clean bill (thirteen house contracts, 45 handlers / 30 route files read line-by-line, the census re-verified at exactly 30, every candidate dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 0 Medium / 5 Low / 7 Informational NEW after dedup. THE ROUND'S CURES: **F-276a the §5 execution-history table's GFM structure repaired** (the flagship — the table never rendered as a table: no delimiter under the header, nine blank separators, an orphan delimiter mid-table, the v2.47.0 row three cells short; the delimiter landed, the separators dropped, the row's gate + commit cells restored from the session-250 worklog record) · **F-276b the ten §2-ledger rows' in-cell pipes escaped** (the F-247i genus swept — F-222a, F-226k, F-236f, F-238k, F-238n, F-242g, F-244e, F-244i, F-251d, F-257r; a whole-doc per-table pipe census now rides the parity-276 battery as the structural leg) · **F-276c the R-72 ledger's phantom modal-rationale comment landed at the three open-state a11y legs** (the tree now matches the ledger's F-275d claim) · **F-276d the api.ts body-ceiling docblock's family census reworded to the fifteen-route truth** (the budgets POST and budgets DELETE pair named; the present-tense THIRTEEN claim retired) · **F-276e the AGENTS a11y contract line's design-target and floor pointer** (the 2.2-only criteria ride the bespoke hit-area pins; the spec header note referenced). Registered: F-276f–F-276i (the design-target phrasing posture, the pass-B informational postures, the pass-C informational postures, the standing PNG regeneration). The plan v2.73.0 written and validated against the tree (scripts/plan-276.py — the head block, the §2.34 ledger with nine rows, the R-73 section). **R-73.1** the pins born honest RED (the parity-276 battery: 11 legs fail — the false and missing forms ride the tree at HEAD; two pin-authoring lessons from the R-72 tradition re-learned and fixed in-flight — the F-239f comment-wrap normalization including the docblock star form, and the pipe-versus-cell count form) → **R-73.2** the cures (scripts/cures-276.py — the §5 table repair, the ten rows' pipe escapes, the open-state trio's comment, the docblock census, the AGENTS pointer; every site asserted exactly-once, the script resumable after a mid-run pair miss) → **R-73.3** the verification (parity-276 GREEN 11/11 · the sibling batteries GREEN (the parity-272 F-272n file-card pin recalibrated same-commit — the api.ts docblock grew 446→451 lines) · docs-counts GREEN at the advanced trio (the TWENTY-SEVENTH gate-enforced ride — the v2.73.0 block lands together with the advance) · parity-243 GREEN at the advanced mirror · lint 0/0 · tsc 0 · **2008/2008 unit (128 files, +11)** · build · smoke 15/15 · **161/161 e2e (zero new legs — the round changes comments, doc tables, and docblocks; no swept surface moves, no pixel can shift)** · census MATCH · the captures — the a11y dialog family's own dark face (the Accounts DARK Add dialog at 1280×800, live-asserted) + the mobile drawer at 390×844 (9 destinations + Sign Out) + the flagship dashboard at 1280×800 (the standing face); the census tripwire MATCH) | lint 0/0 · tsc 0 · **2008 unit (128 files, +11)** · build · smoke 15/15 · **161 e2e (zero new legs)** · census MATCH | (this session's execution commit) |
 | v2.72.0 | 275 | **R-72** (the docblock-tail, pipe-truth, and gate-coverage round — findings-led, the standing directive with the reference STABLE on every standing drift layer and the mobile-navigation ask verified on BOTH sides at TRUE 390×844 (the reference through probe:ref's TRUE-390 menu census; the clone side riding the standing comparison-265.ts on the production artifact over the scratch db/comparison.db — pre-open 0 · 9 destinations + Sign Out · the aria-expanded flip · post-close 0 · the census tripwire MATCH); the workspace STOOD (no reset — the tree clean at HEAD c18aabf8 after the git-pull refresh fetched the owner's session-log update carrying docs/session_132.md, the session-274 transcript — reviewed at intake per the odd-number record convention, this record riding docs/session_133.md); the environment verified in place (the .env on the DATABASE_URL="file:../db/custom.db" contract, db/ at the repo root, census MATCH (81/4/3/6/5/7, users=1)); THE COLD BASELINE GATE GREEN AT HEAD — the v2.71.0 ship state reproduced exactly, no discovery: lint 0/0 · tsc 0 · 1990/1990 unit (126 files) · build (the 4 documented Turbopack tracing warnings) · smoke 15/15 · 161/161 e2e. The standing layers: probe:ref STABLE on every layer (the bundle 1,402,874 bytes / md5 6d3779af…, the stylesheet md5 96f24d45…, the demo-data ZERO census, the desktop nav census 256px · 9 links, the TRUE-390 menu census opens=true · 9 destinations) · neo-crm unchanged (b3d0fbe) · `bun audit` UNCHANGED (the 1-advisory dev-chain census the R-69 re-anchor carries) · the SEO surface verified (smoke leg 12 + the metadata/pwa/page-titles pins green inside the unit suite) · the .env contract + the db/ at the root + the configs + the .env.example standing. The session-275 fresh-eyes audit (three Mode-C passes dispatched as parallel research subagents per the house convention, every material claim re-verified at file:line by the driving session: the R-71 cure surfaces — all five HOLDING (the parity-274 battery 9/9, parity-273 9/9, parity-229 23/23, parity-243 14/14, docs-counts 18/18 re-run green — 73/73; the P-code instanceof census clean; the docs count family aligned) · the API/auth/security layer — the TWENTY-EIGHTH consecutive clean bill (thirteen house contracts, 45 handlers / 30 route files read line-by-line, the census re-verified at exactly 30, every candidate dismissed into documented postures) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 0 Medium / 4 Low / 11 Informational NEW after dedup. THE ROUND'S CURES: **F-275a the DialogHeader docblock's opacity tail** (the flagship — the F-274b genus one file over: the session-15 parenthetical claimed the close X rides the opacity pattern while F-221l retired the dimming 53 sessions ago; the parenthetical now carries the mechanism truth — the full stone ink at full opacity, a hover one step deeper in each mode, the F-221l citation and the measured-ratio pointer) · **F-275b the PAD §7.1 domain-seams row's pipes escaped** (three bare pipes inside the code span split the five-column row into eight cells in GFM — the F-247i genus, invisible to the arithmetic pin; the row renders five columns now) · **F-275c the a11y spec header's coverage-truth note** (the blanket run evaluates the default-enabled 2.0/2.1 set while the docs claim 2.2 AA; the 2.2-only target-size rule ships disabled in axe-core 4.14 and rides the bespoke hit-area pins — the note bridges the design target and the executable floor) · **F-275d the three open-state a11y legs' scroll helper** (the F-221f letter — no-op today behind the modal scroller locks, uniformity by construction) · **F-275e the AGENTS F-217a entry's genus-retirement cross-ref** (the Expenses popover genus retired at F-265b; the lesson binds portaled surfaces generally). Registered: F-275f–F-275k (the splitter blind spot, the login-acct trade, the reset literal, the bucket-census wording, the seed-script exception, the unlogged-surface register). The plan v2.72.0 written and validated against the tree (scripts/plan-275.py — the head block, the §2.33 ledger with eleven rows, the R-72 section). **R-72.1** the pins born honest RED (the parity-275 battery: 7 legs fail — the false and missing forms ride the tree at HEAD) → **R-72.2** the cures (scripts/cures-275.py — the dialog docblock reword, the pipes escape, the coverage note, the trio's scroll calls, the AGENTS cross-ref; every site asserted exactly-once; two pin-authoring lessons from the R-71 tradition re-learned and fixed in-flight — the F-239f comment-wrap normalization and the F-247e window-through-cure anchor) → **R-72.3** the verification (parity-275 GREEN 7/7 · the sibling batteries GREEN (parity-274/273/229/243/221/expenses-popover/theme-default/dark-tokens/security-ledger/parity-238/parity-265 — 159/159 across the eleven) · docs-counts GREEN at the advanced trio (the TWENTY-SIXTH gate-enforced ride — the v2.72.0 block lands together with the advance) · parity-243 GREEN at the advanced mirror · lint 0/0 · tsc 0 · **1997/1997 unit (127 files, +7)** · build · smoke 15/15 · **161/161 e2e (zero new legs — the round changes comments, one doc table row, and no-op test calls; no swept surface moves, no pixel can shift)** · census MATCH · the captures — the dialog family's own face (the Add Expense dialog open at 1280×800, live-asserted) + the mobile drawer at 390×844 (9 destinations + Sign Out) + the flagship dashboard at 1280×800 (the standing face); the census tripwire MATCH) | lint 0/0 · tsc 0 · **1997 unit (127 files, +7)** · build · smoke 15/15 · **161 e2e (zero new legs)** · census MATCH | (this session's execution commit) |

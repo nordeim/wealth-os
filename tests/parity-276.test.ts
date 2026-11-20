@@ -30,6 +30,12 @@ const norm = (s: string): string => s.replace(/\s+/g, " ");
 const normComment = (s: string): string =>
   norm(s.replace(/^[ \t]*(?:\/\/|\*)[ \t]*/gm, " "));
 
+// The indented-row predicate (session 278, R-75, F-278b): GFM admits
+// tables indented up to three leading spaces — a column-0-only
+// predicate is blind to an indented orphan block exactly the way the
+// pre-F-277d walker was blind to fenced pipe lines.
+const isPipeRow = (l: string) => /^ {0,3}\|/.test(l);
+
 // ---- F-276a: the §5 execution-history table renders as a table -----------
 
 describe("F-276a — the §5 execution-history table's GFM structure", () => {
@@ -128,14 +134,26 @@ describe("F-276b — the §2 ledger rows escape their in-cell pipes", () => {
     // The structural cure (the F-245c/F-249b tradition — pin the
     // invariant, not the enumeration): a data row whose unescaped
     // pipe count deviates from its table header's count splits cells
-    // in GFM. The census walks every table in the seven-file doc set
-    // and fails on any offender — future rows must escape their
-    // in-cell pipes or update this pin with a stated reason.
+    // in GFM. The census walks every table in the fifteen-file
+    // curated tracked-doc family and fails on any offender — future
+    // rows must escape their in-cell pipes or update this pin with a
+    // stated reason.
     // Session-277 (R-74, F-277d) hardened the census on two gaps:
     // pipe-prefixed lines inside fenced code blocks are CODE, never
     // table rows (stripFences toggles the fence state at every fence
     // line and blanks the fenced lines before the walk), and
     // worklog.md — the seventh living doc — joins the DOCS list.
+    // Session-278 (R-75, F-278a) extended the list to the curated
+    // tracked-doc family (the seven living docs plus the eight
+    // curated files: the deployment guide, the Tailwind validation
+    // report, the coding agent prompt, the push runbook, the
+    // session-199 implementation plan, the skills inventory, the
+    // web-app evaluation report, and the sibling skill doc at the
+    // root). The transcript family (docs/session_*.md and
+    // docs/prompt-to-*.md) and the skills/ library stay outside the
+    // census — the immutable-record doctrine and the owner's
+    // exclusion directive; docs/worklog.md is the parity-227-pinned
+    // symlink of the censused root log.
     const DOCS = [
       "docs/remediation_plan_v2.md",
       "README.md",
@@ -144,6 +162,14 @@ describe("F-276b — the §2 ledger rows escape their in-cell pipes", () => {
       "wealth-os_SKILL.md",
       "Project_Architecture_Document.md",
       "worklog.md",
+      "docs/DEPLOYMENT.md",
+      "docs/Tailwind-V4-Validation-Report.md",
+      "docs/coding_agent_prompt.md",
+      "docs/how-to-git-push-using-ssh-wrapper_SKILL.md",
+      "docs/implementation-plan-session-199-wealthos.md",
+      "docs/skills-inventory.md",
+      "docs/web-app-codebase-evaluation-report.md",
+      "neo-crm_SKILL.md",
     ] as const;
     // Fence-awareness (F-277d): fence lines toggle the state; lines
     // inside a fence read as blanks to the walk.
@@ -166,11 +192,11 @@ describe("F-276b — the §2 ledger rows escape their in-cell pipes", () => {
       let headerCount: number | null = null;
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i] as string;
-        if (!line.startsWith("|")) {
+        if (!isPipeRow(line)) {
           headerCount = null; // a table block ends
           continue;
         }
-        if (/^\|[-| ]+\|$/.test(line)) continue; // the delimiter row
+        if (/^ {0,3}\|[-| ]+\|$/.test(line)) continue; // the delimiter row
         const unescaped = line.replace(/\\\|/g, "").split("|").length - 1;
         if (headerCount === null) {
           headerCount = unescaped; // the block's first row is the header
