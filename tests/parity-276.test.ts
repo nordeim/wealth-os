@@ -42,7 +42,13 @@ const isPipeRow = (l: string) => /^ {0,3}\|/.test(l);
 // here — the colon-blind inline form walked the evaluation report's
 // sixteen colon-aligned delimiter rows as DATA rows, green only
 // because each carried its header's pipe count).
-const isDelimiter = (l: string): boolean => /^\s*\|[\s:|-]+\|\s*$/.test(l);
+// Session-280 (R-77, F-280a): the colon-tolerant shape gains its
+// substance — the cmark-gfm reference scanner admits a delimiter cell
+// as spaces, an optional edge colon, a NON-EMPTY hyphen run, an
+// optional edge colon, spaces; a cell carrying no hyphen, or a colon
+// inside the run, renders NO table on GitHub while passing the loose
+// shape this round retires.
+const isDelimiter = (l: string): boolean => /^\s*\|(\s*:?-+:?\s*\|)+\s*$/.test(l);
 
 // The unescaped-pipe count helper (session 279, R-76, F-279b): the
 // delimiter row's cell count must be COMPARED against the header's,

@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2203%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2214%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,8 +59,8 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 2042 checks incl. property tests |
-| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 161 checks; chromium; seeded `db/e2e.db` |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 2052 checks incl. property tests |
+| E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 162 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
 ```mermaid
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 131 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 132 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,8 +166,8 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 2042 checks / 131 files |
-| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 161 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
+| Unit (Vitest) | `bun run test` | 2052 checks / 132 files |
+| E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 162 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
 | Parity sweeps | `bun run gate:full` | **active** (re-activated v2.8.0 / R-4.5): the standing gate + six WealthOS-native drift gates — the four sweep classes (1440×900 · 390×844 · 768×1024 · 1024×768, theme-matched zero-data baselines), the fullpage sweep (the 11-page below-the-fold axis with the zero-data sentinel), and the interior census (four-axis standing allowances at margin 0) — green end-to-end from cold at v2.8.0; run it when parity surfaces changed or per the standing cadence (the pre-push bar stays `bun run gate`; the sweep legs need the live reference, so `gate` remains the offline gate) |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 18 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 2042 unit · 161 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 2052 unit · 162 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 279: **R-76 shipped — the walker-unification, cell-count, and indented-fence round**: the fresh-eyes audit (three Mode-C passes — the R-75 cure surfaces all five HOLDING · the API/auth/security layer's thirty-second consecutive clean bill (45 handlers / 30 route files, the focused battery 153/153) · the UI/a11y/shell layer — all eight standing contracts holding, every SKILL file-card count drift-free): 0 Critical / 0 High / 0 Medium / 3 Low / 2 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-279a the census walkers' delimiter-shape drift — parity-276's colon-blind predicate walked the evaluation report's sixteen colon-aligned delimiter rows as DATA rows, green only by pipe-count luck** (the predicate unifies to the shared colon-tolerant shape the siblings already ship). Plus the riders (F-279b all three censuses gain the header-vs-delimiter cell-count comparison — GFM renders no table on a mismatch · F-279c all three fence strippers admit up-to-three-space-indented list-item fences with the opener-indent tracker · F-279d the two instant-parse sites gain the instant-vs-calendar comments): **2042 unit (+13) · 161 e2e (zero new legs — no swept surface moves) · smoke 15/15 · census MATCH**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 280: **R-77 shipped — the hyphen-required, whole-tree-net, and open-axe round**: the fresh-eyes audit (three Mode-C passes — the R-76 cure surfaces all holding (the four-battery family 45/45) · the API/auth/security layer's thirty-third consecutive clean bill (45 handlers / 30 route files) · the UI/a11y/shell layer — all eight standing contracts holding, every SKILL file-card count drift-free): 0 Critical / 0 High / 0 Medium / 4 Low / 8 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-280a the delimiter predicate admits cells carrying no hyphen — the cmark-gfm reference scanner demands one hyphen per cell, and a hyphen-less row renders NO table while passing every census's shape and count gates** (all four batteries' predicate unifies to the cmark-exact cell form; zero live carriers). Plus the riders (F-280k the phantom-breakpoint net widens from the enumerated fifteen-file set to the whole 116-file src tree — the F-207a genus returning as a coverage hole · F-280j the filters expansion card's OPEN state joins the a11y two-gate's open-state family — the surface pre-flighted clean): **2052 unit (+10) · 162 e2e (+1 — the filters-card axe leg) · smoke 15/15 · census MATCH**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

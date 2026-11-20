@@ -88,12 +88,16 @@ describe("F-275c — the a11y spec header names what the blanket gate evaluates"
 
 // ---- F-275d: the three open-state legs carry the scroll helper ------------
 
-describe("F-275d — every axe leg scrolls first, the open-state trio included", () => {
+describe("F-275d — every axe leg scrolls first, the open-state quartet included", () => {
   const spec = read("tests/e2e/a11y.spec.ts");
+  // Session-280 (R-77, F-280j): the open-state family gains its
+  // fourth surface — the filters expansion card leg rides the same
+  // helper-before-the-gate contract.
   const OPEN_LEGS = [
     "phone /Dashboard with the drawer OPEN",
     "desktop /Expenses with the Add Expense dialog OPEN",
     "desktop /Accounts DARK with the Add dialog OPEN",
+    "desktop /Expenses with the filters expansion card OPEN",
   ] as const;
 
   it("each open-state leg calls the helper before the gate", () => {
@@ -111,12 +115,12 @@ describe("F-275d — every axe leg scrolls first, the open-state trio included",
     }
   });
 
-  it("the source-site census: 13 helper calls (10 standing + the open-state trio)", () => {
+  it("the source-site census: 14 helper calls (10 standing + the open-state quartet)", () => {
     // The count-lockstep form: a future leg that adds or drops a call
-    // updates this pin in the same commit. The loops expand the 13 source
-    // sites into the 47 runtime legs (the section loops + the trio).
+    // updates this pin in the same commit. The loops expand the 14 source
+    // sites into the runtime legs (the section loops + the quartet).
     const calls = (spec.match(/await scrollThrough\(page\);/g) ?? []).length;
-    expect(calls).toBe(13);
+    expect(calls).toBe(14);
   });
 });
 

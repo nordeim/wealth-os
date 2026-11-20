@@ -84,7 +84,13 @@ function stripFences(text: string): string[] {
 const isPipeRow = (l: string) => /^ {0,3}\|/.test(l);
 
 // The delimiter-row shape a GFM table's second line must carry.
-const isDelimiter = (l: string) => /^\s*\|[\s:|-]+\|\s*$/.test(l);
+// Session-280 (R-77, F-280a): the colon-tolerant shape gains its
+// substance — the cmark-gfm reference scanner admits a delimiter cell
+// as spaces, an optional edge colon, a NON-EMPTY hyphen run, an
+// optional edge colon, spaces; a cell carrying no hyphen, or a colon
+// inside the run, renders NO table on GitHub while passing the loose
+// shape this round retires.
+const isDelimiter = (l: string) => /^\s*\|(\s*:?-+:?\s*\|)+\s*$/.test(l);
 
 const unescapedPipes = (l: string): number =>
   l.replace(/\\\|/g, "").split("|").length - 1;

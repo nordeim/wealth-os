@@ -86,7 +86,13 @@ function stripFences(text: string): string[] {
 }
 
 // The delimiter-row shape a GFM table's second line must carry.
-const isDelimiter = (l: string): boolean => /^\s*\|[\s:|-]+\|\s*$/.test(l);
+// Session-280 (R-77, F-280a): the colon-tolerant shape gains its
+// substance — the cmark-gfm reference scanner admits a delimiter cell
+// as spaces, an optional edge colon, a NON-EMPTY hyphen run, an
+// optional edge colon, spaces; a cell carrying no hyphen, or a colon
+// inside the run, renders NO table on GitHub while passing the loose
+// shape this round retires.
+const isDelimiter = (l: string): boolean => /^\s*\|(\s*:?-+:?\s*\|)+\s*$/.test(l);
 
 // The indented-row predicate (session 278, R-75, F-278b): GFM admits
 // tables indented up to three leading spaces — the census's row

@@ -335,6 +335,23 @@ test.describe("a11y two-gate (WealthOS)", () => {
     assertTwoGate(await runAxe(page));
   });
 
+  // Session-280 (R-77, F-280j): the open-state family's fourth
+  // surface — the session-265 in-flow filters expansion card (four
+  // labeled Selects, two date inputs, the quick-amount group, the
+  // three-action footer). The card grows the page IN-FLOW, so the
+  // scroll-through matters (the F-221f form: axe sees only what is
+  // rendered); the surface was pre-flighted clean this round.
+  test("desktop /Expenses with the filters expansion card OPEN — structural zero + sanctioned citations (F-280j)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/Expenses");
+    await page.getByRole("button", { name: /Filters/ }).click();
+    await expect(page.getByRole("group", { name: "Expense filters" })).toBeVisible();
+    await scrollThrough(page);
+    assertTwoGate(await runAxe(page));
+  });
+
   // Session-217 (R-14, F-217n): the two-gate ran light-mode only — the
   // entire F-217c family (white dialog panels with light text in dark
   // mode) was invisible to it. The dark leg writes the persisted theme

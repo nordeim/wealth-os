@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -35,6 +35,24 @@ const stripComments = (src: string): string =>
     .replace(/^\s*\/\/.*$/gm, "");
 
 const codeOf = (rel: string): string => stripComments(readOr(rel));
+
+// The whole-tree source walk (session 280, R-77, F-280k): every
+// .ts/.tsx/.jsx/.css under src/, the regenerated prisma client
+// skipped (the parity-229 convention) — the phantom-breakpoint net's
+// coverage IS the tree, never an enumerated subset.
+const walkSrcRel = (): string[] => {
+  const out: string[] = [];
+  const dive = (dir: string) => {
+    for (const name of readdirSync(dir)) {
+      if (name === "generated") continue; // the regenerated prisma client
+      const full = path.join(dir, name);
+      if (statSync(full).isDirectory()) dive(full);
+      else if (/\.(ts|tsx|jsx|css)$/.test(name)) out.push(path.relative(repoFile("."), full));
+    }
+  };
+  dive(repoFile("src"));
+  return out;
+};
 
 const layout = async () =>
   (await import("@/lib/page-layout")) as unknown as Record<string, Record<string, string>>;
@@ -85,19 +103,15 @@ const NAVY_TONE_PAGES = new Set([
 
 describe("session-207: the phantom-breakpoint guard (F-207a — the Tailwind v4 class that never existed)", () => {
   it("no src file references a variant this Tailwind v4 setup never defines (xs/2xs/3xs silently generate NO CSS)", () => {
+    // Session-280 (R-77, F-280k): the net widens from the enumerated
+    // fifteen-file set to the WHOLE src tree — the login card, the
+    // reset screens, the guest redirect, the nav config, the section
+    // layout bridges, and the ui primitives all sat outside the old
+    // net (the F-207a genus returning as a coverage hole; the tree is
+    // clean, so the widening rides green from birth). The walk skips
+    // the regenerated prisma client (the parity-229 convention).
     const offenders: string[] = [];
-    for (const page of APP_PAGES) {
-      const src = codeOf(pageSrc(page));
-      if (/\b(?:xs|2xs|3xs):/.test(src)) offenders.push(`(app)/${page}/page.tsx`);
-    }
-    for (const rel of [
-      "src/components/layout/mobile-header.tsx",
-      "src/components/layout/mobile-nav.tsx",
-      "src/components/layout/sidebar.tsx",
-      "src/components/layout/app-shell.tsx",
-      "src/components/shared/page-parts.tsx",
-      "src/components/shared/ai-coach.tsx",
-    ]) {
+    for (const rel of walkSrcRel()) {
       if (/\b(?:xs|2xs|3xs):/.test(codeOf(rel))) offenders.push(rel);
     }
     expect(offenders, `phantom breakpoint variants found: ${offenders.join(", ")}`).toEqual([]);
