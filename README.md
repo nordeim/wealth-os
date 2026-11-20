@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2190%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2203%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 2029 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 2042 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 161 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 130 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 131 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 2029 checks / 130 files |
+| Unit (Vitest) | `bun run test` | 2042 checks / 131 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 161 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 18 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 2029 unit · 161 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 2042 unit · 161 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 278: **R-75 shipped — the census-family, indented-walker, and register-hygiene round**: the fresh-eyes audit (three Mode-C passes — the R-74 cure surfaces (all five HOLDING inside the cold-gate's full-suite run, one pass-A claim REFUTED at re-verification: the "ungated twin" is the F-227a symlink, parity-227-pinned) · the API/auth/security layer's thirty-first consecutive clean bill (all thirteen house contracts, 45 handlers / 30 route files) · the UI/a11y/shell layer — all eight standing contracts verified holding live, every SKILL file-card count drift-free): 0 Critical / 0 High / 0 Medium / 1 Low / 3 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-278a the table-truth censuses' DOCS set never covered the curated tracked-doc family — two live unescaped-pipe rows rode outside every census** (the sibling skill doc's debugging row + the session-199 implementation plan's stack-mapping row, both escaped now; both DOCS lists extended to the fifteen-file curated family with the scope doctrine registered — the transcript family and the skills library stay outside by the immutable-record doctrine and the owner's exclusion directive). Plus the riders (F-278b both census walkers gain the indented-row predicate — GFM admits up to three leading spaces · F-278c the a11y register's duplicated stone caption matcher de-dups to one cite, the union unchanged): **2029 unit (+10) · 161 e2e (zero new legs — no swept surface moves) · smoke 15/15 · census MATCH**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 279: **R-76 shipped — the walker-unification, cell-count, and indented-fence round**: the fresh-eyes audit (three Mode-C passes — the R-75 cure surfaces all five HOLDING · the API/auth/security layer's thirty-second consecutive clean bill (45 handlers / 30 route files, the focused battery 153/153) · the UI/a11y/shell layer — all eight standing contracts holding, every SKILL file-card count drift-free): 0 Critical / 0 High / 0 Medium / 3 Low / 2 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-279a the census walkers' delimiter-shape drift — parity-276's colon-blind predicate walked the evaluation report's sixteen colon-aligned delimiter rows as DATA rows, green only by pipe-count luck** (the predicate unifies to the shared colon-tolerant shape the siblings already ship). Plus the riders (F-279b all three censuses gain the header-vs-delimiter cell-count comparison — GFM renders no table on a mismatch · F-279c all three fence strippers admit up-to-three-space-indented list-item fences with the opener-indent tracker · F-279d the two instant-parse sites gain the instant-vs-calendar comments): **2042 unit (+13) · 161 e2e (zero new legs — no swept surface moves) · smoke 15/15 · census MATCH**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

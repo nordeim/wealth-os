@@ -57,15 +57,26 @@ const DOCS = [
   "neo-crm_SKILL.md",
 ] as const;
 
-// Strip fenced code blocks (the F-277d fence-awareness): a line that
-// starts a ``` fence toggles the fence state; lines inside a fence
-// are CODE, never table rows.
+// Strip fenced code blocks (the F-277d fence-awareness, hardened
+// session 279, R-76, F-279c): a fence line at up to three leading
+// spaces (GFM's list-item fences) toggles the fence state — an
+// indented fence line inside an outer fence stays content unless its
+// indent does not exceed the opener's; lines inside a fence are
+// CODE, never table rows.
 function stripFences(text: string): string[] {
   const out: string[] = [];
   let fence = false;
+  let opener = 0;
   for (const raw of text.split("\n")) {
-    if (raw.startsWith("```")) {
-      fence = !fence;
+    const m = /^( {0,3})```/.exec(raw);
+    if (m) {
+      if (!fence) {
+        fence = true;
+        opener = (m[1] ?? "").length;
+        out.push("");
+        continue;
+      }
+      if ((m[1] ?? "").length <= opener) fence = false;
       out.push("");
       continue;
     }
@@ -82,6 +93,13 @@ const isDelimiter = (l: string): boolean => /^\s*\|[\s:|-]+\|\s*$/.test(l);
 // predicate must admit them too (the fence-awareness hardening's
 // soundness sibling).
 const isPipeRow = (l: string) => /^ {0,3}\|/.test(l);
+
+// The unescaped-pipe count helper (session 279, R-76, F-279b): the
+// orphan census's shape check gains the cell-count comparison — a
+// delimiter-shaped second row alone does not make a table when its
+// cell count mismatches the header's.
+const unescapedPipes = (l: string): number =>
+  l.replace(/\\\|/g, "").split("|").length - 1;
 
 // ---- F-277a: the §2 ledger's tables render as tables --------------------
 
@@ -109,6 +127,14 @@ describe("F-277a — the §2 ledger tables render as tables (no blank-line split
           const block = lines.slice(i, j) as string[];
           if (block.length < 2 || !isDelimiter(block[1] as string)) {
             offenders.push(`${rel}:${i + 1}..${j} (${block.length} lines)`);
+          } else if (unescapedPipes(block[0] as string) !== unescapedPipes(block[1] as string)) {
+            // Session-279 (R-76, F-279b): GFM renders no table when
+            // the delimiter's cell count mismatches the header's —
+            // the shape check alone cannot catch the render-killing
+            // genus.
+            offenders.push(
+              `${rel}:${i + 1} header=${unescapedPipes(block[0] as string)} delim=${unescapedPipes(block[1] as string)}`,
+            );
           }
           i = j;
         } else {
@@ -230,7 +256,12 @@ describe("F-277d — the parity-276 census is hardened (fence-aware, seven docs)
     // a fence state at every ``` line and skips fenced lines; the
     // source pin holds the cure's own code shape (a future revert
     // drops the toggle and fails here).
-    expect(census).toContain("fence = !fence");
+    // Session-279 (R-76, F-279c) recalibration: the toggle's form
+    // graduated from the bare alternation to the opener-indent tracker
+    // (the indented list-item fences admitted) — the pin holds the
+    // hardened form's own fragment, the same-commit recalibration
+    // the contract-change doctrine requires.
+    expect(census).toContain("let opener = 0;");
     expect(census).toContain("stripFences");
   });
 

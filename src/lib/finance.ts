@@ -375,7 +375,10 @@ export function filterAndSortExpenses<T extends ExpenseRowLike>(
     }
     // The stable tiebreak chain: createdAt desc (the API's own), then
     // the description — deterministic across equal-key rows whatever
-    // the field and direction.
+    // the field and direction. (createdAt is a timestamp instant —
+    // the raw parse is the CORRECT semantics here; routing it
+    // through toDate would re-anchor a midnight-exact instant to
+    // local midnight and mis-sort — the F-228c identity lesson.)
     const byCreated =
       (a.createdAt ? new Date(a.createdAt).getTime() : 0) -
       (b.createdAt ? new Date(b.createdAt).getTime() : 0);

@@ -36,6 +36,21 @@ const normComment = (s: string): string =>
 // pre-F-277d walker was blind to fenced pipe lines.
 const isPipeRow = (l: string) => /^ {0,3}\|/.test(l);
 
+// The delimiter-row shape a GFM table's second line must carry — the
+// colon-tolerant form (session 279, R-76, F-279a: alignment colons
+// are legal GFM delimiters; the parity-277/278 sibling shape unified
+// here — the colon-blind inline form walked the evaluation report's
+// sixteen colon-aligned delimiter rows as DATA rows, green only
+// because each carried its header's pipe count).
+const isDelimiter = (l: string): boolean => /^\s*\|[\s:|-]+\|\s*$/.test(l);
+
+// The unescaped-pipe count helper (session 279, R-76, F-279b): the
+// delimiter row's cell count must be COMPARED against the header's,
+// never merely skipped — GFM renders no table when the counts
+// mismatch.
+const unescapedPipes = (l: string): number =>
+  l.replace(/\\\|/g, "").split("|").length - 1;
+
 // ---- F-276a: the §5 execution-history table renders as a table -----------
 
 describe("F-276a — the §5 execution-history table's GFM structure", () => {
@@ -171,14 +186,25 @@ describe("F-276b — the §2 ledger rows escape their in-cell pipes", () => {
       "docs/web-app-codebase-evaluation-report.md",
       "neo-crm_SKILL.md",
     ] as const;
-    // Fence-awareness (F-277d): fence lines toggle the state; lines
-    // inside a fence read as blanks to the walk.
+    // Fence-awareness (F-277d, hardened session 279, R-76, F-279c):
+    // a fence line at up to three leading spaces (GFM's list-item
+    // fences) toggles the state — an indented fence line inside an
+    // outer fence stays content unless its indent does not exceed
+    // the opener's; lines inside a fence read as blanks to the walk.
     const stripFences = (text: string): string[] => {
       const out: string[] = [];
       let fence = false;
+      let opener = 0;
       for (const raw of text.split("\n")) {
-        if (raw.startsWith("```")) {
-          fence = !fence;
+        const m = /^( {0,3})```/.exec(raw);
+        if (m) {
+          if (!fence) {
+            fence = true;
+            opener = (m[1] ?? "").length;
+            out.push("");
+            continue;
+          }
+          if ((m[1] ?? "").length <= opener) fence = false;
           out.push("");
           continue;
         }
@@ -196,8 +222,18 @@ describe("F-276b — the §2 ledger rows escape their in-cell pipes", () => {
           headerCount = null; // a table block ends
           continue;
         }
-        if (/^ {0,3}\|[-| ]+\|$/.test(line)) continue; // the delimiter row
-        const unescaped = line.replace(/\\\|/g, "").split("|").length - 1;
+        if (isDelimiter(line)) {
+          // Session-279 (R-76, F-279a/F-279b): the unified
+          // colon-tolerant predicate skips the delimiter row — and
+          // the skip COMPARES, never merely skips (GFM renders no
+          // table when the delimiter's cell count mismatches the
+          // header's — the render-killing genus).
+          if (headerCount !== null && unescapedPipes(line) !== headerCount) {
+            offenders.push(`${rel}:${i + 1} delim=${unescapedPipes(line)} header=${headerCount}`);
+          }
+          continue; // the delimiter row
+        }
+        const unescaped = unescapedPipes(line);
         if (headerCount === null) {
           headerCount = unescaped; // the block's first row is the header
           continue;

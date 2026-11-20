@@ -67,6 +67,10 @@ export function isVerificationLockedOut(attempts: number): boolean {
  * True when a stored expiry timestamp (epoch ms) is still in the future.
  * A null expiry (pre-session-21 rows, the seeded demo users) means
  * "no verification required" — the account predates the flow.
+ * (expiresAt is a timestamp instant — the raw parse is the CORRECT
+ * form here; routing it through toDate would re-anchor a
+ * midnight-exact instant to local midnight — the F-228c identity
+ * lesson.)
  */
 export function isVerificationPending(expiresAt: Date | string | null | undefined): boolean {
   if (expiresAt === null || expiresAt === undefined) return false;

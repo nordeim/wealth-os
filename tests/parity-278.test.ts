@@ -48,15 +48,26 @@ const FAMILY = [
   "neo-crm_SKILL.md",
 ] as const;
 
-// Fence-awareness (the F-277d form): a line that starts a ```
-// fence toggles the fence state; lines inside a fence are CODE,
-// never table rows.
+// Fence-awareness (the F-277d form, hardened session 279, R-76,
+// F-279c): a fence line at up to three leading spaces (GFM's
+// list-item fences) toggles the fence state — an indented fence line
+// inside an outer fence stays content unless its indent does not
+// exceed the opener's; lines inside a fence are CODE, never table
+// rows.
 function stripFences(text: string): string[] {
   const out: string[] = [];
   let fence = false;
+  let opener = 0;
   for (const raw of text.split("\n")) {
-    if (raw.startsWith("```")) {
-      fence = !fence;
+    const m = /^( {0,3})```/.exec(raw);
+    if (m) {
+      if (!fence) {
+        fence = true;
+        opener = (m[1] ?? "").length;
+        out.push("");
+        continue;
+      }
+      if ((m[1] ?? "").length <= opener) fence = false;
       out.push("");
       continue;
     }
@@ -129,6 +140,14 @@ describe("F-278a — the curated tracked-doc family joins the table-truth census
           const block = lines.slice(i, j) as string[];
           if (block.length < 2 || !isDelimiter(block[1] as string)) {
             offenders.push(`${rel}:${i + 1}..${j} (${block.length} lines)`);
+          } else if (unescapedPipes(block[0] as string) !== unescapedPipes(block[1] as string)) {
+            // Session-279 (R-76, F-279b): GFM renders no table when
+            // the delimiter's cell count mismatches the header's —
+            // the shape check alone cannot catch the render-killing
+            // genus.
+            offenders.push(
+              `${rel}:${i + 1} header=${unescapedPipes(block[0] as string)} delim=${unescapedPipes(block[1] as string)}`,
+            );
           }
           i = j;
         } else {
