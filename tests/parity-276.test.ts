@@ -128,9 +128,14 @@ describe("F-276b — the §2 ledger rows escape their in-cell pipes", () => {
     // The structural cure (the F-245c/F-249b tradition — pin the
     // invariant, not the enumeration): a data row whose unescaped
     // pipe count deviates from its table header's count splits cells
-    // in GFM. The census walks every table in the six-file doc set and
-    // fails on any offender — future rows must escape their in-cell
-    // pipes or update this pin with a stated reason.
+    // in GFM. The census walks every table in the seven-file doc set
+    // and fails on any offender — future rows must escape their
+    // in-cell pipes or update this pin with a stated reason.
+    // Session-277 (R-74, F-277d) hardened the census on two gaps:
+    // pipe-prefixed lines inside fenced code blocks are CODE, never
+    // table rows (stripFences toggles the fence state at every fence
+    // line and blanks the fenced lines before the walk), and
+    // worklog.md — the seventh living doc — joins the DOCS list.
     const DOCS = [
       "docs/remediation_plan_v2.md",
       "README.md",
@@ -138,10 +143,26 @@ describe("F-276b — the §2 ledger rows escape their in-cell pipes", () => {
       "CLAUDE.md",
       "wealth-os_SKILL.md",
       "Project_Architecture_Document.md",
+      "worklog.md",
     ] as const;
+    // Fence-awareness (F-277d): fence lines toggle the state; lines
+    // inside a fence read as blanks to the walk.
+    const stripFences = (text: string): string[] => {
+      const out: string[] = [];
+      let fence = false;
+      for (const raw of text.split("\n")) {
+        if (raw.startsWith("```")) {
+          fence = !fence;
+          out.push("");
+          continue;
+        }
+        out.push(fence ? "" : raw);
+      }
+      return out;
+    };
     const offenders: string[] = [];
     for (const rel of DOCS) {
-      const lines = read(rel).split("\n");
+      const lines = stripFences(read(rel));
       let headerCount: number | null = null;
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i] as string;

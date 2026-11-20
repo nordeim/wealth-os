@@ -113,9 +113,21 @@ describe("session-203: the security ledger (R-1 — the bun audit doctrine has t
     // paths, zero runtime). The row's decode carries the re-anchor;
     // the re-triage duty watches the advisory's return. The minimatch
     // moderate (range-unreachable until typescript-estree moves)
-    // stands unchanged.
-    expect(pad).toContain("1 advisory: 1 moderate — all dev-toolchain, zero runtime chains");
-    expect(pad).not.toContain("2 advisories: 1 high / 1 moderate");
+    // stands unchanged. Session-277 (R-74, F-277b): the census
+    // re-anchored 1 → 2 — a NEW dev-chain HIGH (effect
+    // GHSA-7589-6fvf-x4pw, ReDoS in Schema.TemplateLiteral, affected
+    // ≤ 3.22.0) entered npm's audit data against the effect@3.20.0
+    // the lockfile resolves through @prisma/config@7.10.1's exact
+    // pin (the prisma CLI chain — a devDependency; the RUNTIME
+    // @prisma/client chain is clean); the fix is unreachable without
+    // a prisma bump and 7.10.1 is the latest stable, so the
+    // dedicated-dependency-round posture holds and the re-triage duty
+    // watches the parent's releases.
+    expect(pad).toContain(
+      "2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains",
+    );
+    expect(pad).not.toContain("1 advisory: 1 moderate — all dev-toolchain, zero runtime chains");
+    expect(pad).toContain("GHSA-7589-6fvf-x4pw");
     expect(pad).toContain("dropped off npm's audit data");
     expect(pad).toContain("GHSA-g3hv-75wg-m249");
     expect(pad).toContain("GHSA-fc5q-39xc-vjpf");

@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.5-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.10.1-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Tests](https://img.shields.io/badge/tests-2169%20checks-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-2180%20checks-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 A self-hostable **premium personal-finance workspace** — income, expenses,
@@ -59,7 +59,7 @@ alive from the first login.
 | State | Zustand | 5.1.0 | `src/stores/wealthos-store.ts` (UI state) |
 | ORM | Prisma 7 + SQLite (PrismaLibSql adapter) | 7.10.1 | 8 models; `db/` at repo root, git-ignored; generated client in `src/generated/prisma` (postinstall) |
 | Validation | Zod | 4.6.7 | Every API boundary parses before touching the db |
-| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 2008 checks incl. property tests |
+| Unit tests | Vitest + fast-check | 5.1.0 / 4.10.2 | 2019 checks incl. property tests |
 | E2E tests | Playwright + axe-core | 1.65.0 / 4.14.0 | 161 checks; chromium; seeded `db/e2e.db` |
 | Runtime | Bun (dev tooling) | ≥1.3 | `bun run` scripts; node-compatible build |
 
@@ -99,7 +99,7 @@ wealth-os/
 ├── 📂 src/stores/             # wealthos-store.ts (Zustand)
 ├── 📂 prisma/                 # schema.prisma (8 models) + seed.ts (deterministic corpus)
 ├── 📂 db/                     # SQLite files (git-ignored; custom.db / e2e.db / smoke.db)
-├── 📂 tests/                  # 128 unit suites + 📂 e2e/ 7 specs
+├── 📂 tests/                  # 129 unit suites + 📂 e2e/ 7 specs
 ├── 📂 scripts/                # smoke-test.sh, census.ts, sweep.ts, drift-probe.ts
 ├── 📂 skills/                 # The repo's skill library (skills-catalog.md)
 ├── 📂 docs/                   # Plans, validation reports, SSH push runbook, screenshots/
@@ -166,7 +166,7 @@ short secret **fails the production boot by design**.
 
 | Suite | Command | Count |
 |---|---|---|
-| Unit (Vitest) | `bun run test` | 2008 checks / 128 files |
+| Unit (Vitest) | `bun run test` | 2019 checks / 129 files |
 | E2E (Playwright, chromium) | `CI=1 bun run test:e2e` | 161 checks / 7 specs — boots its own server on :3100 with `db/e2e.db` |
 | Smoke ladder (standalone artifact) | `bun run smoke` | 15 assertions incl. boot-gate + artifact hygiene |
 | Full gate | `bun run gate` | lint → typecheck → test → build → smoke → e2e |
@@ -220,9 +220,9 @@ Typography: Inter-first system stack (no runtime font fetch). Motion:
 | Phase | Status | Key Deliverables |
 |---|---|---|
 | WealthOS transformation (session 199) | ✅ Complete | Finance schema + seed, 18 API families, 9 sections + aliases, shell + drawer, theme, AI coach |
-| Verification layer | ✅ Complete | 2008 unit · 161 e2e · 15 smoke · full gate green |
+| Verification layer | ✅ Complete | 2019 unit · 161 e2e · 15 smoke · full gate green |
 | Documentation set | ✅ Complete | README, AGENTS, CLAUDE, PAD, `wealth-os_SKILL.md` (the distilled engineering skill), worklog |
-| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 276: **R-73 shipped — the table-structure, census-truth, and phantom-comment round**: the fresh-eyes audit (three Mode-C passes — the R-72 cure surfaces (all five HOLDING inside the cold-gate's full-suite run) · the API/auth/security layer's twenty-ninth consecutive clean bill (all thirteen house contracts, 45 handlers / 30 route files) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 0 Medium / 5 Low / 7 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-276a the §5 execution-history table never rendered as a table** (no delimiter under the header, nine blank separators, an orphan delimiter mid-table, the v2.47.0 row three cells short — the table now renders as a table, the row's gate + commit cells restored from the session-250 record). Plus the riders (F-276b the ten §2-ledger rows' unescaped pipes escaped — the F-247i genus swept with a whole-doc per-table census now pinned structurally · F-276c the R-72 ledger's phantom modal-rationale comment landed at the three open-state a11y legs · F-276d the api.ts body-ceiling docblock's stale THIRTEEN-route census reworded to the fifteen-route truth (the budgets pair named) · F-276e the AGENTS a11y contract line's design-target/floor pointer): **2008 unit (+11) · 161 e2e (zero new legs — no swept surface moves) · smoke 15/15 · census MATCH**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
+| Remediation program | 🔀 Active | `docs/remediation_plan_v2.md` — the versioned findings ledger + R-item program (session 277: **R-74 shipped — the blank-row-split, census-scope, and audit-census round**: the fresh-eyes audit (three Mode-C passes — the R-73 cure surfaces (all five HOLDING inside the cold-gate's full-suite run) · the API/auth/security layer's thirtieth consecutive clean bill (all thirteen house contracts, 45 handlers / 30 route files) · the UI/a11y/shell layer — all eight standing contracts verified holding live): 0 Critical / 0 High / 2 Medium / 2 Low / 6 Informational NEW after dedup, every material claim re-verified at file:line. THE ROUND'S FLAGSHIP: **F-277a the plan's own §2 ledger carried the F-276a genus at three sites — internal blank lines split three tables into orphan pipe-paragraph blocks (50 rows including Medium-severity findings)** (the three blanks dropped, the rows rejoined their tables, a fence-aware contiguity census leg now pinned structurally). Plus the riders (F-277b the advisory census re-anchored 1 → 2 — the NEW dev-chain effect HIGH decoded in the §10 row, the runtime chain clean, the security-ledger pin pair flipped same-commit · F-277c the api.ts guards comment's stale twelve-route census reworded to the twenty-route-file truth, the CRM-era URL-param fossils retired · F-277d the parity-276 census hardened — fence-aware, worklog.md the seventh doc): **2019 unit (+11) · 161 e2e (zero new legs — no swept surface moves) · smoke 15/15 · census MATCH**; the mobile-nav comparison verified on BOTH sides at TRUE 390×844; probe:ref STABLE on every layer) |
 | Screenshots | ✅ Complete | `docs/screenshots/` |
 
 ## License

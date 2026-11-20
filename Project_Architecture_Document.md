@@ -16,6 +16,50 @@ Every change is tagged with its source: `[RES]` = validated by web research,
 `[SR]` = self-review, `[CA]` = critical analysis, `[SYN]` = synthesis,
 `[SAN]` = sanitization pass, `[AUTH]` = auth alignment.
 
+- [SR] v2.74.0 (session 277, R-74 — the blank-row-split,
+  census-scope, and audit-census round): the fresh-eyes audit (three
+  Mode-C passes — the R-73 cure surfaces driven by the session (all
+  five HOLDING at file:line inside the cold-gate's full-suite run: the
+  §5 table structure, the ten escaped rows, the modal-rationale
+  comment trio, the fifteen-route docblock census, the AGENTS floor
+  pointer), the API/auth/security layer (the THIRTIETH consecutive
+  clean bill — all thirteen house contracts, 45 handlers / 30 route
+  files read line-by-line, the route census re-verified at exactly
+  30; every candidate dismissed into documented postures), and the
+  UI/a11y/shell layer (all eight standing contracts verified holding
+  live — the drawer, the theme, the v4 scanner, the a11y two-gate,
+  the shell twins, the geometry pin, the date seams, the escape
+  stacking — 217 targeted unit tests re-run green inside the pass))
+  — 0 Critical / 0 High / 2 Medium / 2 Low / 6 Informational NEW
+  after dedup, every material claim re-verified at file:line. THE
+  §2 BLANK-ROW SPLITS (F-277a, Medium — the flagship: the plan's own
+  findings ledger carried the F-276a genus at three sites — internal
+  blank lines split three §2 tables into orphan pipe-paragraph
+  blocks, 50 rows including Medium-severity findings; the three
+  blanks dropped, the rows rejoined their tables, and a fence-aware
+  contiguity census leg rides the parity-277 battery so the genus
+  can never re-enter). THE AUDIT CENSUS RE-ANCHOR (F-277b, Medium —
+  the advisory census moved 1 → 2: a NEW dev-chain HIGH, effect
+  GHSA-7589-6fvf-x4pw, rides prisma CLI's @prisma/config@7.10.1
+  exact-pin of effect@3.20.0 — the runtime @prisma/client chain is
+  clean; the §10 row and the security-ledger pin pair re-anchored
+  same-commit with the decode and the dedicated-dependency-round
+  posture). THE COMMENT CENSUS (F-277c — the api.ts guards comment's
+  present-tense census reworded to the twenty-route-file truth; the
+  CRM-era events/reports/export URL-param fossils retired; asString
+  survives at search's q parse alone, asDate is battery-only). THE
+  CENSUS SCOPE (F-277d — the parity-276 census hardened: the walker
+  strips fenced code before the table walk, worklog.md joins the
+  DOCS list as the seventh living doc). Registered: F-277e–F-277h
+  (the pass-B and pass-C informational postures re-confirmed, the
+  historical advisory snapshots' session-record doctrine, the
+  standing PNG regeneration). The verification: lint 0/0 · tsc 0 ·
+  2019 unit (129 files, +11) · build · smoke 15/15 · 161 e2e (zero
+  new legs — the round changes doc tables, one comment, and pin
+  files; no swept surface moves, no pixel can shift) · census MATCH
+  · the captures (the standing evidence faces — the flagship
+  dashboard, the mobile drawer at 390, the comparison capture; the
+  round's touched surfaces are docs and pins).
 - [SR] v2.73.0 (session 276, R-73 — the table-structure,
   census-truth, and phantom-comment round): the fresh-eyes audit
   (three Mode-C passes — the R-72 cure surfaces driven by the
@@ -3512,7 +3556,7 @@ rejected alternatives live there.
 - **Context:** No hosted CI runs on this repo; the local gate must prove
   everything.
 - **Decision:** `bun run gate` = `eslint --max-warnings 0` → `tsc --noEmit`
-  → vitest (2008) → `next build` → the 15-assertion smoke ladder on the
+  → vitest (2019) → `next build` → the 15-assertion smoke ladder on the
   standalone artifact → Playwright e2e (161) against a pinned `db/e2e.db`.
   `gate:full`'s extra legs (per-viewport drift sweeps + the fullpage
   axis + interior censuses) are **active** (re-activated v2.8.0 /
@@ -3646,7 +3690,7 @@ wealth-os/
 │   ├── lib/                     # Layer 1 seams (see §3.1)
 │   ├── stores/wealthos-store.ts # Zustand: theme + UI state
 │   └── types/index.ts           # shared domain types (Transaction, BankAccount, …)
-├── tests/                       # 128 unit suites (incl. architecture pins) + e2e/ 7 specs
+├── tests/                       # 129 unit suites (incl. architecture pins) + e2e/ 7 specs
 ├── scripts/                     # smoke-test.sh, census.ts, sweep.ts, fullpage-sweep.ts,
 │                                # interior-census.ts, drift-probe.ts, zero-data.ts, …
 ├── skills/                      # the skill library; skills-catalog.md is the index
@@ -3936,9 +3980,9 @@ the session user's own record (the CRM-era owners list is retired).
 
 | Category | Files | Checks | Location | Framework |
 |----------|-------|--------|----------|-----------|
-| Unit | 128 | 2008 | `tests/*.test.ts` | Vitest 5 + fast-check |
+| Unit | 129 | 2019 | `tests/*.test.ts` | Vitest 5 + fast-check |
 | — domain seams | 4 | (finance, ai, schemas-finance, verification-code) | `tests/finance\|ai\|schemas-finance\|verification-code.test.ts` | property + example based |
-| — architecture pins | 96 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, parity-269, parity-270, parity-271, parity-272, parity-273, parity-274, parity-275, parity-276, db-transient) | `tests/` | source-scanning contracts |
+| — architecture pins | 97 | (gate-script, db-census, docs-counts, security-ledger, sweep-tool, route-case, nav-config, page-titles, metadata, pwa-metadata, drift-probe-tool, interior-census-tool, shell-parity, parity-208, parity-209, fullpage-sweep-tool, dependency-floors-212, dependency-floors-213, prisma-7-contract, owner-scoping, palette-pins, import-seam, analytics-export-seam, seed-scoping, script-guards, import-body-cap, csv-formula-guard, loading-states, parity-216, ai-body-cap, expenses-popover, dark-tokens, mobile-navigation-focus, parity-217, login-recovery, parity-218, theme-default, parity-219, parity-220, parity-221, parity-222, parity-223, parity-224, parity-225, parity-226, parity-227, parity-228, parity-229, parity-230, parity-231, parity-232, parity-233, parity-234, parity-235, parity-236, parity-237, parity-238, parity-239, parity-240, parity-241, parity-242, parity-243, parity-244, parity-245, parity-246, parity-247, parity-248, parity-249, parity-250, parity-251, parity-252, parity-253, parity-254, parity-255, parity-256, parity-257, parity-258, parity-259, parity-260, parity-261, parity-262, parity-263, parity-264, parity-265, parity-266, parity-267, parity-268, parity-269, parity-270, parity-271, parity-272, parity-273, parity-274, parity-275, parity-276, parity-277, db-transient) | `tests/` | source-scanning contracts |
 | — infrastructure | 28 | auth, rate-limit, csv, uploads, upload-sniff, headers, boot-env, search-query, store-logout, store-hydrate, store-staleness, … | `tests/` | behavior |
 | E2E | 7 | 161 | `tests/e2e/*.spec.ts` | Playwright (chromium) + axe-core |
 | Smoke | 1 | 15 | `scripts/smoke-test.sh` | bash + curl on the standalone artifact |
@@ -3971,7 +4015,7 @@ a11y stays axe-clean. The gate failing ANY leg blocks the push.
 
 - [ ] `bun run lint` → 0 problems, 0 warnings
 - [ ] `bun run typecheck` → 0 errors
-- [ ] `bun run test` → 2008/2008 (counts re-pinned if tests added/removed)
+- [ ] `bun run test` → 2019/2019 (counts re-pinned if tests added/removed)
 - [ ] `bun run build` → green, routes listed
 - [ ] `./scripts/smoke-test.sh` → 15/15 (incl. boot-gate + hygiene)
 - [ ] `CI=1 bun run test:e2e` → 161/161
@@ -4041,7 +4085,7 @@ Full verification setup (what CI-less agents run before pushing):
 | Command | Location | Purpose |
 |---------|----------|---------|
 | `bun run dev` | repo root | Dev server :3000, log teed to `dev.log` |
-| `bun run test` / `CI=1 bun run test:e2e` | root | 2008 unit / 161 e2e |
+| `bun run test` / `CI=1 bun run test:e2e` | root | 2019 unit / 161 e2e |
 | `bun run db:push` · `db:seed` · `db:census` | root | Schema apply · demo data · contract check |
 | `bun run sweep -- --width 390 --height 844` | root | visual drift sweep at a viewport (WealthOS-native: R-4.1 re-anchor + R-4.2's theme match + derived baselines; `--fail-on-drift` gates against the class tables) |
 | `bun run probe:ref` | root | live reference-stability probe (WealthOS-native, R-4.3: the bundle fingerprint + the sentinel demo census + the functional mobile-menu check) |
@@ -4067,7 +4111,7 @@ comments explain why.
 
 | Priority | Issue | Impact | Status |
 |----------|-------|--------|--------|
-| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 272): 1 advisory: 1 moderate — all dev-toolchain, zero runtime chains | RE-ANCHORED at session 272 (R-69, F-272a): the picomatch HIGH (GHSA-fc5q-39xc-vjpf / CVE-2026-112366) dropped off npm's audit data against the same picomatch@4.0.7 the lockfile still resolves (verified at the registry's bulk advisory endpoint; the GitHub advisory page still publishes it — affected ≤ 4.0.7, no patch released; 26 terminal dev-chain paths, zero runtime); the re-triage duty watches its return. NEW at session 268 (R-65, F-268d): picomatch GHSA-fc5q-39xc-vjpf / CVE-2026-112366 (ReDoS via single-branch repeated extglob, CVSS 8.7) — affected ≤ 4.0.7 and 4.0.7 IS the latest npm release (NO FIX EXISTS); every dependency path is dev-toolchain (typescript-estree→tinyglobby, vite; 26 terminal paths, all dev), zero runtime chains, nothing in the shipped standalone artifact. Chain (the standing residue — fix UNREACHABLE within its parent's range): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1. CURED at R-9 (session 213, the prisma 6→7 major): the deepmerge-ts HIGH (GHSA-ggr8-5vv4-36mx) — @prisma/config 7.x carries deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5; the migration contract is pinned (`tests/prisma-7-contract.test.ts` + `tests/dependency-floors-213.test.ts`). The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 272; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts` + `tests/dependency-floors-213.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks the fix is cured same-session) |
+| MEDIUM | Dev-toolchain advisories census (`bun audit`, re-triaged session 277): 2 advisories: 1 high / 1 moderate — all dev-toolchain, zero runtime chains | RE-ANCHORED at session 277 (R-74, F-277b): a NEW dev-chain HIGH — effect GHSA-7589-6fvf-x4pw (ReDoS in Schema.TemplateLiteral, affected ≤ 3.22.0) entered npm's audit data against the effect@3.20.0 the lockfile resolves through @prisma/config@7.10.1's exact pin (the prisma CLI chain — a devDependency; the RUNTIME @prisma/client chain is clean, nothing in the shipped standalone artifact); the fix (> 3.22.0) is unreachable without a prisma/@prisma/config bump while prisma 7.10.1 is the latest stable (the 8.x line is RC-only), so the dedicated-dependency-round posture holds — the re-triage duty watches the parent's releases. RE-ANCHORED at session 272 (R-69, F-272a): the picomatch HIGH (GHSA-fc5q-39xc-vjpf / CVE-2026-112366) dropped off npm's audit data against the same picomatch@4.0.7 the lockfile still resolves (verified at the registry's bulk advisory endpoint; the GitHub advisory page still publishes it — affected ≤ 4.0.7, no patch released; 26 terminal dev-chain paths, zero runtime); the re-triage duty watches its return. NEW at session 268 (R-65, F-268d): picomatch GHSA-fc5q-39xc-vjpf / CVE-2026-112366 (ReDoS via single-branch repeated extglob, CVSS 8.7) — affected ≤ 4.0.7 and 4.0.7 IS the latest npm release (NO FIX EXISTS); every dependency path is dev-toolchain (typescript-estree→tinyglobby, vite; 26 terminal paths, all dev), zero runtime chains, nothing in the shipped standalone artifact. Chain (the standing residue — fix UNREACHABLE within its parent's range): minimatch←typescript-estree pins `^10.2.2` while the GHSA-g3hv-75wg-m249 fix is 11.0.1. CURED at R-9 (session 213, the prisma 6→7 major): the deepmerge-ts HIGH (GHSA-ggr8-5vv4-36mx) — @prisma/config 7.x carries deepmerge-ts 8.0.2 while every 6.x stable exact-pins the vulnerable 7.1.5; the migration contract is pinned (`tests/prisma-7-contract.test.ts` + `tests/dependency-floors-213.test.ts`). The eight CURED at R-8 (session 212, within ranges): the vite/launch-editor six (vite 8.3.0→8.3.6) · source-map-js 1.2.1→1.2.2 · the nested eslint-plugin-react-hooks zod 4.6.5→deduped onto the runtime 4.6.7 (the RUNTIME `zod@^4.6.7` stays safe — floor-pinned against GHSA-mrhx-c7xc-m3w5, vulnerable range `zod < 4.6.6`) | Accepted (re-triaged session 277; cured floors pinned: `tests/security-ledger.test.ts` + `tests/dependency-floors-212.test.ts` + `tests/dependency-floors-213.test.ts`; Re-triage: re-run `bun audit` before every push — a parent-range bump that unlocks the fix is cured same-session) |
 | LOW | Session cookie name is `neo_session` (scaffold legacy) | Cosmetic; smoke + specs grep it — a rename is a coordinated change | Accepted |
 | LOW | No migration journal (db:push workflow) | Schema history lives in git, not SQL files — acceptable for the single-user product | Accepted |
 | LOW | AI coach is rule-based (honest labeling) | No LLM answers offline; the provider seam exists for a future engine | By design (ADR-005) |
@@ -4076,7 +4120,7 @@ comments explain why.
 | LOW | The seed upserts the publicly-documented demo owner (README-documented email + password) and DEPLOYMENT's production legs run `db:seed` (session-224, F-224i) | An internet-exposed deployment that seeds ships a guessable live account — bounded by owner-scoping (its rows only) but persistent on multi-user instances | Accepted posture: DO NOT seed on public deployments (skip `db:seed`, create the first account through signup); the DEPLOYMENT warning rides the seed step |
 
 No CRITICAL or HIGH issues are open. The verification gate is green at
-the time of writing (lint 0/0 · tsc 0 · 2008 unit · build · smoke 15/15 ·
+the time of writing (lint 0/0 · tsc 0 · 2019 unit · build · smoke 15/15 ·
 161 e2e — the e2e tail rides the docs-counts window since session 269,
 the F-269c cure).
 

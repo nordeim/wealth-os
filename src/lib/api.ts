@@ -353,14 +353,18 @@ export async function parseBody<S extends z.ZodTypeAny>(
 }
 
 // ---- hand-rolled validation helpers (the query-param GET family + the -----
-// behavior battery — the CRUD body-guard forms RETIRED at session-166:
-// the twelve body routes ride parseBody/safeParse against
-// src/lib/schemas.ts now; asString/asDate survive on the URL-param
-// surfaces — events' from/to windows, the reports/export/search
-// period+q parses — and the isBad*/asFKId/asNumber/asInt predicates
-// stay exported for their pure-function battery,
-// tests/coercion-guards.test.ts, the living record of the semantics
-// the schema field-builders recast)
+// behavior battery — the CRUD body-guard forms RETIRED at session-166
+// (twelve body routes then). Session-277 (R-74, F-277c) re-counted
+// the family: TWENTY route files ride parseBody/safeParse against
+// src/lib/schemas.ts now — the six auth-family POSTs, the twelve
+// sessioned CRUD files, and import + the AI coach with their own
+// ceilings; reset and users ride readBoundedJson directly at the
+// same gate. asString survives on exactly ONE URL-param surface —
+// search's q parse — while asDate has zero live route consumers
+// (tests/coercion-guards.test.ts keeps its semantics pinned); the
+// isBad*/asFKId/asNumber/asInt predicates stay exported for that
+// pure-function battery, the living record of the semantics the
+// schema field-builders recast)
 
 export function asString(v: unknown, { max = 500, optional = false } = {}): string | undefined {
   if (v === undefined || v === null) return optional ? undefined : "";
